@@ -13,6 +13,11 @@ import { MediaPlayer } from '../model/media-player';
 import { formatTitleInfo } from '../utils/media-browser-utils';
 import { ISpotifyConnectDevice } from '../types/spotifyplus/spotify-connect-device';
 
+// debug logging.
+import Debug from 'debug/src/browser.js';
+import { DEBUG_APP_NAME } from '../constants';
+const debuglog = Debug(DEBUG_APP_NAME + ":device-browser");
+
 
 @customElement("spc-device-browser")
 export class DeviceBrowser extends FavBrowserBase {
@@ -138,10 +143,16 @@ export class DeviceBrowser extends FavBrowserBase {
    */
   protected override onItemSelected = (args: CustomEvent) => {
 
+    if (debuglog.enabled) {
+      debuglog("onItemSelected - device item selected:\n%s",
+        JSON.stringify(args.detail, null, 2),
+      );
+    }
+
     const mediaItem = args.detail;
     this.SelectSource(mediaItem);
 
-  };
+  }
 
 
   /**
@@ -149,14 +160,36 @@ export class DeviceBrowser extends FavBrowserBase {
    * 
    * @param mediaItem The medialist item that was selected.
    */
-  private async SelectSource(mediaItem: ISpotifyConnectDevice) {
+  private async SelectSource(mediaItem: ISpotifyConnectDevice): Promise<void> {
 
-    // call service to select the source.
-    await this.store.mediaControlService.select_source(this.player, mediaItem.Name || '');
+
+    try {
+
+      // show progress indicator.
+      this.progressShow();
+
+      // select the source.
+      await this.store.mediaControlService.select_source(this.player, mediaItem.Name || '');
+
+      // show player section.
+      this.store.card.SetSection(Section.PLAYER);
+
+    }
+    catch (error) {
+
+      // set error message and reset scroll position to zero so the message is displayed.
+      this.alertErrorSet("Could not select source.  " + (error as Error).message);
+      this.mediaBrowserContentElement.scrollTop = 0;
+
+    }
+    finally {
+
+      // hide progress indicator.
+      this.progressHide();
+
+    }
 
   }
-
-
 
 
   /**
