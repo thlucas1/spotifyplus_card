@@ -1,0 +1,6 @@
+{
+  "name": "SpotifyPlus Card",
+  "filename": "spotifyplus-card.js",
+  "hide_default_branch": true,
+  "homeassistant": "2024.8.0",
+}

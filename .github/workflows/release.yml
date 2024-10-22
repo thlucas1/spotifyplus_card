@@ -1,0 +1,33 @@
+name: "Release"
+
+on:
+  release:
+    types:
+      - "published"
+
+permissions: {}
+
+jobs:
+  release:
+    name: "Prepare Release"
+    runs-on: "ubuntu-latest"
+    permissions:
+      contents: write
+    steps:
+      - name: "Repository checkout"
+        uses: "actions/checkout@v4"
+
+      - name: "NPM Build Plugin"
+        run: |
+          cd "${{ github.workspace }}"
+          npm install
+          npm run buildgithub
+
+      - name: "Upload Files to Release"
+        uses: softprops/action-gh-release@v0.1.15
+        with:
+          files: "${{ github.workspace }}/dist/spotifyplus-card.js"
+
+      # plugin file(s) will be placed in the following Home Assistant configuration directory 
+      # location once it is installed via HACS:
+      # "/config/www/community/ha_spotifyplus_card/spotifyplus-card.js"

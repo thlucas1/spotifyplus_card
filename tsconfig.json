@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    // Language Options
+    "target": "ES2021",
+    "lib": [ "ES2021", "DOM", "DOM.Iterable", "WebWorker" ],
+    "experimentalDecorators": true,
+    // Modules
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    // Babel handles transpiling and no need for declaration files
+    "noEmit": true,
+    // Caching
+    ///"incremental": true,
+    ///"tsBuildInfoFile": "node_modules/.cache/typescript/.tsbuildinfo",
+    // Type checking options
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "strict": true,
+    "noImplicitAny": false,
+    // Do not check type declaration files
+    "skipLibCheck": true,
+    // Interop with CommonJS and other tools
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "allowSyntheticDefaultImports": true,
+
+    // settings used for debugging.
+    "sourceMap": true, // Generate sourcemaps
+    "declaration": false // Generate .d.ts files
+  }
+}

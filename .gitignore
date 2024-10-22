@@ -1,0 +1,21 @@
+# artifacts
+/build/
+/dist/
+.DS_Store
+
+# Visual Studio 2022 configuration.
+/.vs/
+/obj/
+/bin/
+
+# NPM
+/node_modules/
+
+# GIT support files to ignore.
+/Git*.cmd
+
+# Local project files and folders to ignore.
+/dist/Build.bat
+/developer_notes.txt
+/New_Release_Instructions.txt
+/data/

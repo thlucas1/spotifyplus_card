@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34031.279
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "SpotifyPlusCard", "SpotifyPlusCard.njsproj", "{0777490A-BB48-44FB-941D-4758EA1310C6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0777490A-BB48-44FB-941D-4758EA1310C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0777490A-BB48-44FB-941D-4758EA1310C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0777490A-BB48-44FB-941D-4758EA1310C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0777490A-BB48-44FB-941D-4758EA1310C6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {565C40C8-67DC-409B-AA17-959A4D8DE3BF}
+	EndGlobalSection
+EndGlobal

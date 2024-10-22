@@ -1,0 +1,257 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{0777490A-BB48-44FB-941D-4758EA1310C6}</ProjectGuid>
+    <ProjectHome>.</ProjectHome>
+    <ProjectView>ProjectFiles</ProjectView>
+    <StartupFile>dist\spotifyplus-card.js</StartupFile>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{349c5851-65df-11da-9384-00065b846f21};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
+    <EnableTypeScript>true</EnableTypeScript>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">17.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <StartWebBrowser>True</StartWebBrowser>
+    <JavaScriptTestFramework>Jest</JavaScriptTestFramework>
+    <SaveNodeJsSettingsInProjectFile>True</SaveNodeJsSettingsInProjectFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <ItemGroup>
+    <Content Include=".eslintrc.js" />
+    <Content Include=".gitattributes" />
+    <Content Include=".github\dependabot.yml" />
+    <Content Include=".github\FUNDING.yml" />
+    <Content Include=".github\ISSUE_TEMPLATE\bug.yml" />
+    <Content Include=".github\ISSUE_TEMPLATE\config.yml" />
+    <Content Include=".github\ISSUE_TEMPLATE\feature_request.yml" />
+    <Content Include=".github\workflows\build.yml" />
+    <Content Include=".github\workflows\validate.yml" />
+    <Content Include=".github\workflows\release.yml" />
+    <Content Include=".gitignore" />
+    <Content Include=".prettierrc.js" />
+    <Content Include=".vscode\launch.json" />
+    <Content Include="CHANGELOG.md" />
+    <Content Include="src\components\player-body-base.ts" />
+    <Content Include="src\styles\shared-styles-fav-actions.js" />
+    <Content Include="src\styles\shared-styles-fav-browser.js" />
+    <Content Include="src\styles\shared-styles-media-info.js" />
+    <None Include="developer_notes.txt" />
+    <Content Include="hacs.json" />
+    <Content Include="LICENSE" />
+    <Content Include="package-lock.json" />
+    <Content Include="package.json" />
+    <Content Include="rollup.config.js" />
+    <None Include="tsconfig.json" />
+    <Content Include="README.md" />
+    <None Include="src\card.ts" />
+    <None Include="src\constants.ts" />
+    <None Include="src\main.ts" />
+    <None Include="src\types.ts" />
+    <None Include="src\components\footer.ts" />
+    <None Include="src\editor\base-editor.ts" />
+    <None Include="src\editor\editor.ts" />
+    <None Include="src\editor\editor-form.ts" />
+    <None Include="src\editor\general-editor.ts" />
+    <None Include="src\model\media-player.ts" />
+    <None Include="src\model\store.ts" />
+    <None Include="src\sections\player.ts" />
+    <None Include="src\services\hass-service.ts" />
+    <None Include="src\utils\utils.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include=".github\" />
+    <Folder Include=".github\ISSUE_TEMPLATE\" />
+    <Folder Include=".github\workflows\" />
+    <Folder Include=".vscode\" />
+    <Folder Include="dist" />
+    <Folder Include="images\" />
+    <Folder Include="src" />
+    <Folder Include="src\components" />
+    <Folder Include="src\editor" />
+    <Folder Include="src\model" />
+    <Folder Include="src\events\" />
+    <Folder Include="src\decorators\" />
+    <Folder Include="src\styles\" />
+    <Folder Include="src\types\" />
+    <Folder Include="src\sections" />
+    <Folder Include="src\services" />
+    <Folder Include="src\types\spotifyplus\" />
+    <Folder Include="src\utils" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="src\components\audiobook-actions.ts" />
+    <TypeScriptCompile Include="src\components\episode-actions.ts" />
+    <TypeScriptCompile Include="src\components\fav-actions-base.ts" />
+    <TypeScriptCompile Include="src\components\album-actions.ts" />
+    <TypeScriptCompile Include="src\components\artist-actions.ts" />
+    <TypeScriptCompile Include="src\components\device-actions.ts" />
+    <TypeScriptCompile Include="src\components\media-browser-base.ts" />
+    <TypeScriptCompile Include="src\components\media-browser-icons.ts" />
+    <TypeScriptCompile Include="src\components\media-browser-list.ts" />
+    <TypeScriptCompile Include="src\components\player-body-audiobook.ts" />
+    <TypeScriptCompile Include="src\components\player-body-track.ts" />
+    <TypeScriptCompile Include="src\components\player-body-show.ts" />
+    <TypeScriptCompile Include="src\components\player-controls.ts" />
+    <TypeScriptCompile Include="src\components\player-header.ts" />
+    <TypeScriptCompile Include="src\components\player-progress.ts" />
+    <TypeScriptCompile Include="src\components\player-volume.ts" />
+    <TypeScriptCompile Include="src\components\playlist-actions.ts" />
+    <TypeScriptCompile Include="src\components\show-actions.ts" />
+    <TypeScriptCompile Include="src\components\track-actions.ts" />
+    <TypeScriptCompile Include="src\components\userpreset-actions.ts" />
+    <TypeScriptCompile Include="src\editor\episode-fav-browser-editor.ts" />
+    <TypeScriptCompile Include="src\sections\episode-fav-browser.ts" />
+    <TypeScriptCompile Include="src\sections\fav-browser-base.ts" />
+    <TypeScriptCompile Include="src\styles\shared-styles-grid.js" />
+    <TypeScriptCompile Include="src\decorators\storage.ts" />
+    <TypeScriptCompile Include="src\editor\album-fav-browser-editor.ts" />
+    <TypeScriptCompile Include="src\editor\artist-fav-browser-editor.ts" />
+    <TypeScriptCompile Include="src\editor\audiobook-fav-browser-editor.ts" />
+    <TypeScriptCompile Include="src\editor\search-media-browser-editor.ts" />
+    <TypeScriptCompile Include="src\editor\show-fav-browser-editor.ts" />
+    <TypeScriptCompile Include="src\editor\track-fav-browser-editor.ts" />
+    <TypeScriptCompile Include="src\editor\userpreset-browser-editor.ts" />
+    <TypeScriptCompile Include="src\editor\device-browser-editor.ts" />
+    <TypeScriptCompile Include="src\editor\player-volume-editor.ts" />
+    <TypeScriptCompile Include="src\editor\player-editor.ts" />
+    <TypeScriptCompile Include="src\editor\player-controls-editor.ts" />
+    <TypeScriptCompile Include="src\editor\player-header-editor.ts" />
+    <TypeScriptCompile Include="src\editor\playlist-fav-browser-editor.ts" />
+    <TypeScriptCompile Include="src\editor\recent-browser-editor.ts" />
+    <TypeScriptCompile Include="src\events\editor-config-area-selected.ts" />
+    <TypeScriptCompile Include="src\events\progress-ended.ts" />
+    <TypeScriptCompile Include="src\events\progress-started.ts" />
+    <TypeScriptCompile Include="src\sections\album-fav-browser.ts" />
+    <TypeScriptCompile Include="src\sections\artist-fav-browser.ts" />
+    <TypeScriptCompile Include="src\sections\audiobook-fav-browser.ts" />
+    <TypeScriptCompile Include="src\sections\device-browser.ts" />
+    <TypeScriptCompile Include="src\sections\playlist-fav-browser.ts" />
+    <TypeScriptCompile Include="src\sections\recent-browser.ts" />
+    <TypeScriptCompile Include="src\sections\search-media-browser.ts" />
+    <TypeScriptCompile Include="src\sections\show-fav-browser.ts" />
+    <TypeScriptCompile Include="src\sections\track-fav-browser.ts" />
+    <TypeScriptCompile Include="src\sections\userpreset-browser.ts" />
+    <TypeScriptCompile Include="src\services\media-control-service.ts" />
+    <TypeScriptCompile Include="src\services\spotifyplus-service.ts" />
+    <TypeScriptCompile Include="src\types\card-config.ts" />
+    <TypeScriptCompile Include="src\types\class-element.ts" />
+    <TypeScriptCompile Include="src\types\config-area.ts" />
+    <TypeScriptCompile Include="src\types\custom-image-urls.ts" />
+    <TypeScriptCompile Include="src\types\hass-entity-attributes-media-player.ts" />
+    <TypeScriptCompile Include="src\types\playerAlerts.ts" />
+    <TypeScriptCompile Include="src\types\search-media-types.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus-hass-entity.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus-hass-entity-attributes.ts" />
+    <TypeScriptCompile Include="src\types\home-assistant-ex.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\album.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\album-page-saved.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\album-page-simplified.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\album-saved.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\album-simplified.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\artist-info-tour-event.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\artist-info.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\artist.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\artist-page.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\artist-simplified.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\audiobook.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\audiobook-page-simplified.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\audiobook-simplified.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\author.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\chapter-page-simplified.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\chapter-simplified.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\chapter.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\context.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\copyright.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\device.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\episode.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\episode-page-saved.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\episode-page-simplified.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\episode-saved.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\episode-simplified.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\external-urls.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\followers.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\image-object.ts" />
+    <TypeScriptCompile Include="src\types\media-browser-item.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\narrator.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\play-history.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\play-history-page.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\playlist-page.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\playlist-track.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\playlist.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\restrictions.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\resume-point.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\show.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\show-page-saved.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\show-page-simplified.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\show-saved.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\show-simplified.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\spotify-basic-object.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\spotify-connect-device.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\spotify-connect-devices.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\track.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\track-page.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\track-page-saved.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\track-page-simplified.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\track-saved.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\track-simplified.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\owner.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\page-object.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\playlist-page-simplified.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\playlist-simplified.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\playlist-track-summary.ts" />
+    <TypeScriptCompile Include="src\types\section.ts" />
+    <TypeScriptCompile Include="src\types\service-call-request.ts" />
+    <TypeScriptCompile Include="src\types\service-call-response.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\zeroconf-discovery-result.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\zeroconf-get-info.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\zeroconf-get-info-alias.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\zeroconf-get-info-drm-media-format.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\zeroconf-property.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\zeroconf-response.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\user-preset.ts" />
+    <TypeScriptCompile Include="src\utils\media-browser-utils.ts" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>0</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:48022/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>True</UseCustomServer>
+          <CustomServerUrl>http://localhost:1337</CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}" User="">
+        <WebProjectProperties>
+          <StartPageUrl>
+          </StartPageUrl>
+          <StartAction>CurrentPage</StartAction>
+          <AspNetDebugging>True</AspNetDebugging>
+          <SilverlightDebugging>False</SilverlightDebugging>
+          <NativeDebugging>False</NativeDebugging>
+          <SQLDebugging>False</SQLDebugging>
+          <ExternalProgram>
+          </ExternalProgram>
+          <StartExternalURL>
+          </StartExternalURL>
+          <StartCmdLineArguments>
+          </StartCmdLineArguments>
+          <StartWorkingDirectory>
+          </StartWorkingDirectory>
+          <EnableENC>False</EnableENC>
+          <AlwaysStartWebServerOnDebug>False</AlwaysStartWebServerOnDebug>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
