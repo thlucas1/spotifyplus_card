@@ -33,7 +33,7 @@
     "@types/debug": "^4.1.12",
     "@types/jest": "27.4.1",
     "@types/query-selector-shadow-dom": "^1.0.4",
-    "@typescript-eslint/eslint-plugin": "^7.6.0",
+    "@typescript-eslint/eslint-plugin": "^8.11.0",
     "@typescript-eslint/parser": "^7.7.0",
     "eslint": "^8.57.1",
     "eslint-config-airbnb-base": "^15.0.0",
