@@ -575,6 +575,15 @@ export interface CardConfig extends LovelaceCardConfig {
   userPresetBrowserSubTitle?: string;
 
   /**
+   * File path to a collection of user-defined preset items that can be displayed in 
+   * various media browser displays.  This allows the user to define their own custom 
+   * presets for Spotify favorites.
+   * 
+   * See `userPresets` configuration item for file content format.
+   */
+  userPresetsFile?: string;
+
+  /**
    * Number of items to display in a single row of the User Preset media browser section form.
    * Use a value of 1 to display the items as a vertical list.
    * Default is 3.
@@ -592,6 +601,27 @@ export interface CardConfig extends LovelaceCardConfig {
    * Default is false.
    */
   userPresetBrowserItemsHideSubTitle?: boolean;
+
+  /**
+   * Collection of user-defined preset items that can be displayed in various media browser
+   * displays.  This allows the user to define their own custom presets along with device presets.
+   * 
+   * This configuration data must be configured manually in the card configuration.
+   * Some things to keep in mind when adding entries:
+   * - attribute names are are CaSe-SeNsItIvE.
+   * 
+   * See wiki dicumentation for more examples.
+   * 
+   * Example:
+   * userPresets:
+   * - name: "Spotify Playlist Daily Mix 1"
+   *   subtitle: "Various Artists"
+   *   image_url: "https://dailymix-images.scdn.co/v2/img/ab6761610000e5ebcd3f796bd7ea49ed7615a550/1/en/default"
+   *   uri: "spotify:playlist:37i9dQZF1E39vTG3GurFPW"
+   *   type: "playlist"
+   * - name: ...
+   */
+  userPresets?: Array<IUserPreset>;
 
   /**
    * Collection of custom imageUrl's that can be displayed in various media browser
@@ -618,35 +648,6 @@ export interface CardConfig extends LovelaceCardConfig {
    *   My Private Playlist2: https://brands.home-assistant.io/spotifyplus/logo.png
    */
   customImageUrls?: CustomImageUrls;
-
-  /**
-   * Collection of user-defined preset items that can be displayed in various media browser
-   * displays.  This allows the user to define their own custom presets along with device presets.
-   * 
-   * This configuration data must be configured manually in the card configuration.
-   * Some things to keep in mind when adding entries:
-   * - attribute names are are CaSe-SeNsItIvE.
-   * 
-   * See wiki dicumentation for more examples.
-   * 
-   * Example:
-   * userPresets:
-   * - name: "Spotify Playlist Daily Mix 1"
-   *   subtitle: "Various Artists"
-   *   image_url: "https://dailymix-images.scdn.co/v2/img/ab6761610000e5ebcd3f796bd7ea49ed7615a550/1/en/default"
-   *   uri: "spotify:playlist:37i9dQZF1E39vTG3GurFPW"
-   *   type: "playlist"
-   * - name: ...
-   */
-  userPresets?: Array<IUserPreset>;
-
-  /**
-   * File path to a collection of user-defined preset items that can be displayed in various media browser
-   * displays.  This allows the user to define their own custom presets along with device presets.
-   * 
-   * See `userPresets` configuration item for file content format.
-   */
-  userPresetsFile?: string;
 
   //imageUrlsReplaceHttpWithHttps?: boolean;
 }

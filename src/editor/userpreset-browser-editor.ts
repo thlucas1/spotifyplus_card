@@ -22,6 +22,13 @@ const CONFIG_SETTINGS_SCHEMA = [
     type: 'string',
   },
   {
+    name: 'userPresetsFile',
+    label: 'File that contains user-defined preset items',
+    help: 'e.g. "/local/spotifyplus/userpresets.json"',
+    required: false,
+    type: 'string',
+  },
+  {
     name: 'userPresetBrowserItemsPerRow',
     label: '# of items to display per row',
     help: 'use 1 for list format',
