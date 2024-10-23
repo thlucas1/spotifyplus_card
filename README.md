@@ -23,19 +23,49 @@ and more!
 
 Here's a quick overview on what the card can look like.  The card is highly customizable when it comes to the information displayed.  Check out the [UI Dashboards wiki](https://github.com/thlucas1/spotifyplus_card/wiki/UI-Dashboards) page for more examples and YAML configuration.
 
-#### Media Player Control (Masonry Mode)  
-![masonry_player_track](./images/masonry_player_track.png) 
-![masonry_search_playlists](./images/masonry_search_playlists.png) 
+#### Media Player Control / Actions (Masonry Mode)  
+![masonry_player_track](./images/masonry_player_track.png?v20241023) 
+![masonry_player_track_actions](./images/masonry_player_track_actions.png?v20241023) 
+![masonry_player_audiobook](./images/masonry_player_audiobook.png?v20241023) 
+![masonry_player_audiobook_actions](./images/masonry_player_audiobook_actions.png?v20241023) 
+![masonry_player_show](./images/masonry_player_show.png?v20241023) 
+![masonry_player_show_actions](./images/masonry_player_show_actions.png?v20241023) 
 
-#### Editor UI, General Options  
+#### Media Favorites (Masonry Mode)  
+![masonry_playlist_favorites](./images/masonry_playlist_favorites.png?v20241023) 
+![masonry_album_favorites](./images/masonry_album_favorites.png?v20241023) 
+![masonry_artist_favorites](./images/masonry_artist_favorites.png?v20241023) 
+![masonry_track_favorites](./images/masonry_track_favorites.png?v20241023) 
+![masonry_audiobook_favorites](./images/masonry_audiobook_favorites.png?v20241023) 
+![masonry_show_favorites](./images/masonry_show_favorites.png?v20241023) 
+![masonry_episode_favorites](./images/masonry_episode_favorites.png?v20241023) 
+![masonry_recently_played](./images/masonry_recents.png?v20241023) 
+![masonry_userpresets](./images/masonry_userpresets.png?v20241023) 
+
+#### Spotify Media Search (Masonry Mode)  
+![masonry_search_playlists](./images/masonry_search_playlists.png?v20241023) 
+![masonry_search_albums](./images/masonry_search_albums.png?v20241023) 
+![masonry_search_artists](./images/masonry_search_artists.png?v20241023) 
+![masonry_search_tracks](./images/masonry_search_tracks.png?v20241023) 
+![masonry_search_audiobooks](./images/masonry_search_audiobooks.png?v20241023) 
+![masonry_search_shows](./images/masonry_search_shows.png?v20241023) 
+![masonry_search_episodes](./images/masonry_search_episodes.png ?v20241023) 
+
+#### Devices / Actions (Masonry Mode)  
+![masonry_devices](./images/masonry_devices.png?v20241023) 
+![masonry_devices_actions](./images/masonry_devices_actions.png?v20241023) 
+
+#### Editor UI  
 ![config_editor_general](./images/config_editor_general.png) 
 
+#### Card Picker
+![config_cardpicker](./images/config_cardpicker.png?v20241023) 
 
 ## HACS Installation Instructions (recommended)
 
 - On your Home Assistant sidebar menu, go to HACS > Frontend
 - Click on the 3-dot overflow menu in the upper right, and select `custom repositories` item.
-- Copy / paste `https://github.com/thlucas1/spotifyplus_card` in the Repository textbox and select `Lovelace` for the category entry.
+- Copy / paste `https://github.com/thlucas1/spotifyplus_card` in the Repository textbox and select `Dashboard` for the category entry.
 - Click on `Add` to add the custom repository.
 - You can then click on the `SpotifyPlus Card` repository entry (you may need to filter your list first to find the new entry).
 - Click on `download` to start the download. It will install the card to your `/config/www/community/spotifyplus_card` directory.

@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.5 ] - 2024/10/23
+
+  * Updated README.md with lastest form examples.
+
 ###### [ 1.0.4 ] - 2024/10/23
 
   * Added debug logging instructions to console.log version information.
