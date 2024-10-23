@@ -6,7 +6,7 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
-###### [ 1.0.0 ] - 2024/10/23
+###### [ 1.0.2 ] - 2024/10/23
 
   * Version 1 initial release.
 
