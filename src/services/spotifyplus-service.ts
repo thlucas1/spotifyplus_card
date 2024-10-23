@@ -3298,7 +3298,7 @@ export class SpotifyPlusService {
 
 
   /** ======================================================================================
-   * The following are common helper methods for SpotifyPlus-Card support.
+   * The following are common helper methods for SpotifyPlus Card support.
    * ====================================================================================== **/
 
   /**

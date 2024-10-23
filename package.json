@@ -1,5 +1,5 @@
 {
-  "name": "spotifyplus-card",
+  "name": "spotifyplus_card",
   "version": "",
   "description": "",
   "main": "src/main.js",
@@ -61,8 +61,8 @@
     "start": "rollup -c --watch",
     "build": "npm run lint && npm run rollup && npm run deploy-vm",
     "buildgithub": "npm run lint && npm run rollup",
-    "deploy-prod": "npm run build && cp dist/spotifyplus-card.js ~/homeassistant/www/community/spotifyplus-card/spotifyplus-card.js",
-    "deploy-vm": "xcopy \"dist\\spotifyplus-card.*\" \"\\\\homeassistantvm\\config\\www\" /Y /-I",
+    "deploy-prod": "npm run build && cp dist/spotifyplus_card.js ~/homeassistant/www/community/spotifyplus_card/spotifyplus_card.js",
+    "deploy-vm": "xcopy \"dist\\spotifyplus_card.*\" \"\\\\homeassistantvm\\config\\www\" /Y /-I",
     "lint": "eslint src/*.ts",
     "rollup": "rollup -c",
     "clean": "npm run clean_delfiles && npm run clean_deldirs",

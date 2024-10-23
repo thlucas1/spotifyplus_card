@@ -38,7 +38,7 @@ Here's a quick overview on what the card can look like.  The card is highly cust
 - Copy / paste `https://github.com/thlucas1/spotifyplus_card` in the Repository textbox and select `Lovelace` for the category entry.
 - Click on `Add` to add the custom repository.
 - You can then click on the `SpotifyPlus Card` repository entry (you may need to filter your list first to find the new entry).
-- Click on `download` to start the download. It will install the card to your `/config/www/community/ha_spotifyplus_card` directory.
+- Click on `download` to start the download. It will install the card to your `/config/www/community/spotifyplus_card` directory.
 - Go back on your dashboard and click on the icon at the right top corner then on Edit dashboard.
 - You can now click on Add card in the bottom right corner and search for "Custom: SpotifyPlus Card".
 
@@ -46,15 +46,15 @@ Here's a quick overview on what the card can look like.  The card is highly cust
 
 - using the tool of choice open the directory (folder) for your HA configuration (where you find `configuration.yaml`).
 - change directory to the `www` folder; if you don't have this directory, then create it.
-- download the `spotifyplus-card.js` file from the [GitHub repository](https://github.com/thlucas1/spotifyplus_card) into your `<config>/www` folder.
+- download the `spotifyplus_card.js` file from the [GitHub repository](https://github.com/thlucas1/spotifyplus_card) into your `<config>/www` folder.
 - on your dashboard click on the icon at the right top corner then on Edit dashboard.
 - click again on that icon and then on Manage resources.
 - click on Add resource.
-- copy and paste this: `/local/spotifyplus-card.js?v=1`.
+- copy and paste this: `/local/spotifyplus_card.js?v=1`.
 - click on JavaScript Module then Create.
 - go back and refresh your page.
 - you can now click on Add card in the bottom right corner and search for "Custom: SpotifyPlus Card".
-- after any update of the file you will have to edit `/local/spotifyplus-card.js?v=1` and change the version (e.g. `v=1`) to any higher number (e.g. `v=1.2`).
+- after any update of the file you will have to edit `/local/spotifyplus_card.js?v=1` and change the version (e.g. `v=1`) to any higher number (e.g. `v=1.2`).
 
 
 ## More Information

@@ -38,7 +38,7 @@ export default [
   {
     input: 'src/main.ts',
     output: {
-      file: 'dist/spotifyplus-card.js',
+      file: 'dist/spotifyplus_card.js',
       format: 'es',
       sourcemap: true,
     },

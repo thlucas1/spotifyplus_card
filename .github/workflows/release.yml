@@ -26,8 +26,8 @@ jobs:
       - name: "Upload Files to Release"
         uses: softprops/action-gh-release@v0.1.15
         with:
-          files: "${{ github.workspace }}/dist/spotifyplus-card.js"
+          files: "${{ github.workspace }}/dist/spotifyplus_card.js"
 
       # plugin file(s) will be placed in the following Home Assistant configuration directory 
       # location once it is installed via HACS:
-      # "/config/www/community/ha_spotifyplus_card/spotifyplus-card.js"
+      # "/config/www/community/spotifyplus_card/spotifyplus_card.js"
