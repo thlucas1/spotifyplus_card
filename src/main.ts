@@ -14,6 +14,11 @@ console.log(
   "Wiki Docs:",
   "https://github.com/thlucas1/spotifyplus_card/wiki/Configuration-Options"
 );
+console.log(
+  "Debug logging commands:\n",
+  "- enable:  localStorage.setItem('debug', 'spotifyplus-card:*');\n",
+  "- disable: localStorage.setItem('debug', '');"
+ );
 console.groupEnd();
 
 // Register our card for the card picker dialog in the HA UI dashboard
