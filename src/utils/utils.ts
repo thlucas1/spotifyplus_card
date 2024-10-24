@@ -3,6 +3,12 @@ import { CardConfig } from '../types/card-config';
 import { ConfigArea } from '../types/config-area';
 import { Section } from '../types/section';
 
+// debug logging.
+import Debug from 'debug/src/browser.js';
+import { DEBUG_APP_NAME } from '../constants';
+const debuglog = Debug(DEBUG_APP_NAME + ":utils");
+
+
 export function cardDoesNotContainAllSections(config: CardConfig) {
   return config.sections && config.sections.length < Object.keys(Section).length;
 }
@@ -419,4 +425,52 @@ export function closestElement(selector: string, base: Element) {
  */
 export function isTouchDevice(): boolean {
   return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+}
+
+
+/**
+ * Determines if the following lazily-loaded controls are defined to customElements, and
+ * forces a page load to load the controls if not.  Controls checked for are:
+ * - <search-input-outlined>
+ * - <ha-md-button-menu>
+ * - <ha-alert>
+ * 
+ * This can happen when the user presses F5 to refresh the page, and the above controls
+ * are not loaded.  If they are used on the form, then they will not render correctly!
+ * 
+ * To find out what custom elements are available on a dashboard, bring up the console (in 
+ * Chrome) and run the following command:
+ * > Array.from(customElements.l.keys()).sort().join(", ");
+ */
+export const loadHaFormLazyControls = async () => {
+
+  // if specified customElements already exist then we are done.
+  if (customElements.get("search-input-outlined") && customElements.get("ha-md-button-menu") && customElements.get("ha-alert")) {
+    return;
+  }
+
+  if (debuglog.enabled) {
+    debuglog("loadHaFormLazyControls - loading lazy controls via partial-panel-resolver");
+  }
+
+  // create partial panel resolver element.
+  await customElements.whenDefined("partial-panel-resolver");
+  const ppr = document.createElement('partial-panel-resolver') as any;
+  ppr.hass = {
+    panels: [{
+      url_path: "tmp",
+      component_name: "config",
+    }]
+  };
+  ppr._updateRoutes();
+  await ppr.routerOptions.routes.tmp.load();
+
+  await customElements.whenDefined("ha-panel-config");
+  const cpr = document.createElement("ha-panel-config") as any;
+  await cpr.routerOptions.routes.automation.load();
+
+  if (debuglog.enabled) {
+    debuglog("loadHaFormLazyControls - done; lazy controls should now be loaded");
+  }
+
 }

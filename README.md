@@ -5,7 +5,7 @@
 ![Project Maintenance][maintenance-shield] [![BuyMeCoffee][buymecoffee-shield]][buymecoffee]
 
 _Home Assistant UI card that supports features unique to the [SpotifyPlus](https://github.com/thlucas1/homeassistantcomponent_spotifyplus) custom integration._  
-Extended support for the SpotifyPlus product for use in Home Assistant.
+Extended support for the Spotify Service for use in Home Assistant.
 
 ## Features
 
@@ -24,42 +24,42 @@ and more!
 Here's a quick overview on what the card can look like.  The card is highly customizable when it comes to the information displayed.  Check out the [UI Dashboards wiki](https://github.com/thlucas1/spotifyplus_card/wiki/UI-Dashboards) page for more examples and YAML configuration.
 
 #### Media Player Control / Actions (Masonry Mode)  
-![masonry_player_track](./images/masonry_player_track.png?v20241023) 
-![masonry_player_track_actions](./images/masonry_player_track_actions.png?v20241023) 
-![masonry_player_audiobook](./images/masonry_player_audiobook.png?v20241023) 
-![masonry_player_audiobook_actions](./images/masonry_player_audiobook_actions.png?v20241023) 
-![masonry_player_show](./images/masonry_player_show.png?v20241023) 
-![masonry_player_show_actions](./images/masonry_player_show_actions.png?v20241023) 
+![masonry_player_track](./images/ui/masonry/player_track.png?v20241024) 
+![masonry_player_track_actions](./images/ui/masonry/player_track_actions.png?v20241024) 
+![masonry_player_audiobook](./images/ui/masonry/player_audiobook.png?v20241024) 
+![masonry_player_audiobook_actions](./images/ui/masonry/player_audiobook_actions.png?v20241024) 
+![masonry_player_show](./images/ui/masonry/player_show.png?v20241024) 
+![masonry_player_show_actions](./images/ui/masonry/player_show_actions.png?v20241024) 
 
 #### Media Favorites (Masonry Mode)  
-![masonry_playlist_favorites](./images/masonry_playlist_favorites.png?v20241023) 
-![masonry_album_favorites](./images/masonry_album_favorites.png?v20241023) 
-![masonry_artist_favorites](./images/masonry_artist_favorites.png?v20241023) 
-![masonry_track_favorites](./images/masonry_track_favorites.png?v20241023) 
-![masonry_audiobook_favorites](./images/masonry_audiobook_favorites.png?v20241023) 
-![masonry_show_favorites](./images/masonry_show_favorites.png?v20241023) 
-![masonry_episode_favorites](./images/masonry_episode_favorites.png?v20241023) 
-![masonry_recently_played](./images/masonry_recents.png?v20241023) 
-![masonry_userpresets](./images/masonry_userpresets.png?v20241023) 
+![masonry_playlist_favorites](./images/ui/masonry/playlist_favorites.png?v20241024) 
+![masonry_album_favorites](./images/ui/masonry/album_favorites.png?v20241024) 
+![masonry_artist_favorites](./images/ui/masonry/artist_favorites.png?v20241024) 
+![masonry_track_favorites](./images/ui/masonry/track_favorites.png?v20241024) 
+![masonry_audiobook_favorites](./images/ui/masonry/audiobook_favorites.png?v20241024) 
+![masonry_show_favorites](./images/ui/masonry/show_favorites.png?v20241024) 
+![masonry_episode_favorites](./images/ui/masonry/episode_favorites.png?v20241024) 
+![masonry_recently_played](./images/ui/masonry/recents.png?v20241024) 
+![masonry_userpresets](./images/ui/masonry/userpresets.png?v20241024) 
 
 #### Spotify Media Search (Masonry Mode)  
-![masonry_search_playlists](./images/masonry_search_playlists.png?v20241023) 
-![masonry_search_albums](./images/masonry_search_albums.png?v20241023) 
-![masonry_search_artists](./images/masonry_search_artists.png?v20241023) 
-![masonry_search_tracks](./images/masonry_search_tracks.png?v20241023) 
-![masonry_search_audiobooks](./images/masonry_search_audiobooks.png?v20241023) 
-![masonry_search_shows](./images/masonry_search_shows.png?v20241023) 
-![masonry_search_episodes](./images/masonry_search_episodes.png ?v20241023) 
+![masonry_search_playlists](./images/ui/masonry/search_playlists.png?v20241024) 
+![masonry_search_albums](./images/ui/masonry/search_albums.png?v20241024) 
+![masonry_search_artists](./images/ui/masonry/search_artists.png?v20241024) 
+![masonry_search_tracks](./images/ui/masonry/search_tracks.png?v20241024) 
+![masonry_search_audiobooks](./images/ui/masonry/search_audiobooks.png?v20241024) 
+![masonry_search_shows](./images/ui/masonry/search_shows.png?v20241024) 
+![masonry_search_episodes](./images/ui/masonry/search_episodes.png?v20241024) 
 
 #### Devices / Actions (Masonry Mode)  
-![masonry_devices](./images/masonry_devices.png?v20241023) 
-![masonry_devices_actions](./images/masonry_devices_actions.png?v20241023) 
+![masonry_devices](./images/ui/masonry/devices.png?v20241024) 
+![masonry_devices_actions](./images/ui/masonry/devices_actions.png?v20241024) 
 
 #### Editor UI  
-![config_editor_general](./images/config_editor_general.png) 
+![config_editor_general](./images/config/editor_general.png?v20241024) 
 
 #### Card Picker
-![config_cardpicker](./images/config_cardpicker.png?v20241023) 
+![config_cardpicker](./images/config/cardpicker.png?v20241024) 
 
 ## HACS Installation Instructions (recommended)
 
@@ -100,11 +100,11 @@ Check out the following links for more information:
 
 ## Reporting a Problem
 
-Submit a [Bug Report](https://github.com/thlucas1/spotifyplus_card/issues/new?assignees=&labels=Bug&projects=&template=bug.yml) to bring the issue to my attention. I receive a notification when a new issue is opened, and will do my best to address it in a prompt and professional manner.
+Submit a [Bug Report](https://github.com/thlucas1/spotifyplus_card/issues/new?assignees=&labels=bug&projects=&template=bug.yml) to bring the issue to my attention. I receive a notification when a new issue is opened, and will do my best to address it in a prompt and professional manner.
 
 ## Request a New Feature
 
-Do you have an idea for a new feature that could be added to the integration?  Submit a [Feature Request](https://github.com/thlucas1/spotifyplus_card/issues/new?assignees=&labels=Feature%2BRequest&projects=&template=feature_request.yml) to get your idea into the queue. I receive a notification when a new request is opened, and will do my best to turn your idea into the latest and greatest feature.
+Do you have an idea for a new feature that could be added to the integration?  Submit a [Feature Request](https://github.com/thlucas1/spotifyplus_card/issues/new?assignees=&labels=enhancement&projects=&template=feature_request.yml) to get your idea into the queue. I receive a notification when a new request is opened, and will do my best to turn your idea into the latest and greatest feature.
 
 ***
 

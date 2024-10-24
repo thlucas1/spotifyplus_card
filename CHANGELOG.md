@@ -6,6 +6,12 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.6 ] - 2024/10/24
+
+  * Updated `fav-browser-base` to check for the existance of `search-input-outlined` and `ha-md-button-menu` controls in the `customElements` array, and force a load of the controls if they are not present.  These controls may not be loaded by default when a page refresh (F5) occurs, so they must be forced to load in order to render correctly on the page.
+  * Updated README documentation.
+  * Cleaned up documentation images, and re-organized the media files in the `images` folder.
+
 ###### [ 1.0.5 ] - 2024/10/23
 
   * Updated README.md with lastest form examples.

@@ -6,7 +6,8 @@
     <ProjectGuid>{0777490A-BB48-44FB-941D-4758EA1310C6}</ProjectGuid>
     <ProjectHome>.</ProjectHome>
     <ProjectView>ProjectFiles</ProjectView>
-    <StartupFile>dist\spotifyplus-card.js</StartupFile>
+    <StartupFile>
+    </StartupFile>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{349c5851-65df-11da-9384-00065b846f21};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
@@ -34,6 +35,37 @@
     <Content Include=".prettierrc.js" />
     <Content Include=".vscode\launch.json" />
     <Content Include="CHANGELOG.md" />
+    <Content Include="dist\spotifyplus_card.js" />
+    <Content Include="dist\spotifyplus_card.js.map" />
+    <Content Include="images\config\cardpicker.png" />
+    <Content Include="images\config\editor_general.png" />
+    <Content Include="images\ui\masonry\album_favorites.png" />
+    <Content Include="images\ui\masonry\artist_favorites.png" />
+    <Content Include="images\ui\masonry\audiobook_favorites.png" />
+    <Content Include="images\ui\masonry\devices.png" />
+    <Content Include="images\ui\masonry\devices_actions.png" />
+    <Content Include="images\ui\masonry\episode_favorites.png" />
+    <Content Include="images\ui\masonry\player_audiobook.png" />
+    <Content Include="images\ui\masonry\player_audiobook_actions.png" />
+    <Content Include="images\ui\masonry\player_show.png" />
+    <Content Include="images\ui\masonry\player_show_actions.png" />
+    <Content Include="images\ui\masonry\player_track.png" />
+    <Content Include="images\ui\masonry\player_track_actions.png" />
+    <Content Include="images\ui\masonry\playlist_favorites.png" />
+    <Content Include="images\ui\masonry\recents.png" />
+    <Content Include="images\ui\masonry\search_albums.png" />
+    <Content Include="images\ui\masonry\search_artists.png" />
+    <Content Include="images\ui\masonry\search_audiobooks.png" />
+    <Content Include="images\ui\masonry\search_episodes.png" />
+    <Content Include="images\ui\masonry\search_playlists.png" />
+    <Content Include="images\ui\masonry\search_shows.png" />
+    <Content Include="images\ui\masonry\search_tracks.png" />
+    <Content Include="images\ui\masonry\show_favorites.png" />
+    <Content Include="images\ui\masonry\track_favorites.png" />
+    <Content Include="images\ui\masonry\userpresets.png" />
+    <Content Include="images\ui\player_controls.png" />
+    <Content Include="images\ui\player_header.png" />
+    <Content Include="images\ui\player_volume.png" />
     <Content Include="src\components\player-body-base.ts" />
     <Content Include="src\styles\shared-styles-fav-actions.js" />
     <Content Include="src\styles\shared-styles-fav-browser.js" />
@@ -68,6 +100,9 @@
     <Folder Include=".vscode\" />
     <Folder Include="dist" />
     <Folder Include="images\" />
+    <Folder Include="images\config\" />
+    <Folder Include="images\ui\" />
+    <Folder Include="images\ui\masonry\" />
     <Folder Include="src" />
     <Folder Include="src\components" />
     <Folder Include="src\editor" />

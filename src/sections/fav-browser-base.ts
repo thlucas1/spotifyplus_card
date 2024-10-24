@@ -15,7 +15,7 @@ import { MediaPlayer } from '../model/media-player';
 import { SpotifyPlusService } from '../services/spotifyplus-service';
 import { storageService } from '../decorators/storage';
 import { truncateMediaList } from '../utils/media-browser-utils';
-import { isCardInEditPreview } from '../utils/utils';
+import { isCardInEditPreview, loadHaFormLazyControls } from '../utils/utils';
 import { ProgressEndedEvent } from '../events/progress-ended';
 import { ProgressStartedEvent } from '../events/progress-started';
 import { DOMAIN_SPOTIFYPLUS } from '../constants';
@@ -254,6 +254,10 @@ export class FavBrowserBase extends LitElement {
     //console.log("firstUpdated (fav-browser-base) - changedProperties keys:\n- %s",
     //  JSON.stringify(Array.from(changedProperties.keys())),
     //);
+
+    // ensure "<search-input-outlined>" and "<ha-md-button-menu>" HA customElements are
+    // loaded so that the controls are rendered properly.
+    (async () => await loadHaFormLazyControls())();
 
     // set storage cache key for the media player user.
     // the prefix will include our domain, the Spotify user name, and the storage key.
