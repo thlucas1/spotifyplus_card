@@ -213,7 +213,7 @@ export interface IZeroconfGetInfo extends IZeroconfResponse {
 
 
   /** 
-   * Token type provided by the client:
+   * Authorization Token type provided by the client:
    * - "accesstoken"         Access token.
    * - "authorization_code"  OAuth Authorization Code token.
    * - "default"             Default access token.

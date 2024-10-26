@@ -275,7 +275,7 @@ export class FavBrowserBase extends LitElement {
       // if we already updated the media list, then don't do it again.
       if ((this.isCardInEditPreview) && (this.mediaType in Store.hasCardEditLoadedMediaList)) {
         if (debuglog.enabled) {
-          debuglog("%c firstUpdated - cache is empty, and we already called updateMediaList to retrieve media list; will not update again while editing card!",
+          debuglog("%c firstUpdated - we already called updateMediaList to retrieve media list; will not update again while editing card!",
             "color: yellow;",
           );
         }
@@ -283,7 +283,7 @@ export class FavBrowserBase extends LitElement {
       }
 
       if (debuglog.enabled) {
-        debuglog("%c firstUpdated - cache is empty; updating media list on first update",
+        debuglog("%c firstUpdated - updating media list on first update",
           "color: yellow;",
         );
       }

@@ -149,7 +149,7 @@ export class Card extends LitElement {
         <div class="spc-loader" ?hidden=${!this.showLoader}>
           <ha-circular-progress indeterminate></ha-circular-progress>
         </div>
-        ${title ? html`<div class="spc-card-header">${title}</div>` : html``}
+        ${title ? html`<div class="spc-card-header" style=${this.styleCardHeader()}>${title}</div>` : ""}
         <div class="spc-card-content-section">
           ${
               this.playerId
@@ -241,7 +241,7 @@ export class Card extends LitElement {
       }
 
       .spc-card-header {
-        margin: 0.2rem;
+        padding: 0.2rem;
         display: flex;
         align-self: flex-start;
         align-items: center;
@@ -1003,6 +1003,31 @@ export class Card extends LitElement {
 
 
   /**
+   * Style the card header element.
+   */
+  private styleCardHeader() {
+
+    // is player selected, and a title set?
+    if ((this.section == Section.PLAYER) && (this.footerBackgroundColor)) {
+
+      // yes - return vibrant background style.
+      return styleMap({
+        '--spc-player-footer-bg-color': `${this.footerBackgroundColor || 'transparent'}`,
+        'background-color': 'var(--spc-player-footer-bg-color)',
+        'background-image': 'linear-gradient(rgba(0, 0, 0, 1.6), rgba(0, 0, 0, 0.6))',
+      });
+
+    } else {
+
+      // no - just return an empty style to let it default to the card background.
+      return styleMap({
+      });
+
+    }
+  }
+
+
+  /**
    * Style the <spc-card-background-container> element.
    */
   private styleCardFooter() {
@@ -1014,7 +1039,7 @@ export class Card extends LitElement {
       return styleMap({
         '--spc-player-footer-bg-color': `${this.footerBackgroundColor || 'transparent'}`,
         'background-color': 'var(--spc-player-footer-bg-color)',
-        'background-image': 'linear-gradient(rgba(0, 0, 0, 1.6), rgba(0, 0, 0, 0.6))',
+        'background-image': 'linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 1.6))',
       });
 
     } else {

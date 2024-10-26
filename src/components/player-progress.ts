@@ -164,12 +164,21 @@ class Progress extends LitElement {
         display: flex;
         flex-grow: 1;
         align-items: center;
-        padding: 5px;
+        align-self: center;
+        margin-left: 5px;
+        margin-right: 5px;
+        height: 14px;
         cursor: pointer;
+        background-clip: padding-box;
+        border: 1px solid rgba(255, 255, 255, 0.10);
+        border-radius: 0.25rem;
       }
 
       .progress-bar {
+        align-self: center;
         background-color: var(--dark-primary-color);
+        margin-left: 2px;
+        margin-right: 2px;
         height: 50%;
         transition: width 0.1s linear;
       }

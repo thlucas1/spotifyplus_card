@@ -1731,7 +1731,7 @@ export class SpotifyPlusService {
       //this._GetJsonStringUserProfile(response);
 
       // set image_url property based on device type.
-      if ((responseObj != null) && (responseObj != null)) {
+      if ((responseObj != null) && (responseObj.Items != null)) {
         responseObj.Items.forEach(item => {
           // set image_url path using mdi icons for common sources.
           const sourceCompare = (item.Name || "").toLocaleLowerCase();
