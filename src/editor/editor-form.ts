@@ -36,7 +36,7 @@ class Form extends BaseEditor {
         .schema=${this.schema}
         .computeLabel=${formatLabel}
         .hass=${this.hass}
-        @value-changed=${this.changed || this.OnValueChanged}
+        @value-changed=${this.changed || this.onValueChanged}
       ></ha-form>
     `;
   }
@@ -78,9 +78,9 @@ class Form extends BaseEditor {
    * Handles a "value-changed" event.
    * This event is raised whenever a form value is changed in the UI.
    */
-  protected OnValueChanged(args: CustomEvent): void {
+  protected onValueChanged(args: CustomEvent): void {
 
-    //console.log("OnValueChanged (editor-form) - event:\n%s",
+    //console.log("onValueChanged (editor-form) - event:\n%s",
     //  JSON.stringify(args,null,2)
     //);
 

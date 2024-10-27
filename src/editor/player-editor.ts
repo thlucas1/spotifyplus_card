@@ -45,7 +45,7 @@ class PlayerSettingsEditor extends BaseEditor {
           (configArea) => html`
             <ha-control-button
               selected=${this.configArea === configArea || nothing}
-              @click=${() => this.OnConfigPlayerSectionClick(configArea)}
+              @click=${() => this.onConfigPlayerSectionClick(configArea)}
             >
               ${configArea}
             </ha-control-button>
@@ -85,7 +85,7 @@ class PlayerSettingsEditor extends BaseEditor {
    * 
    * @param args Event arguments that contain the configArea that was clicked on.
    */
-  private OnConfigPlayerSectionClick(configArea: ConfigArea) {
+  private onConfigPlayerSectionClick(configArea: ConfigArea) {
 
     // show the section editor form.
     this.configArea = configArea;

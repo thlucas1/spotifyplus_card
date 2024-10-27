@@ -61,12 +61,12 @@ class Volume extends LitElement {
     // render control.
     return html`
       <div class="volume-container icons" slim=${this.slim || nothing}>
-        ${!hideMute ? html`<ha-icon-button @click=${this.OnMuteClick} .path=${muteIcon} label="Mute Toggle" style=${this.styleIcon(colorMute)}></ha-icon-button>` : html``}
+        ${!hideMute ? html`<ha-icon-button @click=${this.onMuteClick} .path=${muteIcon} label="Mute Toggle" style=${this.styleIcon(colorMute)}></ha-icon-button>` : html``}
         <div class="volume-slider" style=${this.styleVolumeSlider()}>
           <ha-control-slider
             .value=${volume}
             max=${maxVolume}
-            @value-changed=${this.OnVolumeValueChanged}
+            @value-changed=${this.onVolumeValueChanged}
           ></ha-control-slider>
           <div class="volume-level">
             <div style="flex: ${volume};text-align: left">0%</div>
@@ -86,17 +86,64 @@ class Volume extends LitElement {
    * 
    * @param args Event arguments.
    */
-  private async OnVolumeValueChanged(args: Event) {
-    const newVolume = Number.parseInt((args?.target as HTMLInputElement)?.value);
-    return await this.mediaControlService.volume_set(this.player, newVolume);
+  private async onVolumeValueChanged(args: Event) {
+
+    try {
+
+      // show progress indicator.
+      this.progressShow();
+
+      // adjust the volume.
+      const newVolume = Number.parseInt((args?.target as HTMLInputElement)?.value);
+      await this.mediaControlService.volume_set(this.player, newVolume);
+      return true;
+
+    }
+    catch (error) {
+
+      // set alert error message.
+      this.alertErrorSet("Volume set failed: \n" + (error as Error).message);
+      return true;
+
+    }
+    finally {
+
+      // hide progress indicator.
+      this.progressHide();
+
+    }
+
   }
 
 
   /**
    * Handles the `click` event fired when the mute button is clicked.
    */
-  private async OnMuteClick() {
-    return await this.mediaControlService.volume_mute_toggle(this.player);
+  private async onMuteClick() {
+
+    try {
+
+      // show progress indicator.
+      this.progressShow();
+
+      // toggle mute.
+      await this.mediaControlService.volume_mute_toggle(this.player);
+      return true;
+
+    }
+    catch (error) {
+
+      // set alert error message.
+      this.alertErrorSet("Volume mute failed: \n" + (error as Error).message);
+      return true;
+
+    }
+    finally {
+
+      // hide progress indicator.
+      this.progressHide();
+
+    }
   }
 
 
@@ -129,33 +176,29 @@ class Volume extends LitElement {
       // call async service based on requested action.
       if (action == TURN_OFF) {
 
-        this.mediaControlService.turn_off(this.player);
+        await this.mediaControlService.turn_off(this.player);
 
       } else if (action == TURN_ON) {
 
-        this.mediaControlService.turn_on(this.player);
-
-      } else {
-
-        // no action selected - hide progress indicator.
-        this.progressHide();
+        await this.mediaControlService.turn_on(this.player);
 
       }
 
-      // hide progress indicator.
-      this.progressHide();
       return true;
 
     }
     catch (error) {
 
-      // clear the progress indicator and set alert error message.
-      this.progressHide();
+      // set alert error message.
       this.alertErrorSet("Volume action failed: \n" + (error as Error).message);
       return true;
 
     }
     finally {
+
+      // hide progress indicator.
+      this.progressHide();
+
     }
 
   }
@@ -283,7 +326,6 @@ class Volume extends LitElement {
         padding-right: 2px;
         font-weight: normal;
         font-size: 10px;
-        /*text-shadow: 0 0 2px var(--dark-primary-color); */
         color: var(--dark-primary-color);
       }
 

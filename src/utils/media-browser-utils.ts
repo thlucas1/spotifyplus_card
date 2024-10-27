@@ -161,10 +161,12 @@ export function buildMediaBrowserItems(items: any, config: CardConfig, section: 
     // modify subtitle value based on selected section type.
     if (section == Section.ALBUM_FAVORITES) {
       const itemInfo = (item as IAlbumSimplified);
-      mbi_info.subtitle = itemInfo.artists[0]?.name || (itemInfo.total_tracks || 0 + " tracks") || item.type;
+      if ((itemInfo.artists) && (itemInfo.artists.length > 0)) {
+        mbi_info.subtitle = itemInfo.artists[0]?.name || (itemInfo.total_tracks || 0 + " tracks") || item.type;
+      }
     } else if (section == Section.ARTIST_FAVORITES) {
       const itemInfo = (item as IArtist);
-      mbi_info.subtitle = ((itemInfo.followers.total || 0) + " followers") || item.type;
+      mbi_info.subtitle = ((itemInfo?.followers?.total || 0) + " followers") || item.type;
     } else if (section == Section.AUDIOBOOK_FAVORITES) {
       const itemInfo = (item as IAudiobookSimplified);
       mbi_info.subtitle = GetAudiobookAuthors(itemInfo, ", ") || item.type;
@@ -181,16 +183,18 @@ export function buildMediaBrowserItems(items: any, config: CardConfig, section: 
       // for search results, use release date for subtitle.
       // for favorite results, use the show name for subtitle.
       const itemInfo = (item as IEpisode);
-      mbi_info.subtitle = itemInfo.show?.name || itemInfo.release_date;
+      mbi_info.subtitle = itemInfo.show?.name || itemInfo.release_date || "";
     } else if (section == Section.PLAYLIST_FAVORITES) {
       const itemInfo = (item as IPlaylistSimplified);
-      mbi_info.subtitle = (itemInfo.tracks.total || 0) + " tracks";
+      mbi_info.subtitle = (itemInfo.tracks?.total || 0) + " tracks";
     } else if (section == Section.SHOW_FAVORITES) {
       const itemInfo = (item as IShowSimplified);
       mbi_info.subtitle = (itemInfo.total_episodes || 0) + " episodes";
     } else if (section == Section.TRACK_FAVORITES) {
       const itemInfo = (item as ITrackSimplified);
-      mbi_info.subtitle = itemInfo.artists[0].name || item.type;
+      if ((itemInfo.artists) && (itemInfo.artists.length > 0)) {
+        mbi_info.subtitle = itemInfo.artists[0].name || item.type;
+      }
     } else if (section == Section.USERPRESETS) {
       const itemInfo = (item as IUserPreset);
       mbi_info.subtitle = itemInfo.subtitle || item.uri;

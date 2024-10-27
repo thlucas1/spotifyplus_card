@@ -6,26 +6,31 @@ import { styleMap } from 'lit-html/directives/style-map.js';
 // our imports.
 import { Store } from '../model/store';
 import { MediaPlayer } from '../model/media-player';
+import { ProgressStartedEvent } from '../events/progress-started';
+import { ProgressEndedEvent } from '../events/progress-ended';
+import { closestElement } from '../utils/utils';
+import { Player } from '../sections/player';
+
 
 class Progress extends LitElement {
 
-  /** Application common storage area. */
+  // public state properties.
   @property({ attribute: false }) store!: Store;
+
+  // private state properties.
+  @state() private playingProgress!: number;
 
   /** MediaPlayer instance created from the configuration entity id. */
   private player!: MediaPlayer;
 
-  /** Current position (in seconds) of the currently playing media. */
-  @state() private playingProgress!: number;
-
   /** Callback function that calculates the current progress (executed every 1 second). */
   private tracker?: NodeJS.Timeout;
 
-  /** Progress bar HTMLElement control. */
-  @query('.bar') private progressBar?: HTMLElement;
-
   /** Current media duration value. */
   private mediaDuration = 0;
+
+  /** Progress bar HTMLElement control. */
+  @query('.bar') private progressBar?: HTMLElement;
 
 
   /**
@@ -97,13 +102,68 @@ class Progress extends LitElement {
    */
   private async onSeekBarClick(args: MouseEvent) {
 
-    // calculate the desired position based on the mouse pointer position.
-    const progressWidth = this.progressBar!.offsetWidth;
-    const percent = args.offsetX / progressWidth;
-    const position = this.mediaDuration * percent;
+    try {
 
-    // call service to seek to track position.
-    await this.store.mediaControlService.media_seek(this.player, position);
+      // calculate the desired position based on the mouse pointer position.
+      const progressWidth = this.progressBar!.offsetWidth;
+      const percent = args.offsetX / progressWidth;
+      const position = this.mediaDuration * percent;
+
+      // show progress indicator.
+      this.progressShow();
+
+      // call service to seek to track position.
+      await this.store.mediaControlService.media_seek(this.player, position);
+      return true;
+
+    }
+    catch (error) {
+
+      // set alert error message.
+      this.alertErrorSet("Seek position failed: \n" + (error as Error).message);
+      return true;
+
+    }
+    finally {
+
+      // hide progress indicator.
+      this.progressHide();
+
+    }
+
+  }
+
+
+  /**
+   * Hide visual progress indicator.
+   */
+  protected progressHide(): void {
+    this.store.card.dispatchEvent(ProgressEndedEvent());
+  }
+
+
+  /**
+   * Show visual progress indicator.
+   */
+  protected progressShow(): void {
+    this.store.card.dispatchEvent(ProgressStartedEvent());
+  }
+
+
+  /**
+   * Sets the alert error message in the parent player.
+   * 
+   * @param message alert message text.
+   */
+  private alertErrorSet(message: string): void {
+
+    // find the parent player reference, and update the message.
+    // we have to do it this way due to the shadowDOM between this element and the player element.
+    const spcPlayer = closestElement('#spcPlayer', this) as Player;
+    if (spcPlayer) {
+      spcPlayer.alertErrorSet(message);
+    }
+
   }
 
 
@@ -181,6 +241,7 @@ class Progress extends LitElement {
         margin-right: 2px;
         height: 50%;
         transition: width 0.1s linear;
+        border-radius: 0.18rem;
       }
 
       .progress-time {

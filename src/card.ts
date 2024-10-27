@@ -181,7 +181,7 @@ export class Card extends LitElement {
               class="spc-card-footer"
               .config=${this.config}
               .section=${this.section}
-              @show-section=${this.OnFooterShowSection}
+              @show-section=${this.onFooterShowSection}
             ></spc-footer>
           </div>`
         )}
@@ -402,7 +402,7 @@ export class Card extends LitElement {
     if (isCardInEditPreview(this)) {
 
       // add document level event listeners.
-      document.addEventListener(EDITOR_CONFIG_AREA_SELECTED, this.OnEditorConfigAreaSelectedEventHandler);
+      document.addEventListener(EDITOR_CONFIG_AREA_SELECTED, this.onEditorConfigAreaSelectedEventHandler);
 
     }
 
@@ -430,7 +430,7 @@ export class Card extends LitElement {
     // return a different value than when the event was added in connectedCallback!
 
     // remove document level event listeners.
-    document.removeEventListener(EDITOR_CONFIG_AREA_SELECTED, this.OnEditorConfigAreaSelectedEventHandler);
+    document.removeEventListener(EDITOR_CONFIG_AREA_SELECTED, this.onEditorConfigAreaSelectedEventHandler);
 
     // invoke base class method.
     super.disconnectedCallback();
@@ -572,7 +572,7 @@ export class Card extends LitElement {
    * 
    * @param ev Event definition and arguments.
   */
-  protected OnEditorConfigAreaSelectedEventHandler = (ev: Event) => {
+  protected onEditorConfigAreaSelectedEventHandler = (ev: Event) => {
 
     // map event arguments.
     const evArgs = (ev as CustomEvent).detail as EditorConfigAreaSelectedEventArgs;
@@ -599,7 +599,7 @@ export class Card extends LitElement {
    * 
    * @param args Event arguments that contain the section to show.
   */
-  protected OnFooterShowSection = (args: CustomEvent) => {
+  protected onFooterShowSection = (args: CustomEvent) => {
 
     const section = args.detail;
     if (!this.config.sections || this.config.sections.indexOf(section) > -1) {

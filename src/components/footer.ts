@@ -40,84 +40,84 @@ export class Footer extends LitElement {
       <ha-icon-button
         .path=${mdiPlayCircle}
         label="Player"
-        @click=${() => this.OnSectionClick(Section.PLAYER)}
+        @click=${() => this.onSectionClick(Section.PLAYER)}
         selected=${this.getSectionSelected(Section.PLAYER)}
         hide=${this.getSectionEnabled(Section.PLAYER)}
       ></ha-icon-button>
       <ha-icon-button
         .path=${mdiSpeaker}
         label="Devices"
-        @click=${() => this.OnSectionClick(Section.DEVICES)}
+        @click=${() => this.onSectionClick(Section.DEVICES)}
         selected=${this.getSectionSelected(Section.DEVICES)}
         hide=${this.getSectionEnabled(Section.DEVICES)}
       ></ha-icon-button>
       <ha-icon-button
         .path=${mdiBookmarkMusicOutline}
         label="User Presets"
-        @click=${() => this.OnSectionClick(Section.USERPRESETS)}
+        @click=${() => this.onSectionClick(Section.USERPRESETS)}
         selected=${this.getSectionSelected(Section.USERPRESETS)}
         hide=${this.getSectionEnabled(Section.USERPRESETS)}
       ></ha-icon-button>
       <ha-icon-button
         .path=${mdiHistory}
         label="Recently Played"
-        @click=${() => this.OnSectionClick(Section.RECENTS)}
+        @click=${() => this.onSectionClick(Section.RECENTS)}
         selected=${this.getSectionSelected(Section.RECENTS)}
         hide=${this.getSectionEnabled(Section.RECENTS)}
       ></ha-icon-button>
       <ha-icon-button
         .path=${mdiPlaylistPlay}
         label='Playlist Favorites'
-        @click=${() => this.OnSectionClick(Section.PLAYLIST_FAVORITES)}
+        @click=${() => this.onSectionClick(Section.PLAYLIST_FAVORITES)}
         selected=${this.getSectionSelected(Section.PLAYLIST_FAVORITES)}
         hide=${this.getSectionEnabled(Section.PLAYLIST_FAVORITES)}
       ></ha-icon-button>
       <ha-icon-button
         .path=${mdiAlbum}
         label='Album Favorites'
-        @click=${() => this.OnSectionClick(Section.ALBUM_FAVORITES)}
+        @click=${() => this.onSectionClick(Section.ALBUM_FAVORITES)}
         selected=${this.getSectionSelected(Section.ALBUM_FAVORITES)}
         hide=${this.getSectionEnabled(Section.ALBUM_FAVORITES)}
       ></ha-icon-button>
       <ha-icon-button
         .path=${mdiAccountMusic}
         label='Artist Favorites'
-        @click=${() => this.OnSectionClick(Section.ARTIST_FAVORITES)}
+        @click=${() => this.onSectionClick(Section.ARTIST_FAVORITES)}
         selected=${this.getSectionSelected(Section.ARTIST_FAVORITES)}
         hide=${this.getSectionEnabled(Section.ARTIST_FAVORITES)}
       ></ha-icon-button>
       <ha-icon-button
         .path=${mdiMusic}
         label='Track Favorites'
-        @click=${() => this.OnSectionClick(Section.TRACK_FAVORITES)}
+        @click=${() => this.onSectionClick(Section.TRACK_FAVORITES)}
         selected=${this.getSectionSelected(Section.TRACK_FAVORITES)}
         hide=${this.getSectionEnabled(Section.TRACK_FAVORITES)}
       ></ha-icon-button>
       <ha-icon-button
         .path=${mdiBookOpenVariant}
         label='Audiobook Favorites'
-        @click=${() => this.OnSectionClick(Section.AUDIOBOOK_FAVORITES)}
+        @click=${() => this.onSectionClick(Section.AUDIOBOOK_FAVORITES)}
         selected=${this.getSectionSelected(Section.AUDIOBOOK_FAVORITES)}
         hide=${this.getSectionEnabled(Section.AUDIOBOOK_FAVORITES)}
       ></ha-icon-button>
       <ha-icon-button
         .path=${mdiPodcast}
         label='Show Favorites'
-        @click=${() => this.OnSectionClick(Section.SHOW_FAVORITES)}
+        @click=${() => this.onSectionClick(Section.SHOW_FAVORITES)}
         selected=${this.getSectionSelected(Section.SHOW_FAVORITES)}
         hide=${this.getSectionEnabled(Section.SHOW_FAVORITES)}
       ></ha-icon-button>
       <ha-icon-button
         .path=${mdiMicrophone}
         label='Episode Favorites'
-        @click=${() => this.OnSectionClick(Section.EPISODE_FAVORITES)}
+        @click=${() => this.onSectionClick(Section.EPISODE_FAVORITES)}
         selected=${this.getSectionSelected(Section.EPISODE_FAVORITES)}
         hide=${this.getSectionEnabled(Section.EPISODE_FAVORITES)}
       ></ha-icon-button>
       <ha-icon-button
         .path=${mdiSearchWeb}
         label='Search Spotify'
-        @click=${() => this.OnSectionClick(Section.SEARCH_MEDIA)}
+        @click=${() => this.onSectionClick(Section.SEARCH_MEDIA)}
         selected=${this.getSectionSelected(Section.SEARCH_MEDIA)}
         hide=${this.getSectionEnabled(Section.SEARCH_MEDIA)}
       ></ha-icon-button>
@@ -151,7 +151,7 @@ export class Footer extends LitElement {
    * 
    * @param section Event arguments.
    */
-  private OnSectionClick(section: Section) {
+  private onSectionClick(section: Section) {
 
     this.dispatchEvent(customEvent(SHOW_SECTION, section));
 

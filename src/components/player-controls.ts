@@ -155,7 +155,7 @@ class PlayerControls extends LitElement {
   }
 
   // bound event listeners for event handlers that need access to "this" object.
-  private OnKeyDown_EventListenerBound;
+  private onKeyDown_EventListenerBound;
 
   /**
    * Initializes a new instance of the class.
@@ -166,7 +166,7 @@ class PlayerControls extends LitElement {
     super();
 
     // create bound event listeners for event handlers that need access to "this" object.
-    this.OnKeyDown_EventListenerBound = this.OnKeyDown.bind(this);
+    this.onKeyDown_EventListenerBound = this.OnKeyDown.bind(this);
   }
 
 
@@ -184,7 +184,7 @@ class PlayerControls extends LitElement {
     super.connectedCallback();
 
     // add document level event listeners.
-    document.addEventListener("keydown", this.OnKeyDown_EventListenerBound);
+    document.addEventListener("keydown", this.onKeyDown_EventListenerBound);
 
     // determine if card configuration is being edited.
     this.isCardInEditPreview = isCardInEditPreview(this.store.card);
@@ -205,7 +205,7 @@ class PlayerControls extends LitElement {
   public disconnectedCallback() {
 
     // remove document level event listeners.
-    document.removeEventListener("keydown", this.OnKeyDown_EventListenerBound);
+    document.removeEventListener("keydown", this.onKeyDown_EventListenerBound);
 
     // invoke base class method.
     super.disconnectedCallback();
@@ -309,27 +309,23 @@ class PlayerControls extends LitElement {
 
         await this.mediaControlService.turn_on(this.player);
 
-      } else {
-
-        // no action selected - hide progress indicator.
-        this.progressHide();
-
       }
 
-      // hide progress indicator.
-      this.progressHide();
       return true;
 
     }
     catch (error) {
 
-      // clear the progress indicator and set alert error message.
-      this.progressHide();
+      // set alert error message.
       this.alertErrorSet("Control action failed: \n" + (error as Error).message);
       return true;
 
     }
     finally {
+
+      // hide progress indicator.
+      this.progressHide();
+
     }
 
   }

@@ -67,7 +67,7 @@ class CardEditor extends BaseEditor {
       (configArea) => html`
             <ha-control-button
               selected=${this.configArea === configArea || nothing}
-              @click=${() => this.OnConfigSectionClick(configArea)}
+              @click=${() => this.onConfigSectionClick(configArea)}
             >
               ${configArea}
             </ha-control-button>
@@ -79,7 +79,7 @@ class CardEditor extends BaseEditor {
       (configArea) => html`
             <ha-control-button
               selected=${this.configArea === configArea || nothing}
-              @click=${() => this.OnConfigSectionClick(configArea)}
+              @click=${() => this.onConfigSectionClick(configArea)}
             >
               ${configArea}
             </ha-control-button>
@@ -91,7 +91,7 @@ class CardEditor extends BaseEditor {
           (configArea) => html`
             <ha-control-button
               selected=${this.configArea === configArea || nothing}
-              @click=${() => this.OnConfigSectionClick(configArea)}
+              @click=${() => this.onConfigSectionClick(configArea)}
             >
               ${configArea}
             </ha-control-button>
@@ -210,12 +210,12 @@ class CardEditor extends BaseEditor {
    * 
    * @param args Event arguments that contain the configArea that was clicked on.
    */
-  private OnConfigSectionClick(configArea: ConfigArea) {
+  private onConfigSectionClick(configArea: ConfigArea) {
 
     // show the section that we are editing.
     const sectionNew = getSectionForConfigArea(configArea);
 
-    //console.log("OnConfigSectionClick (editor)\n- OLD configArea=%s\n- NEW configArea=%s\n- OLD section=%s\n- NEW section=%s\n- Store.selectedConfigArea=%s",
+    //console.log("onConfigSectionClick (editor)\n- OLD configArea=%s\n- NEW configArea=%s\n- OLD section=%s\n- NEW section=%s\n- Store.selectedConfigArea=%s",
     //  JSON.stringify(this.configArea),
     //  JSON.stringify(configArea),
     //  JSON.stringify(this.section),
@@ -254,7 +254,7 @@ class CardEditor extends BaseEditor {
     super.connectedCallback();
 
     // add window level event listeners.
-    window.addEventListener(SHOW_SECTION, this.OnFooterShowSection);
+    window.addEventListener(SHOW_SECTION, this.onFooterShowSection);
   }
 
 
@@ -271,7 +271,7 @@ class CardEditor extends BaseEditor {
   disconnectedCallback() {
 
     // remove window level event listeners.
-    window.removeEventListener(SHOW_SECTION, this.OnFooterShowSection);
+    window.removeEventListener(SHOW_SECTION, this.onFooterShowSection);
 
     // invoke base class method.
     super.disconnectedCallback();
@@ -322,7 +322,7 @@ class CardEditor extends BaseEditor {
    * 
    * @param args Event arguments that contain the section that was selected.
   */
-  protected OnFooterShowSection = (args: Event) => {
+  protected onFooterShowSection = (args: Event) => {
 
     // get the ConfigArea value for the active footer section.
     const sectionToSelect = (args as CustomEvent).detail as Section;

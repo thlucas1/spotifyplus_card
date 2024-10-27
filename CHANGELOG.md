@@ -6,6 +6,11 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.8 ] - 2024/10/27
+
+  * Added exception processing for various media controls: seek, volume set, mute.
+  * Fixed code in the `buildMediaBrowserItems` method that was causing exceptions to be logged for null content.
+
 ###### [ 1.0.7 ] - 2024/10/25
 
   * Added an outline to the player progress bar.
