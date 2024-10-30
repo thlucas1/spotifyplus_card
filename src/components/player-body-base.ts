@@ -23,6 +23,7 @@ export class PlayerBodyBase extends LitElement {
 
   // public state properties.
   @property({ attribute: false }) protected store!: Store;
+  @property({ attribute: false }) protected mediaContentId!: string;
 
   // private state properties.
   @state() protected alertError?: string;
@@ -140,7 +141,7 @@ export class PlayerBodyBase extends LitElement {
       return;
     }
 
-    // refresh body actions.
+    // refresh body actions, using default actions (e.g. []).
     this.updateActions(this.store.player, []);
 
   }
@@ -163,12 +164,6 @@ export class PlayerBodyBase extends LitElement {
     // get list of changed property keys.
     const changedPropKeys = Array.from(changedProperties.keys())
 
-    // we only care about "store" property changes at this time, as it contains a
-    // reference to the "hass" property.  we are looking for media_content_id changes.
-    if (!changedPropKeys.includes('store')) {
-      return;
-    }
-
     // if first render has not happened yet then we will wait for it first.
     if (!this.hasUpdated) {
       return;
@@ -180,39 +175,13 @@ export class PlayerBodyBase extends LitElement {
       return;
     }
 
-    let oldMediaContentId: string | undefined = undefined;
-    let newMediaContentId: string | undefined = undefined;
-
-    // get the old property reference.
-    const oldStore = changedProperties.get('store') as Store;
-    if (oldStore) {
-
-      // if a media player was assigned to the store, then get the player media content id.
-      const oldPlayer = oldStore.player;
-      if (oldPlayer) {
-        oldMediaContentId = oldPlayer.attributes.media_content_id;
-      }
-    }
-
-    // check if the player reference is set (in case it was set to undefined).
-    if (this.store.player) {
-
-      // get the current media content id
-      // if content id not set, then there's nothing left to do.
-      newMediaContentId = this.store.player.attributes.media_content_id;
-      if (!newMediaContentId) {
-        return;
-      }
-    }
-
-    // did the content change?  if so, then update the actions.
-    if (oldMediaContentId != newMediaContentId) {
+    // if media content id changed, then update actions.
+    if (changedPropKeys.includes('mediaContentId')) {
 
       if (debuglog.enabled) {
-        debuglog("%c update - player content changed:\n- OLD CONTENT ID = %s\n- NEW CONTENT ID = %s\n- isCardInEditPreview = %s",
+        debuglog("%c update - player content changed:\n- NEW CONTENT ID = %s\n- isCardInEditPreview = %s",
           "color: gold;",
-          JSON.stringify(oldMediaContentId),
-          JSON.stringify(newMediaContentId),
+          JSON.stringify(this.player.attributes.media_content_id),
           JSON.stringify(isCardInEditPreview(this.store.card)),
         );
       }
@@ -220,8 +189,9 @@ export class PlayerBodyBase extends LitElement {
       // refresh all body actions.
       setTimeout(() => {
         this.updateActions(this.store.player, []);
-      }, 200);
+      }, 100);
 
+      return;
     }
 
   }
@@ -276,7 +246,10 @@ export class PlayerBodyBase extends LitElement {
    * 
    * @param action Action to execute.
    */
-  protected async onClickAction(action: any): Promise<boolean> {
+  protected async onClickAction(action: any, args: any = null): Promise<boolean> {
+
+    if (args) {  // keep the compiler happy
+    }
 
     throw new Error("onClickAction not implemented for action \"" + action + "\".");
 

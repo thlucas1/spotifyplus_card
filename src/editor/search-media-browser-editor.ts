@@ -22,6 +22,23 @@ const CONFIG_SETTINGS_SCHEMA = [
     type: 'string',
   },
   {
+    name: 'searchMediaBrowserSearchTypes',
+    label: 'Search media types to enable',
+    help: 'unchecked items will not be shown; all enabled if none checked',
+    required: false,
+    type: 'multi_select',
+    options: {
+      /* the following must match defined names in `search-media-types.ts` */
+      Albums: 'Albums',          /* SearchMediaTypes.ALBUMS */
+      Artists: 'Artists',        /* SearchMediaTypes.ARTISTS */
+      AudioBooks: 'AudioBooks',  /* SearchMediaTypes.AUDIOBOOKS */
+      Episodes: 'Episodes',      /* SearchMediaTypes.EPISODES */
+      Playlists: 'Playlists',    /* SearchMediaTypes.PLAYLISTS */
+      Shows: 'Shows',            /* SearchMediaTypes.SHOWS */
+      Tracks: 'Tracks',          /* SearchMediaTypes.TRACKS */
+    },
+  },
+  {
     name: 'searchMediaBrowserSearchLimit',
     label: 'Maximum # of items to return by the search',
     required: false,

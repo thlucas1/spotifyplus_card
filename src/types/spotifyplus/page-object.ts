@@ -45,6 +45,16 @@ export interface IPageObject {
 
 
   /**
+   * Date and time items were was last refreshed, in unix epoch format (e.g. 1669123919.331225).
+   * A value of zero indicates the date was unknown.
+   * 
+   * Note that this attribute does not exist in the Spotify Web API; 
+   * it was added here for convenience.
+   */
+  date_last_refreshed: number;
+
+
+  /**
    * A link to the Web API endpoint returning the full result of the request.
    * 
    * Example: `https://api.spotify.com/v1/me/shows?offset=0&limit=20`

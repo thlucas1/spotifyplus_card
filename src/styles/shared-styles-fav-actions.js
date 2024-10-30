@@ -22,6 +22,7 @@ export const sharedStylesFavActions = css`
     box-sizing: border-box;
     height: inherit;
     overflow-y: auto;
+    overflow-x: clip;
     color: white;
   }
 

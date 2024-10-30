@@ -100,37 +100,54 @@ export class SearchBrowser extends FavBrowserBase {
       }
     }
 
+    // update search media type if configuration options changed.
+    //if (this.isCardInEditPreview) {
+    if ((this.config.searchMediaBrowserSearchTypes) && (this.config.searchMediaBrowserSearchTypes.length > 0)) {
+      if (!(this.config.searchMediaBrowserSearchTypes?.includes(this.searchMediaType as SearchMediaTypes))) {
+
+        // hidden type is currently selected - reset current selection to first enabled.
+        this.searchMediaType = this.config.searchMediaBrowserSearchTypes[0];
+        this.searchMediaTypeTitle = SEARCH_FOR_PREFIX + this.searchMediaType;
+
+        // clear the media list, as the items no longer match the search media type.
+        this.mediaList = undefined;
+        this.mediaListLastUpdatedOn = 0;
+        this.scrollTopSaved = 0;
+      }
+    }
+    //}
+
     // define control to render - search media type.
     const searchMediaTypeHtml = html`
       <ha-md-button-menu id="searchMediaType" slot="selection-bar" style="padding-right: 0.5rem;">
-        <ha-assist-chip slot="trigger" .label=${this.searchMediaTypeTitle || SEARCH_FOR_PREFIX + " ..."}>
+        <ha-assist-chip id="searchMediaTypeTitle" slot="trigger" .label=${this.searchMediaTypeTitle || SEARCH_FOR_PREFIX + " ..."}>
           <ha-svg-icon slot="trailing-icon" .path=${mdiMenuDown}></ha-svg-icon>
         </ha-assist-chip>
-        <ha-md-menu-item .value=${SearchMediaTypes.ALBUMS} @click=${this.onSearchMediaTypeChanged}>
+        <ha-md-menu-item .value=${SearchMediaTypes.ALBUMS} @click=${this.onSearchMediaTypeChanged} hide=${this.hideSearchType(SearchMediaTypes.ALBUMS)}>
           <ha-svg-icon slot="start" .path=${mdiAlbum}></ha-svg-icon>
           <div slot="headline">${SearchMediaTypes.ALBUMS}</div>
         </ha-md-menu-item>
-        <ha-md-menu-item .value=${SearchMediaTypes.ARTISTS} @click=${this.onSearchMediaTypeChanged}>
+        <ha-md-menu-item .value=${SearchMediaTypes.ARTISTS} @click=${this.onSearchMediaTypeChanged} hide=${this.hideSearchType(SearchMediaTypes.ARTISTS)}>
           <ha-svg-icon slot="start" .path=${mdiAccountMusic}></ha-svg-icon>
           <div slot="headline">${SearchMediaTypes.ARTISTS}</div>
         </ha-md-menu-item>
-        <ha-md-menu-item .value=${SearchMediaTypes.AUDIOBOOKS} @click=${this.onSearchMediaTypeChanged}>
+        <ha-md-menu-item .value=${SearchMediaTypes.AUDIOBOOKS} @click=${this.onSearchMediaTypeChanged} hide=${this.hideSearchType(SearchMediaTypes.AUDIOBOOKS)}>
           <ha-svg-icon slot="start" .path=${mdiBookOpenVariant}></ha-svg-icon>
           <div slot="headline">${SearchMediaTypes.AUDIOBOOKS}</div>
         </ha-md-menu-item>
-        <ha-md-menu-item .value=${SearchMediaTypes.EPISODES} @click=${this.onSearchMediaTypeChanged}>
+        <ha-md-menu-item .value=${SearchMediaTypes.EPISODES} @click=${this.onSearchMediaTypeChanged} hide=${this.hideSearchType(SearchMediaTypes.EPISODES)}>
           <ha-svg-icon slot="start" .path=${mdiMicrophone}></ha-svg-icon>
           <div slot="headline">${SearchMediaTypes.EPISODES}</div>
         </ha-md-menu-item>
-        <ha-md-menu-item .value=${SearchMediaTypes.PLAYLISTS} @click=${this.onSearchMediaTypeChanged}>
+        <ha-md-menu-item .value=${SearchMediaTypes.PLAYLISTS} @click=${this.onSearchMediaTypeChanged} hide=${this.hideSearchType(SearchMediaTypes.PLAYLISTS)}>
           <ha-svg-icon slot="start" .path=${mdiPlaylistPlay}></ha-svg-icon>
           <div slot="headline">${SearchMediaTypes.PLAYLISTS}</div>
         </ha-md-menu-item>
-        <ha-md-menu-item .value=${SearchMediaTypes.SHOWS} @click=${this.onSearchMediaTypeChanged}>
+        <ha-md-menu-item .value=${SearchMediaTypes.SHOWS} @click=${this.onSearchMediaTypeChanged} hide=${this.hideSearchType(SearchMediaTypes.SHOWS)}>
           <ha-svg-icon slot="start" .path=${mdiPodcast}></ha-svg-icon>
           <div slot="headline">${SearchMediaTypes.SHOWS}</div>
         </ha-md-menu-item>
-        <ha-md-menu-item .value=${SearchMediaTypes.TRACKS} @click=${this.onSearchMediaTypeChanged}>
+        <ha-md-menu-item .value=${SearchMediaTypes.TRACKS} @click=${this.onSearchMediaTypeChanged} hide=${this.hideSearchType(SearchMediaTypes.TRACKS)}>
           <ha-svg-icon slot="start" .path=${mdiMusic}></ha-svg-icon>
           <div slot="headline">${SearchMediaTypes.TRACKS}</div>
         </ha-md-menu-item>
@@ -275,8 +292,37 @@ export class SearchBrowser extends FavBrowserBase {
       .relative {
         position: relative;
       }
+
+      *[hide="true"] {
+        display: none;
+      }
+
+      *[hide="false"] {
+        display: block;
+      }
     `
     ];
+  }
+
+
+  /**
+   * Returns false if the specified feature is to be SHOWN; otherwise, returns true
+   * if the specified feature is to be HIDDEN (via CSS).
+   * 
+   * @param searchType Search type to check.
+   */
+  private hideSearchType(searchType: SearchMediaTypes) {
+
+    if ((this.config.searchMediaBrowserSearchTypes) && (this.config.searchMediaBrowserSearchTypes.length > 0)) {
+      if (this.config.searchMediaBrowserSearchTypes?.includes(searchType)) {
+        return false;  // show searchType
+      } else {
+        return true;   // hide searchType.
+      }
+    }
+
+    // if features not configured, then show search type.
+    return false;
   }
 
 
@@ -288,8 +334,17 @@ export class SearchBrowser extends FavBrowserBase {
     // invoke base class method.
     super.storageValuesLoad();
 
+    // get default search type, based on enabled status.
+    // if none enabled, then use playlists; if playlists not enabled, then use first enabled.
+    let searchType = SearchMediaTypes.PLAYLISTS;
+    if ((this.config.searchMediaBrowserSearchTypes) && (this.config.searchMediaBrowserSearchTypes.length > 0)) {
+      if (!(this.config.searchMediaBrowserSearchTypes.includes(searchType))) {
+        searchType = ((this.config?.searchMediaBrowserSearchTypes[0] || "") as SearchMediaTypes);
+      }
+    }
+
     // load search-related values from the cache.
-    this.searchMediaType = storageService.getStorageValue(this.cacheKeyBase + this.mediaType + CACHE_KEY_SEARCH_MEDIA_TYPE, SearchMediaTypes.PLAYLISTS);
+    this.searchMediaType = storageService.getStorageValue(this.cacheKeyBase + this.mediaType + CACHE_KEY_SEARCH_MEDIA_TYPE, searchType);
     this.searchMediaTypeTitle = SEARCH_FOR_PREFIX + this.searchMediaType;
 
     if (debuglog.enabled) {

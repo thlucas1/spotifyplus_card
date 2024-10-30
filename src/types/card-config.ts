@@ -5,6 +5,7 @@ import { LovelaceCardConfig } from 'custom-card-helpers';
 import { Section } from './section';
 import { CustomImageUrls } from './custom-image-urls';
 import { IUserPreset } from './spotifyplus/user-preset';
+import { SearchMediaTypes } from './search-media-types';
 
 /**
  * Card configuration settings.
@@ -293,6 +294,12 @@ export interface CardConfig extends LovelaceCardConfig {
   playerControlsHideFavorites?: boolean;
 
   /**
+   * Hide play queue button in the controls area of the Player section form.
+   * Default is false.
+   */
+  playerControlsHidePlayQueue?: boolean;
+
+  /**
    * Hide play / pause button in the controls area of the Player section form.
    * Default is false.
    */
@@ -472,6 +479,14 @@ export interface CardConfig extends LovelaceCardConfig {
    * Default is 50.
    */
   searchMediaBrowserSearchLimit?: number;
+
+  /**
+   * Search media types to enable for searching.  If empty, then ALL 
+   * types are available for search.
+   * 
+   * Valid values must match defined names in `search-media-types.ts`.
+   */
+  searchMediaBrowserSearchTypes?: SearchMediaTypes[];
 
   /**
    * True to sort displayed Search media browser item titles by name;

@@ -519,7 +519,8 @@ export enum MediaPlayerEntityFeature {
   GROUPING = 524288,
 
   // added the following for SpotifyPlus custom functions.
-  ACTION_FAVES = 999999990,
+  ACTION_FAVES = 900000000000,
+  PLAY_QUEUE  = 990000000000,
 }
 
 

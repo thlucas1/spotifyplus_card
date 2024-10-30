@@ -127,6 +127,9 @@
     <TypeScriptCompile Include="src\components\media-browser-icons.ts" />
     <TypeScriptCompile Include="src\components\media-browser-list.ts" />
     <TypeScriptCompile Include="src\components\player-body-audiobook.ts" />
+    <TypeScriptCompile Include="src\components\player-body-queue.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\components\player-body-track.ts" />
     <TypeScriptCompile Include="src\components\player-body-show.ts" />
     <TypeScriptCompile Include="src\components\player-controls.ts" />
@@ -213,6 +216,9 @@
     <TypeScriptCompile Include="src\types\spotifyplus\narrator.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus\play-history.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus\play-history-page.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\player-queue-info.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\types\spotifyplus\playlist-page.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus\playlist-track.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus\playlist.ts" />

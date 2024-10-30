@@ -8,6 +8,12 @@ import { Section } from '../types/section';
 
 const CONFIG_SETTINGS_SCHEMA = [
   {
+    name: 'playerControlsHideFavorites',
+    label: 'Hide favorite actions control button in the controls area',
+    required: false,
+    selector: { boolean: {} },
+  },
+  {
     name: 'playerControlsHideShuffle',
     label: 'Hide shuffle control button in the controls area',
     required: false,
@@ -38,8 +44,8 @@ const CONFIG_SETTINGS_SCHEMA = [
     selector: { boolean: {} },
   },
   {
-    name: 'playerControlsHideFavorites',
-    label: 'Hide favorite actions control button in the controls area',
+    name: 'playerControlsHidePlayQueue',
+    label: 'Hide play queue control button in the controls area',
     required: false,
     selector: { boolean: {} },
   },

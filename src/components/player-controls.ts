@@ -1,11 +1,12 @@
 // lovelace card imports.
-import { css, html, LitElement, TemplateResult, nothing } from 'lit';
+import { css, html, LitElement, PropertyValues, TemplateResult, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { styleMap } from 'lit-html/directives/style-map.js';
 import {
   mdiInformationSlabBoxOutline,
   mdiPause,
   mdiPlay,
+  mdiPlaylistMusic,
   mdiPower,
   mdiRepeat,
   mdiRepeatOff,
@@ -30,17 +31,20 @@ import { Player } from '../sections/player';
 // debug logging.
 import Debug from 'debug/src/browser.js';
 import { DEBUG_APP_NAME } from '../constants';
+import { PlayerBodyQueue } from './player-body-queue';
 const debuglog = Debug(DEBUG_APP_NAME + ":player-controls");
 
-const { ACTION_FAVES, NEXT_TRACK, PAUSE, PLAY, PREVIOUS_TRACK, REPEAT_SET, SHUFFLE_SET, TURN_ON } = MediaPlayerEntityFeature;
+const { NEXT_TRACK, PAUSE, PLAY, PREVIOUS_TRACK, REPEAT_SET, SHUFFLE_SET, TURN_ON, ACTION_FAVES, PLAY_QUEUE } = MediaPlayerEntityFeature;
 
 class PlayerControls extends LitElement {
 
   // public state properties.
   @property({ attribute: false }) store!: Store;
+  @property({ attribute: false }) mediaContentId!: string;
 
   // private state properties.
   @state() private isActionFavoritesVisible?: boolean;
+  @state() private isQueueItemsVisible?: boolean;
 
   /** Card configuration data. */
   private config!: CardConfig;
@@ -75,6 +79,7 @@ class PlayerControls extends LitElement {
     const colorPlay = (this.player.state == MediaPlayerState.PAUSED);
     const colorPower = (this.player.state == MediaPlayerState.OFF);
     const colorActionFavorites = (this.isActionFavoritesVisible);
+    const colorQueueItems = (this.isQueueItemsVisible);
 
     // render html.
     // note that the "TURN_ON" feature will only be displayed if the player is off AND if
@@ -90,6 +95,7 @@ class PlayerControls extends LitElement {
               <ha-icon-button @click=${() => this.onClickAction(PAUSE)}          hide=${this.hideFeature(PAUSE)}          .path=${mdiPause} label="Pause"></ha-icon-button>
               <ha-icon-button @click=${() => this.onClickAction(NEXT_TRACK)}     hide=${this.hideFeature(NEXT_TRACK)}     .path=${mdiSkipNext} label="Next Track"></ha-icon-button>
               <ha-icon-button @click=${() => this.onClickAction(REPEAT_SET)}     hide=${this.hideFeature(REPEAT_SET)}     .path=${this.getRepeatIcon()} label="Repeat" style=${this.styleIcon(colorRepeat)} ></ha-icon-button>
+              <ha-icon-button @click=${() => this.onClickAction(PLAY_QUEUE)}     hide=${this.hideFeature(PLAY_QUEUE)}     .path=${mdiPlaylistMusic} label="Play Queue Information" style=${this.styleIcon(colorQueueItems)} ></ha-icon-button>
           </div>
           <spc-player-volume hide=${stopped} .store=${this.store} .player=${this.player} class="player-volume-container"></spc-player-volume>
           <div class="iconsPower">
@@ -166,7 +172,7 @@ class PlayerControls extends LitElement {
     super();
 
     // create bound event listeners for event handlers that need access to "this" object.
-    this.onKeyDown_EventListenerBound = this.OnKeyDown.bind(this);
+    this.onKeyDown_EventListenerBound = this.onKeyDown.bind(this);
   }
 
 
@@ -213,16 +219,104 @@ class PlayerControls extends LitElement {
 
 
   /**
+   * Updates the element. This method reflects property values to attributes.
+   * It can be overridden to render and keep updated element DOM.
+   * Setting properties inside this method will *not* trigger
+   * another update.
+   *
+   * @param changedProperties Map of changed properties with old values
+   */
+  protected override update(changedProperties: PropertyValues): void {
+
+    // invoke base class method.
+    super.update(changedProperties);
+
+    // get list of changed property keys.
+    const changedPropKeys = Array.from(changedProperties.keys())
+
+    //// if first render has not happened yet then we will wait for it first.
+    //if (!this.hasUpdated) {
+    //  return;
+    //}
+
+    //// if card is being edited, then we are done since actions cannot be displayed
+    //// while editing the card configuration.
+    //if (this.isCardInEditPreview) {
+    //  return;
+    //}
+
+    //if (debuglog.enabled) {
+    //  debuglog("%c update - changed properties: %s",
+    //    "color: gold;",
+    //    JSON.stringify(changedPropKeys),
+    //  );
+    //}
+
+    // if media content id changed, then refresh queue items body (if visible).
+    if (changedPropKeys.includes('mediaContentId')) {
+
+      // refresh all body actions.
+      setTimeout(() => {
+        this.toggleDisplayPlayerBodyQueue();
+      }, 50);
+
+    }
+
+  }
+
+
+  /**
+   * Toggle action visibility - action favorites body.
+   */
+  private toggleDisplayActionFavorites(): void {
+
+    // toggle action visibility - action favorites.
+    const elmBody = this.parentElement?.querySelector(".player-section-body-content") as HTMLElement;
+    if (elmBody) {
+      elmBody.style.display = (this.isActionFavoritesVisible) ? "block" : "none";
+      elmBody.style.opacity = (this.isActionFavoritesVisible) ? "1" : "0";
+    }
+
+  }
+
+
+  /**
+   * Toggle action visibility - queue items body.
+   */
+  private toggleDisplayPlayerBodyQueue(): void {
+
+    // toggle action visibility - queue items.
+    const elmBody = this.parentElement?.querySelector("#elmPlayerBodyQueue") as PlayerBodyQueue;
+    if (elmBody) {
+      elmBody.style.display = (this.isQueueItemsVisible) ? "block" : "none";
+      elmBody.style.opacity = (this.isQueueItemsVisible) ? "1" : "0";
+
+      // if body is displayed, then request a queue items refresh.
+      if (this.isQueueItemsVisible) {
+        if (debuglog.enabled) {
+          debuglog("onClickAction - calling for refresh of queue items");
+        }
+        elmBody.refreshQueueItems();
+      }
+    }
+
+  }
+
+
+  /**
    * KeyDown event handler.
    * 
    * @ev Event arguments.
    */
-  private OnKeyDown(ev: KeyboardEvent) {
+  private onKeyDown(ev: KeyboardEvent) {
 
     // if ESC pressed, then hide the actions section if it's visible.
     if (ev.key === "Escape") {
-      if (this.isActionFavoritesVisible)
+      if (this.isActionFavoritesVisible) {
         this.onClickAction(ACTION_FAVES);
+      } else if (this.isQueueItemsVisible) {
+        this.onClickAction(PLAY_QUEUE);
+      }
     }
 
   }
@@ -240,28 +334,62 @@ class PlayerControls extends LitElement {
       // handle action(s) that don't require a progress indicator.
       if (action == ACTION_FAVES) {
 
-        if (debuglog.enabled) {
-          debuglog("onClickAction - event handler:\n- action = %s",
-            JSON.stringify(action),
-          );
+        // if we are editing the card configuration, then we don't want to allow this.
+        // this is because the `firstUpdated` method will fire every time the configuration 
+        // changes (e.g. every keypress) and action status is lost.
+        if (this.isCardInEditPreview) {
+          this.alertInfoSet("Action Favorites cannot be displayed while editing card configuration");
+          return true;
         }
+
+        // toggle action favorites visibility.
+        this.isActionFavoritesVisible = !this.isActionFavoritesVisible;
+
+        debuglog("%c update - action favorites toggled");
+        if (this.isQueueItemsVisible) {
+          debuglog("%c update - queue items visible; imeediately closing queue items, and delay opening action favorites");
+          // close the queue items body.
+          this.isQueueItemsVisible = false;
+          this.toggleDisplayPlayerBodyQueue();
+          // give the queue items body time to close, then show the action favorites body.
+          setTimeout(() => {
+            this.toggleDisplayActionFavorites();
+          }, 250);
+        } else {
+          debuglog("%c update - queue items not visible; immediately toggling action favorites");
+          // show the action favorites body, since the queue items is closed.
+          this.toggleDisplayActionFavorites();
+        }
+        return true;
+
+      } else if (action == PLAY_QUEUE) {
 
         // if we are editing the card configuration, then we don't want to allow this.
         // this is because the `firstUpdated` method will fire every time the configuration 
         // changes (e.g. every keypress) and action status is lost.
         if (this.isCardInEditPreview) {
-          this.alertInfoSet("Action info cannot be displayed while editing card configuration");
+          this.alertInfoSet("Queue items cannot be displayed while editing card configuration");
           return true;
         }
 
-        // toggle action visibility.
-        const elmBody = this.parentElement?.querySelector(".player-section-body-content") as HTMLElement;
-        this.isActionFavoritesVisible = !this.isActionFavoritesVisible;
-        if (elmBody) {
-          elmBody.style.display = (this.isActionFavoritesVisible) ? "block" : "none";
-          elmBody.style.opacity = (this.isActionFavoritesVisible) ? "1" : "0";
-        }
+        // toggle queue items visibility.
+        this.isQueueItemsVisible = !this.isQueueItemsVisible;
 
+        debuglog("%c update - queue items toggled");
+        if (this.isActionFavoritesVisible) {
+          debuglog("%c update - action favorites visible; imeediately closing action favorites, and delay opening queue items");
+          // close the action favorites body.
+          this.isActionFavoritesVisible = false;
+          this.toggleDisplayActionFavorites();
+          // give the action favorites body time to close, then show the queue items body.
+          setTimeout(() => {
+            this.toggleDisplayPlayerBodyQueue();
+          }, 250);
+        } else {
+          debuglog("%c update - action favorites not visible; immediately opening queue items");
+          // show the queue items, since the action favorites body is closed.
+          this.toggleDisplayPlayerBodyQueue();
+        }
         return true;
       }
 
@@ -384,7 +512,11 @@ class PlayerControls extends LitElement {
 
     } else if (feature == ACTION_FAVES) {
 
-        return this.config.playerControlsHideFavorites || nothing;
+      return this.config.playerControlsHideFavorites || nothing;
+
+    } else if (feature == PLAY_QUEUE) {
+
+      return this.config.playerControlsHidePlayQueue || nothing;
 
     } else if (feature == TURN_ON) {
 

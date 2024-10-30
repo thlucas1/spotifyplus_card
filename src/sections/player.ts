@@ -11,9 +11,10 @@ import Vibrant from 'node-vibrant/dist/vibrant';
 
 // our imports.
 import '../components/player-header';
-import '../components/player-body-track';
-import '../components/player-body-show';
 import '../components/player-body-audiobook';
+import '../components/player-body-queue';
+import '../components/player-body-show';
+import '../components/player-body-track';
 import '../components/player-controls';
 import '../components/player-volume';
 import { CardConfig } from '../types/card-config';
@@ -39,6 +40,7 @@ export class Player extends LitElement implements playerAlerts {
 
   // public state properties.
   @property({ attribute: false }) store!: Store;
+  @property({ attribute: false }) mediaContentId!: string;
 
   // private storage.
   @state() private alertError?: string;
@@ -84,19 +86,34 @@ export class Player extends LitElement implements playerAlerts {
             if ((this.config.playerControlsHideFavorites || false) == true) {
               return (html``);
             } else if (this.player.attributes.media_content_type == 'music') {
-              return (html`<spc-player-body-track class="player-section-body-content" .store=${this.store}></spc-player-body-track>`);
+              return (html`<spc-player-body-track class="player-section-body-content" .store=${this.store} .mediaContentId=${this.mediaContentId}></spc-player-body-track>`);
             } else if (this.player.attributes.sp_item_type == 'podcast') {
-              return (html`<spc-player-body-show class="player-section-body-content" .store=${this.store}></spc-player-body-show>`);
+              return (html`<spc-player-body-show class="player-section-body-content" .store=${this.store} .mediaContentId=${this.mediaContentId}></spc-player-body-show>`);
             } else if (this.player.attributes.sp_item_type == 'audiobook') {
-              return (html`<spc-player-body-audiobook class="player-section-body-content" .store=${this.store}></spc-player-body-audiobook>`);
+              return (html`<spc-player-body-audiobook class="player-section-body-content" .store=${this.store} .mediaContentId=${this.mediaContentId}></spc-player-body-audiobook>`);
             } else {
               return (html`<div class="player-section-body-content"></div>`);
+            }
+          })()}
+          ${(() => {
+            // if play queue disabled then we don't need to display anything in the body.
+            if ((this.config.playerControlsHidePlayQueue || false) == true) {
+              return (html``);
+            } else if (this.player.attributes.media_content_type == 'music') {
+              return (html`<spc-player-body-queue class="player-section-body-queue" .store=${this.store} .mediaContentId=${this.mediaContentId} id="elmPlayerBodyQueue"></spc-player-body-queue>`);
+            } else if (this.player.attributes.sp_item_type == 'podcast') {
+              return (html`<spc-player-body-queue class="player-section-body-queue" .store=${this.store} .mediaContentId=${this.mediaContentId} id="elmPlayerBodyQueue"></spc-player-body-queue>`);
+            } else if (this.player.attributes.sp_item_type == 'audiobook') {
+              return (html`<spc-player-body-queue class="player-section-body-queue" .store=${this.store} .mediaContentId=${this.mediaContentId} id="elmPlayerBodyQueue"></spc-player-body-queue>`);
+            } else {
+              return (html`<div class="player-section-body-queue"></div>`);
             }
           })()}
         </div>
         <spc-player-controls style=${this.styleControls()}
           class="player-section-controls"
           .store=${this.store}
+          .mediaContentId=${this.mediaContentId}
         ></spc-player-controls>
       </div>
     `;
@@ -159,7 +176,17 @@ export class Player extends LitElement implements playerAlerts {
         background: transparent;
         overflow: hidden;
         display: none;              /* don't display initially */
+        /* for fade-in, fade-out support */
+        transition: opacity 0.25s, display 0.25s;
+        transition-behavior: allow-discrete;    /* Note: be sure to write this after the shorthand */
+      }
 
+      .player-section-body-queue {
+        /* border: 1px solid yellow;   /* FOR TESTING CONTROL LAYOUT CHANGES */
+        height: inherit;
+        background: transparent;
+        overflow: hidden;
+        display: none;              /* don't display initially */
         /* for fade-in, fade-out support */
         transition: opacity 0.25s, display 0.25s;
         transition-behavior: allow-discrete;    /* Note: be sure to write this after the shorthand */
@@ -393,6 +420,10 @@ export class Player extends LitElement implements playerAlerts {
 
       // extract the color differences from the new image and set the player colors.
       this._extractColors();
+
+      // store the new media id in the exposed property so that other forms
+      // are informed of the change.
+      this.mediaContentId = newMediaContentId || "";
 
     }
   }

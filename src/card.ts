@@ -41,6 +41,7 @@ import {
   isCardInPickerPreview,
   isNumber,
 } from './utils/utils';
+import { SearchMediaTypes } from './types/search-media-types';
 
 const HEADER_HEIGHT = 2;
 const FOOTER_HEIGHT = 4;
@@ -696,6 +697,7 @@ export class Card extends LitElement {
     newConfig.playerHeaderHide = newConfig.playerHeaderHide || false;
     newConfig.playerHeaderHideProgressBar = newConfig.playerHeaderHideProgressBar || false;
     newConfig.playerControlsHideFavorites = newConfig.playerControlsHideFavorites || false;
+    newConfig.playerControlsHidePlayQueue = newConfig.playerControlsHidePlayQueue || false;
     newConfig.playerControlsHidePlayPause = newConfig.playerControlsHidePlayPause || false;
     newConfig.playerControlsHideRepeat = newConfig.playerControlsHideRepeat || false;
     newConfig.playerControlsHideShuffle = newConfig.playerControlsHideShuffle || false;
@@ -860,6 +862,8 @@ export class Card extends LitElement {
       searchMediaBrowserItemsHideSubTitle: true,
       searchMediaBrowserItemsSortTitle: false,
       searchMediaBrowserSearchLimit: 50,
+      searchMediaBrowserSearchTypes: [SearchMediaTypes.ALBUMS, SearchMediaTypes.ARTISTS, SearchMediaTypes.PLAYLISTS,
+      SearchMediaTypes.TRACKS, SearchMediaTypes.AUDIOBOOKS, SearchMediaTypes.SHOWS, SearchMediaTypes.EPISODES],
 
       showFavBrowserTitle: "Show Favorites for {player.sp_user_display_name} ({medialist.itemcount} items)",
       showFavBrowserSubTitle: "click a tile item to play the content; click-hold for actions",

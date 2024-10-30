@@ -29,6 +29,7 @@ import { IEpisode } from '../types/spotifyplus/episode';
 import { IEpisodePageSaved } from '../types/spotifyplus/episode-page-saved';
 import { IEpisodePageSimplified } from '../types/spotifyplus/episode-page-simplified';
 import { IEpisodeSimplified } from '../types/spotifyplus/episode-simplified';
+import { IPlayerQueueInfo } from '../types/spotifyplus/player-queue-info';
 import { IPlaylistPage } from '../types/spotifyplus/playlist-page';
 import { IPlaylistPageSimplified } from '../types/spotifyplus/playlist-page-simplified';
 import { IPlaylistSimplified } from '../types/spotifyplus/playlist-simplified';
@@ -1410,6 +1411,95 @@ export class SpotifyPlusService {
             item.episode.show.available_markets = [];
             item.episode.show.description = 'see html_description';
             item.episode.show.images = [];
+          })
+        }
+      }
+
+      // set the lastUpdatedOn value to epoch (number of seconds), as the
+      // service does not provide this field (but we need it for media list processing).
+      responseObj.lastUpdatedOn = Date.now() / 1000
+
+      return responseObj;
+
+    }
+    finally {
+    }
+  }
+
+
+  /**
+   * Get the list of objects that make up the user's playback queue.
+   * 
+   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @returns A `PlayerQueueInfo` object.
+  */
+  public async GetPlayerQueueInfo(
+    entity_id: string,
+    trimResults: boolean = true,
+  ): Promise<IPlayerQueueInfo> {
+
+    try {
+
+      // create service data (with required parameters).
+      const serviceData: { [key: string]: any } = {
+        entity_id: entity_id,
+      };
+
+      // create service request.
+      const serviceRequest: ServiceCallRequest = {
+        domain: DOMAIN_SPOTIFYPLUS,
+        service: 'get_player_queue_info',
+        serviceData: serviceData
+      };
+
+      // call the service, and return the response.
+      const response = await this.CallServiceWithResponse(serviceRequest);
+
+      // get the "result" portion of the response, and convert it to a type.
+      const responseResult = this._GetJsonStringResult(response);
+      const responseObj = JSON.parse(responseResult) as IPlayerQueueInfo;
+
+      //// get the "user_profile" portion of the response, and convert it to a type.
+      //this._GetJsonStringUserProfile(response);
+
+      // omit some data from the results, as it's not necessary and conserves memory.
+      if (trimResults) {
+        if ((responseObj != null) && (responseObj.queue != null)) {
+          if (responseObj.currently_playing != null) {
+            if (responseObj.currently_playing_type == 'track') {
+              const track = responseObj.currently_playing as ITrack;
+              track.available_markets = [];
+              if (track.album) {
+                track.album.available_markets = []
+                track.album.images = []
+              }
+            } else if (responseObj.currently_playing_type == 'episode') {
+              const episode = responseObj.currently_playing as IEpisode;
+              episode.description = "see html_description";
+              if (episode.show) {
+                episode.show.available_markets = []
+                episode.show.description = "see html_description";
+                episode.show.images = []
+              }
+            }
+          }
+          responseObj.queue.forEach(item => {
+            if (item.type == 'track') {
+              const track = item as ITrack;
+              track.available_markets = [];
+              if (track.album) {
+                track.album.available_markets = []
+                track.album.images = []
+              }
+            } else if (item.type == 'episode') {
+              const episode = item as IEpisode;
+              episode.description = "see html_description";
+              if (episode.show) {
+                episode.show.available_markets = []
+                episode.show.description = "see html_description";
+                episode.show.images = []
+              }
+            }
           })
         }
       }

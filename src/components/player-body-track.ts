@@ -218,10 +218,6 @@ class PlayerBodyTrack extends PlayerBodyBase {
       </div>
      `;
 
-    //<div class="track-description-container-scrollable">
-    //  <div class="media-info-text-s" .innerHTML="${unescapeHtml(this.track?.html_description || "")}"></div>
-    //</div>
-
     // render html.
     return html` 
       <div class="player-body-container" hide=${this.isPlayerStopped}>
@@ -229,9 +225,7 @@ class PlayerBodyTrack extends PlayerBodyBase {
           ${this.alertError ? html`<ha-alert alert-type="error" dismissable @alert-dismissed-clicked=${this.alertErrorClear}>${this.alertError}</ha-alert>` : ""}
           ${(() => {
             if (this.player.attributes.sp_item_type == 'track') {
-              return (html`
-                        ${actionTrackSummary}
-                      `)
+              return (html`${actionTrackSummary}`)
             } else {
               return (html``)
             }

@@ -186,9 +186,7 @@ class PlayerBodyAudiobook extends PlayerBodyBase {
           ${this.alertError ? html`<ha-alert alert-type="error" dismissable @alert-dismissed-clicked=${this.alertErrorClear}>${this.alertError}</ha-alert>` : ""}
           ${(() => {
             if (this.player.attributes.sp_item_type == 'audiobook') {
-              return (html`
-                        ${actionEpisodeSummary}
-                      `)
+              return (html`${actionEpisodeSummary}`)
             } else {
               return (html``)
             }

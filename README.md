@@ -15,6 +15,7 @@ Extended support for the Spotify Service for use in Home Assistant.
 * Display / Select Spotify Connect device outputs.
 * User-defined media item presets (both file and code edited supported).
 * Favorite status / add / remove support for all media types.
+* View Player Queue information.
 * Card Configuration Editor User-Interface for changing options.
 
 and more!

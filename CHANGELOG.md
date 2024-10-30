@@ -6,6 +6,12 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.9 ] - 2024/10/30
+
+  * This release requires the SpotifyPlus v1.0.63 release; please make sure you update the SpotifyPlus integration prior to updating this SpotifyPlus Card release.
+  * Added `searchMediaBrowserSearchTypes` config option to enable / disable selected search types.
+  * Added `playerControlsHidePlayQueue` config option to enable / disable play queue information area.
+
 ###### [ 1.0.8 ] - 2024/10/27
 
   * Added exception processing for various media controls: seek, volume set, mute.

@@ -321,6 +321,7 @@ export function formatPlayerInfo(
     text = text.replace("{player.sp_context_uri}", player.attributes.sp_context_uri || '');
     text = text.replace("{player.sp_device_id}", player.attributes.sp_device_id || '');
     text = text.replace("{player.sp_device_name}", player.attributes.sp_device_name || '');
+    text = text.replace("{player.sp_item_type}", player.attributes.sp_item_type || '');
     text = text.replace("{player.sp_playlist_name}", player.attributes.sp_playlist_name || '');
     text = text.replace("{player.sp_playlist_name_title}", "Playlist: " + (player.attributes.sp_playlist_name || 'n/a'));
     text = text.replace("{player.sp_playlist_uri}", player.attributes.sp_playlist_uri || '');
