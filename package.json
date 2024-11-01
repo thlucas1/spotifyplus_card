@@ -23,7 +23,7 @@
     "url": "^0.11.4"
   },
   "devDependencies": {
-    "@babel/core": "^7.24.4",
+    "@babel/core": "^7.26.0",
     "@material/web": "^2.1.0",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-commonjs": "^25.0.7",
