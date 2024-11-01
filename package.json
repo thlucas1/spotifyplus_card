@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.24.4",
-    "@material/web": "^2.1.0",
+    "@material/web": "^2.2.0",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-json": "^6.1.0",
