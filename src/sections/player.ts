@@ -19,20 +19,22 @@ import '../components/player-controls';
 import '../components/player-volume';
 import { CardConfig } from '../types/card-config';
 import { Store } from '../model/store';
-import { BRAND_LOGO_IMAGE_BASE64, BRAND_LOGO_IMAGE_SIZE } from '../constants';
 import { MediaPlayer } from '../model/media-player';
 import { HomeAssistantEx } from '../types/home-assistant-ex';
 import { Palette } from '@vibrant/color';
 import { isCardInEditPreview } from '../utils/utils';
 import { playerAlerts } from '../types/playerAlerts';
+import {
+  BRAND_LOGO_IMAGE_BASE64,
+  BRAND_LOGO_IMAGE_SIZE,
+  PLAYER_CONTROLS_BACKGROUND_COLOR_DEFAULT,
+  PLAYER_CONTROLS_ICON_SIZE_DEFAULT
+} from '../constants';
 
 // debug logging.
 import Debug from 'debug/src/browser.js';
 import { DEBUG_APP_NAME } from '../constants';
 const debuglog = Debug(DEBUG_APP_NAME + ":player");
-
-/** default color value of the player header / controls background gradient. */
-export const PLAYER_CONTROLS_BACKGROUND_COLOR_DEFAULT = '#000000BB';
 
 
 @customElement("spc-player")
@@ -85,7 +87,7 @@ export class Player extends LitElement implements playerAlerts {
             // if favorites disabled then we don't need to display anything in the body.
             if ((this.config.playerControlsHideFavorites || false) == true) {
               return (html``);
-            } else if (this.player.attributes.media_content_type == 'music') {
+            } else if (this.player.attributes.sp_item_type == 'track') {
               return (html`<spc-player-body-track class="player-section-body-content" .store=${this.store} .mediaContentId=${this.mediaContentId}></spc-player-body-track>`);
             } else if (this.player.attributes.sp_item_type == 'podcast') {
               return (html`<spc-player-body-show class="player-section-body-content" .store=${this.store} .mediaContentId=${this.mediaContentId}></spc-player-body-show>`);
@@ -99,7 +101,7 @@ export class Player extends LitElement implements playerAlerts {
             // if play queue disabled then we don't need to display anything in the body.
             if ((this.config.playerControlsHidePlayQueue || false) == true) {
               return (html``);
-            } else if (this.player.attributes.media_content_type == 'music') {
+            } else if (this.player.attributes.sp_item_type == 'track') {
               return (html`<spc-player-body-queue class="player-section-body-queue" .store=${this.store} .mediaContentId=${this.mediaContentId} id="elmPlayerBodyQueue"></spc-player-body-queue>`);
             } else if (this.player.attributes.sp_item_type == 'podcast') {
               return (html`<spc-player-body-queue class="player-section-body-queue" .store=${this.store} .mediaContentId=${this.mediaContentId} id="elmPlayerBodyQueue"></spc-player-body-queue>`);
@@ -110,7 +112,7 @@ export class Player extends LitElement implements playerAlerts {
             }
           })()}
         </div>
-        <spc-player-controls style=${this.styleControls()}
+        <spc-player-controls style=${this.stylePlayerControls()}
           class="player-section-controls"
           .store=${this.store}
           .mediaContentId=${this.mediaContentId}
@@ -258,6 +260,9 @@ export class Player extends LitElement implements playerAlerts {
       backgroundSize = BRAND_LOGO_IMAGE_SIZE;
     }
 
+    // set player controls and volume controls icon size.
+    const playerControlsIconSize = this.config.playerControlsIconSize || PLAYER_CONTROLS_ICON_SIZE_DEFAULT;
+
     return styleMap({
       'background-image': `url(${imageUrl})`,
       '--spc-player-background-size': `${backgroundSize}`,
@@ -265,6 +270,8 @@ export class Player extends LitElement implements playerAlerts {
       '--spc-player-header-color': `#ffffff`,
       '--spc-player-controls-bg-color': `${controlsBackgroundColor}`,
       '--spc-player-controls-color': `#ffffff`,
+      '--spc-player-controls-icon-size': `${playerControlsIconSize}`,
+      '--spc-player-controls-icon-button-size': `var(--spc-player-controls-icon-size, ${PLAYER_CONTROLS_ICON_SIZE_DEFAULT}) + 0.75rem`,
       '--spc-player-palette-vibrant': `${this._colorPaletteVibrant}`,
       '--spc-player-palette-muted': `${this._colorPaletteMuted}`,
       '--spc-player-palette-darkvibrant': `${this._colorPaletteDarkVibrant}`,
@@ -276,7 +283,7 @@ export class Player extends LitElement implements playerAlerts {
 
 
   /**
-   * Returns an element style for the header portion of the control.
+   * Returns an element style for the header portion of the form.
    */
   private styleHeader(): string | undefined {
 
@@ -290,16 +297,20 @@ export class Player extends LitElement implements playerAlerts {
 
 
   /**
-   * Returns an element style for the header portion of the control.
+   * Returns an element style for the player controls portion of the form.
    */
-  private styleControls(): string | undefined {
+  private stylePlayerControls() {
 
     // show / hide the media controls.
     const hideControls = this.config.playerControlsHide || false;
     if (hideControls)
-      return `display: none`;
+      return styleMap({
+        'display': 'none'
+      });
 
-    return
+    return styleMap({
+    });
+
   }
 
 

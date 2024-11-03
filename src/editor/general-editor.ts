@@ -4,7 +4,7 @@ import { css, html, TemplateResult } from 'lit';
 // our imports.
 import { BaseEditor } from './base-editor';
 import { Section } from '../types/section';
-import { DOMAIN_MEDIA_PLAYER, DOMAIN_SPOTIFYPLUS } from '../constants';
+import { DOMAIN_MEDIA_PLAYER, DOMAIN_SPOTIFYPLUS, FOOTER_ICON_SIZE_DEFAULT } from '../constants';
 
 
 const CONFIG_SETTINGS_SCHEMA = [
@@ -51,6 +51,14 @@ const CONFIG_SETTINGS_SCHEMA = [
     help: 'displayed at the top of the card above the section',
     required: false,
     type: 'string',
+  },
+  {
+    name: 'footerIconSize',
+    label: 'Size of the icons in the Footer area.',
+    help: 'default is "' + FOOTER_ICON_SIZE_DEFAULT + '"',
+    required: false,
+    type: 'string',
+    default: FOOTER_ICON_SIZE_DEFAULT,
   },
   {
     name: 'width',

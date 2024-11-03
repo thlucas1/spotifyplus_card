@@ -348,13 +348,13 @@ class Volume extends LitElement {
         justify-content: center;
         display: inline-flex;
         align-items: center;
-        --mdc-icon-button-size: 2.5rem !important;
-        --mdc-icon-size: 1.75rem !important;
         mix-blend-mode: screen;
         overflow: hidden;
         text-shadow: 0 0 2px var(--spc-player-palette-vibrant);
         color: white;
         width: 100%;
+        --mdc-icon-button-size: var(--spc-player-controls-icon-button-size, 2.75rem);
+        --mdc-icon-size: var(--spc-player-controls-icon-size, 2.0rem);
       }
 
       *[hide] {

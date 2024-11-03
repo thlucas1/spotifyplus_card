@@ -2,7 +2,7 @@
 import { HomeAssistant } from 'custom-card-helpers';
 import { css, html, LitElement, PropertyValues, TemplateResult } from 'lit';
 import { styleMap } from 'lit-html/directives/style-map.js';
-import { customElement, property, state } from 'lit/decorators.js';
+import { customElement, property, query, state } from 'lit/decorators.js';
 import { choose } from 'lit/directives/choose.js';
 import { when } from 'lit/directives/when.js';
 
@@ -23,16 +23,19 @@ import './components/footer';
 import './editor/editor';
 
 // our imports.
+import { SEARCH_MEDIA, SearchMediaEventArgs } from './events/search-media';
 import { EDITOR_CONFIG_AREA_SELECTED, EditorConfigAreaSelectedEventArgs } from './events/editor-config-area-selected';
 import { PROGRESS_STARTED } from './events/progress-started';
 import { PROGRESS_ENDED } from './events/progress-ended';
 import { Store } from './model/store';
+import { Section } from './types/section';
+import { ConfigArea } from './types/config-area';
 import { CardConfig } from './types/card-config';
 import { CustomImageUrls } from './types/custom-image-urls';
-import { ConfigArea } from './types/config-area';
-import { Section } from './types/section';
+import { SearchMediaTypes } from './types/search-media-types';
+import { SearchBrowser } from './sections/search-media-browser';
 import { formatTitleInfo, removeSpecialChars } from './utils/media-browser-utils';
-import { BRAND_LOGO_IMAGE_BASE64, BRAND_LOGO_IMAGE_SIZE } from './constants';
+import { BRAND_LOGO_IMAGE_BASE64, BRAND_LOGO_IMAGE_SIZE, FOOTER_ICON_SIZE_DEFAULT } from './constants';
 import {
   getConfigAreaForSection,
   getSectionForConfigArea,
@@ -41,7 +44,11 @@ import {
   isCardInPickerPreview,
   isNumber,
 } from './utils/utils';
-import { SearchMediaTypes } from './types/search-media-types';
+
+// debug logging.
+import Debug from 'debug/src/browser.js';
+import { DEBUG_APP_NAME } from './constants';
+const debuglog = Debug(DEBUG_APP_NAME + ":card");
 
 const HEADER_HEIGHT = 2;
 const FOOTER_HEIGHT = 4;
@@ -87,6 +94,9 @@ export class Card extends LitElement {
   @state() private loaderTimestamp!: number;
   @state() private cancelLoader!: boolean;
   @state() private playerId!: string;
+
+  @query("#elmSearchMediaBrowserForm", false) private elmSearchMediaBrowserForm!: SearchBrowser;
+
 
   /** Indicates if createStore method is executing for the first time (true) or not (false). */
   private isFirstTimeSetup: boolean = true;
@@ -163,7 +173,7 @@ export class Card extends LitElement {
                 [Section.PLAYER, () => html`<spc-player id="spcPlayer" .store=${this.store}></spc-player>`],
                 [Section.PLAYLIST_FAVORITES, () => html`<spc-playlist-fav-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected}></spc-playlist-fav-browser>`],
                 [Section.RECENTS, () => html`<spc-recent-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected}></spc-recents-browser>`],
-                [Section.SEARCH_MEDIA, () => html`<spc-search-media-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected}></spc-search-media-browser>`],
+                [Section.SEARCH_MEDIA, () => html`<spc-search-media-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected} id="elmSearchMediaBrowserForm"></spc-search-media-browser>`],
                 [Section.SHOW_FAVORITES, () => html`<spc-show-fav-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected}></spc-show-fav-browser>`],
                 [Section.TRACK_FAVORITES, () => html`<spc-track-fav-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected}></spc-track-fav-browser>`],
                 [Section.USERPRESETS, () => html`<spc-userpreset-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected}></spc-userpresets-browser>`],
@@ -274,9 +284,10 @@ export class Card extends LitElement {
         align-self: flex-start;
         align-items: center;
         justify-content: space-around;
+        flex-wrap: wrap;
         width: 100%;
-        --mdc-icon-size: 1.75rem;
-        --mdc-icon-button-size: 2.5rem;
+        --mdc-icon-button-size: var(--spc-footer-icon-button-size, 2.5rem);
+        --mdc-icon-size: var(--spc-footer-icon-size, 1.75rem);
         --mdc-ripple-top: 0px;
         --mdc-ripple-left: 0px;
         --mdc-ripple-fg-size: 10px;
@@ -395,9 +406,10 @@ export class Card extends LitElement {
     // invoke base class method.
     super.connectedCallback();
 
-    // add control level event listeners.
+    // add card level event listeners.
     this.addEventListener(PROGRESS_ENDED, this.onProgressEndedEventHandler);
     this.addEventListener(PROGRESS_STARTED, this.onProgressStartedEventHandler);
+    this.addEventListener(SEARCH_MEDIA, this.onSearchMediaEventHandler);
 
     // only add the following events if card configuration is being edited.
     if (isCardInEditPreview(this)) {
@@ -422,9 +434,10 @@ export class Card extends LitElement {
    */
   public disconnectedCallback() {
 
-    // remove control level event listeners.
+    // remove card level event listeners.
     this.removeEventListener(PROGRESS_ENDED, this.onProgressEndedEventHandler);
     this.removeEventListener(PROGRESS_STARTED, this.onProgressStartedEventHandler);
+    this.removeEventListener(SEARCH_MEDIA, this.onSearchMediaEventHandler);
 
     // the following event is only added when the card configuration editor is created.
     // always remove the following events, as isCardInEditPreview() can sometimes
@@ -508,64 +521,6 @@ export class Card extends LitElement {
 
 
   /**
-   * Handles the `PROGRESS_ENDED` event.
-   * This will hide the circular progress indicator on the main card display.
-   * 
-   * This event has no arguments.
-  */
-  protected onProgressEndedEventHandler = () => {
-
-    this.cancelLoader = true;
-    const duration = Date.now() - this.loaderTimestamp;
-
-    // is the progress loader icon visible?
-    if (this.showLoader) {
-
-      if (duration < 1000) {
-        // progress will hide in less than 1 second.
-        setTimeout(() => (this.showLoader = false), 1000 - duration);
-      } else {
-        this.showLoader = false;
-        // progress is hidden.
-      }
-    }
-  }
-
-
-  /**
-   * Handles the `PROGRESS_STARTED` event.
-   * This will show the circular progress indicator on the main card display for lengthy operations.
-   * 
-   * A delay of 250 milliseconds is executed before the progress indicator is shown - if the progress
-   * done event is received in this delay period, then the progress indicator is not shown.  This
-   * keeps the progress indicator from "flickering" for operations that are quick to respond.
-   * 
-   * @param ev Event definition and arguments.
-  */
-  protected onProgressStartedEventHandler = () => {
-
-    // is progress bar currently shown? if not, then make it so.
-    if (!this.showLoader) {
-
-      this.cancelLoader = false;
-
-      // wait just a bit before showing the progress indicator; if the progress done event is received
-      // in this delay period, then the progress indicator is not shown.
-      setTimeout(() => {
-        if (!this.cancelLoader) {
-          this.showLoader = true;
-          this.loaderTimestamp = Date.now();
-          // progress is showing.
-        } else {
-          // progress was cancelled before it had to be shown.
-        }
-      }, 250);
-
-    }
-  }
-
-
-  /**
    * Handles the card configuration editor `EDITOR_CONFIG_AREA_SELECTED` event.
    * 
    * This will select a section for display / rendering.
@@ -631,6 +586,108 @@ export class Card extends LitElement {
     // example: show the card Player section (after a slight delay).
     //setTimeout(() => (this.SetSection(Section.PLAYER)), 1500);
 
+  }
+
+
+  /**
+   * Handles the `PROGRESS_ENDED` event.
+   * This will hide the circular progress indicator on the main card display.
+   * 
+   * This event has no arguments.
+  */
+  protected onProgressEndedEventHandler = () => {
+
+    this.cancelLoader = true;
+    const duration = Date.now() - this.loaderTimestamp;
+
+    // is the progress loader icon visible?
+    if (this.showLoader) {
+
+      if (duration < 1000) {
+        // progress will hide in less than 1 second.
+        setTimeout(() => (this.showLoader = false), 1000 - duration);
+      } else {
+        this.showLoader = false;
+        // progress is hidden.
+      }
+    }
+  }
+
+
+  /**
+   * Handles the `PROGRESS_STARTED` event.
+   * This will show the circular progress indicator on the main card display for lengthy operations.
+   * 
+   * A delay of 250 milliseconds is executed before the progress indicator is shown - if the progress
+   * done event is received in this delay period, then the progress indicator is not shown.  This
+   * keeps the progress indicator from "flickering" for operations that are quick to respond.
+   * 
+   * @param ev Event definition and arguments.
+  */
+  protected onProgressStartedEventHandler = () => {
+
+    // is progress bar currently shown? if not, then make it so.
+    if (!this.showLoader) {
+
+      this.cancelLoader = false;
+
+      // wait just a bit before showing the progress indicator; if the progress done event is received
+      // in this delay period, then the progress indicator is not shown.
+      setTimeout(() => {
+        if (!this.cancelLoader) {
+          this.showLoader = true;
+          this.loaderTimestamp = Date.now();
+          // progress is showing.
+        } else {
+          // progress was cancelled before it had to be shown.
+        }
+      }, 250);
+
+    }
+  }
+
+
+  /**
+   * Handles the `SEARCH_MEDIA` event.
+   * This will execute a search on the specified criteria passed in the event arguments.
+   * 
+   * @param ev Event definition and arguments.
+  */
+  protected onSearchMediaEventHandler = (ev: Event) => {
+
+    // map event arguments.
+    const evArgs = (ev as CustomEvent).detail as SearchMediaEventArgs;
+
+    // is section activated?  if so, then select it.
+    if (this.config.sections?.includes(Section.SEARCH_MEDIA)) {
+
+      // show the search section.
+      this.section = Section.SEARCH_MEDIA;
+      this.store.section = this.section;
+      //this.dispatchEvent(customEvent(SHOW_SECTION, Section.SEARCH_MEDIA));
+
+      // wait just a bit before executing the search.
+      setTimeout(() => {
+
+        if (debuglog.enabled) {
+          debuglog("onSearchMediaEventHandler - executing search:\n%s",
+            JSON.stringify(evArgs, null, 2),
+          );
+        }
+
+        // execute the search.
+        this.elmSearchMediaBrowserForm.searchExecute(evArgs);
+
+      }, 250);
+
+    } else {
+
+      // section is not activated; cannot search.
+      debuglog("onSearchMediaEventHandler - Search section is not enabled; ignoring search request:\n%s",
+        JSON.stringify(evArgs, null, 2),
+      );
+
+    }
   }
 
 
@@ -1036,11 +1093,16 @@ export class Card extends LitElement {
    */
   private styleCardFooter() {
 
+    // set footer icon size.
+    const footerIconSize = this.config.footerIconSize || FOOTER_ICON_SIZE_DEFAULT;
+
     // is player selected, and a footer background color set?
     if ((this.section == Section.PLAYER) && (this.footerBackgroundColor)) {
 
       // yes - return vibrant background style.
       return styleMap({
+        '--spc-footer-icon-size': `${footerIconSize}`,
+        '--spc-footer-icon-button-size': `var(--spc-footer-icon-size, ${FOOTER_ICON_SIZE_DEFAULT}) + 0.75rem`,
         '--spc-player-footer-bg-color': `${this.footerBackgroundColor || 'transparent'}`,
         'background-color': 'var(--spc-player-footer-bg-color)',
         'background-image': 'linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 1.6))',
@@ -1048,8 +1110,10 @@ export class Card extends LitElement {
 
     } else {
 
-      // no - just return an empty style to let it default to the card background.
+      // return style map (let background color default to the card background color).
       return styleMap({
+        '--spc-footer-icon-size': `${footerIconSize}`,
+        '--spc-footer-icon-button-size': `var(--spc-footer-icon-size, ${FOOTER_ICON_SIZE_DEFAULT}) + 0.75rem`,
       });
 
     }

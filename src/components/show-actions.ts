@@ -1,10 +1,13 @@
 // lovelace card imports.
 import { css, html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
+import copyTextToClipboard from 'copy-text-to-clipboard';
 import {
+  mdiClipboardPlusOutline,
+  mdiDotsHorizontal,
   mdiHeart,
   mdiHeartOutline,
-  mdiPlay,
+  mdiPlaylistPlay,
   mdiPodcast,
 } from '@mdi/js';
 
@@ -15,21 +18,25 @@ import { sharedStylesFavActions } from '../styles/shared-styles-fav-actions.js';
 import { FavActionsBase } from './fav-actions-base';
 import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
+import { SearchMediaTypes } from '../types/search-media-types';
+import { SearchMediaEvent } from '../events/search-media';
+import { formatDateHHMMSSFromMilliseconds, unescapeHtml } from '../utils/utils';
+import { openWindowNewTab } from '../utils/media-browser-utils';
 import { GetResumeInfo } from '../types/spotifyplus/resume-point';
 import { GetCopyrights } from '../types/spotifyplus/copyright';
 import { IShowSimplified } from '../types/spotifyplus/show-simplified';
-import { formatDateHHMMSSFromMilliseconds, unescapeHtml } from '../utils/utils';
 import { IEpisodePageSimplified } from '../types/spotifyplus/episode-page-simplified';
-import { openWindowNewTab } from '../utils/media-browser-utils';
 
 /**
  * Show actions.
  */
 enum Actions {
+  ShowCopyUriToClipboard = "ShowCopyUriToClipboard",
+  ShowEpisodesUpdate = "ShowEpisodesUpdate",
   ShowFavoriteAdd = "ShowFavoriteAdd",
   ShowFavoriteRemove = "ShowFavoriteRemove",
   ShowFavoriteUpdate = "ShowFavoriteUpdate",
-  ShowEpisodesUpdate = "ShowEpisodesUpdate",
+  ShowSearchEpisodes = "ShowSearchEpisodes",
 }
 
 
@@ -99,6 +106,25 @@ class ShowActions extends FavActionsBase {
       </div>
      `;
 
+    // define dropdown menu actions - show.
+    const actionsShowHtml = html`
+      <ha-md-button-menu slot="selection-bar" positioning="popover">
+        <ha-assist-chip slot="trigger">
+          <ha-svg-icon slot="icon" .path=${mdiDotsHorizontal}></ha-svg-icon>
+        </ha-assist-chip>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ShowSearchEpisodes)} hide=${this.hideSearchType(SearchMediaTypes.EPISODES)}>
+          <ha-svg-icon slot="start" .path=${mdiPodcast}></ha-svg-icon>
+          <div slot="headline">Search for Show Episodes</div>
+        </ha-md-menu-item>
+        <ha-md-divider role="separator" tabindex="-1"></ha-md-divider>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ShowCopyUriToClipboard)}>
+          <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
+          <div slot="headline">Copy Show URI to Clipboard</div>
+        </ha-md-menu-item>
+
+      </ha-md-button-menu>
+      `;
+
     // render html.
     // mediaItem will be an IShow object when displaying favorites.
     // mediaItem will be an IShowSimplified object when displaying search results,
@@ -113,6 +139,9 @@ class ShowActions extends FavActionsBase {
               ${iconShow}
               ${this.mediaItem.name}
               ${(this.isShowFavorite ? actionShowFavoriteRemove : actionShowFavoriteAdd)}
+              <span class="actions-dropdown-menu">
+                ${actionsShowHtml}
+              </span>
             </div>
             <div class="grid show-info-grid">
               <div class="grid-action-info-hdr-s"># Episodes</div>
@@ -141,9 +170,9 @@ class ShowActions extends FavActionsBase {
             <div class="grid-header grid-header-last">Duration</div>
             ${this.showEpisodes?.items.map((item) => html`
               <ha-icon-button
-                .path=${mdiPlay}
-                .label="Play chapter &quot;${item.name}&quot;"
-                @click=${() => this.onClickMediaItem(item)}
+                .path=${mdiPlaylistPlay}
+                .label="Add episode &quot;${item.name}&quot; to Play Queue"
+                @click=${() => this.AddPlayerQueueItem(item)}
                 slot="icon-button"
               >&nbsp;</ha-icon-button>
               <div class="grid-entry">${item.name}</div>
@@ -210,28 +239,55 @@ class ShowActions extends FavActionsBase {
       return true;
     }
 
-    // show progress indicator.
-    this.progressShow();
+    try {
 
-    // call service based on requested action, and refresh affected action component.
-    if (action == Actions.ShowFavoriteAdd) {
+      // process actions that don't require a progress indicator.
+      if (action == Actions.ShowCopyUriToClipboard) {
 
-      await this.spotifyPlusService.SaveShowFavorites(this.player.id, this.mediaItem.id);
-      this.updateActions(this.player, [Actions.ShowFavoriteUpdate]);
+        copyTextToClipboard(this.mediaItem.uri);
+        return true;
 
-    } else if (action == Actions.ShowFavoriteRemove) {
+      } else if (action == Actions.ShowSearchEpisodes) {
 
-      await this.spotifyPlusService.RemoveShowFavorites(this.player.id, this.mediaItem.id);
-      this.updateActions(this.player, [Actions.ShowFavoriteUpdate]);
+        this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.EPISODES, this.mediaItem.name));
+        return true;
 
-    } else {
+      }
 
-      // no action selected - hide progress indicator.
+      // show progress indicator.
+      this.progressShow();
+
+      // call service based on requested action, and refresh affected action component.
+      if (action == Actions.ShowFavoriteAdd) {
+
+        await this.spotifyPlusService.SaveShowFavorites(this.player.id, this.mediaItem.id);
+        this.updateActions(this.player, [Actions.ShowFavoriteUpdate]);
+
+      } else if (action == Actions.ShowFavoriteRemove) {
+
+        await this.spotifyPlusService.RemoveShowFavorites(this.player.id, this.mediaItem.id);
+        this.updateActions(this.player, [Actions.ShowFavoriteUpdate]);
+
+      } else {
+
+        // no action selected - hide progress indicator.
+        this.progressHide();
+
+      }
+
+      return true;
+    }
+    catch (error) {
+
+      // clear the progress indicator and set alert error message.
       this.progressHide();
+      this.alertErrorSet("Action failed: \n" + (error as Error).message);
+      return true;
 
     }
+    finally {
+    }
 
-    return true;
   }
 
 

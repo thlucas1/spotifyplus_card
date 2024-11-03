@@ -4,9 +4,18 @@ import { css, html, TemplateResult } from 'lit';
 // our imports.
 import { BaseEditor } from './base-editor';
 import { Section } from '../types/section';
+import { PLAYER_CONTROLS_ICON_SIZE_DEFAULT } from '../constants';
 
 
 const CONFIG_SETTINGS_SCHEMA = [
+  {
+    name: 'playerControlsIconSize',
+    label: 'Size of the icons in the Player controls area.',
+    help: 'default is "' + PLAYER_CONTROLS_ICON_SIZE_DEFAULT + '"',
+    required: false,
+    type: 'string',
+    default: PLAYER_CONTROLS_ICON_SIZE_DEFAULT,
+  },
   {
     name: 'playerControlsHideFavorites',
     label: 'Hide favorite actions control button in the controls area',

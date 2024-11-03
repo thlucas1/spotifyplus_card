@@ -29,6 +29,7 @@ import { MediaPlayer } from '../model/media-player';
 import { formatTitleInfo } from '../utils/media-browser-utils';
 import { storageService } from '../decorators/storage';
 import { SearchMediaTypes } from '../types/search-media-types';
+import { SearchMediaEventArgs } from '../events/search-media';
 
 // debug logging.
 import Debug from 'debug/src/browser.js';
@@ -254,7 +255,7 @@ export class SearchBrowser extends FavBrowserBase {
 
       /* <ha-md-button-menu> related styles */
       ha-assist-chip {
-        --ha-assist-chip-container-shape: 10px;
+        --ha-assist-chip-container-shape: 10px;  /* 0px=square corner, 10px=rounded corner */
         --ha-assist-chip-container-color: var(--card-background-color);
       }
 
@@ -327,6 +328,27 @@ export class SearchBrowser extends FavBrowserBase {
 
 
   /**
+   * Toggle action visibility - queue items body.
+   */
+  public searchExecute(args: SearchMediaEventArgs): void {
+
+    if (debuglog.enabled) {
+      debuglog("searchExecute - searching Spotify media:\n%s",
+        JSON.stringify(args,null,2),
+      );
+    }
+
+    // prepare to search.
+    this.initSearchValues(args.searchType);
+    this.filterCriteria = args.searchCriteria;
+
+    // execute the search.
+    this.updateMediaList(this.player);
+
+  }
+
+
+  /**
    * Loads values from persistant storage.
    */
   protected override storageValuesLoad() {
@@ -372,15 +394,33 @@ export class SearchBrowser extends FavBrowserBase {
   }
 
 
+  /**
+   * Handles the click event of a search type menu item.
+   * 
+   * @param ev Event arguments (a SearchMediaTypes value).
+   */
   private onSearchMediaTypeChanged(ev) {
 
-    // if value did not change then don't bother.
-    if (this.searchMediaType == ev.currentTarget.value) {
+    this.initSearchValues(ev.currentTarget.value);
+
+  }
+
+
+  /**
+   * Initializes search fields and results, and prepare to search.  
+   * 
+   * This will set the search media type title, clear the media list results, reset
+   * scroll position, clear alerts, and hide the actions display area.
+   */
+  private initSearchValues(searchType: string) {
+
+    // if searchType did not change then don't bother.
+    if (this.searchMediaType == searchType) {
       return;
     }
 
-    // store changed value.
-    this.searchMediaType = ev.currentTarget.value;
+    // store searchType and adjust the title.
+    this.searchMediaType = searchType;
     this.searchMediaTypeTitle = SEARCH_FOR_PREFIX + this.searchMediaType;
 
     // clear the media list, as the items no longer match the search media type.

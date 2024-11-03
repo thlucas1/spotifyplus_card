@@ -1,11 +1,15 @@
 // lovelace card imports.
 import { css, html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
+import copyTextToClipboard from 'copy-text-to-clipboard';
 import {
+  mdiAccountDetailsOutline,
   mdiBookOpenVariant,
+  mdiClipboardPlusOutline,
+  mdiDotsHorizontal,
   mdiHeart,
   mdiHeartOutline,
-  mdiPlay,
+  mdiPlaylistPlay,
 } from '@mdi/js';
 
 // our imports.
@@ -15,21 +19,26 @@ import { sharedStylesFavActions } from '../styles/shared-styles-fav-actions.js';
 import { FavActionsBase } from './fav-actions-base';
 import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
-import { GetResumeInfo } from '../types/spotifyplus/resume-point';
-import { IAudiobookSimplified, GetAudiobookNarrators, GetAudiobookAuthors } from '../types/spotifyplus/audiobook-simplified';
-import { IChapterPageSimplified } from '../types/spotifyplus/chapter-page-simplified';
+import { SearchMediaTypes } from '../types/search-media-types';
+import { SearchMediaEvent } from '../events/search-media';
 import { GetCopyrights } from '../types/spotifyplus/copyright';
+import { GetResumeInfo } from '../types/spotifyplus/resume-point';
 import { formatDateHHMMSSFromMilliseconds, unescapeHtml } from '../utils/utils';
 import { openWindowNewTab } from '../utils/media-browser-utils';
+import { IAudiobookSimplified, GetAudiobookNarrators, GetAudiobookAuthors } from '../types/spotifyplus/audiobook-simplified';
+import { IChapterPageSimplified } from '../types/spotifyplus/chapter-page-simplified';
 
 /**
  * Audiobook actions.
  */
 enum Actions {
+  AudiobookCopyUriToClipboard = "AudiobookCopyUriToClipboard",
   AudiobookFavoriteAdd = "AudiobookFavoriteAdd",
   AudiobookFavoriteRemove = "AudiobookFavoriteRemove",
   AudiobookFavoriteUpdate = "AudiobookFavoriteUpdate",
   AudiobookChaptersUpdate = "AudiobookChaptersUpdate",
+  AudiobookSearchAuthor = "AudiobookSearchAuthor",
+  AudiobookSearchNarrator = "AudiobookSearchNarrator",
 }
 
 
@@ -99,6 +108,28 @@ class AudiobookActions extends FavActionsBase {
       </div>
      `;
 
+    // define dropdown menu actions - audiobook.
+    const actionsAudiobookHtml = html`
+      <ha-md-button-menu slot="selection-bar" positioning="popover">
+        <ha-assist-chip slot="trigger">
+          <ha-svg-icon slot="icon" .path=${mdiDotsHorizontal}></ha-svg-icon>
+        </ha-assist-chip>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.AudiobookSearchAuthor)} hide=${this.hideSearchType(SearchMediaTypes.AUDIOBOOKS)}>
+          <ha-svg-icon slot="start" .path=${mdiAccountDetailsOutline}></ha-svg-icon>
+          <div slot="headline">Other Audiobooks by same Author</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.AudiobookSearchNarrator)} hide=${this.hideSearchType(SearchMediaTypes.AUDIOBOOKS)}>
+          <ha-svg-icon slot="start" .path=${mdiAccountDetailsOutline}></ha-svg-icon>
+          <div slot="headline">Other Audiobooks by same Narrator</div>
+        </ha-md-menu-item>
+        <ha-md-divider role="separator" tabindex="-1"></ha-md-divider>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.AudiobookCopyUriToClipboard)}>
+          <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
+          <div slot="headline">Copy Audiobook URI to Clipboard</div>
+        </ha-md-menu-item>
+      </ha-md-button-menu>
+      `;
+
     // render html.
     // mediaItem will be an IAudiobook object when displaying favorites.
     // mediaItem will be an IAudiobookSimplified object when displaying search results,
@@ -113,6 +144,9 @@ class AudiobookActions extends FavActionsBase {
               ${iconAudiobook}
               ${this.mediaItem.name}
               ${(this.isAudiobookFavorite ? actionAudiobookFavoriteRemove : actionAudiobookFavoriteAdd)}
+              <span class="actions-dropdown-menu">
+                ${actionsAudiobookHtml}
+              </span>
             </div>
             <div class="grid audiobook-info-grid">
 
@@ -148,9 +182,9 @@ class AudiobookActions extends FavActionsBase {
             <div class="grid-header grid-header-last">Duration</div>
             ${this.audiobookChapters?.items.map((item) => html`
               <ha-icon-button
-                .path=${mdiPlay}
-                .label="Play chapter &quot;${item.name}&quot;"
-                @click=${() => this.onClickMediaItem(item)}
+                .path=${mdiPlaylistPlay}
+                .label="Add chapter &quot;${item.name}&quot; to Play Queue"
+                @click=${() => this.AddPlayerQueueItem(item)}
                 slot="icon-button"
               >&nbsp;</ha-icon-button>
               <div class="grid-entry">${item.name}</div>
@@ -217,28 +251,60 @@ class AudiobookActions extends FavActionsBase {
       return true;
     }
 
-    // show progress indicator.
-    this.progressShow();
+    try {
 
-    // call service based on requested action, and refresh affected action component.
-    if (action == Actions.AudiobookFavoriteAdd) {
+      // process actions that don't require a progress indicator.
+      if (action == Actions.AudiobookCopyUriToClipboard) {
 
-      await this.spotifyPlusService.SaveAudiobookFavorites(this.player.id, this.mediaItem.id);
-      this.updateActions(this.player, [Actions.AudiobookFavoriteUpdate]);
+        copyTextToClipboard(this.mediaItem.uri || "");
+        return true;
 
-    } else if (action == Actions.AudiobookFavoriteRemove) {
+      } else if (action == Actions.AudiobookSearchAuthor) {
 
-      await this.spotifyPlusService.RemoveAudiobookFavorites(this.player.id, this.mediaItem.id);
-      this.updateActions(this.player, [Actions.AudiobookFavoriteUpdate]);
+        this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.AUDIOBOOKS, GetAudiobookAuthors(this.mediaItem, " ")));
+        return true;
 
-    } else {
+      } else if (action == Actions.AudiobookSearchNarrator) {
 
-      // no action selected - hide progress indicator.
+        this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.AUDIOBOOKS, GetAudiobookNarrators(this.mediaItem, " ")));
+        return true;
+
+      }
+
+      // show progress indicator.
+      this.progressShow();
+
+      // call service based on requested action, and refresh affected action component.
+      if (action == Actions.AudiobookFavoriteAdd) {
+
+        await this.spotifyPlusService.SaveAudiobookFavorites(this.player.id, this.mediaItem.id);
+        this.updateActions(this.player, [Actions.AudiobookFavoriteUpdate]);
+
+      } else if (action == Actions.AudiobookFavoriteRemove) {
+
+        await this.spotifyPlusService.RemoveAudiobookFavorites(this.player.id, this.mediaItem.id);
+        this.updateActions(this.player, [Actions.AudiobookFavoriteUpdate]);
+
+      } else {
+
+        // no action selected - hide progress indicator.
+        this.progressHide();
+
+      }
+
+      return true;
+    }
+    catch (error) {
+
+      // clear the progress indicator and set alert error message.
       this.progressHide();
+      this.alertErrorSet("Action failed: \n" + (error as Error).message);
+      return true;
 
     }
+    finally {
+    }
 
-    return true;
   }
 
 

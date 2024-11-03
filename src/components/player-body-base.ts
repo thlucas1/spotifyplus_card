@@ -5,13 +5,14 @@ import { property, state } from 'lit/decorators.js';
 // our imports.
 import { sharedStylesFavActions } from '../styles/shared-styles-fav-actions.js';
 import { Store } from '../model/store';
-import { Section } from '../types/section.js';
+import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
 import { MediaPlayerState } from '../services/media-control-service';
 import { SpotifyPlusService } from '../services/spotifyplus-service';
-import { isCardInEditPreview } from '../utils/utils';
-import { ProgressEndedEvent } from '../events/progress-ended.js';
-import { ProgressStartedEvent } from '../events/progress-started.js';
+import { SearchMediaTypes } from '../types/search-media-types';
+import { isCardInEditPreview, loadHaFormLazyControls } from '../utils/utils';
+import { ProgressEndedEvent } from '../events/progress-ended';
+import { ProgressStartedEvent } from '../events/progress-started';
 
 // debug logging.
 import Debug from 'debug/src/browser.js';
@@ -135,6 +136,10 @@ export class PlayerBodyBase extends LitElement {
     // invoke base class method.
     super.firstUpdated(changedProperties);
 
+    // ensure "<search-input-outlined>" and "<ha-md-button-menu>" HA customElements are
+    // loaded so that the controls are rendered properly.
+    (async () => await loadHaFormLazyControls())();
+
     // if we are editing the card configuration, then don't bother updating actions as
     // the user cannot display the actions dialog while editing the card configuration.
     if (this.isCardInEditPreview) {
@@ -241,6 +246,27 @@ export class PlayerBodyBase extends LitElement {
 
 
   /**
+   * Returns false if the specified feature is to be SHOWN; otherwise, returns true
+   * if the specified feature is to be HIDDEN (via CSS).
+   * 
+   * @param searchType Search type to check.
+   */
+  protected hideSearchType(searchType: SearchMediaTypes) {
+
+    if ((this.store.config.searchMediaBrowserSearchTypes) && (this.store.config.searchMediaBrowserSearchTypes.length > 0)) {
+      if (this.store.config.searchMediaBrowserSearchTypes?.includes(searchType)) {
+        return false;  // show searchType
+      } else {
+        return true;   // hide searchType.
+      }
+    }
+
+    // if features not configured, then show search type.
+    return false;
+  }
+
+
+  /**
    * Handles the `click` event fired when a control icon is clicked.
    * This method should be overridden by the inheriting class.
    * 
@@ -281,6 +307,9 @@ export class PlayerBodyBase extends LitElement {
     if (!this.isUpdateInProgress) {
       this.isUpdateInProgress = true;
     } else {
+      if (debuglog.enabled) {
+        debuglog("updateActions - update in progress; ignoring updateActions request");
+      }
       return false;
     }
 
@@ -288,18 +317,27 @@ export class PlayerBodyBase extends LitElement {
     // display the actions dialog.
     if (this.isCardInEditPreview) {
       this.isUpdateInProgress = false;
+      if (debuglog.enabled) {
+        debuglog("updateActions - card is in editpreview; ignoring updateActions request");
+      }
       return false;
     }
 
     // if player reference not set then we are done.
     if (!player) {
       this.isUpdateInProgress = false;
+      if (debuglog.enabled) {
+        debuglog("updateActions - player reference not set; ignoring updateActions request");
+      }
       return false;
     }
 
     // if no media content id, then don't bother.
     if (!this.player.attributes.media_content_id) {
       this.isUpdateInProgress = false;
+      if (debuglog.enabled) {
+        debuglog("updateActions - player media_content_id reference not set; ignoring updateActions request");
+      }
       return false;
     }
 

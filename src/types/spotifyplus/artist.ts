@@ -45,3 +45,29 @@ export interface IArtist extends IArtistSimplified {
   popularity: number;
 
 }
+
+
+/**
+ * Gets a user-friendly description of the `genres` object(s).
+ * 
+ * @param mediaItem Media item that contains a genres property.
+ * @returns A string that contains a user-friendly description of the genres.
+ */
+export function GetGenres(mediaItem: any | undefined, delimiter: string | null = null): string {
+
+  if (delimiter == null)
+    delimiter = "; ";
+
+  let result = "";
+  if (mediaItem) {
+    for (const item of mediaItem.genres || []) {
+      if ((item != null) && ((item.length) > 0)) {
+        if (result.length > 0)
+          result += delimiter;
+        result += item;
+      }
+    }
+  }
+
+  return result
+}

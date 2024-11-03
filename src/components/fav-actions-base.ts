@@ -10,6 +10,7 @@ import { SpotifyPlusService } from '../services/spotifyplus-service';
 import { isCardInEditPreview } from '../utils/utils';
 import { ProgressStartedEvent } from '../events/progress-started';
 import { ProgressEndedEvent } from '../events/progress-ended';
+import { SearchMediaTypes } from '../types/search-media-types';
 
 // debug logging.
 import Debug from 'debug/src/browser.js';
@@ -164,6 +165,27 @@ export class FavActionsBase extends LitElement {
 
 
   /**
+   * Returns false if the specified feature is to be SHOWN; otherwise, returns true
+   * if the specified feature is to be HIDDEN (via CSS).
+   * 
+   * @param searchType Search type to check.
+   */
+  protected hideSearchType(searchType: SearchMediaTypes) {
+
+    if ((this.store.config.searchMediaBrowserSearchTypes) && (this.store.config.searchMediaBrowserSearchTypes.length > 0)) {
+      if (this.store.config.searchMediaBrowserSearchTypes?.includes(searchType)) {
+        return false;  // show searchType
+      } else {
+        return true;   // hide searchType.
+      }
+    }
+
+    // if features not configured, then show search type.
+    return false;
+  }
+
+
+  /**
    * Handles the `click` event fired when a media item control icon is clicked.
    * 
    * @param control Event arguments.
@@ -172,6 +194,39 @@ export class FavActionsBase extends LitElement {
 
     // play the selected media item.
     this.PlayMediaItem(mediaItem);
+
+  }
+
+
+  /**
+   * Calls the SpotifyPlusService AddPlayerQueueItems method to add track / episode 
+   * to play queue.
+   * 
+   * @param mediaItem The medialist item that was selected.
+   */
+  protected async AddPlayerQueueItem(mediaItem: any) {
+
+    try {
+
+      // show progress indicator.
+      this.progressShow();
+
+      // add media item to play queue.
+      await this.spotifyPlusService.AddPlayerQueueItems(this.player.id, mediaItem.uri, null, false);
+
+    }
+    catch (error) {
+
+      // set error status,
+      this.alertErrorSet("Could not add media item to play queue.  " + (error as Error).message);
+
+    }
+    finally {
+
+      // hide progress indicator.
+      this.progressHide();
+
+    }
 
   }
 

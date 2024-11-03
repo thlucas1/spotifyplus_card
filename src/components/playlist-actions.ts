@@ -1,11 +1,15 @@
 // lovelace card imports.
 import { css, html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
+import copyTextToClipboard from 'copy-text-to-clipboard';
 import {
+  mdiBackupRestore,
+  mdiClipboardPlusOutline,
+  mdiDotsHorizontal,
   mdiHeart,
   mdiHeartOutline,
-  mdiPlay,
   mdiPlaylistPlay,
+  mdiTrashCanOutline,
 } from '@mdi/js';
 
 // our imports.
@@ -16,19 +20,22 @@ import { FavActionsBase } from './fav-actions-base';
 import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
 import { formatDateHHMMSSFromMilliseconds, unescapeHtml } from '../utils/utils';
+import { openWindowNewTab } from '../utils/media-browser-utils.js';
 import { GetPlaylistPagePlaylistTracks } from '../types/spotifyplus/playlist-page.js';
 import { IPlaylistSimplified } from '../types/spotifyplus/playlist-simplified.js';
 import { IPlaylistTrack } from '../types/spotifyplus/playlist-track.js';
-import { openWindowNewTab } from '../utils/media-browser-utils.js';
 
 /**
  * Playlist actions.
  */
 enum Actions {
+  PlaylistCopyUriToClipboard = "PlaylistCopyUriToClipboard",
+  PlaylistDelete = "PlaylistDelete",
   PlaylistFavoriteAdd = "PlaylistFavoriteAdd",
   PlaylistFavoriteRemove = "PlaylistFavoriteRemove",
   PlaylistFavoriteUpdate = "PlaylistFavoriteUpdate",
   PlaylistItemsUpdate = "PlaylistItemsUpdate",
+  PlaylistRecoverWebUI = "PlaylistRecoverWebUI",
 }
 
 
@@ -98,6 +105,28 @@ class PlaylistActions extends FavActionsBase {
       </div>
      `;
 
+    // define dropdown menu actions - playlist.
+    const actionsPlaylistHtml = html`
+      <ha-md-button-menu slot="selection-bar" positioning="popover">
+        <ha-assist-chip slot="trigger">
+          <ha-svg-icon slot="icon" .path=${mdiDotsHorizontal}></ha-svg-icon>
+        </ha-assist-chip>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.PlaylistRecoverWebUI)}>
+          <ha-svg-icon slot="start" .path=${mdiBackupRestore}></ha-svg-icon>
+          <div slot="headline">Recover Playlist via Spotify Web UI</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.PlaylistDelete)}>
+          <ha-svg-icon slot="start" .path=${mdiTrashCanOutline}></ha-svg-icon>
+          <div slot="headline">Delete (unfollow) Playlist</div>
+        </ha-md-menu-item>
+        <ha-md-divider role="separator" tabindex="-1"></ha-md-divider>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.PlaylistCopyUriToClipboard)}>
+          <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
+          <div slot="headline">Copy Playlist URI to Clipboard</div>
+        </ha-md-menu-item>
+      </ha-md-button-menu>
+      `;
+
     // render html.
     return html` 
       <div class="playlist-actions-container">
@@ -110,6 +139,9 @@ class PlaylistActions extends FavActionsBase {
               ${iconPlaylist}
               ${this.mediaItem.name}
               ${(this.isPlaylistFavorite ? actionPlaylistFavoriteRemove : actionPlaylistFavoriteAdd)}
+              <span class="actions-dropdown-menu">
+                ${actionsPlaylistHtml}
+              </span>
             </div>
             <div class="grid playlist-info-grid">
 
@@ -147,9 +179,9 @@ class PlaylistActions extends FavActionsBase {
             <div class="grid-header grid-header-last">Duration</div>
             ${this.playlistTracks?.map((item, index) => html`
               <ha-icon-button
-                .path=${mdiPlay}
-                .label="Play track &quot;${item.track.name || ""}&quot;"
-                @click=${() => this.onClickMediaItem(item.track)}
+                .path=${mdiPlaylistPlay}
+                .label="Add track &quot;${item.track.name}&quot; to Play Queue"
+                @click=${() => this.AddPlayerQueueItem(item.track)}
                 slot="icon-button"
               >&nbsp;</ha-icon-button>
               <div class="grid-entry">${index + 1}</div>
@@ -230,28 +262,60 @@ class PlaylistActions extends FavActionsBase {
       return true;
     }
 
-    // show progress indicator.
-    this.progressShow();
+    try {
 
-    // call service based on requested action, and refresh affected action component.
-    if (action == Actions.PlaylistFavoriteAdd) {
+      // process actions that don't require a progress indicator.
+      if (action == Actions.PlaylistCopyUriToClipboard) {
 
-      await this.spotifyPlusService.FollowPlaylist(this.player.id, this.mediaItem.id);
-      this.updateActions(this.player, [Actions.PlaylistFavoriteUpdate]);
+        copyTextToClipboard(this.mediaItem.uri);
+        return true;
 
-    } else if (action == Actions.PlaylistFavoriteRemove) {
+      } else if (action == Actions.PlaylistRecoverWebUI) {
 
-      await this.spotifyPlusService.UnfollowPlaylist(this.player.id, this.mediaItem.id);
-      this.updateActions(this.player, [Actions.PlaylistFavoriteUpdate]);
+        openWindowNewTab("https://www.spotify.com/us/account/recover-playlists/");
+        return true;
 
-    } else {
+      }
 
-      // no action selected - hide progress indicator.
+      // show progress indicator.
+      this.progressShow();
+
+      // call service based on requested action, and refresh affected action component.
+      if (action == Actions.PlaylistDelete) {
+
+        await this.spotifyPlusService.UnfollowPlaylist(this.player.id, this.mediaItem.id);
+        this.updateActions(this.player, [Actions.PlaylistFavoriteUpdate]);
+
+      } else if (action == Actions.PlaylistFavoriteAdd) {
+
+        await this.spotifyPlusService.FollowPlaylist(this.player.id, this.mediaItem.id);
+        this.updateActions(this.player, [Actions.PlaylistFavoriteUpdate]);
+
+      } else if (action == Actions.PlaylistFavoriteRemove) {
+
+        await this.spotifyPlusService.UnfollowPlaylist(this.player.id, this.mediaItem.id);
+        this.updateActions(this.player, [Actions.PlaylistFavoriteUpdate]);
+
+      } else {
+
+        // no action selected - hide progress indicator.
+        this.progressHide();
+
+      }
+
+      return true;
+    }
+    catch (error) {
+
+      // clear the progress indicator and set alert error message.
       this.progressHide();
+      this.alertErrorSet("Action failed: \n" + (error as Error).message);
+      return true;
 
     }
+    finally {
+    }
 
-    return true;
   }
 
 

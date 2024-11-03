@@ -4,7 +4,7 @@ import { css, html, TemplateResult } from 'lit';
 // our imports.
 import { BaseEditor } from './base-editor';
 import { Section } from '../types/section';
-import { PLAYER_CONTROLS_BACKGROUND_COLOR_DEFAULT } from '../sections/player';
+import { PLAYER_CONTROLS_BACKGROUND_COLOR_DEFAULT } from '../constants';
 
 
 const CONFIG_SETTINGS_SCHEMA = [

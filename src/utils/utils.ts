@@ -2,6 +2,7 @@
 import { CardConfig } from '../types/card-config';
 import { ConfigArea } from '../types/config-area';
 import { Section } from '../types/section';
+import copy from 'copy-text-to-clipboard';
 
 // debug logging.
 import Debug from 'debug/src/browser.js';
@@ -473,4 +474,26 @@ export const loadHaFormLazyControls = async () => {
     debuglog("loadHaFormLazyControls - done; lazy controls should now be loaded");
   }
 
+}
+
+
+/**
+ * Copy div.innerText value to clipboard.
+ * 
+ * @param elm DIV element whose contents are to be copied.
+ * @returns true if text was copied to the clipboard successfully; otherwise, false.
+ * 
+ * example usage:
+ * <div @click=${copyToClipboard}>This text will be copied</div>
+ */
+export function copyToClipboard(ev): boolean {
+  const elm = ev.currentTarget as HTMLDivElement;
+  const result = copy(elm.innerText);
+  if (debuglog.enabled) {
+    debuglog("copyToClipboard - text copied to clipboard:\n%s",
+      JSON.stringify(elm.innerText),
+    );
+  }
+  window.status = "text copied to clipboard";
+  return result;
 }

@@ -1,8 +1,12 @@
 // lovelace card imports.
 import { css, html, TemplateResult } from 'lit';
 import { state } from 'lit/decorators.js';
+import copyTextToClipboard from 'copy-text-to-clipboard';
 import {
+  mdiAccountDetailsOutline,
   mdiBookOpenVariant,
+  mdiClipboardPlusOutline,
+  mdiDotsHorizontal,
   mdiHeart,
   mdiHeartOutline,
   mdiMicrophone,
@@ -14,23 +18,28 @@ import { sharedStylesMediaInfo } from '../styles/shared-styles-media-info.js';
 import { sharedStylesFavActions } from '../styles/shared-styles-fav-actions.js';
 import { PlayerBodyBase } from './player-body-base';
 import { MediaPlayer } from '../model/media-player';
+import { SearchMediaTypes } from '../types/search-media-types';
+import { SearchMediaEvent } from '../events/search-media';
 import { getIdFromSpotifyUri } from '../services/spotifyplus-service';
+import { formatDateHHMMSSFromMilliseconds, unescapeHtml } from '../utils/utils';
+import { openWindowNewTab } from '../utils/media-browser-utils';
+import { GetAudiobookAuthors, GetAudiobookNarrators } from '../types/spotifyplus/audiobook-simplified';
 import { IChapter } from '../types/spotifyplus/chapter';
-import { formatDateHHMMSSFromMilliseconds, unescapeHtml } from '../utils/utils.js';
-import { openWindowNewTab } from '../utils/media-browser-utils.js';
-import { GetAudiobookAuthors, GetAudiobookNarrators } from '../types/spotifyplus/audiobook-simplified.js';
 
 /**
  * Audiobook actions.
  */
 enum Actions {
-  GetPlayingItem = "GetPlayingItem",
+  AudiobookCopyUriToClipboard = "AudiobookCopyUriToClipboard",
   AudiobookFavoriteAdd = "AudiobookFavoriteAdd",
   AudiobookFavoriteRemove = "AudiobookFavoriteRemove",
   AudiobookFavoriteUpdate = "AudiobookFavoriteUpdate",
   ChapterFavoriteAdd = "ChapterFavoriteAdd",
   ChapterFavoriteRemove = "ChapterFavoriteRemove",
   ChapterFavoriteUpdate = "ChapterFavoriteUpdate",
+  GetPlayingItem = "GetPlayingItem",
+  AudiobookSearchAuthor = "AudiobookSearchAuthor",
+  AudiobookSearchNarrator = "AudiobookSearchNarrator",
 }
 
 
@@ -120,6 +129,28 @@ class PlayerBodyAudiobook extends PlayerBodyBase {
       </div>
      `;
 
+    // define dropdown menu actions - audiobook.
+    const actionsAudiobookHtml = html`
+      <ha-md-button-menu slot="selection-bar" positioning="popover">
+        <ha-assist-chip slot="trigger">
+          <ha-svg-icon slot="icon" .path=${mdiDotsHorizontal}></ha-svg-icon>
+        </ha-assist-chip>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.AudiobookSearchAuthor)} hide=${this.hideSearchType(SearchMediaTypes.AUDIOBOOKS)}>
+          <ha-svg-icon slot="start" .path=${mdiAccountDetailsOutline}></ha-svg-icon>
+          <div slot="headline">Other Audiobooks by same Author</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.AudiobookSearchNarrator)} hide=${this.hideSearchType(SearchMediaTypes.AUDIOBOOKS)}>
+          <ha-svg-icon slot="start" .path=${mdiAccountDetailsOutline}></ha-svg-icon>
+          <div slot="headline">Other Audiobooks by same Narrator</div>
+        </ha-md-menu-item>
+        <ha-md-divider role="separator" tabindex="-1"></ha-md-divider>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.AudiobookCopyUriToClipboard)}>
+          <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
+          <div slot="headline">Copy Audiobook URI to Clipboard</div>
+        </ha-md-menu-item>
+      </ha-md-button-menu>
+      `;
+
     const actionEpisodeSummary = html`
       <div class="media-info-content">
         <div class="media-info-details">
@@ -127,6 +158,9 @@ class PlayerBodyAudiobook extends PlayerBodyBase {
             ${iconAudiobook}
             ${this.chapter?.audiobook.name}
             ${(this.isAudiobookFavorite ? actionAudiobookFavoriteRemove : actionAudiobookFavoriteAdd)}
+            <span class="actions-dropdown-menu">
+              ${actionsAudiobookHtml}
+            </span>
           </div>
           <div class="media-info-text-ms">
             ${iconChapter}
@@ -245,6 +279,24 @@ class PlayerBodyAudiobook extends PlayerBodyBase {
 
     try {
 
+      // process actions that don't require a progress indicator.
+      if (action == Actions.AudiobookCopyUriToClipboard) {
+
+        copyTextToClipboard(this.chapter?.audiobook.uri || "");
+        return true;
+
+      } else if (action == Actions.AudiobookSearchAuthor) {
+
+        this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.AUDIOBOOKS, GetAudiobookAuthors(this.chapter?.audiobook, " ")));
+        return true;
+
+      } else if (action == Actions.AudiobookSearchNarrator) {
+
+        this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.AUDIOBOOKS, GetAudiobookNarrators(this.chapter?.audiobook, " ")));
+        return true;
+
+      }
+
       // show progress indicator.
       this.progressShow();
 
@@ -282,7 +334,7 @@ class PlayerBodyAudiobook extends PlayerBodyBase {
 
       // clear the progress indicator and set alert error message.
       this.progressHide();
-      this.alertErrorSet("Audiobook action failed: \n" + (error as Error).message);
+      this.alertErrorSet("Action failed: \n" + (error as Error).message);
       return true;
 
     }

@@ -7,6 +7,7 @@ import { sharedStylesGrid } from '../styles/shared-styles-grid.js';
 import { sharedStylesMediaInfo } from '../styles/shared-styles-media-info.js';
 import { Store } from '../model/store';
 import { ISpotifyConnectDevice } from '../types/spotifyplus/spotify-connect-device';
+import { copyToClipboard } from '../utils/utils.js';
 
 
 class DeviceActions extends LitElement {
@@ -19,10 +20,10 @@ class DeviceActions extends LitElement {
   @state() private _alertError?: string;
 
 
-  /**
-   * Invoked on each update to perform rendering tasks. 
-   * This method may return any value renderable by lit-html's `ChildPart` (typically a `TemplateResult`). 
-   * Setting properties inside this method will *not* trigger the element to update.
+ /**
+  * Invoked on each update to perform rendering tasks. 
+  * This method may return any value renderable by lit-html's `ChildPart` (typically a `TemplateResult`). 
+  * Setting properties inside this method will *not* trigger the element to update.
   */
   protected render(): TemplateResult | void {
 
@@ -33,35 +34,40 @@ class DeviceActions extends LitElement {
         <div class="media-info-content">
           <div class="img" style="background:url(${this.mediaItem.image_url});"></div>
           <div class="media-info-details">
-            <div class="media-info-text-l">${this.mediaItem.Name}</div>
-            <div class="media-info-text-m">${this.mediaItem.DeviceInfo.BrandDisplayName}</div>
+            <div class="media-info-text-ms-c">${this.mediaItem.Name}</div>
+            <div class="media-info-text-ms">${this.mediaItem.DeviceInfo.BrandDisplayName}</div>
             <div class="media-info-text-s">${this.mediaItem.DeviceInfo.ModelDisplayName}</div>
-            <div class="media-info-text-s">Product ID: ${this.mediaItem.DeviceInfo.ProductId}</div>
           </div>
         </div>
         <div class="grid-container-scrollable">
           <div class="grid device-grid">
             
             <div class="grid-action-info-hdr-s">Device ID</div>
-            <div class="grid-action-info-text-s">${this.mediaItem.DeviceInfo.DeviceId}</div>
+            <div class="grid-action-info-text-s copy2cb" @click=${copyToClipboard}>${this.mediaItem.DeviceInfo.DeviceId}</div>
                     
             <div class="grid-action-info-hdr-s">Device Name</div>
-            <div class="grid-action-info-text-s">${this.mediaItem.DiscoveryResult.DeviceName}</div>
+            <div class="grid-action-info-text-s copy2cb" @click=${copyToClipboard}>${this.mediaItem.DiscoveryResult.DeviceName}</div>
             
             <div class="grid-action-info-hdr-s">Device Type</div>
             <div class="grid-action-info-text-s">${this.mediaItem.DeviceInfo.DeviceType}</div>
                     
+            <div class="grid-action-info-hdr-s">Product ID</div>
+            <div class="grid-action-info-text-s">${this.mediaItem.DeviceInfo.ProductId}</div>
+                    
+            <div class="grid-action-info-hdr-s">Voice Support?</div>
+            <div class="grid-action-info-text-s">${this.mediaItem.DeviceInfo.VoiceSupport}</div>
+
             <div class="grid-action-info-hdr-s">IP DNS Alias</div>
-            <div class="grid-action-info-text-s">${this.mediaItem.DiscoveryResult.Server}</div>
+            <div class="grid-action-info-text-s copy2cb" @click=${copyToClipboard}>${this.mediaItem.DiscoveryResult.Server}</div>
             
             <div class="grid-action-info-hdr-s">IP Address</div>
-            <div class="grid-action-info-text-s">${this.mediaItem.DiscoveryResult.HostIpAddress}</div>
+            <div class="grid-action-info-text-s copy2cb" @click=${copyToClipboard}>${this.mediaItem.DiscoveryResult.HostIpAddress}</div>
             
             <div class="grid-action-info-hdr-s">Zeroconf IP Port</div>
-            <div class="grid-action-info-text-s">${this.mediaItem.DiscoveryResult.HostIpPort}</div>
+            <div class="grid-action-info-text-s copy2cb" @click=${copyToClipboard}>${this.mediaItem.DiscoveryResult.HostIpPort}</div>
             
             <div class="grid-action-info-hdr-s">Zeroconf CPath</div>
-            <div class="grid-action-info-text-s">${this.mediaItem.DiscoveryResult.SpotifyConnectCPath}</div>
+            <div class="grid-action-info-text-s copy2cb" @click=${copyToClipboard}>${this.mediaItem.DiscoveryResult.SpotifyConnectCPath}</div>
 
             <div class="grid-action-info-hdr-s">Is Dynamic Device?</div>
             <div class="grid-action-info-text-s">${this.mediaItem.DiscoveryResult.IsDynamicDevice}</div>
@@ -70,19 +76,13 @@ class DeviceActions extends LitElement {
             <div class="grid-action-info-text-s">${this.mediaItem.DeviceInfo.IsInDeviceList}</div>
 
             <div class="grid-action-info-hdr-s">Auth Token Type</div>
-            <div class="grid-action-info-text-s">${this.mediaItem.DeviceInfo.TokenType}</div>
+            <div class="grid-action-info-text-s copy2cb" @click=${copyToClipboard}>${this.mediaItem.DeviceInfo.TokenType}</div>
                     
             <div class="grid-action-info-hdr-s">Client ID</div>
-            <div class="grid-action-info-text-s">${this.mediaItem.DeviceInfo.ClientId}</div>
+            <div class="grid-action-info-text-s copy2cb" @click=${copyToClipboard}>${this.mediaItem.DeviceInfo.ClientId}</div>
 
             <div class="grid-action-info-hdr-s">Library Version</div>
-            <div class="grid-action-info-text-s">${this.mediaItem.DeviceInfo.LibraryVersion}</div>
-
-            <div class="grid-action-info-hdr-s">Group Status</div>
-            <div class="grid-action-info-text-s">${this.mediaItem.DeviceInfo.GroupStatus}</div>
-
-            <div class="grid-action-info-hdr-s">Voice Support?</div>
-            <div class="grid-action-info-text-s">${this.mediaItem.DeviceInfo.VoiceSupport}</div>
+            <div class="grid-action-info-text-s copy2cb" @click=${copyToClipboard}>${this.mediaItem.DeviceInfo.LibraryVersion}</div>
 
           </div>
         </div>    
@@ -109,6 +109,10 @@ class DeviceActions extends LitElement {
       .device-grid {
         grid-template-columns: auto auto;
         justify-content: left;
+      }
+
+      .copy2cb:hover {
+        cursor: copy;
       }
 
       /* style ha-alert controls */

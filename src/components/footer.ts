@@ -137,11 +137,6 @@ export class Footer extends LitElement {
       :host > *[hide] {
         display: none;
       }
-
-      .ha-icon-button {
-        --mwc-icon-button-size: 3rem;
-        --mwc-icon-size: 2rem;
-      }
     `;
   }
 

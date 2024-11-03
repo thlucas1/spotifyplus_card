@@ -26,6 +26,29 @@ export const sharedStylesFavActions = css`
     color: white;
   }
 
+  /* style actions 3 dots ("...") <ha-md-button-menu> dropdown menu */
+  .actions-dropdown-menu {
+    white-space: nowrap;
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: left;
+    vertical-align: text-top;
+    --ha-select-height: 2.5rem;           /* ha dropdown control height */
+    --mdc-menu-item-height: 2.5rem;       /* mdc dropdown list item height */
+    --mdc-icon-button-size: 2.5rem;       /* mdc icon button size */
+    --md-menu-item-top-space: 0.5rem;     /* top spacing between items */
+    --md-menu-item-bottom-space: 0.5rem;  /* bottom spacing between items */
+    --md-menu-item-one-line-container-height: 2.0rem;  /* menu item height */
+  }
+
+  /* style actions 3 dots ("...") <ha-md-button-menu><ha-assist-chip> dropdown menu */
+  .actions-dropdown-menu > ha-md-button-menu > ha-assist-chip {
+    /*--ha-assist-chip-container-color: var(--card-background-color);*/ /* transparent is default. */
+    --ha-assist-chip-container-shape: 10px;     /* 0px=square corner, 10px=rounded corner */
+    --md-assist-chip-trailing-space: 0px;       /* no label, so no trailing space */
+    --md-assist-chip-container-height: 1.5rem;  /* height of the dropdown menu container */
+  }
+
   /* style ha-icon-button controls in header actions: icon size, title text */
   ha-icon-button[slot="icon-button"] {
     --mdc-icon-button-size: 30px;
@@ -66,6 +89,14 @@ export const sharedStylesFavActions = css`
 
   .icon-button {
     width: 100%;
+  }
+
+  *[hide="true"] {
+    display: none !important;
+  }
+
+  *[hide="false"] {
+    display: block !important;
   }
 
   *[hide] {

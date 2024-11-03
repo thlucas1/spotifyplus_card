@@ -6,6 +6,22 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.10 ] - 2024/11/03
+
+  * This release requires the SpotifyPlus v1.0.64 release; please make sure you update the SpotifyPlus integration prior to updating this SpotifyPlus Card release.
+  * Added `footerIconSize` general config option to change the size of the footer area icons.
+  * Added `playerControlsIconSize` player controls config option to change the size of the player control area icons, volume mute icon, and power on/off icons.
+  * Added actions dropdown menu to all section favorites browser details; most of these are the ability to search for related details.  More actions to come in future releases.
+  * Added actions dropdown menu to all player information details; most of these are the ability to search for related details.  More actions to come in future releases.
+  * Added ability to copy device details to the clipboard; for example, click on the value next to the `Device ID` title to copy the device id to the clipboard.
+  * Added (all browsers) action: copy Spotify URI to clipboard.
+  * Added playlist action: recover playlists via Spotify web ui.
+  * Added playlist action: delete (unfollow) a playlist.
+  * Updated playlist item action: track will now be added to the play queue instead of being played.  This will avoid wiping out the play queue.
+  * Updated album item action: track will now be added to the play queue instead of being played.  This will avoid wiping out the play queue.
+  * Updated podcast show item action: episode will now be added to the play queue instead of being played.  This will avoid wiping out the play queue.
+  * Updated audiobook item action: chapter will now be added to the play queue instead of being played.  This will avoid wiping out the play queue.
+
 ###### [ 1.0.9 ] - 2024/10/30
 
   * This release requires the SpotifyPlus v1.0.63 release; please make sure you update the SpotifyPlus integration prior to updating this SpotifyPlus Card release.

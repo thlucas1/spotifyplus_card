@@ -21,6 +21,7 @@ import { IAlbumSimplified } from '../types/spotifyplus/album-simplified';
 import { IArtist } from '../types/spotifyplus/artist';
 import { IArtistInfo } from '../types/spotifyplus/artist-info';
 import { IArtistPage } from '../types/spotifyplus/artist-page';
+import { IAudiobook } from '../types/spotifyplus/audiobook';
 import { IAudiobookPageSimplified } from '../types/spotifyplus/audiobook-page-simplified';
 import { IAudiobookSimplified } from '../types/spotifyplus/audiobook-simplified';
 import { IChapter } from '../types/spotifyplus/chapter';
@@ -144,9 +145,13 @@ export class SpotifyPlusService {
         }]
       });
 
-      //console.log("CallServiceWithResponse (spotifyplus-service) - Service Response:\n%s",
-      //  JSON.stringify(serviceResponse.response)
-      //);
+      if (debuglog.enabled) {
+        debuglog("%cCallServiceWithResponse - Service %s response:\n%s",
+          "color: orange",
+          JSON.stringify(serviceRequest.service),
+          JSON.stringify(serviceResponse.response, null, 2)
+        );
+      }
 
       // return the service response data or an empty dictionary if no response data was generated.
       return JSON.stringify(serviceResponse.response)
@@ -220,6 +225,55 @@ export class SpotifyPlusService {
   //  //console.log("%cspotifyplus-service._GetJsonStringUserProfile()\n result string:\n%s", "color: gold;", result);
   //  return result;
   //}
+
+
+  /**
+   * Add one or more items to the end of the user's current Spotify Player playback queue.
+   * 
+   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param uris A list of Spotify track or episode URIs to add to the queue (spotify:track:6zd8T1PBe9JFHmuVnurdRp, spotify:track:1kWUud3vY5ij5r62zxpTRy); values can be track or episode URIs.  All URIs must be of the same type - you cannot mix and match tracks and episodes.  An unlimited number of items can be added in one request, but the more items the longer it will take.
+   * @param device_id The id or name of the Spotify Connect Player device this command is targeting.  If not supplied, the user's currently active device is the target.  If no device is active (or an '*' is specified), then the SpotifyPlus default device is activated.
+   * @param verify_device_id True to verify a device id is active; otherwise, false to assume that a device id is already active. Default is True.
+   * @param delay Time delay (in seconds) to wait AFTER issuing the add request (if necessary). This delay will give the spotify web api time to process the change before another command is issued.  Default is 0.15; value range is 0 - 10.
+  */
+  public async AddPlayerQueueItems(
+    entity_id: string,
+    uris: string | undefined | null = null,
+    device_id: string | undefined | null = null,
+    verify_device_id: boolean | undefined | null = true,
+    delay: number | null = null,
+  ): Promise<void> {
+
+    try {
+
+      // create service data (with required parameters).
+      const serviceData: { [key: string]: any } = {
+        entity_id: entity_id,
+        uris: uris,
+      };
+
+      // update service data parameters (with optional parameters).
+      if (device_id)
+        serviceData['device_id'] = device_id;
+      if (verify_device_id)
+        serviceData['verify_device_id'] = verify_device_id;
+      if (delay)
+        serviceData['delay'] = delay;
+
+      // create service request.
+      const serviceRequest: ServiceCallRequest = {
+        domain: DOMAIN_SPOTIFYPLUS,
+        service: 'add_player_queue_items',
+        serviceData: serviceData
+      };
+
+      // call the service (no response).
+      await this.CallService(serviceRequest);
+
+    }
+    finally {
+    }
+  }
 
 
   /**
@@ -986,6 +1040,139 @@ export class SpotifyPlusService {
 
 
   /**
+   * Get Spotify catalog information about artists similar to a given artist.  
+   * Similarity is based on analysis of the Spotify community's listening history.
+   * 
+   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param artist_id The Spotify ID of the artist (e.g. 6APm8EjxOHSYM5B4i3vT3q).  If omitted, the currently playing artist uri id value is used.
+   * @param sort_result True to sort the items by name; otherwise, False to leave the items in the same order they were returned in by the Spotify Web API.  Default is true.
+   * @param trimResults True to trim certain fields of the output results that are not required and to conserve memory; otherwise, False to return all fields that were returned in by the Spotify Web API.
+   * @returns A list of `IArtist` objects.
+  */
+  public async GetArtistRelatedArtists(
+    entity_id: string,
+    artist_id: string | undefined | null = null,
+    sort_result: boolean | null = null,
+    trimResults: boolean = true,
+  ): Promise<Array<IArtist>> {
+
+    try {
+
+      // create service data (with required parameters).
+      const serviceData: { [key: string]: any } = {
+        entity_id: entity_id,
+      };
+
+      // update service data parameters (with optional parameters).
+      if (artist_id)
+        serviceData['artist_id'] = artist_id;
+      if (sort_result)
+        serviceData['sort_result'] = sort_result;
+
+      // create service request.
+      const serviceRequest: ServiceCallRequest = {
+        domain: DOMAIN_SPOTIFYPLUS,
+        service: 'get_artist_related_artists',
+        serviceData: serviceData
+      };
+
+      // call the service, and return the response.
+      const response = await this.CallServiceWithResponse(serviceRequest);
+
+      // get the "result" portion of the response, and convert it to a type.
+      const responseResult = this._GetJsonStringResult(response);
+      const responseObj = JSON.parse(responseResult) as Array<IArtist>;
+
+      //// get the "user_profile" portion of the response, and convert it to a type.
+      //this._GetJsonStringUserProfile(response);
+
+      // omit some data from the results, as it's not necessary and conserves memory.
+      if (trimResults) {
+        if (responseObj != null) {
+          responseObj.forEach(item => {
+            item.images = [];
+          })
+        }
+      }
+
+      return responseObj;
+
+    }
+    finally {
+    }
+  }
+
+
+  /**
+   * Get Spotify catalog information about an artist's top tracks by country.
+   * 
+   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param artist_id The Spotify ID of the artist (e.g. 6APm8EjxOHSYM5B4i3vT3q).  If omitted, the currently playing artist uri id value is used.
+   * @param market An ISO 3166-1 alpha-2 country code. If a country code is specified, only content that is available in that market will be returned.  If a valid user access token is specified in the request header, the country associated with the user account will take priority over this parameter.  Example = 'ES'.
+   * @param sort_result True to sort the items by name; otherwise, False to leave the items in the same order they were returned in by the Spotify Web API.  Default is true.
+   * @param trimResults True to trim certain fields of the output results that are not required and to conserve memory; otherwise, False to return all fields that were returned in by the Spotify Web API.
+   * @returns A list of `ITrack` objects.
+  */
+  public async GetArtistTopTracks(
+    entity_id: string,
+    artist_id: string | undefined | null = null,
+    market: string | null = null,
+    sort_result: boolean | null = null,
+    trimResults: boolean = true,
+  ): Promise<Array<ITrack>> {
+
+    try {
+
+      // create service data (with required parameters).
+      const serviceData: { [key: string]: any } = {
+        entity_id: entity_id,
+      };
+
+      // update service data parameters (with optional parameters).
+      if (artist_id)
+        serviceData['artist_id'] = artist_id;
+      if (market)
+        serviceData['market'] = market;
+      if (sort_result)
+        serviceData['sort_result'] = sort_result;
+
+      // create service request.
+      const serviceRequest: ServiceCallRequest = {
+        domain: DOMAIN_SPOTIFYPLUS,
+        service: 'get_artist_top_tracks',
+        serviceData: serviceData
+      };
+
+      // call the service, and return the response.
+      const response = await this.CallServiceWithResponse(serviceRequest);
+
+      // get the "result" portion of the response, and convert it to a type.
+      const responseResult = this._GetJsonStringResult(response);
+      const responseObj = JSON.parse(responseResult) as Array<ITrack>;
+
+      //// get the "user_profile" portion of the response, and convert it to a type.
+      //this._GetJsonStringUserProfile(response);
+
+      // omit some data from the results, as it's not necessary and conserves memory.
+      if (trimResults) {
+        if (responseObj != null) {
+          responseObj.forEach(item => {
+            item.available_markets = [];
+            item.album.available_markets = []
+            item.album.images = []
+          })
+        }
+      }
+
+      return responseObj;
+
+    }
+    finally {
+    }
+  }
+
+
+  /**
    * Get the current user's followed artists.
    * 
    * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
@@ -1051,6 +1238,73 @@ export class SpotifyPlusService {
       // set the lastUpdatedOn value to epoch (number of seconds), as the
       // service does not provide this field (but we need it for media list processing).
       responseObj.lastUpdatedOn = Date.now() / 1000
+
+      return responseObj;
+
+    }
+    finally {
+    }
+  }
+
+
+  /**
+   * Get Spotify catalog information for a single audiobook.  
+   * Audiobooks are only available within the US, UK, Canada, Ireland, New Zealand and Australia markets.
+   * 
+   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param audiobook_id The Spotify ID for the audiobook (e.g. `74aydHJKgYz3AIq3jjBSv1`). If null, the currently playing audiobook uri id value is used.
+   * @param market An ISO 3166-1 alpha-2 country code. If a country code is specified, only content that is available in that market will be returned.  If a valid user access token is specified in the request header, the country associated with the user account will take priority over this parameter.  Example = 'ES'.
+   * @param trimResults True to trim certain fields of the output results that are not required and to conserve memory; otherwise, False to return all fields that were returned in by the Spotify Web API.
+   * @returns A `IAudiobook` object that contains the audiobook details.
+  */
+  public async GetAudiobook(
+    entity_id: string,
+    audiobook_id: string | undefined | null = null,
+    market: string | null = null,
+    trimResults: boolean = true,
+  ): Promise<IAudiobook> {
+
+    try {
+
+      // create service data (with required parameters).
+      const serviceData: { [key: string]: any } = {
+        entity_id: entity_id,
+      };
+
+      // update service data parameters (with optional parameters).
+      if (audiobook_id)
+        serviceData['audiobook_id'] = audiobook_id;
+      if (market)
+        serviceData['market'] = market;
+
+      // create service request.
+      const serviceRequest: ServiceCallRequest = {
+        domain: DOMAIN_SPOTIFYPLUS,
+        service: 'get_audiobook',
+        serviceData: serviceData
+      };
+
+      // call the service, and return the response.
+      const response = await this.CallServiceWithResponse(serviceRequest);
+
+      // get the "result" portion of the response, and convert it to a type.
+      const responseResult = this._GetJsonStringResult(response);
+      const responseObj = JSON.parse(responseResult) as IAudiobook;
+
+      // omit some data from the results, as it's not necessary and conserves memory.
+      if (trimResults) {
+        if (responseObj != null) {
+          responseObj.available_markets = [];
+          responseObj.images = []
+          responseObj.chapters?.forEach(item => {
+            item.items?.forEach(chapter => {
+              chapter.available_markets = [];
+              chapter.description = 'see html_description';
+              chapter.images = [];
+            })
+          })
+        }
+      }
 
       return responseObj;
 

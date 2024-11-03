@@ -123,31 +123,28 @@ class PlayerControls extends LitElement {
 
       .player-volume-container {
         display: block;
-        height: 2.5rem;
       }
 
       .icons {
         justify-content: center;
         display: inline-flex;
         align-items: center;
-        --mdc-icon-button-size: 2.5rem !important;
-        --mdc-icon-size: 1.75rem !important;
         mix-blend-mode: screen;
         overflow: hidden;
         text-shadow: 0 0 2px var(--spc-player-palette-vibrant);
         color: white;
+        --mdc-icon-button-size: var(--spc-player-controls-icon-button-size, 2.75rem);
+        --mdc-icon-size: var(--spc-player-controls-icon-size, 2.0rem);
       }
 
       .iconsPower {
         justify-content: center;
         display: block;
         align-items: center;
-        --mdc-icon-button-size: 2.5rem !important;
-        --mdc-icon-size: 2.5rem !important;
         overflow: hidden;
         color: white;
-        /* mix-blend-mode: screen; */
-        /* text-shadow: 0 0 2px var(--spc-player-palette-vibrant); */
+        --mdc-icon-button-size: var(--spc-player-controls-icon-button-size, 3.25rem);
+        --mdc-icon-size: var(--spc-player-controls-icon-size, 2.5rem);
       }
 
       *[hide] {
@@ -293,11 +290,15 @@ class PlayerControls extends LitElement {
 
       // if body is displayed, then request a queue items refresh.
       if (this.isQueueItemsVisible) {
-        if (debuglog.enabled) {
-          debuglog("onClickAction - calling for refresh of queue items");
-        }
+        debuglog("toggleDisplayPlayerBodyQueue - calling for refresh of queue items");
         elmBody.refreshQueueItems();
+      } else {
+        debuglog("toggleDisplayPlayerBodyQueue - queue items not visible; isQueueItemsVisible = %s",
+          JSON.stringify(this.isQueueItemsVisible),
+        );
       }
+    } else {
+      debuglog("toggleDisplayPlayerBodyQueue - could not find queue items #elmPlayerBodyQueue selector!");
     }
 
   }
@@ -344,10 +345,14 @@ class PlayerControls extends LitElement {
 
         // toggle action favorites visibility.
         this.isActionFavoritesVisible = !this.isActionFavoritesVisible;
+        if (debuglog.enabled) {
+          debuglog("update - action favorites toggled - isActionFavoritesVisible = %s",
+            JSON.stringify(this.isActionFavoritesVisible),
+          );
+        }
 
-        debuglog("%c update - action favorites toggled");
         if (this.isQueueItemsVisible) {
-          debuglog("%c update - queue items visible; imeediately closing queue items, and delay opening action favorites");
+          debuglog("update - queue items visible; imediately closing queue items, and delay opening action favorites");
           // close the queue items body.
           this.isQueueItemsVisible = false;
           this.toggleDisplayPlayerBodyQueue();
@@ -356,7 +361,7 @@ class PlayerControls extends LitElement {
             this.toggleDisplayActionFavorites();
           }, 250);
         } else {
-          debuglog("%c update - queue items not visible; immediately toggling action favorites");
+          debuglog("update - queue items not visible; immediately toggling action favorites");
           // show the action favorites body, since the queue items is closed.
           this.toggleDisplayActionFavorites();
         }
@@ -374,10 +379,14 @@ class PlayerControls extends LitElement {
 
         // toggle queue items visibility.
         this.isQueueItemsVisible = !this.isQueueItemsVisible;
+        if (debuglog.enabled) {
+          debuglog("update - queue items toggled - isQueueItemsVisible = %s",
+            JSON.stringify(this.isQueueItemsVisible),
+          );
+        }
 
-        debuglog("%c update - queue items toggled");
         if (this.isActionFavoritesVisible) {
-          debuglog("%c update - action favorites visible; imeediately closing action favorites, and delay opening queue items");
+          debuglog("update - action favorites visible; imeediately closing action favorites, and delay opening queue items");
           // close the action favorites body.
           this.isActionFavoritesVisible = false;
           this.toggleDisplayActionFavorites();
@@ -386,7 +395,7 @@ class PlayerControls extends LitElement {
             this.toggleDisplayPlayerBodyQueue();
           }, 250);
         } else {
-          debuglog("%c update - action favorites not visible; immediately opening queue items");
+          debuglog("update - action favorites not visible; immediately opening queue items");
           // show the queue items, since the action favorites body is closed.
           this.toggleDisplayPlayerBodyQueue();
         }
@@ -439,6 +448,7 @@ class PlayerControls extends LitElement {
 
       }
 
+      this.progressHide();
       return true;
 
     }
@@ -446,14 +456,11 @@ class PlayerControls extends LitElement {
 
       // set alert error message.
       this.alertErrorSet("Control action failed: \n" + (error as Error).message);
+      this.progressHide();
       return true;
 
     }
     finally {
-
-      // hide progress indicator.
-      this.progressHide();
-
     }
 
   }

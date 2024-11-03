@@ -1,12 +1,18 @@
 // lovelace card imports.
 import { css, html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
+import copyTextToClipboard from 'copy-text-to-clipboard';
 import {
   mdiAccountMusic,
   mdiAlbum,
+  mdiClipboardPlusOutline,
+  mdiDotsHorizontal,
   mdiHeart,
   mdiHeartOutline,
   mdiMusic,
+  mdiPlaylistMusic,
+  mdiPlaylistPlay,
+  mdiRadio,
 } from '@mdi/js';
 
 // our imports.
@@ -16,23 +22,36 @@ import { sharedStylesFavActions } from '../styles/shared-styles-fav-actions.js';
 import { FavActionsBase } from './fav-actions-base';
 import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
+import { SearchMediaTypes } from '../types/search-media-types';
+import { SearchMediaEvent } from '../events/search-media';
 import { formatDateHHMMSSFromMilliseconds } from '../utils/utils';
+import { openWindowNewTab } from '../utils/media-browser-utils';
+import { RADIO_SEARCH_KEY } from '../constants.js';
 import { ITrack } from '../types/spotifyplus/track';
-import { openWindowNewTab } from '../utils/media-browser-utils.js';
 
 /**
  * Track actions.
  */
 enum Actions {
+  AlbumCopyUriToClipboard = "AlbumCopyUriToClipboard",
   AlbumFavoriteAdd = "AlbumFavoriteAdd",
   AlbumFavoriteRemove = "AlbumFavoriteRemove",
   AlbumFavoriteUpdate = "AlbumFavoriteUpdate",
+  AlbumSearchRadio = "AlbumSearchRadio",
+  ArtistCopyUriToClipboard = "ArtistCopyUriToClipboard",
   ArtistFavoriteAdd = "ArtistFavoriteAdd",
   ArtistFavoriteRemove = "ArtistFavoriteRemove",
   ArtistFavoriteUpdate = "ArtistFavoriteUpdate",
+  ArtistSearchPlaylists = "ArtistSearchPlaylists",
+  ArtistSearchRadio = "ArtistSearchRadio",
+  ArtistSearchTracks = "ArtistSearchTracks",
+  TrackCopyUriToClipboard = "TrackCopyUriToClipboard",
   TrackFavoriteAdd = "TrackFavoriteAdd",
   TrackFavoriteRemove = "TrackFavoriteRemove",
   TrackFavoriteUpdate = "TrackFavoriteUpdate",
+  TrackPlayQueueAdd = "TrackPlayQueueAdd",
+  TrackSearchPlaylists = "TrackSearchPlaylists",
+  TrackSearchRadio = "TrackSearchRadio",
 }
 
 
@@ -169,6 +188,77 @@ class TrackActions extends FavActionsBase {
       </div>
      `;
 
+    // define dropdown menu actions - track.
+    const actionsTrackHtml = html`
+      <ha-md-button-menu slot="selection-bar" positioning="popover">
+        <ha-assist-chip slot="trigger">
+          <ha-svg-icon slot="icon" .path=${mdiDotsHorizontal}></ha-svg-icon>
+        </ha-assist-chip>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.TrackSearchPlaylists)} hide=${this.hideSearchType(SearchMediaTypes.PLAYLISTS)}>
+          <ha-svg-icon slot="start" .path=${mdiPlaylistPlay}></ha-svg-icon>
+          <div slot="headline">Search Playlists for Track</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.TrackSearchRadio)} hide=${this.hideSearchType(SearchMediaTypes.PLAYLISTS)}>
+          <ha-svg-icon slot="start" .path=${mdiRadio}></ha-svg-icon>
+          <div slot="headline">Search for Track Radio</div>
+        </ha-md-menu-item>
+        <ha-md-divider role="separator" tabindex="-1"></ha-md-divider>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.TrackPlayQueueAdd)}>
+          <ha-svg-icon slot="start" .path=${mdiPlaylistMusic}></ha-svg-icon>
+          <div slot="headline">Add Track to Play Queue</div>
+        </ha-md-menu-item>
+        <ha-md-divider role="separator" tabindex="-1"></ha-md-divider>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.TrackCopyUriToClipboard)}>
+          <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
+          <div slot="headline">Copy Track URI to Clipboard</div>
+        </ha-md-menu-item>
+      </ha-md-button-menu>
+      `;
+
+    // define dropdown menu actions - album.
+    const actionsAlbumHtml = html`
+      <ha-md-button-menu slot="selection-bar" positioning="popover">
+        <ha-assist-chip slot="trigger">
+          <ha-svg-icon slot="icon" .path=${mdiDotsHorizontal}></ha-svg-icon>
+        </ha-assist-chip>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.AlbumSearchRadio)} hide=${this.hideSearchType(SearchMediaTypes.PLAYLISTS)}>
+          <ha-svg-icon slot="start" .path=${mdiRadio}></ha-svg-icon>
+          <div slot="headline">Search for Album Radio</div>
+        </ha-md-menu-item>
+        <ha-md-divider role="separator" tabindex="-1"></ha-md-divider>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.AlbumCopyUriToClipboard)}>
+          <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
+          <div slot="headline">Copy Album URI to Clipboard</div>
+        </ha-md-menu-item>
+      </ha-md-button-menu>
+      `;
+
+    // define dropdown menu actions - artist.
+    const actionsArtistHtml = html`
+      <ha-md-button-menu slot="selection-bar" positioning="popover">
+        <ha-assist-chip slot="trigger">
+          <ha-svg-icon slot="icon" .path=${mdiDotsHorizontal}></ha-svg-icon>
+        </ha-assist-chip>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistSearchPlaylists)} hide=${this.hideSearchType(SearchMediaTypes.PLAYLISTS)}>
+          <ha-svg-icon slot="start" .path=${mdiPlaylistPlay}></ha-svg-icon>
+          <div slot="headline">Search Playlists for Artist</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistSearchTracks)} hide=${this.hideSearchType(SearchMediaTypes.TRACKS)}>
+          <ha-svg-icon slot="start" .path=${mdiMusic}></ha-svg-icon>
+          <div slot="headline">Search Tracks for Artist</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistSearchRadio)} hide=${this.hideSearchType(SearchMediaTypes.PLAYLISTS)}>
+          <ha-svg-icon slot="start" .path=${mdiRadio}></ha-svg-icon>
+          <div slot="headline">Search for Artist Radio</div>
+        </ha-md-menu-item>
+        <ha-md-divider role="separator" tabindex="-1"></ha-md-divider>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistCopyUriToClipboard)}>
+          <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
+          <div slot="headline">Copy Artist URI to Clipboard</div>
+        </ha-md-menu-item>
+      </ha-md-button-menu>
+      `;
+
     // render html.
     // note that mediaItem could be an IAlbum or IAlbumSimplified object.
     return html` 
@@ -181,16 +271,25 @@ class TrackActions extends FavActionsBase {
               ${iconTrack}
               ${this.mediaItem.name}
               ${(this.isTrackFavorite ? actionTrackFavoriteRemove : actionTrackFavoriteAdd)}
+              <span class="actions-dropdown-menu">
+                ${actionsTrackHtml}
+              </span>
             </div>
             <div class="media-info-text-ms">
               ${iconAlbum}
               ${this.mediaItem.album.name}
               ${(this.isAlbumFavorite ? actionAlbumFavoriteRemove : actionAlbumFavoriteAdd)}
+              <span class="actions-dropdown-menu">
+                ${actionsAlbumHtml}
+              </span>
             </div>
             <div class="media-info-text-ms">
               ${iconArtist}
               ${this.mediaItem.artists[0].name}
               ${(this.isArtistFavorite ? actionArtistFavoriteRemove : actionArtistFavoriteAdd)}
+              <span class="actions-dropdown-menu">
+                ${actionsArtistHtml}
+              </span>
             </div>
             <div class="grid track-info-grid">
               <div class="grid-action-info-hdr-s">Track #</div>
@@ -276,48 +375,116 @@ class TrackActions extends FavActionsBase {
       return true;
     }
 
-    // show progress indicator.
-    this.progressShow();
+    try {
 
-    // call service based on requested action, and refresh affected action component.
-    if (action == Actions.AlbumFavoriteAdd) {
+      // process actions that don't require a progress indicator.
+      if (action == Actions.AlbumCopyUriToClipboard) {
 
-      await this.spotifyPlusService.SaveAlbumFavorites(this.player.id, this.mediaItem.album.id);
-      this.updateActions(this.player, [Actions.AlbumFavoriteUpdate]);
+        copyTextToClipboard(this.mediaItem.album.uri);
+        return true;
 
-    } else if (action == Actions.AlbumFavoriteRemove) {
+      } else if (action == Actions.AlbumSearchRadio) {
 
-      await this.spotifyPlusService.RemoveAlbumFavorites(this.player.id, this.mediaItem.album.id);
-      this.updateActions(this.player, [Actions.AlbumFavoriteUpdate]);
+        this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.PLAYLISTS, this.mediaItem.album.name + RADIO_SEARCH_KEY + this.mediaItem.artists[0].name));
+        return true;
 
-    } else if (action == Actions.ArtistFavoriteAdd) {
+      } else if (action == Actions.ArtistCopyUriToClipboard) {
 
-      await this.spotifyPlusService.FollowArtists(this.player.id, this.mediaItem.artists[0].id);
-      this.updateActions(this.player, [Actions.ArtistFavoriteUpdate]);
+        copyTextToClipboard(this.mediaItem.artists[0].uri);
+        return true;
 
-    } else if (action == Actions.ArtistFavoriteRemove) {
+      } else if (action == Actions.ArtistSearchPlaylists) {
 
-      await this.spotifyPlusService.UnfollowArtists(this.player.id, this.mediaItem.artists[0].id);
-      this.updateActions(this.player, [Actions.ArtistFavoriteUpdate]);
+        this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.PLAYLISTS, this.mediaItem.artists[0].name));
+        return true;
 
-    } else if (action == Actions.TrackFavoriteAdd) {
+      } else if (action == Actions.ArtistSearchRadio) {
 
-      await this.spotifyPlusService.SaveTrackFavorites(this.player.id, this.mediaItem.id);
-      this.updateActions(this.player, [Actions.TrackFavoriteUpdate]);
+        this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.PLAYLISTS, this.mediaItem.artists[0].name + RADIO_SEARCH_KEY));
+        return true;
 
-    } else if (action == Actions.TrackFavoriteRemove) {
+      } else if (action == Actions.ArtistSearchTracks) {
 
-      await this.spotifyPlusService.RemoveTrackFavorites(this.player.id, this.mediaItem.id);
-      this.updateActions(this.player, [Actions.TrackFavoriteUpdate]);
+        this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.TRACKS, this.mediaItem.artists[0].name));
+        return true;
 
-    } else {
+      } else if (action == Actions.TrackCopyUriToClipboard) {
 
-      // no action selected - hide progress indicator.
+        copyTextToClipboard(this.mediaItem.uri);
+        return true;
+
+      } else if (action == Actions.TrackSearchPlaylists) {
+
+        this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.PLAYLISTS, this.mediaItem.name + " " + this.mediaItem.artists[0].name));
+        return true;
+
+      } else if (action == Actions.TrackSearchRadio) {
+
+        this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.PLAYLISTS, this.mediaItem.name + RADIO_SEARCH_KEY + this.mediaItem.artists[0].name));
+        return true;
+
+      }
+
+      // show progress indicator.
+      this.progressShow();
+
+      // call service based on requested action, and refresh affected action component.
+      if (action == Actions.AlbumFavoriteAdd) {
+
+        await this.spotifyPlusService.SaveAlbumFavorites(this.player.id, this.mediaItem.album.id);
+        this.updateActions(this.player, [Actions.AlbumFavoriteUpdate]);
+
+      } else if (action == Actions.AlbumFavoriteRemove) {
+
+        await this.spotifyPlusService.RemoveAlbumFavorites(this.player.id, this.mediaItem.album.id);
+        this.updateActions(this.player, [Actions.AlbumFavoriteUpdate]);
+
+      } else if (action == Actions.ArtistFavoriteAdd) {
+
+        await this.spotifyPlusService.FollowArtists(this.player.id, this.mediaItem.artists[0].id);
+        this.updateActions(this.player, [Actions.ArtistFavoriteUpdate]);
+
+      } else if (action == Actions.ArtistFavoriteRemove) {
+
+        await this.spotifyPlusService.UnfollowArtists(this.player.id, this.mediaItem.artists[0].id);
+        this.updateActions(this.player, [Actions.ArtistFavoriteUpdate]);
+
+      } else if (action == Actions.TrackFavoriteAdd) {
+
+        await this.spotifyPlusService.SaveTrackFavorites(this.player.id, this.mediaItem.id);
+        this.updateActions(this.player, [Actions.TrackFavoriteUpdate]);
+
+      } else if (action == Actions.TrackFavoriteRemove) {
+
+        await this.spotifyPlusService.RemoveTrackFavorites(this.player.id, this.mediaItem.id);
+        this.updateActions(this.player, [Actions.TrackFavoriteUpdate]);
+
+      } else if (action == Actions.TrackPlayQueueAdd) {
+
+        // have to hide the progress indicator manually since it does not call updateActions.
+        await this.spotifyPlusService.AddPlayerQueueItems(this.player.id, this.mediaItem.uri, null, false);
+        this.progressHide();
+
+      } else {
+
+        // no action selected - hide progress indicator.
+        this.progressHide();
+
+      }
+
+      return true;
+    }
+    catch (error) {
+
+      // clear the progress indicator and set alert error message.
       this.progressHide();
+      this.alertErrorSet("Action failed: \n" + (error as Error).message);
+      return true;
 
     }
+    finally {
+    }
 
-    return true;
   }
 
 

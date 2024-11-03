@@ -31,6 +31,12 @@ export interface CardConfig extends LovelaceCardConfig {
   title?: string;
 
   /**
+   * Size of the icons in the Footer controls area.
+   * Default is '2rem'.
+   */
+  footerIconSize?: string;
+
+  /**
    * Width of the card (in 'rem' units).
    * A value of "fill" can also be used (requires manual editing) to use 100% of 
    * the available horizontal space (good for panel dashboards).
@@ -341,6 +347,12 @@ export interface CardConfig extends LovelaceCardConfig {
    * Default is '#000000bb'.
    */
   playerControlsBackgroundColor?: string;
+
+  /**
+   * Size of the icons in the Player controls area.
+   * Default is '2.0rem'.
+   */
+  playerControlsIconSize?: string;
 
   /**
    * Hide mute button in the volume controls area of the Player section form.
