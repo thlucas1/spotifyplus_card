@@ -145,13 +145,13 @@ export class SpotifyPlusService {
         }]
       });
 
-      if (debuglog.enabled) {
-        debuglog("%cCallServiceWithResponse - Service %s response:\n%s",
-          "color: orange",
-          JSON.stringify(serviceRequest.service),
-          JSON.stringify(serviceResponse.response, null, 2)
-        );
-      }
+      //if (debuglog.enabled) {
+      //  debuglog("%cCallServiceWithResponse - Service %s response:\n%s",
+      //    "color: orange",
+      //    JSON.stringify(serviceRequest.service),
+      //    JSON.stringify(serviceResponse.response, null, 2)
+      //  );
+      //}
 
       // return the service response data or an empty dictionary if no response data was generated.
       return JSON.stringify(serviceResponse.response)
@@ -726,6 +726,16 @@ export class SpotifyPlusService {
         }
       }
 
+      // trace.
+      if (debuglog.enabled) {
+        debuglog("%cCallServiceWithResponse - Service %s response (trimmed):\n%s",
+          "color: orange",
+          JSON.stringify(serviceRequest.service),
+          JSON.stringify(responseObj, null, 2)
+        );
+      }
+
+      // return results to caller.
       return responseObj;
 
     }
@@ -807,10 +817,16 @@ export class SpotifyPlusService {
         }
       }
 
-      // set the lastUpdatedOn value to epoch (number of seconds), as the
-      // service does not provide this field (but we need it for media list processing).
-      responseObj.lastUpdatedOn = Date.now() / 1000
+      // trace.
+      if (debuglog.enabled) {
+        debuglog("%cCallServiceWithResponse - Service %s response (trimmed):\n%s",
+          "color: orange",
+          JSON.stringify(serviceRequest.service),
+          JSON.stringify(responseObj, null, 2)
+        );
+      }
 
+      // return results to caller.
       return responseObj;
 
     }
@@ -886,6 +902,16 @@ export class SpotifyPlusService {
         }
       }
 
+      // trace.
+      if (debuglog.enabled) {
+        debuglog("%cCallServiceWithResponse - Service %s response (trimmed):\n%s",
+          "color: orange",
+          JSON.stringify(serviceRequest.service),
+          JSON.stringify(responseObj, null, 2)
+        );
+      }
+
+      // return results to caller.
       return responseObj;
 
     }
@@ -970,10 +996,16 @@ export class SpotifyPlusService {
         }
       }
 
-      // set the lastUpdatedOn value to epoch (number of seconds), as the
-      // service does not provide this field (but we need it for media list processing).
-      responseObj.lastUpdatedOn = Date.now() / 1000
+      // trace.
+      if (debuglog.enabled) {
+        debuglog("%cCallServiceWithResponse - Service %s response (trimmed):\n%s",
+          "color: orange",
+          JSON.stringify(serviceRequest.service),
+          JSON.stringify(responseObj, null, 2)
+        );
+      }
 
+      // return results to caller.
       return responseObj;
 
     }
@@ -1031,6 +1063,16 @@ export class SpotifyPlusService {
         }
       }
 
+      // trace.
+      if (debuglog.enabled) {
+        debuglog("%cCallServiceWithResponse - Service %s response (trimmed):\n%s",
+          "color: orange",
+          JSON.stringify(serviceRequest.service),
+          JSON.stringify(responseObj, null, 2)
+        );
+      }
+
+      // return results to caller.
       return responseObj;
 
     }
@@ -1095,6 +1137,16 @@ export class SpotifyPlusService {
         }
       }
 
+      // trace.
+      if (debuglog.enabled) {
+        debuglog("%cCallServiceWithResponse - Service %s response (trimmed):\n%s",
+          "color: orange",
+          JSON.stringify(serviceRequest.service),
+          JSON.stringify(responseObj, null, 2)
+        );
+      }
+
+      // return results to caller.
       return responseObj;
 
     }
@@ -1164,6 +1216,16 @@ export class SpotifyPlusService {
         }
       }
 
+      // trace.
+      if (debuglog.enabled) {
+        debuglog("%cCallServiceWithResponse - Service %s response (trimmed):\n%s",
+          "color: orange",
+          JSON.stringify(serviceRequest.service),
+          JSON.stringify(responseObj, null, 2)
+        );
+      }
+
+      // return results to caller.
       return responseObj;
 
     }
@@ -1235,10 +1297,16 @@ export class SpotifyPlusService {
         }
       }
 
-      // set the lastUpdatedOn value to epoch (number of seconds), as the
-      // service does not provide this field (but we need it for media list processing).
-      responseObj.lastUpdatedOn = Date.now() / 1000
+      // trace.
+      if (debuglog.enabled) {
+        debuglog("%cCallServiceWithResponse - Service %s response (trimmed):\n%s",
+          "color: orange",
+          JSON.stringify(serviceRequest.service),
+          JSON.stringify(responseObj, null, 2)
+        );
+      }
 
+      // return results to caller.
       return responseObj;
 
     }
@@ -1306,6 +1374,16 @@ export class SpotifyPlusService {
         }
       }
 
+      // trace.
+      if (debuglog.enabled) {
+        debuglog("%cCallServiceWithResponse - Service %s response (trimmed):\n%s",
+          "color: orange",
+          JSON.stringify(serviceRequest.service),
+          JSON.stringify(responseObj, null, 2)
+        );
+      }
+
+      // return results to caller.
       return responseObj;
 
     }
@@ -1383,10 +1461,16 @@ export class SpotifyPlusService {
         }
       }
 
-      // set the lastUpdatedOn value to epoch (number of seconds), as the
-      // service does not provide this field (but we need it for media list processing).
-      responseObj.lastUpdatedOn = Date.now() / 1000
+      // trace.
+      if (debuglog.enabled) {
+        debuglog("%cCallServiceWithResponse - Service %s response (trimmed):\n%s",
+          "color: orange",
+          JSON.stringify(serviceRequest.service),
+          JSON.stringify(responseObj, null, 2)
+        );
+      }
 
+      // return results to caller.
       return responseObj;
 
     }
@@ -1460,10 +1544,16 @@ export class SpotifyPlusService {
         }
       }
 
-      // set the lastUpdatedOn value to epoch (number of seconds), as the
-      // service does not provide this field (but we need it for media list processing).
-      responseObj.lastUpdatedOn = Date.now() / 1000
+      // trace.
+      if (debuglog.enabled) {
+        debuglog("%cCallServiceWithResponse - Service %s response (trimmed):\n%s",
+          "color: orange",
+          JSON.stringify(serviceRequest.service),
+          JSON.stringify(responseObj, null, 2)
+        );
+      }
 
+      // return results to caller.
       return responseObj;
 
     }
@@ -1529,6 +1619,16 @@ export class SpotifyPlusService {
         }
       }
 
+      // trace.
+      if (debuglog.enabled) {
+        debuglog("%cCallServiceWithResponse - Service %s response (trimmed):\n%s",
+          "color: orange",
+          JSON.stringify(serviceRequest.service),
+          JSON.stringify(responseObj, null, 2)
+        );
+      }
+
+      // return results to caller.
       return responseObj;
 
     }
@@ -1593,6 +1693,16 @@ export class SpotifyPlusService {
         }
       }
 
+      // trace.
+      if (debuglog.enabled) {
+        debuglog("%cCallServiceWithResponse - Service %s response (trimmed):\n%s",
+          "color: orange",
+          JSON.stringify(serviceRequest.service),
+          JSON.stringify(responseObj, null, 2)
+        );
+      }
+
+      // return results to caller.
       return responseObj;
 
     }
@@ -1669,10 +1779,16 @@ export class SpotifyPlusService {
         }
       }
 
-      // set the lastUpdatedOn value to epoch (number of seconds), as the
-      // service does not provide this field (but we need it for media list processing).
-      responseObj.lastUpdatedOn = Date.now() / 1000
+      // trace.
+      if (debuglog.enabled) {
+        debuglog("%cCallServiceWithResponse - Service %s response (trimmed):\n%s",
+          "color: orange",
+          JSON.stringify(serviceRequest.service),
+          JSON.stringify(responseObj, null, 2)
+        );
+      }
 
+      // return results to caller.
       return responseObj;
 
     }
@@ -1760,8 +1876,18 @@ export class SpotifyPlusService {
 
       // set the lastUpdatedOn value to epoch (number of seconds), as the
       // service does not provide this field (but we need it for media list processing).
-      responseObj.lastUpdatedOn = Date.now() / 1000
+      responseObj.date_last_refreshed = responseObj.date_last_refreshed || (Date.now() / 1000);
 
+      // trace.
+      if (debuglog.enabled) {
+        debuglog("%cCallServiceWithResponse - Service %s response (trimmed):\n%s",
+          "color: orange",
+          JSON.stringify(serviceRequest.service),
+          JSON.stringify(responseObj, null, 2)
+        );
+      }
+
+      // return results to caller.
       return responseObj;
 
     }
@@ -1839,10 +1965,16 @@ export class SpotifyPlusService {
         }
       }
 
-      // set the lastUpdatedOn value to epoch (number of seconds), as the
-      // service does not provide this field (but we need it for media list processing).
-      responseObj.lastUpdatedOn = Date.now() / 1000
+      // trace.
+      if (debuglog.enabled) {
+        debuglog("%cCallServiceWithResponse - Service %s response (trimmed):\n%s",
+          "color: orange",
+          JSON.stringify(serviceRequest.service),
+          JSON.stringify(responseObj, null, 2)
+        );
+      }
 
+      // return results to caller.
       return responseObj;
 
     }
@@ -1914,10 +2046,16 @@ export class SpotifyPlusService {
         }
       }
 
-      // set the lastUpdatedOn value to epoch (number of seconds), as the
-      // service does not provide this field (but we need it for media list processing).
-      responseObj.lastUpdatedOn = Date.now() / 1000
+      // trace.
+      if (debuglog.enabled) {
+        debuglog("%cCallServiceWithResponse - Service %s response (trimmed):\n%s",
+          "color: orange",
+          JSON.stringify(serviceRequest.service),
+          JSON.stringify(responseObj, null, 2)
+        );
+      }
 
+      // return results to caller.
       return responseObj;
 
     }
@@ -2012,10 +2150,16 @@ export class SpotifyPlusService {
         }
       }
 
-      // set the lastUpdatedOn value to epoch (number of seconds), as the
-      // service does not provide this field (but we need it for media list processing).
-      responseObj.lastUpdatedOn = Date.now() / 1000
+      // trace.
+      if (debuglog.enabled) {
+        debuglog("%cCallServiceWithResponse - Service %s response (trimmed):\n%s",
+          "color: orange",
+          JSON.stringify(serviceRequest.service),
+          JSON.stringify(responseObj, null, 2)
+        );
+      }
 
+      // return results to caller.
       return responseObj;
 
     }
@@ -2091,6 +2235,16 @@ export class SpotifyPlusService {
         })
       }
 
+      // trace.
+      if (debuglog.enabled) {
+        debuglog("%cCallServiceWithResponse - Service %s response (trimmed):\n%s",
+          "color: orange",
+          JSON.stringify(serviceRequest.service),
+          JSON.stringify(responseObj, null, 2)
+        );
+      }
+
+      // return results to caller.
       return responseObj;
 
     }
@@ -2167,10 +2321,16 @@ export class SpotifyPlusService {
         }
       }
 
-      // set the lastUpdatedOn value to epoch (number of seconds), as the
-      // service does not provide this field (but we need it for media list processing).
-      responseObj.lastUpdatedOn = Date.now() / 1000
+      // trace.
+      if (debuglog.enabled) {
+        debuglog("%cCallServiceWithResponse - Service %s response (trimmed):\n%s",
+          "color: orange",
+          JSON.stringify(serviceRequest.service),
+          JSON.stringify(responseObj, null, 2)
+        );
+      }
 
+      // return results to caller.
       return responseObj;
 
     }
@@ -2248,10 +2408,16 @@ export class SpotifyPlusService {
         }
       }
 
-      // set the lastUpdatedOn value to epoch (number of seconds), as the
-      // service does not provide this field (but we need it for media list processing).
-      responseObj.lastUpdatedOn = Date.now() / 1000
+      // trace.
+      if (debuglog.enabled) {
+        debuglog("%cCallServiceWithResponse - Service %s response (trimmed):\n%s",
+          "color: orange",
+          JSON.stringify(serviceRequest.service),
+          JSON.stringify(responseObj, null, 2)
+        );
+      }
 
+      // return results to caller.
       return responseObj;
 
     }
@@ -2308,6 +2474,16 @@ export class SpotifyPlusService {
         }
       }
 
+      // trace.
+      if (debuglog.enabled) {
+        debuglog("%cCallServiceWithResponse - Service %s response (trimmed):\n%s",
+          "color: orange",
+          JSON.stringify(serviceRequest.service),
+          JSON.stringify(responseObj, null, 2)
+        );
+      }
+
+      // return results to caller.
       return responseObj;
 
     }
@@ -2385,10 +2561,16 @@ export class SpotifyPlusService {
         }
       }
 
-      // set the lastUpdatedOn value to epoch (number of seconds), as the
-      // service does not provide this field (but we need it for media list processing).
-      responseObj.lastUpdatedOn = Date.now() / 1000
+      // trace.
+      if (debuglog.enabled) {
+        debuglog("%cCallServiceWithResponse - Service %s response (trimmed):\n%s",
+          "color: orange",
+          JSON.stringify(serviceRequest.service),
+          JSON.stringify(responseObj, null, 2)
+        );
+      }
 
+      // return results to caller.
       return responseObj;
 
     }
@@ -3059,9 +3241,16 @@ export class SpotifyPlusService {
         }
       }
 
-      // set the lastUpdatedOn value to epoch (number of seconds), as the
-      // service does not provide this field (but we need it for media list processing).
-      responseObj.lastUpdatedOn = Date.now() / 1000
+      // trace.
+      if (debuglog.enabled) {
+        debuglog("%cCallServiceWithResponse - Service %s response (trimmed):\n%s",
+          "color: orange",
+          JSON.stringify(serviceRequest.service),
+          JSON.stringify(responseObj, null, 2)
+        );
+      }
+
+      // return results to caller.
       return responseObj;
 
     }
@@ -3140,9 +3329,16 @@ export class SpotifyPlusService {
         }
       }
 
-      // set the lastUpdatedOn value to epoch (number of seconds), as the
-      // service does not provide this field (but we need it for media list processing).
-      responseObj.lastUpdatedOn = Date.now() / 1000
+      // trace.
+      if (debuglog.enabled) {
+        debuglog("%cCallServiceWithResponse - Service %s response (trimmed):\n%s",
+          "color: orange",
+          JSON.stringify(serviceRequest.service),
+          JSON.stringify(responseObj, null, 2)
+        );
+      }
+
+      // return results to caller.
       return responseObj;
 
     }
@@ -3223,9 +3419,16 @@ export class SpotifyPlusService {
         }
       }
 
-      // set the lastUpdatedOn value to epoch (number of seconds), as the
-      // service does not provide this field (but we need it for media list processing).
-      responseObj.lastUpdatedOn = Date.now() / 1000
+      // trace.
+      if (debuglog.enabled) {
+        debuglog("%cCallServiceWithResponse - Service %s response (trimmed):\n%s",
+          "color: orange",
+          JSON.stringify(serviceRequest.service),
+          JSON.stringify(responseObj, null, 2)
+        );
+      }
+
+      // return results to caller.
       return responseObj;
 
     }
@@ -3305,9 +3508,16 @@ export class SpotifyPlusService {
         }
       }
 
-      // set the lastUpdatedOn value to epoch (number of seconds), as the
-      // service does not provide this field (but we need it for media list processing).
-      responseObj.lastUpdatedOn = Date.now() / 1000
+      // trace.
+      if (debuglog.enabled) {
+        debuglog("%cCallServiceWithResponse - Service %s response (trimmed):\n%s",
+          "color: orange",
+          JSON.stringify(serviceRequest.service),
+          JSON.stringify(responseObj, null, 2)
+        );
+      }
+
+      // return results to caller.
       return responseObj;
 
     }
@@ -3386,9 +3596,16 @@ export class SpotifyPlusService {
         }
       }
 
-      // set the lastUpdatedOn value to epoch (number of seconds), as the
-      // service does not provide this field (but we need it for media list processing).
-      responseObj.lastUpdatedOn = Date.now() / 1000
+      // trace.
+      if (debuglog.enabled) {
+        debuglog("%cCallServiceWithResponse - Service %s response (trimmed):\n%s",
+          "color: orange",
+          JSON.stringify(serviceRequest.service),
+          JSON.stringify(responseObj, null, 2)
+        );
+      }
+
+      // return results to caller.
       return responseObj;
 
     }
@@ -3469,9 +3686,16 @@ export class SpotifyPlusService {
         }
       }
 
-      // set the lastUpdatedOn value to epoch (number of seconds), as the
-      // service does not provide this field (but we need it for media list processing).
-      responseObj.lastUpdatedOn = Date.now() / 1000
+      // trace.
+      if (debuglog.enabled) {
+        debuglog("%cCallServiceWithResponse - Service %s response (trimmed):\n%s",
+          "color: orange",
+          JSON.stringify(serviceRequest.service),
+          JSON.stringify(responseObj, null, 2)
+        );
+      }
+
+      // return results to caller.
       return responseObj;
 
     }
@@ -3554,9 +3778,16 @@ export class SpotifyPlusService {
         }
       }
 
-      // set the lastUpdatedOn value to epoch (number of seconds), as the
-      // service does not provide this field (but we need it for media list processing).
-      responseObj.lastUpdatedOn = Date.now() / 1000
+      // trace.
+      if (debuglog.enabled) {
+        debuglog("%cCallServiceWithResponse - Service %s response (trimmed):\n%s",
+          "color: orange",
+          JSON.stringify(serviceRequest.service),
+          JSON.stringify(responseObj, null, 2)
+        );
+      }
+
+      // return results to caller.
       return responseObj;
 
     }

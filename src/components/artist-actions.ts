@@ -4,6 +4,7 @@ import { property, state } from 'lit/decorators.js';
 import copyTextToClipboard from 'copy-text-to-clipboard';
 import {
   mdiAccountMusic,
+  mdiAlbum,
   mdiClipboardPlusOutline,
   mdiHeart,
   mdiHeartOutline,
@@ -36,6 +37,7 @@ enum Actions {
   ArtistFavoriteAdd = "ArtistFavoriteAdd",
   ArtistFavoriteRemove = "ArtistFavoriteRemove",
   ArtistFavoriteUpdate = "ArtistFavoriteUpdate",
+  ArtistSearchAlbums = "ArtistSearchAlbums",
   ArtistSearchPlaylists = "ArtistSearchPlaylists",
   ArtistSearchRadio = "ArtistSearchRadio",
   ArtistSearchTracks = "ArtistSearchTracks",
@@ -114,6 +116,10 @@ class ArtistActions extends FavActionsBase {
         <ha-assist-chip slot="trigger">
           <ha-svg-icon slot="icon" .path=${mdiDotsHorizontal}></ha-svg-icon>
         </ha-assist-chip>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistSearchAlbums)} hide=${this.hideSearchType(SearchMediaTypes.ALBUMS)}>
+          <ha-svg-icon slot="start" .path=${mdiAlbum}></ha-svg-icon>
+          <div slot="headline">Search for Artist Albums</div>
+        </ha-md-menu-item>
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistSearchPlaylists)} hide=${this.hideSearchType(SearchMediaTypes.PLAYLISTS)}>
           <ha-svg-icon slot="start" .path=${mdiPlaylistPlay}></ha-svg-icon>
           <div slot="headline">Search Playlists for Artist</div>
@@ -245,6 +251,11 @@ class ArtistActions extends FavActionsBase {
       if (action == Actions.ArtistCopyUriToClipboard) {
 
         copyTextToClipboard(this.mediaItem.uri);
+        return true;
+
+      } else if (action == Actions.ArtistSearchAlbums) {
+
+        this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.ALBUMS, this.mediaItem.name));
         return true;
 
       } else if (action == Actions.ArtistSearchPlaylists) {

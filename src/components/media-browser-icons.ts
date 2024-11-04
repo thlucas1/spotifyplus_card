@@ -38,12 +38,7 @@ export class MediaBrowserIcons extends MediaBrowserBase {
 
     // render html.
     return html`
-      <style>
-        :host {
-          --items-per-row: ${this.itemsPerRow};
-        }
-      </style>
-      <div class="icons">
+      <div class="icons" style="--items-per-row: ${this.itemsPerRow}">
         ${buildMediaBrowserItems(this.items || [], this.config, this.mediaType, this.store).map(
           (item, index) => html`
             ${styleMediaBrowserItemBackgroundImage(item.mbi_item.image_url, index, this.mediaType)}
@@ -78,33 +73,6 @@ export class MediaBrowserIcons extends MediaBrowserBase {
       </div>
     `;
   }
-
-            //${(() => {
-            //  if (this.isTouchDevice) {
-            //    return (html`
-            //      <ha-control-button
-            //        class="button"
-            //        isTouchDevice="${this.isTouchDevice}"
-            //        @touchstart=${() => this.onMediaBrowserItemTouchStart(customEvent(ITEM_SELECTED, item))}
-            //        @touchend=${() => this.onMediaBrowserItemTouchEnd(customEvent(ITEM_SELECTED, item))}
-            //      >
-            //        ${renderMediaBrowserItem(item, !item.mbi_item.image_url || !this.hideTitle, !this.hideSubTitle)}
-            //      </ha-control-button>
-            //    `);
-            //  } else {
-            //    return (html`
-            //      <ha-control-button
-            //        class="button"
-            //        isTouchDevice="${this.isTouchDevice}"
-            //        @click=${() => this.onMediaBrowserItemClick(customEvent(ITEM_SELECTED, item))}
-            //        @mousedown=${() => this.onMediaBrowserItemMouseDown()}
-            //        @mouseup=${() => this.onMediaBrowserItemMouseUp(customEvent(ITEM_SELECTED, item))}
-            //      >
-            //        ${renderMediaBrowserItem(item, !item.mbi_item.image_url || !this.hideTitle, !this.hideSubTitle)}
-            //      </ha-control-button>
-            //    `);
-            //  }
-            //})()}
 
 
   /**

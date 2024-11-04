@@ -221,7 +221,7 @@ export class DeviceBrowser extends FavBrowserBase {
 
             // load media list results.
             this.mediaList = result.Items;
-            this.mediaListLastUpdatedOn = result.lastUpdatedOn || (Date.now() / 1000);
+            this.mediaListLastUpdatedOn = result.DateLastRefreshed || (Date.now() / 1000);
 
             // call base class method, indicating media list update succeeded.
             super.updatedMediaListOk();

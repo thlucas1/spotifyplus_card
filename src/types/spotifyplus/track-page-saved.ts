@@ -16,13 +16,6 @@ export interface ITrackPageSaved extends IPageObject {
   items: Array<ITrackSaved>;
 
 
-  /** 
-   * Date and time (in epoch format) of when the list was last updated.  
-   * Note that this attribute does not exist in the service response.  It was added here for convenience.
-   */
-  lastUpdatedOn?: number;
-
-
   /**
    * Gets a list of all tracks contained in the underlying `items` list.
    * 

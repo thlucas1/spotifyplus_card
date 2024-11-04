@@ -141,7 +141,7 @@ export class ShowFavBrowser extends FavBrowserBase {
 
             // load media list results.
             this.mediaList = GetShows(result);
-            this.mediaListLastUpdatedOn = result.lastUpdatedOn || (Date.now() / 1000);
+            this.mediaListLastUpdatedOn = result.date_last_refreshed || (Date.now() / 1000);
 
             // call base class method, indicating media list update succeeded.
             super.updatedMediaListOk();

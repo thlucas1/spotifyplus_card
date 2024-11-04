@@ -490,7 +490,7 @@ export class SearchBrowser extends FavBrowserBase {
 
             // load media list results.
             this.mediaList = result.items as [any];
-            this.mediaListLastUpdatedOn = result.lastUpdatedOn || (Date.now() / 1000);
+            this.mediaListLastUpdatedOn = result.date_last_refreshed || (Date.now() / 1000);
 
             // clear certain info messsages if they are temporary.
             if (this.alertInfo?.startsWith("Searching Spotify")) {

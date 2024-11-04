@@ -49,12 +49,7 @@ export class MediaBrowserList extends MediaBrowserBase {
 
     // render html.
     return html`
-      <style>
-        :host {
-          --items-per-row: ${this.itemsPerRow};
-        }
-      </style>
-      <mwc-list multi class="list">
+      <mwc-list multi class="list" style="--items-per-row: ${this.itemsPerRow}">
         ${buildMediaBrowserItems(this.items || [], this.config, this.mediaType, this.store).map((item, index) => {
           return html`
             ${styleMediaBrowserItemBackgroundImage(item.mbi_item.image_url, index, this.mediaType)}
