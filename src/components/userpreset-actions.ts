@@ -43,6 +43,7 @@ class UserPresetActions extends FavActionsBase {
     return html` 
       <div class="userpreset-actions-container">
         ${this.alertError ? html`<ha-alert alert-type="error" dismissable @alert-dismissed-clicked=${this.alertErrorClear}>${this.alertError}</ha-alert>` : ""}
+        ${this.alertInfo ? html`<ha-alert alert-type="info" dismissable @alert-dismissed-clicked=${this.alertInfoClear}>${this.alertInfo}</ha-alert>` : ""}
         <div class="media-info-content">
           <div class="img" style="background:url(${this.mediaItem.image_url});"></div>
           <div class="media-info-details">

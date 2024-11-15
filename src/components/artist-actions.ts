@@ -5,14 +5,18 @@ import copyTextToClipboard from 'copy-text-to-clipboard';
 import {
   mdiAccountMusic,
   mdiAlbum,
+  mdiBookmarkMusicOutline,
   mdiClipboardPlusOutline,
+  mdiFacebook,
   mdiHeart,
   mdiHeartOutline,
+  mdiInstagram,
   mdiDotsHorizontal,
   mdiMusic,
-  mdiPlay,
   mdiPlaylistPlay,
   mdiRadio,
+  mdiTwitter,
+  mdiWikipedia,
 } from '@mdi/js';
 
 // our imports.
@@ -22,25 +26,40 @@ import { sharedStylesFavActions } from '../styles/shared-styles-fav-actions';
 import { FavActionsBase } from './fav-actions-base';
 import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
-import { IAlbumPageSimplified } from '../types/spotifyplus/album-page-simplified';
-import { IArtist, GetGenres } from '../types/spotifyplus/artist';
-import { openWindowNewTab } from '../utils/media-browser-utils';
 import { SearchMediaTypes } from '../types/search-media-types';
 import { SearchMediaEvent } from '../events/search-media';
+import { openWindowNewTab } from '../utils/media-browser-utils';
+import { unescapeHtml } from '../utils/utils';
+import { GetUserPresetConfigEntry } from '../types/spotifyplus/user-preset';
+import { ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD } from '../constants';
+import { IArtist, GetGenres } from '../types/spotifyplus/artist';
+import { IArtistInfo } from '../types/spotifyplus/artist-info';
+
+// debug logging.
+import Debug from 'debug/src/browser.js';
+import { DEBUG_APP_NAME } from '../constants';
+const debuglog = Debug(DEBUG_APP_NAME + ":artist-actions");
 
 /**
  * Artist actions.
  */
 enum Actions {
   ArtistAlbumsUpdate = "ArtistAlbumsUpdate",
+  ArtistCopyPresetToClipboard = "ArtistCopyPresetToClipboard",
   ArtistCopyUriToClipboard = "ArtistCopyUriToClipboard",
+  ArtistGetInfo = "ArtistGetInfo",
   ArtistFavoriteAdd = "ArtistFavoriteAdd",
   ArtistFavoriteRemove = "ArtistFavoriteRemove",
   ArtistFavoriteUpdate = "ArtistFavoriteUpdate",
-  ArtistSearchAlbums = "ArtistSearchAlbums",
   ArtistSearchPlaylists = "ArtistSearchPlaylists",
   ArtistSearchRadio = "ArtistSearchRadio",
   ArtistSearchTracks = "ArtistSearchTracks",
+  ArtistShowAlbums = "ArtistShowAlbums",
+  ArtistShowAlbumsAppearsOn = "ArtistShowAlbumsAppearsOn",
+  ArtistShowAlbumsCompilation = "ArtistShowAlbumsCompilation",
+  ArtistShowAlbumsSingle = "ArtistShowAlbumsSingle",
+  ArtistShowRelatedArtists = "ArtistShowRelatedArtists",
+  ArtistShowTopTracks = "ArtistShowTopTracks",
 }
 
 
@@ -50,7 +69,7 @@ class ArtistActions extends FavActionsBase {
   @property({ attribute: false }) mediaItem!: IArtist;
 
   // private state properties.
-  @state() private artistAlbums?: IAlbumPageSimplified;
+  @state() private artistInfo?: IArtistInfo;
   @state() private isArtistFavorite?: boolean;
 
 
@@ -116,10 +135,6 @@ class ArtistActions extends FavActionsBase {
         <ha-assist-chip slot="trigger">
           <ha-svg-icon slot="icon" .path=${mdiDotsHorizontal}></ha-svg-icon>
         </ha-assist-chip>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistSearchAlbums)} hide=${this.hideSearchType(SearchMediaTypes.ALBUMS)}>
-          <ha-svg-icon slot="start" .path=${mdiAlbum}></ha-svg-icon>
-          <div slot="headline">Search for Artist Albums</div>
-        </ha-md-menu-item>
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistSearchPlaylists)} hide=${this.hideSearchType(SearchMediaTypes.PLAYLISTS)}>
           <ha-svg-icon slot="start" .path=${mdiPlaylistPlay}></ha-svg-icon>
           <div slot="headline">Search Playlists for Artist</div>
@@ -133,9 +148,38 @@ class ArtistActions extends FavActionsBase {
           <div slot="headline">Search for Artist Radio</div>
         </ha-md-menu-item>
         <ha-md-divider role="separator" tabindex="-1"></ha-md-divider>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistShowTopTracks)} hide=${this.hideSearchType(SearchMediaTypes.TRACKS)}>
+          <ha-svg-icon slot="start" .path=${mdiMusic}></ha-svg-icon>
+          <div slot="headline">Show Artist Top Tracks</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistShowAlbums)} hide=${this.hideSearchType(SearchMediaTypes.ALBUMS)}>
+          <ha-svg-icon slot="start" .path=${mdiAlbum}></ha-svg-icon>
+          <div slot="headline">Show Artist Albums</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistShowAlbumsCompilation)} hide=${this.hideSearchType(SearchMediaTypes.ALBUMS)}>
+          <ha-svg-icon slot="start" .path=${mdiAlbum}></ha-svg-icon>
+          <div slot="headline">Show Artist Albums Compilations</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistShowAlbumsSingle)} hide=${this.hideSearchType(SearchMediaTypes.ALBUMS)}>
+          <ha-svg-icon slot="start" .path=${mdiAlbum}></ha-svg-icon>
+          <div slot="headline">Show Artist Albums Singles</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistShowAlbumsAppearsOn)} hide=${this.hideSearchType(SearchMediaTypes.ALBUMS)}>
+          <ha-svg-icon slot="start" .path=${mdiAlbum}></ha-svg-icon>
+          <div slot="headline">Show Artist Albums AppearsOn</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistShowRelatedArtists)} hide=${this.hideSearchType(SearchMediaTypes.ARTISTS)}>
+          <ha-svg-icon slot="start" .path=${mdiAccountMusic}></ha-svg-icon>
+          <div slot="headline">Show Related Artists</div>
+        </ha-md-menu-item>
+        <ha-md-divider role="separator" tabindex="-1"></ha-md-divider>
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistCopyUriToClipboard)}>
           <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
           <div slot="headline">Copy Artist URI to Clipboard</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistCopyPresetToClipboard)}>
+          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          <div slot="headline">Copy Artist Preset Info to Clipboard</div>
         </ha-md-menu-item>
       </ha-md-button-menu>
       `;
@@ -144,6 +188,7 @@ class ArtistActions extends FavActionsBase {
     return html` 
       <div class="artist-actions-container">
         ${this.alertError ? html`<ha-alert alert-type="error" dismissable @alert-dismissed-clicked=${this.alertErrorClear}>${this.alertError}</ha-alert>` : ""}
+        ${this.alertInfo ? html`<ha-alert alert-type="info" dismissable @alert-dismissed-clicked=${this.alertInfoClear}>${this.alertInfo}</ha-alert>` : ""}
         <div class="media-info-content">
           <div class="img" style="background:url(${this.mediaItem.image_url});"></div>
           <div class="media-info-details">
@@ -169,25 +214,47 @@ class ArtistActions extends FavActionsBase {
           </div>
         </div>
         <div class="grid-container-scrollable">
-          <div class="grid albums-grid">
-            <div class="grid-header">&nbsp;</div>
-            <div class="grid-header">#</div>
-            <div class="grid-header">Title</div>
-            <div class="grid-header">Released</div>
-            <div class="grid-header grid-header-last">Type</div>
-            ${this.artistAlbums?.items.map((item, index) => html`
+          ${(this.artistInfo?.about_url_facebook) ? html`
+            <div class="display-inline">
               <ha-icon-button
-                .path=${mdiPlay}
-                .label="Play album &quot;${item.name}&quot;"
-                @click=${() => this.onClickMediaItem(item)}
-                slot="icon-button"
-              >&nbsp;</ha-icon-button>
-              <div class="grid-entry">${index + 1}</div>
-              <div class="grid-entry">${item.name}</div>
-              <div class="grid-entry">${item.release_date}</div>
-              <div class="grid-entry">${item.album_type}</div>
-            `)}
-          </div>
+                .path=${mdiFacebook}
+                .label="View Artist &quot;${this.mediaItem.name}&quot; info on Facebook"
+                @click=${() => openWindowNewTab(this.artistInfo?.about_url_facebook || "")}
+                slot="icon-button-small"
+              ></ha-icon-button>
+            </div>
+          ` : ""}
+          ${(this.artistInfo?.about_url_instagram) ? html`
+            <div class="display-inline">
+              <ha-icon-button
+                .path=${mdiInstagram}
+                .label="View Artist &quot;${this.mediaItem.name}&quot; info on Instagram"
+                @click=${() => openWindowNewTab(this.artistInfo?.about_url_instagram || "")}
+                slot="icon-button-small"
+              ></ha-icon-button>
+            </div>
+          ` : ""}
+          ${(this.artistInfo?.about_url_twitter) ? html`
+            <div class="display-inline">
+              <ha-icon-button
+                .path=${mdiTwitter}
+                .label="View Artist &quot;${this.mediaItem.name}&quot; info on Twitter"
+                @click=${() => openWindowNewTab(this.artistInfo?.about_url_twitter || "")}
+                slot="icon-button-small"
+              ></ha-icon-button>
+            </div>
+          ` : ""}
+          ${(this.artistInfo?.about_url_wikipedia) ? html`
+            <div class="display-inline">
+              <ha-icon-button
+                .path=${mdiWikipedia}
+                .label="View Artist &quot;${this.mediaItem.name}&quot; info on Wikipedia"
+                @click=${() => openWindowNewTab(this.artistInfo?.about_url_wikipedia || "")}
+                slot="icon-button-small"
+              ></ha-icon-button>
+            </div>
+          ` : ""}
+          <div class="media-info-text-s" .innerHTML="${unescapeHtml(this.artistInfo?.bio_html || "Artist biography was not found")}"></div>
         </div>
       </div>`;
   }
@@ -248,14 +315,15 @@ class ArtistActions extends FavActionsBase {
     try {
 
       // process actions that don't require a progress indicator.
-      if (action == Actions.ArtistCopyUriToClipboard) {
+      if (action == Actions.ArtistCopyPresetToClipboard) {
 
-        copyTextToClipboard(this.mediaItem.uri);
+        copyTextToClipboard(GetUserPresetConfigEntry(this.mediaItem));
+        this.alertInfoSet(ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD);
         return true;
 
-      } else if (action == Actions.ArtistSearchAlbums) {
+      } else if (action == Actions.ArtistCopyUriToClipboard) {
 
-        this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.ALBUMS, this.mediaItem.name));
+        copyTextToClipboard(this.mediaItem.uri);
         return true;
 
       } else if (action == Actions.ArtistSearchPlaylists) {
@@ -266,6 +334,36 @@ class ArtistActions extends FavActionsBase {
       } else if (action == Actions.ArtistSearchRadio) {
 
         this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.PLAYLISTS, this.mediaItem.name + " Radio"));
+        return true;
+
+      } else if (action == Actions.ArtistShowAlbums) {
+
+        this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.ARTIST_ALBUMS, this.mediaItem.name, this.mediaItem.name, this.mediaItem.uri));
+        return true;
+
+      } else if (action == Actions.ArtistShowAlbumsAppearsOn) {
+
+        this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.ARTIST_ALBUMS_APPEARSON, this.mediaItem.name, this.mediaItem.name, this.mediaItem.uri));
+        return true;
+
+      } else if (action == Actions.ArtistShowAlbumsCompilation) {
+
+        this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.ARTIST_ALBUMS_COMPILATION, this.mediaItem.name, this.mediaItem.name, this.mediaItem.uri));
+        return true;
+
+      } else if (action == Actions.ArtistShowAlbumsSingle) {
+
+        this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.ARTIST_ALBUMS_SINGLE, this.mediaItem.name, this.mediaItem.name, this.mediaItem.uri));
+        return true;
+
+      } else if (action == Actions.ArtistShowRelatedArtists) {
+
+        this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.ARTIST_RELATED_ARTISTS, this.mediaItem.name, this.mediaItem.name, this.mediaItem.uri));
+        return true;
+
+      } else if (action == Actions.ArtistShowTopTracks) {
+
+        this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.ARTIST_TOP_TRACKS, this.mediaItem.name, this.mediaItem.name, this.mediaItem.uri));
         return true;
 
       } else if (action == Actions.ArtistSearchTracks) {
@@ -334,36 +432,40 @@ class ArtistActions extends FavActionsBase {
       const promiseRequests = new Array<Promise<unknown>>();
 
       // was this action chosen to be updated?
-      if ((updateActions.indexOf(Actions.ArtistAlbumsUpdate) != -1) || (updateActions.length == 0)) {
+      if ((updateActions.indexOf(Actions.ArtistGetInfo) != -1) || (updateActions.length == 0)) {
 
         // create promise - get action list data.
-        const promiseGetArtistAlbums = new Promise((resolve, reject) => {
+        const promiseGetArtistInfo = new Promise((resolve, reject) => {
 
-          const market = null;
-          const include_groups = "album,appears_on,compilation";
-          const limit_total = 300;
-          const sort_result = true;
-
-          // call service to retrieve artist albums.
-          this.spotifyPlusService.GetArtistAlbums(player.id, this.mediaItem.id, include_groups, 0, 0, market, limit_total, sort_result)
-            .then(albums => {
+          // call service to retrieve artist info.
+          this.spotifyPlusService.GetArtistInfo(player.id, this.mediaItem.id)
+            .then(info => {
 
               // stash the result into state, and resolve the promise.
-              this.artistAlbums = albums;
+              this.artistInfo = info;
               resolve(true);
 
             })
             .catch(error => {
 
+              if (debuglog.enabled) {
+                debuglog("updateActions - Get Artist Info failed: " + (error as Error).message);
+              }
+
+              // clear results, and resolve the promise; we do this, as the GetArtistInfo is an
+              // experimental feature that may fail.  if it does fail, then we gracefully allow it.
+              this.artistInfo = undefined;
+              reject(true);
+
               // clear results, and reject the promise.
-              this.artistAlbums = undefined;
-              this.alertErrorSet("Get Artist Albums failed: \n" + (error as Error).message);
-              reject(error);
+              //this.artistInfo = undefined;
+              //this.alertErrorSet("Get Artist Info failed: \n" + (error as Error).message);
+              //reject(error);
 
             })
         });
 
-        promiseRequests.push(promiseGetArtistAlbums);
+        promiseRequests.push(promiseGetArtistInfo);
       }
 
       // was this action chosen to be updated?

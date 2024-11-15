@@ -1,5 +1,5 @@
 // lovelace card imports.
-import { css, html, TemplateResult } from 'lit';
+import { html, TemplateResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
 
 // our imports.
@@ -7,10 +7,10 @@ import '../components/media-browser-list';
 import '../components/media-browser-icons';
 import '../components/userpreset-actions';
 import { FavBrowserBase } from './fav-browser-base';
-import { sharedStylesFavBrowser } from '../styles/shared-styles-fav-browser.js';
 import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
 import { formatTitleInfo } from '../utils/media-browser-utils';
+import { getUtcNowTimestamp } from '../utils/utils';
 import { IUserPreset } from '../types/spotifyplus/user-preset';
 
 
@@ -95,21 +95,91 @@ export class UserPresetBrowser extends FavBrowserBase {
   }
 
 
-  /** 
-   * style definitions used by this component.
-   * */
-  static get styles() {
+  /**
+   * Handles the `item-selected` event fired when a media browser item is clicked.
+   * 
+   * @param evArgs Event arguments that contain the media item that was clicked on.
+   */
+  protected override onItemSelected(evArgs: CustomEvent) {
 
-    return [
-      sharedStylesFavBrowser,
-      css`
+    // event could contains an IUserPreset item.
+    const eventType = evArgs.detail.type;
 
-      /* extra styles not defined in sharedStylesFavBrowser would go here. */
-      `
-    ];
+    // is this a recommendations type?
+    if (eventType == "recommendations") {
+
+      const mediaItem = evArgs.detail as IUserPreset;
+      this.PlayTrackRecommendations(mediaItem);
+
+    } else {
+
+      // category playlist was selected; event argument is an IPlayListSimplified item.
+      // just call base class method to play the media item (it's a playlist).
+      super.onItemSelected(evArgs);
+
+    }
+
   }
 
 
+  /**
+   * Calls the SpotifyPlusService PlayerMediaPlayTracks method to play all tracks
+   * returned by the GetTrackRecommendations service for the desired track attributes.
+   * 
+   * @param preset The user preset item that was selected.
+   */
+  protected async PlayTrackRecommendations(preset: IUserPreset): Promise<void> {
+
+    try {
+
+      // show progress indicator.
+      this.progressShow();
+
+      // update status.
+      this.alertInfo = "Searching for track recommendations ...";
+      this.requestUpdate();
+
+      // get track recommendations.
+      const limit = 50;
+      const result = await this.spotifyPlusService.GetTrackRecommendations(this.player.id, preset.recommendations, limit, null);
+
+      // build track uri list from recommendation results.
+      const uris = new Array<string>();
+      result.tracks.forEach(item => {
+        uris.push(item.uri);
+      });
+
+      // check for no matching tracks.
+      if (uris.length == 0) {
+        this.alertInfo = "No recommended tracks were found for the preset criteria; adjust the preset criteria settings and try again.";
+        return;
+      }
+
+      // update status.
+      this.alertInfo = "Playing recommended tracks ...";
+      this.requestUpdate();
+
+      // play recommended tracks.
+      await this.spotifyPlusService.PlayerMediaPlayTracks(this.player.id, uris.join(","), null, null);
+
+      // show player section.
+      this.store.card.SetSection(Section.PLAYER);
+
+    }
+    catch (error) {
+
+      // set error message and reset scroll position to zero so the message is displayed.
+      this.alertErrorSet("Could not get track recommendations for user preset.  " + (error as Error).message);
+      this.mediaBrowserContentElement.scrollTop = 0;
+
+    }
+    finally {
+
+      // hide progress indicator.
+      this.progressHide();
+
+    }
+  }
 
 
   /**
@@ -125,7 +195,7 @@ export class UserPresetBrowser extends FavBrowserBase {
     try {
 
       // initialize the media list, as we are loading it from multiple sources.
-      this.mediaListLastUpdatedOn = (Date.now() / 1000);
+      this.mediaListLastUpdatedOn = getUtcNowTimestamp();
       this.mediaList = new Array<IUserPreset>();
 
       // we use the `Promise.allSettled` approach here like we do with actions, so
@@ -154,7 +224,7 @@ export class UserPresetBrowser extends FavBrowserBase {
         catch (error) {
 
           // reject the promise.
-          super.updatedMediaListError("Load User Presets from config failed: \n" + (error as Error).message);
+          super.updatedMediaListError("Load User Presets from config failed: " + (error as Error).message);
           reject(error);
 
         }
@@ -227,7 +297,7 @@ export class UserPresetBrowser extends FavBrowserBase {
       this.progressHide();
 
       // set alert error message.
-      super.updatedMediaListError("User Presets favorites refresh failed: \n" + (error as Error).message);
+      super.updatedMediaListError("User Presets favorites refresh failed: " + (error as Error).message);
       return true;
 
     }

@@ -1,5 +1,5 @@
 // lovelace card imports.
-import { css, html, TemplateResult } from 'lit';
+import { html, TemplateResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
 
 // our imports.
@@ -7,12 +7,12 @@ import '../components/media-browser-list';
 import '../components/media-browser-icons';
 import '../components/track-actions';
 import { FavBrowserBase } from './fav-browser-base';
-import { sharedStylesFavBrowser } from '../styles/shared-styles-fav-browser.js';
 import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
 import { formatTitleInfo } from '../utils/media-browser-utils';
-import { ITrack } from '../types/spotifyplus/track';
+import { getUtcNowTimestamp } from '../utils/utils';
 import { GetTracks } from '../types/spotifyplus/track-page-saved';
+import { ITrack } from '../types/spotifyplus/track';
 
 
 @customElement("spc-recent-browser")
@@ -96,21 +96,6 @@ export class RecentBrowser extends FavBrowserBase {
   }
 
 
-  /** 
-   * style definitions used by this component.
-   * */
-  static get styles() {
-
-    return [
-      sharedStylesFavBrowser,
-      css`
-
-      /* extra styles not defined in sharedStylesFavBrowser would go here. */
-      `
-    ];
-  }
-
-
   /**
    * Updates the mediaList display.
    */
@@ -139,7 +124,7 @@ export class RecentBrowser extends FavBrowserBase {
 
             // load media list results.
             this.mediaList = GetTracks(result);
-            this.mediaListLastUpdatedOn = result.date_last_refreshed || (Date.now() / 1000);
+            this.mediaListLastUpdatedOn = result.date_last_refreshed || getUtcNowTimestamp();
 
             // call base class method, indicating media list update succeeded.
             super.updatedMediaListOk();
@@ -155,7 +140,7 @@ export class RecentBrowser extends FavBrowserBase {
             this.mediaListLastUpdatedOn = 0;
 
             // call base class method, indicating media list update failed.
-            super.updatedMediaListError("Get Player Recent Tracks failed: \n" + (error as Error).message);
+            super.updatedMediaListError("Get Player Recent Tracks failed: " + (error as Error).message);
 
             // reject the promise.
             reject(error);
@@ -188,7 +173,7 @@ export class RecentBrowser extends FavBrowserBase {
       this.progressHide();
 
       // set alert error message.
-      super.updatedMediaListError("Recently Played items refresh failed: \n" + (error as Error).message);
+      super.updatedMediaListError("Recently Played items refresh failed: " + (error as Error).message);
       return true;
 
     }

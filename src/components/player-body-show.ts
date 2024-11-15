@@ -3,6 +3,7 @@ import { css, html, TemplateResult } from 'lit';
 import { state } from 'lit/decorators.js';
 import copyTextToClipboard from 'copy-text-to-clipboard';
 import {
+  mdiBookmarkMusicOutline,
   mdiClipboardPlusOutline,
   mdiDotsHorizontal,
   mdiHeart,
@@ -22,17 +23,21 @@ import { SearchMediaEvent } from '../events/search-media';
 import { getIdFromSpotifyUri } from '../services/spotifyplus-service';
 import { formatDateHHMMSSFromMilliseconds, unescapeHtml } from '../utils/utils';
 import { openWindowNewTab } from '../utils/media-browser-utils';
+import { ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD } from '../constants';
+import { GetUserPresetConfigEntry } from '../types/spotifyplus/user-preset';
 import { IEpisode } from '../types/spotifyplus/episode';
 
 /**
  * Show actions.
  */
 enum Actions {
+  EpisodeCopyPresetToClipboard = "EpisodeCopyPresetToClipboard",
   EpisodeCopyUriToClipboard = "EpisodeCopyUriToClipboard",
   EpisodeFavoriteAdd = "EpisodeFavoriteAdd",
   EpisodeFavoriteRemove = "EpisodeFavoriteRemove",
   EpisodeFavoriteUpdate = "EpisodeFavoriteUpdate",
   GetPlayingItem = "GetPlayingItem",
+  ShowCopyPresetToClipboard = "ShowCopyPresetToClipboard",
   ShowCopyUriToClipboard = "ShowCopyUriToClipboard",
   ShowFavoriteAdd = "ShowFavoriteAdd",
   ShowFavoriteRemove = "ShowFavoriteRemove",
@@ -134,13 +139,17 @@ class PlayerBodyShow extends PlayerBodyBase {
           <ha-svg-icon slot="icon" .path=${mdiDotsHorizontal}></ha-svg-icon>
         </ha-assist-chip>
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.ShowSearchEpisodes)} hide=${this.hideSearchType(SearchMediaTypes.EPISODES)}>
-          <ha-svg-icon slot="start" .path=${mdiPodcast}></ha-svg-icon>
+          <ha-svg-icon slot="start" .path=${mdiMicrophone}></ha-svg-icon>
           <div slot="headline">Search for Show Episodes</div>
         </ha-md-menu-item>
         <ha-md-divider role="separator" tabindex="-1"></ha-md-divider>
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.ShowCopyUriToClipboard)}>
           <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
           <div slot="headline">Copy Show URI to Clipboard</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ShowCopyPresetToClipboard)}>
+          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          <div slot="headline">Copy Show Preset Info to Clipboard</div>
         </ha-md-menu-item>
       </ha-md-button-menu>
       `;
@@ -154,6 +163,10 @@ class PlayerBodyShow extends PlayerBodyBase {
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.EpisodeCopyUriToClipboard)}>
           <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
           <div slot="headline">Copy Episode URI to Clipboard</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.EpisodeCopyPresetToClipboard)}>
+          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          <div slot="headline">Copy Episode Preset Info to Clipboard</div>
         </ha-md-menu-item>
       </ha-md-button-menu>
       `;
@@ -216,6 +229,7 @@ class PlayerBodyShow extends PlayerBodyBase {
       <div class="player-body-container" hide=${this.isPlayerStopped}>
         <div class="player-body-container-scrollable">
           ${this.alertError ? html`<ha-alert alert-type="error" dismissable @alert-dismissed-clicked=${this.alertErrorClear}>${this.alertError}</ha-alert>` : ""}
+          ${this.alertInfo ? html`<ha-alert alert-type="info" dismissable @alert-dismissed-clicked=${this.alertInfoClear}>${this.alertInfo}</ha-alert>` : ""}
           ${(() => {
             if (this.player.attributes.sp_item_type == 'podcast') {
               return (html`${actionEpisodeSummary}`)
@@ -256,17 +270,24 @@ class PlayerBodyShow extends PlayerBodyBase {
    */
   protected override async onClickAction(action: Actions): Promise<boolean> {
 
-    //// if card is being edited, then don't bother.
-    //if (this.isCardInEditPreview) {
-    //  return true;
-    //}
-
     try {
 
       // process actions that don't require a progress indicator.
-      if (action == Actions.EpisodeCopyUriToClipboard) {
+      if (action == Actions.EpisodeCopyPresetToClipboard) {
+
+        copyTextToClipboard(GetUserPresetConfigEntry(this.episode, this.episode?.show.name));
+        this.alertInfoSet(ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD);
+        return true;
+
+      } else if (action == Actions.EpisodeCopyUriToClipboard) {
 
         copyTextToClipboard(this.episode?.uri || "");
+        return true;
+
+      } else if (action == Actions.ShowCopyPresetToClipboard) {
+
+        copyTextToClipboard(GetUserPresetConfigEntry(this.episode?.show, "Podcast"));
+        this.alertInfoSet(ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD);
         return true;
 
       } else if (action == Actions.ShowCopyUriToClipboard) {
@@ -276,7 +297,7 @@ class PlayerBodyShow extends PlayerBodyBase {
 
       } else if (action == Actions.ShowSearchEpisodes) {
 
-        this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.EPISODES, this.episode?.show.name));
+        this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.SHOW_EPISODES, this.episode?.show.name, this.episode?.show.name, this.episode?.show.uri));
         return true;
 
       }

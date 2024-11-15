@@ -39,9 +39,9 @@ export class MediaBrowserIcons extends MediaBrowserBase {
     // render html.
     return html`
       <div class="icons" style="--items-per-row: ${this.itemsPerRow}">
-        ${buildMediaBrowserItems(this.items || [], this.config, this.mediaType, this.store).map(
+        ${buildMediaBrowserItems(this.items || [], this.config, this.mediaItemType, this.searchMediaType, this.store).map(
           (item, index) => html`
-            ${styleMediaBrowserItemBackgroundImage(item.mbi_item.image_url, index, this.mediaType)}
+            ${styleMediaBrowserItemBackgroundImage(item.mbi_item.image_url, index, this.mediaItemType)}
             ${(() => {
               if (this.isTouchDevice) {
                 return (html`
@@ -101,7 +101,7 @@ export class MediaBrowserIcons extends MediaBrowserBase {
         .thumbnail {
           width: 100%;
           padding-bottom: 100%;
-          margin: 0 6%;
+          /* margin: 0.6%; */
           background-size: 100%;
           background-repeat: no-repeat;
           background-position: center;

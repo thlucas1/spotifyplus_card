@@ -9,9 +9,7 @@ import { Section } from '../types/section';
 import { ITEM_SELECTED, ITEM_SELECTED_WITH_HOLD } from '../constants';
 import { closestElement, customEvent, isTouchDevice } from '../utils/utils';
 import { IMediaBrowserItem } from '../types/media-browser-item';
-import {
-  styleMediaBrowserItemTitle
-} from '../utils/media-browser-utils';
+import { styleMediaBrowserItemTitle } from '../utils/media-browser-utils';
 import { SearchMediaTypes } from '../types/search-media-types';
 
 
@@ -20,7 +18,7 @@ export class MediaBrowserBase extends LitElement {
   // public state properties.
   @property({ attribute: false }) protected store!: Store;
   @property({ attribute: false }) protected items!: IMediaBrowserItem[];
-  @property({ attribute: false }) protected mediaType!: any;
+  @property({ attribute: false }) protected searchMediaType!: any;
 
   protected config!: CardConfig;
   protected section!: Section;
@@ -31,6 +29,7 @@ export class MediaBrowserBase extends LitElement {
   protected hideSubTitle!: boolean;
   protected isTouchDevice!: boolean;
   protected itemsPerRow!: number;
+  protected mediaItemType!: any;
   protected listItemClass!: string;
 
 
@@ -63,84 +62,109 @@ export class MediaBrowserBase extends LitElement {
     // set title / source visibility based on selected section.
     this.hideTitle = true;
     this.hideSubTitle = true;
-    this.itemsPerRow = 1;
+    this.itemsPerRow = 2;
     this.listItemClass = 'button';
 
-    // assign the mediaType based on the section value.
-    // for search, we will convert the SearchMediaType to a Section type.
+    // assign the mediaItemType based on the section value.
+    // for search, we will convert the SearchMediaType to a mediaItemType.
     if (this.section != Section.SEARCH_MEDIA) {
-      this.mediaType = this.section;
+      this.mediaItemType = this.section;
     } else {
-      if (this.mediaType == SearchMediaTypes.ALBUMS) {
-        this.mediaType = Section.ALBUM_FAVORITES;
-      } else if (this.mediaType == SearchMediaTypes.ARTISTS) {
-        this.mediaType = Section.ARTIST_FAVORITES;
-      } else if (this.mediaType == SearchMediaTypes.AUDIOBOOKS) {
-        this.mediaType = Section.AUDIOBOOK_FAVORITES;
-      } else if (this.mediaType == SearchMediaTypes.EPISODES) {
-        this.mediaType = Section.EPISODE_FAVORITES;
-      } else if (this.mediaType == SearchMediaTypes.PLAYLISTS) {
-        this.mediaType = Section.PLAYLIST_FAVORITES;
-      } else if (this.mediaType == SearchMediaTypes.SHOWS) {
-        this.mediaType = Section.SHOW_FAVORITES;
-      } else if (this.mediaType == SearchMediaTypes.TRACKS) {
-        this.mediaType = Section.TRACK_FAVORITES;
+
+      if (this.searchMediaType == SearchMediaTypes.ALBUMS) {
+        this.mediaItemType = Section.ALBUM_FAVORITES;
+      } else if (this.searchMediaType == SearchMediaTypes.ARTISTS) {
+        this.mediaItemType = Section.ARTIST_FAVORITES;
+      } else if (this.searchMediaType == SearchMediaTypes.AUDIOBOOKS) {
+        this.mediaItemType = Section.AUDIOBOOK_FAVORITES;
+      } else if (this.searchMediaType == SearchMediaTypes.EPISODES) {
+        this.mediaItemType = Section.EPISODE_FAVORITES;
+      } else if (this.searchMediaType == SearchMediaTypes.PLAYLISTS) {
+        this.mediaItemType = Section.PLAYLIST_FAVORITES;
+      } else if (this.searchMediaType == SearchMediaTypes.SHOWS) {
+        this.mediaItemType = Section.SHOW_FAVORITES;
+      } else if (this.searchMediaType == SearchMediaTypes.TRACKS) {
+        this.mediaItemType = Section.TRACK_FAVORITES;
+        // artist-specific search types:
+      } else if (this.searchMediaType == SearchMediaTypes.ARTIST_ALBUMS) {
+        this.mediaItemType = Section.ALBUM_FAVORITES;
+      } else if (this.searchMediaType == SearchMediaTypes.ARTIST_ALBUMS_APPEARSON) {
+        this.mediaItemType = Section.ALBUM_FAVORITES;
+      } else if (this.searchMediaType == SearchMediaTypes.ARTIST_ALBUMS_COMPILATION) {
+        this.mediaItemType = Section.ALBUM_FAVORITES;
+      } else if (this.searchMediaType == SearchMediaTypes.ARTIST_ALBUMS_SINGLE) {
+        this.mediaItemType = Section.ALBUM_FAVORITES;
+      } else if (this.searchMediaType == SearchMediaTypes.ARTIST_RELATED_ARTISTS) {
+        this.mediaItemType = Section.ARTIST_FAVORITES;
+      } else if (this.searchMediaType == SearchMediaTypes.ARTIST_TOP_TRACKS) {
+        this.mediaItemType = Section.TRACK_FAVORITES;
+        // show-specific search types:
+      } else if (this.searchMediaType == SearchMediaTypes.SHOW_EPISODES) {
+        this.mediaItemType = Section.EPISODE_FAVORITES;
       }
     }
 
     // set item control properties from configuration settings.
-    if (this.mediaType == Section.ALBUM_FAVORITES) {
+    if (this.mediaItemType == Section.ALBUM_FAVORITES) {
       this.itemsPerRow = this.config.albumFavBrowserItemsPerRow || 4;
       this.hideTitle = this.config.albumFavBrowserItemsHideTitle || false;
       this.hideSubTitle = this.config.albumFavBrowserItemsHideSubTitle || false;
-    } else if (this.mediaType == Section.ARTIST_FAVORITES) {
+    } else if (this.mediaItemType == Section.ARTIST_FAVORITES) {
       this.itemsPerRow = this.config.artistFavBrowserItemsPerRow || 4;
       this.hideTitle = this.config.artistFavBrowserItemsHideTitle || false;
       this.hideSubTitle = this.config.artistFavBrowserItemsHideSubTitle || false;
-    } else if (this.mediaType == Section.AUDIOBOOK_FAVORITES) {
+    } else if (this.mediaItemType == Section.AUDIOBOOK_FAVORITES) {
       this.itemsPerRow = this.config.audiobookFavBrowserItemsPerRow || 4;
       this.hideTitle = this.config.audiobookFavBrowserItemsHideTitle || false;
       this.hideSubTitle = this.config.audiobookFavBrowserItemsHideSubTitle || false;
-    } else if (this.mediaType == Section.DEVICES) {
+    } else if (this.mediaItemType == Section.CATEGORYS) {
+      this.itemsPerRow = this.config.categoryBrowserItemsPerRow || 1;
+      this.hideTitle = this.config.categoryBrowserItemsHideTitle || false;
+      this.hideSubTitle = this.config.categoryBrowserItemsHideSubTitle || false;
+    } else if (this.mediaItemType == Section.DEVICES) {
       this.itemsPerRow = this.config.deviceBrowserItemsPerRow || 1;
       this.hideTitle = this.config.deviceBrowserItemsHideTitle || false;
       this.hideSubTitle = this.config.deviceBrowserItemsHideSubTitle || false;
       // for devices, make the source icons half the size of regular list buttons.
       this.listItemClass += ' button-source';
-    } else if (this.mediaType == Section.EPISODE_FAVORITES) {
+    } else if (this.mediaItemType == Section.EPISODE_FAVORITES) {
       this.itemsPerRow = this.config.episodeFavBrowserItemsPerRow || 4;
       this.hideTitle = this.config.episodeFavBrowserItemsHideTitle || false;
       this.hideSubTitle = this.config.episodeFavBrowserItemsHideSubTitle || false;
-    } else if (this.mediaType == Section.PLAYLIST_FAVORITES) {
+    } else if (this.mediaItemType == Section.PLAYLIST_FAVORITES) {
       this.itemsPerRow = this.config.playlistFavBrowserItemsPerRow || 4;
       this.hideTitle = this.config.playlistFavBrowserItemsHideTitle || false;
       this.hideSubTitle = this.config.playlistFavBrowserItemsHideSubTitle || false;
-    } else if (this.mediaType == Section.RECENTS) {
+    } else if (this.mediaItemType == Section.RECENTS) {
       this.itemsPerRow = this.config.recentBrowserItemsPerRow || 4;
       this.hideTitle = this.config.recentBrowserItemsHideTitle || false;
       this.hideSubTitle = this.config.recentBrowserItemsHideSubTitle || false;
-    } else if (this.mediaType == Section.SHOW_FAVORITES) {
+    } else if (this.mediaItemType == Section.SHOW_FAVORITES) {
       this.itemsPerRow = this.config.showFavBrowserItemsPerRow || 4;
       this.hideTitle = this.config.showFavBrowserItemsHideTitle || false;
       this.hideSubTitle = this.config.showFavBrowserItemsHideSubTitle || false;
-    } else if (this.mediaType == Section.TRACK_FAVORITES) {
+    } else if (this.mediaItemType == Section.TRACK_FAVORITES) {
       this.itemsPerRow = this.config.trackFavBrowserItemsPerRow || 4;
       this.hideTitle = this.config.trackFavBrowserItemsHideTitle || false;
       this.hideSubTitle = this.config.trackFavBrowserItemsHideSubTitle || false;
-    } else if (this.mediaType == Section.USERPRESETS) {
+    } else if (this.mediaItemType == Section.USERPRESETS) {
       this.itemsPerRow = this.config.userPresetBrowserItemsPerRow || 4;
       this.hideTitle = this.config.userPresetBrowserItemsHideTitle || false;
       this.hideSubTitle = this.config.userPresetBrowserItemsHideSubTitle || false;
+    } else {
+      //console.log("%cmedia-browser-base - unknown mediaType = %s; itemsPerRow, hideTitle, hideSubTitle not set!", "color:red", JSON.stringify(this.searchMediaType));
     }
 
     // if search section was specified AND we are not using media type settings, then
     // use search config settings for ItemsPerRow, HideTitle, and HideSubTitle values.
     if (this.section == Section.SEARCH_MEDIA) {
+
       if (this.config.searchMediaBrowserUseDisplaySettings || false) {
         this.itemsPerRow = this.config.searchMediaBrowserItemsPerRow || 4;
         this.hideTitle = this.config.searchMediaBrowserItemsHideTitle || false;
         this.hideSubTitle = this.config.searchMediaBrowserItemsHideSubTitle || false;
       }
+
     }
 
     // all html is rendered in the inheriting class.
@@ -173,7 +197,7 @@ export class MediaBrowserBase extends LitElement {
         .thumbnail {
           width: 100%;
           padding-bottom: 100%;
-          margin: 0 6%;
+          /* margin: 0.6%; */
           background-size: 100%;
           background-repeat: no-repeat;
           background-position: center;
@@ -251,6 +275,7 @@ export class MediaBrowserBase extends LitElement {
     // we will treat the event as a "click" operation.
     const duration = Date.now() - this.mousedownTimestamp;
     this.mousedownTimestamp = -1;
+
     if (duration < 1000) {
       return this.dispatchEvent(customEvent(ITEM_SELECTED, event.detail));
     } else {
@@ -310,6 +335,7 @@ export class MediaBrowserBase extends LitElement {
     // we will treat the event as a "click" operation.
     const duration = Date.now() - this.mousedownTimestamp;
     this.mousedownTimestamp = -1;
+
     if (duration < 1000) {
       return this.dispatchEvent(customEvent(ITEM_SELECTED, event.detail));
     } else {
@@ -433,6 +459,7 @@ export class MediaBrowserBase extends LitElement {
     // we will treat the event as a "click" operation.
     const duration = Date.now() - this.mousedownTimestamp;
     this.mousedownTimestamp = -1;
+
     if (duration < 1000) {
       return this.dispatchEvent(customEvent(ITEM_SELECTED, event.detail));
     } else {

@@ -1,9 +1,11 @@
 // lovelace card imports.
 import { css, html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
+//import { fireEvent } from 'custom-card-helpers';
 import copyTextToClipboard from 'copy-text-to-clipboard';
 import {
   mdiBackupRestore,
+  mdiBookmarkMusicOutline,
   mdiClipboardPlusOutline,
   mdiDotsHorizontal,
   mdiHeart,
@@ -20,15 +22,20 @@ import { FavActionsBase } from './fav-actions-base';
 import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
 import { formatDateHHMMSSFromMilliseconds, unescapeHtml } from '../utils/utils';
-import { openWindowNewTab } from '../utils/media-browser-utils.js';
-import { GetPlaylistPagePlaylistTracks } from '../types/spotifyplus/playlist-page.js';
-import { IPlaylistSimplified } from '../types/spotifyplus/playlist-simplified.js';
-import { IPlaylistTrack } from '../types/spotifyplus/playlist-track.js';
+import { openWindowNewTab } from '../utils/media-browser-utils';
+import { GetPlaylistPagePlaylistTracks } from '../types/spotifyplus/playlist-page';
+import { GetUserPresetConfigEntry } from '../types/spotifyplus/user-preset';
+import { ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD } from '../constants';
+import { IPlaylistSimplified } from '../types/spotifyplus/playlist-simplified';
+import { IPlaylistTrack } from '../types/spotifyplus/playlist-track';
+
+//import { getLovelace, parseLovelaceCardPath } from '../utils/config-util';
 
 /**
  * Playlist actions.
  */
 enum Actions {
+  PlaylistCopyPresetToClipboard = "PlaylistCopyPresetToClipboard",
   PlaylistCopyUriToClipboard = "PlaylistCopyUriToClipboard",
   PlaylistDelete = "PlaylistDelete",
   PlaylistFavoriteAdd = "PlaylistFavoriteAdd",
@@ -124,6 +131,10 @@ class PlaylistActions extends FavActionsBase {
           <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
           <div slot="headline">Copy Playlist URI to Clipboard</div>
         </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.PlaylistCopyPresetToClipboard)}>
+          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          <div slot="headline">Copy Playlist Preset Info to Clipboard</div>
+        </ha-md-menu-item>
       </ha-md-button-menu>
       `;
 
@@ -131,6 +142,7 @@ class PlaylistActions extends FavActionsBase {
     return html` 
       <div class="playlist-actions-container">
         ${this.alertError ? html`<ha-alert alert-type="error" dismissable @alert-dismissed-clicked=${this.alertErrorClear}>${this.alertError}</ha-alert>` : ""}
+        ${this.alertInfo ? html`<ha-alert alert-type="info" dismissable @alert-dismissed-clicked=${this.alertInfoClear}>${this.alertInfo}</ha-alert>` : ""}
         <div class="media-info-content">
           <div class="img" style="background:url(${this.mediaItem.image_url});"></div>
           <div class="media-info-details">
@@ -267,13 +279,110 @@ class PlaylistActions extends FavActionsBase {
       // process actions that don't require a progress indicator.
       if (action == Actions.PlaylistCopyUriToClipboard) {
 
-        copyTextToClipboard(this.mediaItem.uri);
-        return true;
+          copyTextToClipboard(this.mediaItem.uri);
+          return true;
 
       } else if (action == Actions.PlaylistRecoverWebUI) {
 
         openWindowNewTab("https://www.spotify.com/us/account/recover-playlists/");
         return true;
+
+      } else if (action == Actions.PlaylistCopyPresetToClipboard) {
+
+        copyTextToClipboard(GetUserPresetConfigEntry(this.mediaItem));
+        this.alertInfoSet(ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD);
+        return true;
+
+        // the following was my attempt to automatically add the new preset to the
+        // configuration.  it partially worked, in that it would add the preset to
+        // the configuration in memory, the preset would be displayed in the preset
+        // browser, but the update was not applied to the lovelace configuration that
+        // is stored on disk in the `\config\.storage\lovelace.xxxxx` location.
+
+        //// create user preset object.
+        //const preset: IUserPreset = {
+        //  name: this.mediaItem.name,
+        //  image_url: this.mediaItem.image_url || "",
+        //  subtitle: this.mediaItem.type,
+        //  type: this.mediaItem.type,
+        //  uri: this.mediaItem.uri,
+        //};
+
+        //const CRLF = "\n";
+        //let presetText = "";
+        //presetText += "  - name: " + preset.name + CRLF;
+        //presetText += "    subtitle: " + preset.subtitle + CRLF;
+        //presetText += "    image_url: " + preset.image_url + CRLF;
+        //presetText += "    uri: " + preset.uri + CRLF;
+        //presetText += "    type: " + preset.type + CRLF;
+
+        //// add to configuration; insert new item at the beginning.
+        //this.store.config.userPresets?.unshift(preset);
+
+        //// update configuration (in memory).
+        //// note that this will ONLY update the configuration stored in memory; it
+        //// does not apply the updates to the lovelace raw config stored on disk in
+        //// the `\config\.storage\lovelace.xxxxx` location!
+        //fireEvent(this, 'config-changed', { config: this.store.config });
+
+        //// prepare to update the lovelace configuration (on disk).
+        //const lovelace = getLovelace();
+        //if (lovelace) {
+
+        //  console.log("%conClickAction - lovelace data:\n- editMode = %s\n- mode = %s\n- locale = %s\n- urlPath = %s",
+        //    "color: gold",
+        //    JSON.stringify(lovelace.editMode),
+        //    JSON.stringify(lovelace.mode),
+        //    JSON.stringify(lovelace.locale),
+        //    JSON.stringify(lovelace.urlPath),
+        //  );
+
+        //  console.log("%conClickAction - lovelace.rawConfig:\n%s",
+        //    "color: red",
+        //    JSON.stringify(lovelace.rawConfig, null, 2),
+        //  );
+
+        //  console.log("%conClickAction - lovelace.config:\n%s",
+        //    "color: gold",
+        //    JSON.stringify(lovelace.config, null, 2),
+        //  );
+
+        //  //export const replaceCard = (
+        //  //  config: LovelaceConfig,
+        //  //  path: LovelaceCardPath,
+        //  //  cardConfig: LovelaceCardConfig
+        //  //): LovelaceConfig => {
+
+        //  //  const { cardIndex } = parseLovelaceCardPath(path);
+        //  //  const containerPath = getLovelaceContainerPath(path);
+
+        //  //  const cards = findLovelaceItems("cards", config, containerPath);
+
+        //  //  const newCards = (cards ?? []).map((origConf, ind) =>
+        //  //    ind === cardIndex ? cardConfig : origConf
+        //  //  );
+
+        //  //  const newConfig = updateLovelaceItems(
+        //  //    "cards",
+        //  //    config,
+        //  //    containerPath,
+        //  //    newCards
+        //  //  );
+        //  //  return newConfig;
+        //  //};
+
+        //  //let config: LovelaceRawConfig;
+        //  //await lovelace.saveConfig(config);   <- this is the LovelaceRawConfig, not the card config!!!
+
+        //} else {
+
+        //  //console.log("%conClickAction - could not get lovelace object!",
+        //  //  "color: red",
+        //  //);
+
+        //}
+
+        //return true;
 
       }
 

@@ -1,5 +1,5 @@
 // lovelace card imports.
-import { css, html, TemplateResult } from 'lit';
+import { html, TemplateResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
 
 // our imports.
@@ -7,10 +7,10 @@ import '../components/media-browser-list';
 import '../components/media-browser-icons';
 import '../components/audiobook-actions';
 import { FavBrowserBase } from './fav-browser-base';
-import { sharedStylesFavBrowser } from '../styles/shared-styles-fav-browser.js';
 import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
 import { formatTitleInfo } from '../utils/media-browser-utils';
+import { getUtcNowTimestamp } from '../utils/utils';
 import { IAudiobookSimplified } from '../types/spotifyplus/audiobook-simplified';
 
 
@@ -95,21 +95,6 @@ export class AudiobookFavBrowser extends FavBrowserBase {
   }
 
 
-  /** 
-   * style definitions used by this component.
-   * */
-  static get styles() {
-
-    return [
-      sharedStylesFavBrowser,
-      css`
-
-      /* extra styles not defined in sharedStylesFavBrowser would go here. */
-      `
-    ];
-  }
-
-
   /**
    * Updates the mediaList display.
    */
@@ -139,7 +124,7 @@ export class AudiobookFavBrowser extends FavBrowserBase {
 
             // load media list results.
             this.mediaList = result.items;
-            this.mediaListLastUpdatedOn = result.date_last_refreshed || (Date.now() / 1000);
+            this.mediaListLastUpdatedOn = result.date_last_refreshed || getUtcNowTimestamp();
 
             // call base class method, indicating media list update succeeded.
             super.updatedMediaListOk();
@@ -155,7 +140,7 @@ export class AudiobookFavBrowser extends FavBrowserBase {
             this.mediaListLastUpdatedOn = 0;
 
             // call base class method, indicating media list update failed.
-            super.updatedMediaListError("Get Audiobook Favorites failed: \n" + (error as Error).message);
+            super.updatedMediaListError("Get Audiobook Favorites failed: " + (error as Error).message);
 
             // reject the promise.
             reject(error);
@@ -188,7 +173,7 @@ export class AudiobookFavBrowser extends FavBrowserBase {
       this.progressHide();
 
       // set alert error message.
-      super.updatedMediaListError("Audiobook favorites refresh failed: \n" + (error as Error).message);
+      super.updatedMediaListError("Audiobook favorites refresh failed: " + (error as Error).message);
       return true;
 
     }

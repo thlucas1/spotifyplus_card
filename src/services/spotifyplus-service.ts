@@ -24,6 +24,7 @@ import { IArtistPage } from '../types/spotifyplus/artist-page';
 import { IAudiobook } from '../types/spotifyplus/audiobook';
 import { IAudiobookPageSimplified } from '../types/spotifyplus/audiobook-page-simplified';
 import { IAudiobookSimplified } from '../types/spotifyplus/audiobook-simplified';
+import { ICategoryPage } from '../types/spotifyplus/category-page';
 import { IChapter } from '../types/spotifyplus/chapter';
 import { IChapterPageSimplified } from '../types/spotifyplus/chapter-page-simplified';
 import { IEpisode } from '../types/spotifyplus/episode';
@@ -43,6 +44,8 @@ import { ITrack } from '../types/spotifyplus/track';
 import { ITrackPage } from '../types/spotifyplus/track-page';
 import { ITrackPageSaved } from '../types/spotifyplus/track-page-saved';
 import { ITrackPageSimplified } from '../types/spotifyplus/track-page-simplified';
+import { ITrackRecommendations } from '../types/spotifyplus/track-recommendations';
+import { ITrackRecommendationsProperties } from '../types/spotifyplus/track-recommendations-properties';
 
 // debug logging.
 import Debug from 'debug/src/browser.js';
@@ -118,7 +121,7 @@ export class SpotifyPlusService {
   */
   public async CallServiceWithResponse(
     serviceRequest: ServiceCallRequest,
-  ): Promise<string> {
+  ): Promise<Record<string, any>> {
 
     try {
 
@@ -147,85 +150,19 @@ export class SpotifyPlusService {
 
       //if (debuglog.enabled) {
       //  debuglog("%cCallServiceWithResponse - Service %s response:\n%s",
-      //    "color: orange",
+      //    "color: red",
       //    JSON.stringify(serviceRequest.service),
       //    JSON.stringify(serviceResponse.response, null, 2)
       //  );
       //}
 
       // return the service response data or an empty dictionary if no response data was generated.
-      return JSON.stringify(serviceResponse.response)
+      return serviceResponse.response || {};
 
     }
     finally {
     }
   }
-
-
-  /**
-   * Returns the "result" portion of a SpotifyPlus service response that contains
-   * the "user_profile" and "result" keys.
-   * 
-   * @param jsonString JSON response string
-  */
-  private _GetJsonStringResult(jsonString: string): string {
-
-    let result: string = '';
-    const RESULT_KEY: string = '"result":'
-    const RESULT_KEY_LEN: number = RESULT_KEY.length;
-
-    // does service response containe a "result" key?
-    const idx: number = jsonString.indexOf(RESULT_KEY);
-    const jsonStringLen: number = jsonString.length;
-
-    //console.log("%c _GetJsonStringResult (spotifyplus-service)\n idx = %s\n length = %s",
-    //  "color: gold;",
-    //  JSON.stringify(idx),
-    //  JSON.stringify(jsonStringLen)
-    //);
-
-    if (idx > -1) {
-
-      // return the "result" key portion of the response.
-      result = jsonString.substring(idx + RESULT_KEY_LEN, jsonStringLen - 1);
-    }
-
-    //console.log("%c _GetJsonStringResult (spotifyplus-service) result string:\n%s",
-    //  "color: gold;",
-    //  JSON.stringify(result),
-    //);
-
-    return result;
-  }
-
-
-  ///**
-  // * Returns the "user_profile" portion of a SpotifyPlus service response that contains
-  // * the "user_profile" and "result" keys.
-  // *
-  // * @param jsonString JSON response string
-  //*/
-  //private _GetJsonStringUserProfile(jsonString: string): string {
-
-  //  let result: string = '';
-  //  const RESULT_KEY: string = '"result":{'
-  //  const USERPROFILE_KEY: string = '"user_profile":{'
-  //  const USERPROFILE_KEY_LEN: number = USERPROFILE_KEY.length;
-
-  //  // does service response contain a "result" key?
-  //  const idx: number = jsonString.indexOf(USERPROFILE_KEY);
-  //  const idxEnd: number = jsonString.indexOf(RESULT_KEY);
-  //  if (idx > -1) {
-
-  //    // return the "user_profile" key portion of the response, surrounded by the
-  //    // opening and closing brackets to simulate a complete JSON response.
-  //    result = '{' + jsonString.substring(1 + USERPROFILE_KEY_LEN, idxEnd - 2) + '}';
-  //  }
-
-  //  //console.log("%cspotifyplus-service._GetJsonStringUserProfile()\n result string:\n%s", "color: gold;", result);
-  //  return result;
-  //}
-
 
   /**
    * Add one or more items to the end of the user's current Spotify Player playback queue.
@@ -309,11 +246,7 @@ export class SpotifyPlusService {
 
       // call the service, and return the response.
       const response = await this.CallServiceWithResponse(serviceRequest);
-
-      // get the "result" portion of the response, and convert it to a type.
-      const responseResult = this._GetJsonStringResult(response);
-      const responseObj = JSON.parse(responseResult);
-      return responseObj;
+      return response["result"];
 
     }
     finally {
@@ -354,11 +287,7 @@ export class SpotifyPlusService {
 
       // call the service, and return the response.
       const response = await this.CallServiceWithResponse(serviceRequest);
-
-      // get the "result" portion of the response, and convert it to a type.
-      const responseResult = this._GetJsonStringResult(response);
-      const responseObj = JSON.parse(responseResult);
-      return responseObj;
+      return response["result"];
 
     }
     finally {
@@ -399,11 +328,7 @@ export class SpotifyPlusService {
 
       // call the service, and return the response.
       const response = await this.CallServiceWithResponse(serviceRequest);
-
-      // get the "result" portion of the response, and convert it to a type.
-      const responseResult = this._GetJsonStringResult(response);
-      const responseObj = JSON.parse(responseResult);
-      return responseObj;
+      return response["result"];
 
     }
     finally {
@@ -444,11 +369,7 @@ export class SpotifyPlusService {
 
       // call the service, and return the response.
       const response = await this.CallServiceWithResponse(serviceRequest);
-
-      // get the "result" portion of the response, and convert it to a type.
-      const responseResult = this._GetJsonStringResult(response);
-      const responseObj = JSON.parse(responseResult);
-      return responseObj;
+      return response["result"];
 
     }
     finally {
@@ -490,11 +411,7 @@ export class SpotifyPlusService {
 
       // call the service, and return the response.
       const response = await this.CallServiceWithResponse(serviceRequest);
-
-      // get the "result" portion of the response, and convert it to a type.
-      const responseResult = this._GetJsonStringResult(response);
-      const responseObj = JSON.parse(responseResult);
-      return responseObj;
+      return response["result"];
 
     }
     finally {
@@ -535,11 +452,7 @@ export class SpotifyPlusService {
 
       // call the service, and return the response.
       const response = await this.CallServiceWithResponse(serviceRequest);
-
-      // get the "result" portion of the response, and convert it to a type.
-      const responseResult = this._GetJsonStringResult(response);
-      const responseObj = JSON.parse(responseResult);
-      return responseObj;
+      return response["result"];
 
     }
     finally {
@@ -580,11 +493,7 @@ export class SpotifyPlusService {
 
       // call the service, and return the response.
       const response = await this.CallServiceWithResponse(serviceRequest);
-
-      // get the "result" portion of the response, and convert it to a type.
-      const responseResult = this._GetJsonStringResult(response);
-      const responseObj = JSON.parse(responseResult);
-      return responseObj;
+      return response["result"];
 
     }
     finally {
@@ -712,8 +621,7 @@ export class SpotifyPlusService {
       const response = await this.CallServiceWithResponse(serviceRequest);
 
       // get the "result" portion of the response, and convert it to a type.
-      const responseResult = this._GetJsonStringResult(response);
-      const responseObj = JSON.parse(responseResult) as IAlbum;
+      const responseObj = response["result"] as IAlbum;
 
       // omit some data from the results, as it's not necessary and conserves memory.
       if (trimResults) {
@@ -796,13 +704,7 @@ export class SpotifyPlusService {
       const response = await this.CallServiceWithResponse(serviceRequest);
 
       // get the "result" portion of the response, and convert it to a type.
-      const responseResult = this._GetJsonStringResult(response);
-      const responseObj = JSON.parse(responseResult) as IAlbumPageSaved;
-
-      //// get the "user_profile" portion of the response, and convert it to a type.
-      //this._GetJsonStringUserProfile(response);
-
-      //throw new Error("Test exception thrown in GetAlbumFavorites method.");   // TEST TODO REMOVEME
+      const responseObj = response["result"] as IAlbumPageSaved;
 
       // omit some data from the results, as it's not necessary and conserves memory.
       if (trimResults) {
@@ -887,11 +789,7 @@ export class SpotifyPlusService {
       const response = await this.CallServiceWithResponse(serviceRequest);
 
       // get the "result" portion of the response, and convert it to a type.
-      const responseResult = this._GetJsonStringResult(response);
-      const responseObj = JSON.parse(responseResult) as ITrackPageSimplified;
-
-      //// get the "user_profile" portion of the response, and convert it to a type.
-      //this._GetJsonStringUserProfile(response);
+      const responseObj = response["result"] as ITrackPageSimplified;
 
       // omit some data from the results, as it's not necessary and conserves memory.
       if (trimResults) {
@@ -980,11 +878,7 @@ export class SpotifyPlusService {
       const response = await this.CallServiceWithResponse(serviceRequest);
 
       // get the "result" portion of the response, and convert it to a type.
-      const responseResult = this._GetJsonStringResult(response);
-      const responseObj = JSON.parse(responseResult) as IAlbumPageSimplified;
-
-      //// get the "user_profile" portion of the response, and convert it to a type.
-      //this._GetJsonStringUserProfile(response);
+      const responseObj = response["result"] as IAlbumPageSimplified;
 
       // omit some data from the results, as it's not necessary and conserves memory.
       if (trimResults) {
@@ -1050,11 +944,7 @@ export class SpotifyPlusService {
       const response = await this.CallServiceWithResponse(serviceRequest);
 
       // get the "result" portion of the response, and convert it to a type.
-      const responseResult = this._GetJsonStringResult(response);
-      const responseObj = JSON.parse(responseResult) as IArtistInfo;
-
-      //// get the "user_profile" portion of the response, and convert it to a type.
-      //this._GetJsonStringUserProfile(response);
+      const responseObj = response["result"] as IArtistInfo;
 
       // omit some data from the results, as it's not necessary and conserves memory.
       if (trimResults) {
@@ -1122,11 +1012,7 @@ export class SpotifyPlusService {
       const response = await this.CallServiceWithResponse(serviceRequest);
 
       // get the "result" portion of the response, and convert it to a type.
-      const responseResult = this._GetJsonStringResult(response);
-      const responseObj = JSON.parse(responseResult) as Array<IArtist>;
-
-      //// get the "user_profile" portion of the response, and convert it to a type.
-      //this._GetJsonStringUserProfile(response);
+      const responseObj = response["result"] as Array<IArtist>;
 
       // omit some data from the results, as it's not necessary and conserves memory.
       if (trimResults) {
@@ -1199,11 +1085,7 @@ export class SpotifyPlusService {
       const response = await this.CallServiceWithResponse(serviceRequest);
 
       // get the "result" portion of the response, and convert it to a type.
-      const responseResult = this._GetJsonStringResult(response);
-      const responseObj = JSON.parse(responseResult) as Array<ITrack>;
-
-      //// get the "user_profile" portion of the response, and convert it to a type.
-      //this._GetJsonStringUserProfile(response);
+      const responseObj = response["result"] as Array<ITrack>;
 
       // omit some data from the results, as it's not necessary and conserves memory.
       if (trimResults) {
@@ -1282,11 +1164,7 @@ export class SpotifyPlusService {
       const response = await this.CallServiceWithResponse(serviceRequest);
 
       // get the "result" portion of the response, and convert it to a type.
-      const responseResult = this._GetJsonStringResult(response);
-      const responseObj = JSON.parse(responseResult) as IArtistPage;
-
-      //// get the "user_profile" portion of the response, and convert it to a type.
-      //this._GetJsonStringUserProfile(response);
+      const responseObj = response["result"] as IArtistPage;
 
       // omit some data from the results, as it's not necessary and conserves memory.
       if (trimResults) {
@@ -1356,8 +1234,7 @@ export class SpotifyPlusService {
       const response = await this.CallServiceWithResponse(serviceRequest);
 
       // get the "result" portion of the response, and convert it to a type.
-      const responseResult = this._GetJsonStringResult(response);
-      const responseObj = JSON.parse(responseResult) as IAudiobook;
+      const responseObj = response["result"] as IAudiobook;
 
       // omit some data from the results, as it's not necessary and conserves memory.
       if (trimResults) {
@@ -1444,11 +1321,7 @@ export class SpotifyPlusService {
       const response = await this.CallServiceWithResponse(serviceRequest);
 
       // get the "result" portion of the response, and convert it to a type.
-      const responseResult = this._GetJsonStringResult(response);
-      const responseObj = JSON.parse(responseResult) as IChapterPageSimplified;
-
-      //// get the "user_profile" portion of the response, and convert it to a type.
-      //this._GetJsonStringUserProfile(response);
+      const responseObj = response["result"] as IChapterPageSimplified;
 
       // omit some data from the results, as it's not necessary and conserves memory.
       if (trimResults) {
@@ -1527,11 +1400,7 @@ export class SpotifyPlusService {
       const response = await this.CallServiceWithResponse(serviceRequest);
 
       // get the "result" portion of the response, and convert it to a type.
-      const responseResult = this._GetJsonStringResult(response);
-      const responseObj = JSON.parse(responseResult) as IAudiobookPageSimplified;
-
-      //// get the "user_profile" portion of the response, and convert it to a type.
-      //this._GetJsonStringUserProfile(response);
+      const responseObj = response["result"] as IAudiobookPageSimplified;
 
       // omit some data from the results, as it's not necessary and conserves memory.
       if (trimResults) {
@@ -1539,6 +1408,163 @@ export class SpotifyPlusService {
           responseObj.items.forEach(item => {
             item.available_markets = [];
             item.description = 'see html_description';
+            item.images = [];
+          })
+        }
+      }
+
+      // trace.
+      if (debuglog.enabled) {
+        debuglog("%cCallServiceWithResponse - Service %s response (trimmed):\n%s",
+          "color: orange",
+          JSON.stringify(serviceRequest.service),
+          JSON.stringify(responseObj, null, 2)
+        );
+      }
+
+      // return results to caller.
+      return responseObj;
+
+    }
+    finally {
+    }
+  }
+
+
+  /**
+   * Get a sorted list of ALL categories used to tag items in Spotify.
+   * 
+   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param country An ISO 3166-1 alpha-2 country code. If a country code is specified, only content that is available in that market will be returned.  The country associated with the user account will take priority over this parameter.
+   * @param locale The desired language, consisting of a lowercase ISO 639-1 language code and an uppercase ISO 3166-1 alpha-2 country code, joined by an underscore.  For example `es_MX`, meaning `Spanish (Mexico)`.  Provide this parameter if you want the results returned in a particular language (where available).  Note that if locale is not supplied, or if the specified language is not available, all strings will be returned in the Spotify default language (American English).
+   * @param refresh True to return real-time information from the spotify web api and update the cache; otherwise, False to just return the cached value.
+   * @param trimResults True to trim certain fields of the output results that are not required and to conserve memory; otherwise, False to return all fields that were returned in by the Spotify Web API.
+   * @returns A ICategoryPage object.
+  */
+  public async GetBrowseCategorysList(
+    entity_id: string,
+    country: string | undefined | null = null,
+    locale: string | undefined | null = null,
+    refresh: boolean | null = null,
+    trimResults: boolean = true,
+  ): Promise<ICategoryPage> {
+
+    try {
+
+      // create service data (with required parameters).
+      const serviceData: { [key: string]: any } = {
+        entity_id: entity_id,
+      };
+
+      // update service data parameters (with optional parameters).
+      if (country)
+        serviceData['country'] = country;
+      if (locale)
+        serviceData['locale'] = locale;
+      if (refresh)
+        serviceData['refresh'] = refresh;
+
+      // create service request.
+      const serviceRequest: ServiceCallRequest = {
+        domain: DOMAIN_SPOTIFYPLUS,
+        service: 'get_browse_categorys_list',
+        serviceData: serviceData
+      };
+
+      // call the service, and return the response.
+      const response = await this.CallServiceWithResponse(serviceRequest);
+
+      // get the "result" portion of the response, and convert it to a type.
+      const responseObj = response["result"] as ICategoryPage;
+
+      // omit some data from the results, as it's not necessary and conserves memory.
+      if (trimResults) {
+        if ((responseObj != null) && (responseObj.items != null)) {
+          responseObj.items.forEach(item => {
+            item.icons = [];
+          })
+        }
+      }
+
+      // trace.
+      if (debuglog.enabled) {
+        debuglog("%cCallServiceWithResponse - Service %s response (trimmed):\n%s",
+          "color: orange",
+          JSON.stringify(serviceRequest.service),
+          JSON.stringify(responseObj, null, 2)
+        );
+      }
+
+      // return results to caller.
+      return responseObj;
+
+    }
+    finally {
+    }
+  }
+
+
+  /**
+   * Get a list of Spotify playlists tagged with a particular category.
+   * 
+   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param category_id Spotify category ID (not name) for the category. 
+   * @param limit The maximum number of items to return in a page of items when manual paging is used.  Default is 20, Range is 1 to 50.  See the limit_total argument for automatic paging option.
+   * @param offset The index of the first item to return.  Use with limit to get the next set of items.  Default: 0(the first item).
+   * @param country An ISO 3166-1 alpha-2 country code. If a country code is specified, only content that is available in that market will be returned.  If a valid user access token is specified in the request header, the country associated with the user account will take priority over this parameter.  Example = 'ES'.
+   * @param limit_total If specified, this argument overrides the limit and offset argument values and paging is automatically used to retrieve all available items up to the maximum count specified.  Default: None(disabled)
+   * @param sort_result True to sort the items by name; otherwise, False to leave the items in the same order they were returned in by the Spotify Web API.  Default is true.
+   * @param trimResults True to trim certain fields of the output results that are not required and to conserve memory; otherwise, False to return all fields that were returned in by the Spotify Web API.
+   * @returns An IPlaylistPageSimplified object.
+  */
+  public async GetCategoryPlaylists(
+    entity_id: string,
+    category_id: string | undefined | null = null,
+    limit: number | null = null,
+    offset: number | null = null,
+    country: string | undefined | null = null,
+    limit_total: number | null = null,
+    sort_result: boolean | null = null,
+    trimResults: boolean = true,
+  ): Promise<IPlaylistPageSimplified> {
+
+    try {
+
+      // create service data (with required parameters).
+      const serviceData: { [key: string]: any } = {
+        entity_id: entity_id,
+        category_id: category_id,
+      };
+
+      // update service data parameters (with optional parameters).
+      if (limit)
+        serviceData['limit'] = limit;
+      if (offset)
+        serviceData['offset'] = offset;
+      if (country)
+        serviceData['country'] = country;
+      if (limit_total)
+        serviceData['limit_total'] = limit_total;
+      if (sort_result)
+        serviceData['sort_result'] = sort_result;
+
+      // create service request.
+      const serviceRequest: ServiceCallRequest = {
+        domain: DOMAIN_SPOTIFYPLUS,
+        service: 'get_category_playlists',
+        serviceData: serviceData
+      };
+
+      // call the service, and return the response.
+      const response = await this.CallServiceWithResponse(serviceRequest);
+
+      // get the "result" portion of the response, and convert it to a type.
+      const responseObj = response["result"] as IPlaylistPageSimplified;
+
+      // omit some data from the results, as it's not necessary and conserves memory.
+      if (trimResults) {
+        if ((responseObj != null) && (responseObj.items != null)) {
+          responseObj.items.forEach(item => {
             item.images = [];
           })
         }
@@ -1602,8 +1628,7 @@ export class SpotifyPlusService {
       const response = await this.CallServiceWithResponse(serviceRequest);
 
       // get the "result" portion of the response, and convert it to a type.
-      const responseResult = this._GetJsonStringResult(response);
-      const responseObj = JSON.parse(responseResult) as IChapter;
+      const responseObj = response["result"] as IChapter;
 
       // omit some data from the results, as it's not necessary and conserves memory.
       if (trimResults) {
@@ -1677,8 +1702,7 @@ export class SpotifyPlusService {
       const response = await this.CallServiceWithResponse(serviceRequest);
 
       // get the "result" portion of the response, and convert it to a type.
-      const responseResult = this._GetJsonStringResult(response);
-      const responseObj = JSON.parse(responseResult) as IEpisode;
+      const responseObj = response["result"] as IEpisode;
 
       // omit some data from the results, as it's not necessary and conserves memory.
       if (trimResults) {
@@ -1760,11 +1784,7 @@ export class SpotifyPlusService {
       const response = await this.CallServiceWithResponse(serviceRequest);
 
       // get the "result" portion of the response, and convert it to a type.
-      const responseResult = this._GetJsonStringResult(response);
-      const responseObj = JSON.parse(responseResult) as IEpisodePageSaved;
-
-      //// get the "user_profile" portion of the response, and convert it to a type.
-      //this._GetJsonStringUserProfile(response);
+      const responseObj = response["result"] as IEpisodePageSaved;
 
       // omit some data from the results, as it's not necessary and conserves memory.
       if (trimResults) {
@@ -1826,11 +1846,7 @@ export class SpotifyPlusService {
       const response = await this.CallServiceWithResponse(serviceRequest);
 
       // get the "result" portion of the response, and convert it to a type.
-      const responseResult = this._GetJsonStringResult(response);
-      const responseObj = JSON.parse(responseResult) as IPlayerQueueInfo;
-
-      //// get the "user_profile" portion of the response, and convert it to a type.
-      //this._GetJsonStringUserProfile(response);
+      const responseObj = response["result"] as IPlayerQueueInfo;
 
       // omit some data from the results, as it's not necessary and conserves memory.
       if (trimResults) {
@@ -1873,10 +1889,6 @@ export class SpotifyPlusService {
           })
         }
       }
-
-      // set the lastUpdatedOn value to epoch (number of seconds), as the
-      // service does not provide this field (but we need it for media list processing).
-      responseObj.date_last_refreshed = responseObj.date_last_refreshed || (Date.now() / 1000);
 
       // trace.
       if (debuglog.enabled) {
@@ -1948,11 +1960,7 @@ export class SpotifyPlusService {
       const response = await this.CallServiceWithResponse(serviceRequest);
 
       // get the "result" portion of the response, and convert it to a type.
-      const responseResult = this._GetJsonStringResult(response);
-      const responseObj = JSON.parse(responseResult) as IPlayHistoryPage;
-
-      //// get the "user_profile" portion of the response, and convert it to a type.
-      //this._GetJsonStringUserProfile(response);
+      const responseObj = response["result"] as IPlayHistoryPage;
 
       // omit some data from the results, as it's not necessary and conserves memory.
       if (trimResults) {
@@ -2031,11 +2039,7 @@ export class SpotifyPlusService {
       const response = await this.CallServiceWithResponse(serviceRequest);
 
       // get the "result" portion of the response, and convert it to a type.
-      const responseResult = this._GetJsonStringResult(response);
-      const responseObj = JSON.parse(responseResult) as IPlaylistPageSimplified;
-
-      //// get the "user_profile" portion of the response, and convert it to a type.
-      //this._GetJsonStringUserProfile(response);
+      const responseObj = response["result"] as IPlaylistPageSimplified;
 
       // omit some data from the results, as it's not necessary and conserves memory.
       if (trimResults) {
@@ -2125,11 +2129,7 @@ export class SpotifyPlusService {
       const response = await this.CallServiceWithResponse(serviceRequest);
 
       // get the "result" portion of the response, and convert it to a type.
-      const responseResult = this._GetJsonStringResult(response);
-      const responseObj = JSON.parse(responseResult) as IPlaylistPage;
-
-      //// get the "user_profile" portion of the response, and convert it to a type.
-      //this._GetJsonStringUserProfile(response);
+      const responseObj = response["result"] as IPlaylistPage;
 
       // omit some data from the results, as it's not necessary and conserves memory.
       if (trimResults) {
@@ -2184,7 +2184,7 @@ export class SpotifyPlusService {
     try {
 
       if (debuglog.enabled) {
-        debuglog("%c GetSpotifyConnectDevices - retrieving device list from %s",
+        debuglog("%cGetSpotifyConnectDevices - retrieving device list from %s",
           "color: orange;",
           (refresh) ? "real-time query" : "internal device cache",
         );
@@ -2212,11 +2212,7 @@ export class SpotifyPlusService {
       const response = await this.CallServiceWithResponse(serviceRequest);
 
       // get the "result" portion of the response, and convert it to a type.
-      const responseResult = this._GetJsonStringResult(response);
-      const responseObj = JSON.parse(responseResult) as ISpotifyConnectDevices;
-
-      //// get the "user_profile" portion of the response, and convert it to a type.
-      //this._GetJsonStringUserProfile(response);
+      const responseObj = response["result"] as ISpotifyConnectDevices;
 
       // set image_url property based on device type.
       if ((responseObj != null) && (responseObj.Items != null)) {
@@ -2305,11 +2301,7 @@ export class SpotifyPlusService {
       const response = await this.CallServiceWithResponse(serviceRequest);
 
       // get the "result" portion of the response, and convert it to a type.
-      const responseResult = this._GetJsonStringResult(response);
-      const responseObj = JSON.parse(responseResult) as IEpisodePageSimplified;
-
-      //// get the "user_profile" portion of the response, and convert it to a type.
-      //this._GetJsonStringUserProfile(response);
+      const responseObj = response["result"] as IEpisodePageSimplified;
 
       // omit some data from the results, as it's not necessary and conserves memory.
       if (trimResults) {
@@ -2391,11 +2383,7 @@ export class SpotifyPlusService {
       const response = await this.CallServiceWithResponse(serviceRequest);
 
       // get the "result" portion of the response, and convert it to a type.
-      const responseResult = this._GetJsonStringResult(response);
-      const responseObj = JSON.parse(responseResult) as IShowPageSaved;
-
-      //// get the "user_profile" portion of the response, and convert it to a type.
-      //this._GetJsonStringUserProfile(response);
+      const responseObj = response["result"] as IShowPageSaved;
 
       // omit some data from the results, as it's not necessary and conserves memory.
       if (trimResults) {
@@ -2462,8 +2450,7 @@ export class SpotifyPlusService {
       const response = await this.CallServiceWithResponse(serviceRequest);
 
       // get the "result" portion of the response, and convert it to a type.
-      const responseResult = this._GetJsonStringResult(response);
-      const responseObj = JSON.parse(responseResult) as ITrack;
+      const responseObj = response["result"] as ITrack;
 
       // omit some data from the results, as it's not necessary and conserves memory.
       if (trimResults) {
@@ -2544,11 +2531,7 @@ export class SpotifyPlusService {
       const response = await this.CallServiceWithResponse(serviceRequest);
 
       // get the "result" portion of the response, and convert it to a type.
-      const responseResult = this._GetJsonStringResult(response);
-      const responseObj = JSON.parse(responseResult) as ITrackPageSaved;
-
-      //// get the "user_profile" portion of the response, and convert it to a type.
-      //this._GetJsonStringUserProfile(response);
+      const responseObj = response["result"] as ITrackPageSaved;
 
       // omit some data from the results, as it's not necessary and conserves memory.
       if (trimResults) {
@@ -2557,6 +2540,191 @@ export class SpotifyPlusService {
             item.track.available_markets = [];
             item.track.album.available_markets = [];
             item.track.album.images = [];
+          })
+        }
+      }
+
+      // trace.
+      if (debuglog.enabled) {
+        debuglog("%cCallServiceWithResponse - Service %s response (trimmed):\n%s",
+          "color: orange",
+          JSON.stringify(serviceRequest.service),
+          JSON.stringify(responseObj, null, 2)
+        );
+      }
+
+      // return results to caller.
+      return responseObj;
+
+    }
+    finally {
+    }
+  }
+
+
+  /**
+   * Get track recommendations for specified criteria.
+   * 
+   * Use the `GetTrackAudioFeatures` method to get an idea of what to specify for some of the
+   * minX / maxX / and targetX recommendations values.
+   * 
+   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param recommendations 
+   * @param limit 
+   * @param market 
+   * @param trimResults True to trim certain fields of the output results that are not required and to conserve memory; otherwise, False to return all fields that were returned in by the Spotify Web API.
+   * @returns A `ITrackRecommendations` object that contains the track details.
+  */
+  public async GetTrackRecommendations(
+    entity_id: string,
+    recommendations: ITrackRecommendationsProperties | undefined | null = null,
+    limit: number | undefined | null = null,
+    market: string | undefined | null = null,
+    trimResults: boolean = true,
+  ): Promise<ITrackRecommendations> {
+
+    try {
+
+      // create service data (with required parameters).
+      const serviceData: { [key: string]: any } = {
+        entity_id: entity_id,
+      };
+
+      // update service data parameters (with optional parameters).
+      if (limit)
+        serviceData['limit'] = limit;
+      if (market)
+        serviceData['market'] = market;
+
+      if (recommendations) {
+
+        if (recommendations.seed_artists)
+          serviceData['seed_artists'] = recommendations.seed_artists;
+        if (recommendations.seed_genres)
+          serviceData['seed_genres'] = recommendations.seed_genres;
+        if (recommendations.seed_tracks)
+          serviceData['seed_tracks'] = recommendations.seed_tracks;
+
+        if (recommendations.max_acousticness)
+          serviceData['max_acousticness'] = recommendations.max_acousticness;
+        if (recommendations.min_acousticness)
+          serviceData['min_acousticness'] = recommendations.min_acousticness;
+        if (recommendations.target_acousticness)
+          serviceData['target_acousticness'] = recommendations.target_acousticness;
+
+        if (recommendations.max_danceability)
+          serviceData['max_danceability'] = recommendations.max_danceability;
+        if (recommendations.min_danceability)
+          serviceData['min_danceability'] = recommendations.min_danceability;
+        if (recommendations.target_danceability)
+          serviceData['target_danceability'] = recommendations.target_danceability;
+
+        if (recommendations.max_duration_ms)
+          serviceData['max_duration_ms'] = recommendations.max_duration_ms;
+        if (recommendations.min_duration_ms)
+          serviceData['min_duration_ms'] = recommendations.min_duration_ms;
+        if (recommendations.target_duration_ms)
+          serviceData['target_duration_ms'] = recommendations.target_duration_ms;
+
+        if (recommendations.max_energy)
+          serviceData['max_energy'] = recommendations.max_energy;
+        if (recommendations.min_energy)
+          serviceData['min_energy'] = recommendations.min_energy;
+        if (recommendations.target_energy)
+          serviceData['target_energy'] = recommendations.target_energy;
+
+        if (recommendations.max_instrumentalness)
+          serviceData['max_instrumentalness'] = recommendations.max_instrumentalness;
+        if (recommendations.min_instrumentalness)
+          serviceData['min_instrumentalness'] = recommendations.min_instrumentalness;
+        if (recommendations.target_instrumentalness)
+          serviceData['target_instrumentalness'] = recommendations.target_instrumentalness;
+
+        if (recommendations.max_key)
+          serviceData['max_key'] = recommendations.max_key;
+        if (recommendations.min_key)
+          serviceData['min_key'] = recommendations.min_key;
+        if (recommendations.target_key)
+          serviceData['target_key'] = recommendations.target_key;
+
+        if (recommendations.max_liveness)
+          serviceData['max_liveness'] = recommendations.max_liveness;
+        if (recommendations.min_liveness)
+          serviceData['min_liveness'] = recommendations.min_liveness;
+        if (recommendations.target_liveness)
+          serviceData['target_liveness'] = recommendations.target_liveness;
+
+        if (recommendations.max_loudness)
+          serviceData['max_loudness'] = recommendations.max_loudness;
+        if (recommendations.min_loudness)
+          serviceData['min_loudness'] = recommendations.min_loudness;
+        if (recommendations.target_loudness)
+          serviceData['target_loudness'] = recommendations.target_loudness;
+
+        if (recommendations.max_mode)
+          serviceData['max_mode'] = recommendations.max_mode;
+        if (recommendations.min_mode)
+          serviceData['min_mode'] = recommendations.min_mode;
+        if (recommendations.target_mode)
+          serviceData['target_mode'] = recommendations.target_mode;
+
+        if (recommendations.max_popularity)
+          serviceData['max_popularity'] = recommendations.max_popularity;
+        if (recommendations.min_popularity)
+          serviceData['min_popularity'] = recommendations.min_popularity;
+        if (recommendations.target_popularity)
+          serviceData['target_popularity'] = recommendations.target_popularity;
+
+        if (recommendations.max_speechiness)
+          serviceData['max_speechiness'] = recommendations.max_speechiness;
+        if (recommendations.min_speechiness)
+          serviceData['min_speechiness'] = recommendations.min_speechiness;
+        if (recommendations.target_speechiness)
+          serviceData['target_speechiness'] = recommendations.target_speechiness;
+
+        if (recommendations.max_tempo)
+          serviceData['max_tempo'] = recommendations.max_tempo;
+        if (recommendations.min_tempo)
+          serviceData['min_tempo'] = recommendations.min_tempo;
+        if (recommendations.target_tempo)
+          serviceData['target_tempo'] = recommendations.target_tempo;
+
+        if (recommendations.max_time_signature)
+          serviceData['max_time_signature'] = recommendations.max_time_signature;
+        if (recommendations.min_time_signature)
+          serviceData['min_time_signature'] = recommendations.min_time_signature;
+        if (recommendations.target_time_signature)
+          serviceData['target_time_signature'] = recommendations.target_time_signature;
+
+        if (recommendations.max_valence)
+          serviceData['max_valence'] = recommendations.max_valence;
+        if (recommendations.min_valence)
+          serviceData['min_valence'] = recommendations.min_valence;
+        if (recommendations.target_valence)
+          serviceData['target_valence'] = recommendations.target_valence;
+
+      }
+
+      // create service request.
+      const serviceRequest: ServiceCallRequest = {
+        domain: DOMAIN_SPOTIFYPLUS,
+        service: 'get_track_recommendations',
+        serviceData: serviceData
+      };
+
+      // call the service, and return the response.
+      const response = await this.CallServiceWithResponse(serviceRequest);
+
+      // get the "result" portion of the response, and convert it to a type.
+      const responseObj = response["result"] as ITrackRecommendations;
+
+      // omit some data from the results, as it's not necessary and conserves memory.
+      if (trimResults) {
+        if (responseObj != null) {
+          responseObj.tracks.forEach(track => {
+            track.available_markets = [];
+            track.album.available_markets = [];
+            track.album.images = [];
           })
         }
       }
@@ -3133,7 +3301,7 @@ export class SpotifyPlusService {
   */
   public async Search(
     searchMediaType: SearchMediaTypes.ALBUMS | SearchMediaTypes.ARTISTS | SearchMediaTypes.AUDIOBOOKS | SearchMediaTypes.EPISODES |
-      SearchMediaTypes.PLAYLISTS | SearchMediaTypes.SHOWS | SearchMediaTypes.TRACKS,
+      SearchMediaTypes.PLAYLISTS | SearchMediaTypes.SHOWS | SearchMediaTypes.TRACKS | string,
     entity_id: string,
     criteria: string,
     limit: number | null = null,
@@ -3225,11 +3393,7 @@ export class SpotifyPlusService {
       const response = await this.CallServiceWithResponse(serviceRequest);
 
       // get the "result" portion of the response, and convert it to a type.
-      const responseResult = this._GetJsonStringResult(response);
-      const responseObj = JSON.parse(responseResult) as IAlbumPageSimplified;
-
-      //// get the "user_profile" portion of the response, and convert it to a type.
-      //this._GetJsonStringUserProfile(response);
+      const responseObj = response["result"] as IAlbumPageSimplified;
 
       // omit some data from the results, as it's not necessary and conserves memory.
       if (trimResults) {
@@ -3314,11 +3478,7 @@ export class SpotifyPlusService {
       const response = await this.CallServiceWithResponse(serviceRequest);
 
       // get the "result" portion of the response, and convert it to a type.
-      const responseResult = this._GetJsonStringResult(response);
-      const responseObj = JSON.parse(responseResult) as IArtistPage;
-
-      //// get the "user_profile" portion of the response, and convert it to a type.
-      //this._GetJsonStringUserProfile(response);
+      const responseObj = response["result"] as IArtistPage;
 
       // omit some data from the results, as it's not necessary and conserves memory.
       if (trimResults) {
@@ -3402,11 +3562,7 @@ export class SpotifyPlusService {
       const response = await this.CallServiceWithResponse(serviceRequest);
 
       // get the "result" portion of the response, and convert it to a type.
-      const responseResult = this._GetJsonStringResult(response);
-      const responseObj = JSON.parse(responseResult) as IAudiobookPageSimplified;
-
-      //// get the "user_profile" portion of the response, and convert it to a type.
-      //this._GetJsonStringUserProfile(response);
+      const responseObj = response["result"] as IAudiobookPageSimplified;
 
       // omit some data from the results, as it's not necessary and conserves memory.
       if (trimResults) {
@@ -3492,11 +3648,7 @@ export class SpotifyPlusService {
       const response = await this.CallServiceWithResponse(serviceRequest);
 
       // get the "result" portion of the response, and convert it to a type.
-      const responseResult = this._GetJsonStringResult(response);
-      const responseObj = JSON.parse(responseResult) as IEpisodePageSimplified;
-
-      //// get the "user_profile" portion of the response, and convert it to a type.
-      //this._GetJsonStringUserProfile(response);
+      const responseObj = response["result"] as IEpisodePageSimplified;
 
       // omit some data from the results, as it's not necessary and conserves memory.
       if (trimResults) {
@@ -3581,11 +3733,7 @@ export class SpotifyPlusService {
       const response = await this.CallServiceWithResponse(serviceRequest);
 
       // get the "result" portion of the response, and convert it to a type.
-      const responseResult = this._GetJsonStringResult(response);
-      const responseObj = JSON.parse(responseResult) as IPlaylistPageSimplified;
-
-      //// get the "user_profile" portion of the response, and convert it to a type.
-      //this._GetJsonStringUserProfile(response);
+      const responseObj = response["result"] as IPlaylistPageSimplified;
 
       // omit some data from the results, as it's not necessary and conserves memory.
       if (trimResults) {
@@ -3669,11 +3817,7 @@ export class SpotifyPlusService {
       const response = await this.CallServiceWithResponse(serviceRequest);
 
       // get the "result" portion of the response, and convert it to a type.
-      const responseResult = this._GetJsonStringResult(response);
-      const responseObj = JSON.parse(responseResult) as IShowPageSimplified;
-
-      //// get the "user_profile" portion of the response, and convert it to a type.
-      //this._GetJsonStringUserProfile(response);
+      const responseObj = response["result"] as IShowPageSimplified;
 
       // omit some data from the results, as it's not necessary and conserves memory.
       if (trimResults) {
@@ -3759,11 +3903,7 @@ export class SpotifyPlusService {
       const response = await this.CallServiceWithResponse(serviceRequest);
 
       // get the "result" portion of the response, and convert it to a type.
-      const responseResult = this._GetJsonStringResult(response);
-      const responseObj = JSON.parse(responseResult) as ITrackPage;
-
-      //// get the "user_profile" portion of the response, and convert it to a type.
-      //this._GetJsonStringUserProfile(response);
+      const responseObj = response["result"] as ITrackPage;
 
       // omit some data from the results, as it's not necessary and conserves memory.
       if (trimResults) {

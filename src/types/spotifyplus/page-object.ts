@@ -2,6 +2,7 @@ import { IAlbumSaved } from './album-saved';
 import { IAlbumSimplified } from './album-simplified';
 import { IArtist } from './artist';
 import { IAudiobookSimplified } from './audiobook-simplified';
+import { ICategory } from './category';
 import { IChapterSimplified } from './chapter-simplified';
 import { IUserPreset } from './user-preset';
 import { IEpisodeSaved } from './episode-saved';
@@ -59,13 +60,13 @@ export interface IPageObject {
    * 
    * Example: `https://api.spotify.com/v1/me/shows?offset=0&limit=20`
    * */
-  href: string;
+  href?: string;
 
 
   /**
    * True if cursors were returned at some point during the life of this paging object.
    * */
-  is_cursor: boolean;
+  is_cursor?: boolean;
 
 
   /** 
@@ -73,9 +74,9 @@ export interface IPageObject {
    * 
    * This property will be overrriden by inheriting classes.
    */
-  items: Array<IAlbumSaved | IAlbumSimplified | IArtist | IAudiobookSimplified | IChapterSimplified |
-  IEpisodeSaved | IEpisodeSimplified | IPlayHistory | IPlaylistSimplified | IPlaylistTrack |
-  IShowSaved | IShowSimplified | ITrackSaved | ITrackSimplified | IUserPreset>;
+  items: Array<IAlbumSaved | IAlbumSimplified | IArtist | IAudiobookSimplified | ICategory |
+    IChapterSimplified | IEpisodeSaved | IEpisodeSimplified | IPlayHistory | IPlaylistSimplified |
+    IPlaylistTrack | IShowSaved | IShowSimplified | ITrackSaved | ITrackSimplified | IUserPreset>;
 
 
   /**
@@ -98,7 +99,7 @@ export interface IPageObject {
    * This property can be modified in case the paging request needs to be adjusted
    * based upon overall request limits.
    * */
-  limit: number;
+  limit?: number;
 
 
   /**
@@ -106,7 +107,7 @@ export interface IPageObject {
    * 
    * Example: `https://api.spotify.com/v1/me/shows?offset=1&limit=1`
    * */
-  next: string;
+  next?: string;
 
 
   /**
@@ -123,7 +124,7 @@ export interface IPageObject {
    * 
    * Example: `https://api.spotify.com/v1/me/shows?offset=1&limit=1`
    * */
-  previous: string;
+  previous?: string;
 
 
   /**

@@ -4,6 +4,7 @@ import { property, state } from 'lit/decorators.js';
 import copyTextToClipboard from 'copy-text-to-clipboard';
 import {
   mdiAccountDetailsOutline,
+  mdiBookmarkMusicOutline,
   mdiBookOpenVariant,
   mdiClipboardPlusOutline,
   mdiDotsHorizontal,
@@ -21,10 +22,12 @@ import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
 import { SearchMediaTypes } from '../types/search-media-types';
 import { SearchMediaEvent } from '../events/search-media';
-import { GetCopyrights } from '../types/spotifyplus/copyright';
-import { GetResumeInfo } from '../types/spotifyplus/resume-point';
 import { formatDateHHMMSSFromMilliseconds, unescapeHtml } from '../utils/utils';
 import { openWindowNewTab } from '../utils/media-browser-utils';
+import { ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD } from '../constants';
+import { GetCopyrights } from '../types/spotifyplus/copyright';
+import { GetResumeInfo } from '../types/spotifyplus/resume-point';
+import { GetUserPresetConfigEntry } from '../types/spotifyplus/user-preset';
 import { IAudiobookSimplified, GetAudiobookNarrators, GetAudiobookAuthors } from '../types/spotifyplus/audiobook-simplified';
 import { IChapterPageSimplified } from '../types/spotifyplus/chapter-page-simplified';
 
@@ -32,6 +35,7 @@ import { IChapterPageSimplified } from '../types/spotifyplus/chapter-page-simpli
  * Audiobook actions.
  */
 enum Actions {
+  AudiobookCopyPresetToClipboard = "AudiobookCopyPresetToClipboard",
   AudiobookCopyUriToClipboard = "AudiobookCopyUriToClipboard",
   AudiobookFavoriteAdd = "AudiobookFavoriteAdd",
   AudiobookFavoriteRemove = "AudiobookFavoriteRemove",
@@ -127,6 +131,10 @@ class AudiobookActions extends FavActionsBase {
           <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
           <div slot="headline">Copy Audiobook URI to Clipboard</div>
         </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.AudiobookCopyPresetToClipboard)}>
+          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          <div slot="headline">Copy Audiobook Preset Info to Clipboard</div>
+        </ha-md-menu-item>
       </ha-md-button-menu>
       `;
 
@@ -137,6 +145,7 @@ class AudiobookActions extends FavActionsBase {
     return html`
       <div class="audiobook-actions-container">
         ${this.alertError ? html`<ha-alert alert-type="error" dismissable @alert-dismissed-clicked=${this.alertErrorClear}>${this.alertError}</ha-alert>` : ""}
+        ${this.alertInfo ? html`<ha-alert alert-type="info" dismissable @alert-dismissed-clicked=${this.alertInfoClear}>${this.alertInfo}</ha-alert>` : ""}
         <div class="media-info-content">
           <div class="img" style="background:url(${this.mediaItem.image_url});"></div>
           <div class="media-info-details">
@@ -254,7 +263,13 @@ class AudiobookActions extends FavActionsBase {
     try {
 
       // process actions that don't require a progress indicator.
-      if (action == Actions.AudiobookCopyUriToClipboard) {
+      if (action == Actions.AudiobookCopyPresetToClipboard) {
+
+        copyTextToClipboard(GetUserPresetConfigEntry(this.mediaItem, GetAudiobookAuthors(this.mediaItem, ", ")));
+        this.alertInfoSet(ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD);
+        return true;
+
+      } else if (action == Actions.AudiobookCopyUriToClipboard) {
 
         copyTextToClipboard(this.mediaItem.uri || "");
         return true;

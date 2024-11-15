@@ -40,7 +40,7 @@ export class HassService {
     try {
 
       if (debuglog.enabled) {
-        debuglog("%c CallService - Calling service %s (no response)\n%s",
+        debuglog("%cCallService - Calling service %s (no response)\n%s",
           "color: orange;",
           JSON.stringify(serviceRequest.service),
           JSON.stringify(serviceRequest, null, 2),

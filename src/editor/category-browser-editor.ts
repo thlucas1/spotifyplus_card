@@ -8,21 +8,21 @@ import { Section } from '../types/section';
 
 const CONFIG_SETTINGS_SCHEMA = [
   {
-    name: 'audiobookFavBrowserTitle',
+    name: 'categoryBrowserTitle',
     label: 'Section title text',
     help: 'displayed at the top of the section',
     required: false,
     type: 'string',
   },
   {
-    name: 'audiobookFavBrowserSubTitle',
+    name: 'categoryBrowserSubTitle',
     label: 'Section sub-title text',
     help: 'displayed below the section title',
     required: false,
     type: 'string',
   },
   {
-    name: 'audiobookFavBrowserItemsPerRow',
+    name: 'categoryBrowserItemsPerRow',
     label: '# of items to display per row',
     help: 'use 1 for list format',
     required: true,
@@ -32,28 +32,28 @@ const CONFIG_SETTINGS_SCHEMA = [
     valueMax: 12,
   },
   {
-    name: 'audiobookFavBrowserItemsHideTitle',
+    name: 'categoryBrowserItemsHideTitle',
     label: 'Hide item row title text',
     required: false,
     selector: { boolean: {} },
   },
   {
-    name: 'audiobookFavBrowserItemsHideSubTitle',
+    name: 'categoryBrowserItemsHideSubTitle',
     label: 'Hide item row sub-title text',
     help: 'if Title visible',
     required: false,
     selector: { boolean: {} },
   },
   {
-    name: 'audiobookFavBrowserItemsSortTitle',
-    label: 'Sort items by Title',
+    name: 'categoryBrowserItemsSortTitle',
+    label: 'Sort Playlist items by Title',
     required: false,
     selector: { boolean: {} },
   },
 ];
 
 
-class AudiobookFavBrowserEditor extends BaseEditor {
+class CategoryBrowserEditor extends BaseEditor {
 
   /**
    * Invoked on each update to perform rendering tasks. 
@@ -69,11 +69,11 @@ class AudiobookFavBrowserEditor extends BaseEditor {
     // render html.
     return html`
       <div class="schema-title">
-        Settings that control the Audiobook Favorites section look and feel
+        Settings that control the Category section look and feel
       </div>
       <spc-editor-form class="spc-editor-form"
         .schema=${CONFIG_SETTINGS_SCHEMA}
-        .section=${Section.AUDIOBOOK_FAVORITES}
+        .section=${Section.CATEGORYS}
         .store=${this.store}
         .config=${this.config}
         .hass=${this.hass}
@@ -124,4 +124,4 @@ class AudiobookFavBrowserEditor extends BaseEditor {
 
 }
 
-customElements.define('spc-audiobook-fav-browser-editor', AudiobookFavBrowserEditor);
+customElements.define('spc-category-browser-editor', CategoryBrowserEditor);

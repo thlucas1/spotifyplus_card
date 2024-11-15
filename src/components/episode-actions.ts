@@ -3,6 +3,7 @@ import { css, html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import copyTextToClipboard from 'copy-text-to-clipboard';
 import {
+  mdiBookmarkMusicOutline,
   mdiClipboardPlusOutline,
   mdiDotsHorizontal,
   mdiHeart,
@@ -22,6 +23,8 @@ import { SearchMediaTypes } from '../types/search-media-types';
 import { SearchMediaEvent } from '../events/search-media';
 import { formatDateHHMMSSFromMilliseconds, unescapeHtml } from '../utils/utils';
 import { openWindowNewTab } from '../utils/media-browser-utils';
+import { ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD } from '../constants';
+import { GetUserPresetConfigEntry } from '../types/spotifyplus/user-preset';
 import { IEpisode, isEpisodeObject } from '../types/spotifyplus/episode';
 import { IEpisodeSimplified } from '../types/spotifyplus/episode-simplified';
 
@@ -29,11 +32,13 @@ import { IEpisodeSimplified } from '../types/spotifyplus/episode-simplified';
  * Episode actions.
  */
 enum Actions {
+  EpisodeCopyPresetToClipboard = "EpisodeCopyPresetToClipboard",
   EpisodeCopyUriToClipboard = "EpisodeCopyUriToClipboard",
   EpisodeFavoriteAdd = "EpisodeFavoriteAdd",
   EpisodeFavoriteRemove = "EpisodeFavoriteRemove",
   EpisodeFavoriteUpdate = "EpisodeFavoriteUpdate",
   EpisodeUpdate = "EpisodeUpdate",
+  ShowCopyPresetToClipboard = "ShowCopyPresetToClipboard",
   ShowCopyUriToClipboard = "ShowCopyUriToClipboard",
   ShowFavoriteAdd = "ShowFavoriteAdd",
   ShowFavoriteRemove = "ShowFavoriteRemove",
@@ -149,13 +154,17 @@ class EpisodeActions extends FavActionsBase {
           <ha-svg-icon slot="icon" .path=${mdiDotsHorizontal}></ha-svg-icon>
         </ha-assist-chip>
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.ShowSearchEpisodes)} hide=${this.hideSearchType(SearchMediaTypes.EPISODES)}>
-          <ha-svg-icon slot="start" .path=${mdiPodcast}></ha-svg-icon>
+          <ha-svg-icon slot="start" .path=${mdiMicrophone}></ha-svg-icon>
           <div slot="headline">Search for Show Episodes</div>
         </ha-md-menu-item>
         <ha-md-divider role="separator" tabindex="-1"></ha-md-divider>
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.ShowCopyUriToClipboard)}>
           <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
           <div slot="headline">Copy Show URI to Clipboard</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ShowCopyPresetToClipboard)}>
+          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          <div slot="headline">Copy Show Preset Info to Clipboard</div>
         </ha-md-menu-item>
       </ha-md-button-menu>
       `;
@@ -170,6 +179,10 @@ class EpisodeActions extends FavActionsBase {
           <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
           <div slot="headline">Copy Episode URI to Clipboard</div>
         </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.EpisodeCopyPresetToClipboard)}>
+          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          <div slot="headline">Copy Episode Preset Info to Clipboard</div>
+        </ha-md-menu-item>
       </ha-md-button-menu>
       `;
 
@@ -178,6 +191,7 @@ class EpisodeActions extends FavActionsBase {
     return html` 
       <div class="episode-actions-container">
         ${this.alertError ? html`<ha-alert alert-type="error" dismissable @alert-dismissed-clicked=${this.alertErrorClear}>${this.alertError}</ha-alert>` : ""}
+        ${this.alertInfo ? html`<ha-alert alert-type="info" dismissable @alert-dismissed-clicked=${this.alertInfoClear}>${this.alertInfo}</ha-alert>` : ""}
         <div class="media-info-content">
           <div class="img" style="background:url(${this.episode?.image_url});"></div>
           <div class="media-info-details">
@@ -276,9 +290,21 @@ class EpisodeActions extends FavActionsBase {
     try {
 
       // process actions that don't require a progress indicator.
-      if (action == Actions.EpisodeCopyUriToClipboard) {
+      if (action == Actions.EpisodeCopyPresetToClipboard) {
+
+        copyTextToClipboard(GetUserPresetConfigEntry(this.episode, this.episode?.show.name));
+        this.alertInfoSet(ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD);
+        return true;
+
+      } else if (action == Actions.EpisodeCopyUriToClipboard) {
 
         copyTextToClipboard(this.episode?.uri || "");
+        return true;
+
+      } else if (action == Actions.ShowCopyPresetToClipboard) {
+
+        copyTextToClipboard(GetUserPresetConfigEntry(this.episode?.show, "Podcast"));
+        this.alertInfoSet(ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD);
         return true;
 
       } else if (action == Actions.ShowCopyUriToClipboard) {
@@ -288,7 +314,7 @@ class EpisodeActions extends FavActionsBase {
 
       } else if (action == Actions.ShowSearchEpisodes) {
 
-        this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.EPISODES, this.episode?.show.name));
+        this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.SHOW_EPISODES, this.episode?.show.name, this.episode?.show.name, this.episode?.show.uri));
         return true;
 
       }

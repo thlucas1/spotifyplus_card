@@ -10,6 +10,7 @@ import './player-editor';
 import './album-fav-browser-editor';
 import './artist-fav-browser-editor';
 import './audiobook-fav-browser-editor';
+import './category-browser-editor';
 import './device-browser-editor';
 import './episode-fav-browser-editor';
 import './playlist-fav-browser-editor';
@@ -87,7 +88,7 @@ class CardEditor extends BaseEditor {
         )}
       </ha-control-button-group>
       <ha-control-button-group>
-        ${[ConfigArea.EPISODE_FAVORITES, ConfigArea.SHOW_FAVORITES, ConfigArea.SEARCH_MEDIA_BROWSER].map(
+        ${[ConfigArea.EPISODE_FAVORITES, ConfigArea.SHOW_FAVORITES, ConfigArea.CATEGORY_BROWSER, ConfigArea.SEARCH_MEDIA_BROWSER].map(
           (configArea) => html`
             <ha-control-button
               selected=${this.configArea === configArea || nothing}
@@ -158,6 +159,10 @@ class CardEditor extends BaseEditor {
       [
         ConfigArea.AUDIOBOOK_FAVORITES,
         () => html`<spc-audiobook-fav-browser-editor .config=${this.config} .hass=${this.hass}></spc-audiobook-fav-browser-editor>`,
+      ],
+      [
+        ConfigArea.CATEGORY_BROWSER,
+        () => html`<spc-category-browser-editor .config=${this.config} .hass=${this.hass}></spc-category-browser-editor>`,
       ],
       [
         ConfigArea.DEVICE_BROWSER,

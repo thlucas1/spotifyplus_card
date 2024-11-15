@@ -82,6 +82,7 @@ export class LStorageService {
    */
   public getStorageValue(storageKey: any, defaultValue: any = null): any {
     const storageData = window.localStorage.getItem(storageKey);
+    //console.log("%cgetStorageValue - key=%s, data=%s", "color:red", JSON.stringify(storageKey), JSON.stringify(storageData));
     return (storageData) ? JSON.parse(storageData) : defaultValue;
   }
 

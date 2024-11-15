@@ -1,5 +1,5 @@
 // lovelace card imports.
-import { html, LitElement, PropertyValues, TemplateResult } from 'lit';
+import { css, html, LitElement, PropertyValues, TemplateResult } from 'lit';
 import { property, query, state } from 'lit/decorators.js';
 import { HomeAssistant } from 'custom-card-helpers';
 import {
@@ -8,6 +8,7 @@ import {
 } from '@mdi/js';
 
 // our imports.
+import { sharedStylesFavBrowser } from '../styles/shared-styles-fav-browser.js';
 import { CardConfig } from '../types/card-config';
 import { Section } from '../types/section';
 import { Store } from '../model/store';
@@ -46,6 +47,8 @@ export class FavBrowserBase extends LitElement {
   @state() protected scrollTopSaved?: number;
   @state() protected mediaItem?: any;
   @state() protected filterCriteria?: string;
+  @state() protected isFilterCriteriaReadOnly?: boolean | null;
+  @state() protected isFilterCriteriaVisible?: boolean | null;
 
   // html form element objects.
   @query("#mediaBrowserContentElement", true) protected mediaBrowserContentElement!: HTMLDivElement;
@@ -84,10 +87,11 @@ export class FavBrowserBase extends LitElement {
   /** Max number of items to return for a media list while editing the card configuration. */
   protected EDITOR_LIMIT_TOTAL_MAX = 25;
 
-  /** Max number of items to return for a media list. */
+  /** Max number of items to return for a media list (200). */
   protected LIMIT_TOTAL_MAX = 200;
 
   protected filterCriteriaHtml;
+  protected filterCriteriaReadOnlyHtml;
   protected refreshMediaListHtml;
   protected btnHideActionsHtml;
 
@@ -139,6 +143,10 @@ export class FavBrowserBase extends LitElement {
     // set scroll position (if needed).
     this.setScrollPosition();
 
+    // enable filter criteria (by default).
+    this.isFilterCriteriaReadOnly = false;
+    this.isFilterCriteriaVisible = true;
+
     // define control to render - search criteria.
     this.filterCriteriaHtml = html`
       <search-input-outlined id="filterCriteria" 
@@ -151,6 +159,13 @@ export class FavBrowserBase extends LitElement {
         @value-changed=${this.onFilterCriteriaChange}
         @keypress=${this.onFilterCriteriaKeyPress}
       ></search-input-outlined>
+      `;
+
+    // define control to render - search criteria (readonly).
+    this.filterCriteriaReadOnlyHtml = html`
+      <span id="filterCriteriaDisabled" 
+        class="media-browser-control-filter-disabled"
+      >${this.filterCriteria}</span>
       `;
 
     // define control to render - search icon.
@@ -180,17 +195,23 @@ export class FavBrowserBase extends LitElement {
   }
 
 
-  ///** 
-  // * style definitions used by this component.
-  // * */
-  //static get styles() {
+  /** 
+   * style definitions used by this component.
+   * */
+  static get styles() {
 
-  //  return [
-  //    //sharedStylesFavBrowser,
-  //    css`
-  //    `
-  //  ];
-  //}
+    return [
+      sharedStylesFavBrowser,
+      css`
+
+      /* extra styles not defined in sharedStylesFavBrowser would go here. */
+
+      /* you can also copy this method into any inheriting class to apply fav-browser specific styles. */
+      `
+    ];
+  }
+
+
 
 
   /**
@@ -275,7 +296,7 @@ export class FavBrowserBase extends LitElement {
       // if we already updated the media list, then don't do it again.
       if ((this.isCardInEditPreview) && (this.mediaType in Store.hasCardEditLoadedMediaList)) {
         if (debuglog.enabled) {
-          debuglog("%c firstUpdated - we already called updateMediaList to retrieve media list; will not update again while editing card!",
+          debuglog("%cfirstUpdated - we already called updateMediaList to retrieve media list; will not update again while editing card!",
             "color: yellow;",
           );
         }
@@ -283,7 +304,7 @@ export class FavBrowserBase extends LitElement {
       }
 
       if (debuglog.enabled) {
-        debuglog("%c firstUpdated - updating media list on first update",
+        debuglog("%cfirstUpdated - updating media list on first update",
           "color: yellow;",
         );
       }
@@ -408,6 +429,11 @@ export class FavBrowserBase extends LitElement {
   }
 
 
+  /**
+   * Handles the `click` event fired when the hide or refresh actions icon is clicked.
+   * 
+   * @param evArgs Event arguments that contain the icon that was clicked on.
+   */
   protected onFilterActionsClick(ev: MouseEvent) {
 
     // get action to perform.
@@ -448,7 +474,7 @@ export class FavBrowserBase extends LitElement {
    * 
    * @param args Event arguments that contain the media item that was clicked on.
    */
-  protected onItemSelected = (args: CustomEvent) => {
+  protected onItemSelected(args: CustomEvent) {
 
     if (debuglog.enabled) {
       debuglog("onItemSelected - media item selected:\n%s",
@@ -467,7 +493,7 @@ export class FavBrowserBase extends LitElement {
    * 
    * @param args Event arguments that contain the media item that was clicked on.
    */
-  protected onItemSelectedWithHold = (args: CustomEvent) => {
+  protected onItemSelectedWithHold(args: CustomEvent) {
 
     if (debuglog.enabled) {
       debuglog("onItemSelectedWithHold - media item selected:\n%s",
@@ -489,6 +515,11 @@ export class FavBrowserBase extends LitElement {
 
     // toggle action visibility.
     this.isActionsVisible = !this.isActionsVisible;
+
+    // clear any alerts if showing actions.
+    if (this.isActionsVisible) {
+      this.alertClear();
+    }
 
   };
 
@@ -610,6 +641,8 @@ export class FavBrowserBase extends LitElement {
   /**
    * Updates the mediaList display.
    * 
+   * @param player MediaPlayer object that will process the request.
+   * 
    * @returns False if the media list should not be updated; otherwise, True to update the media list.
    */
   protected updateMediaList(player: MediaPlayer): boolean {
@@ -651,7 +684,7 @@ export class FavBrowserBase extends LitElement {
     this.alertClear();
 
     if (debuglog.enabled) {
-      debuglog("%c updateMediaList - updating medialist",
+      debuglog("%cupdateMediaList - updating medialist",
         "color: yellow;",
       );
     }

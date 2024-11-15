@@ -5,6 +5,7 @@ import copyTextToClipboard from 'copy-text-to-clipboard';
 import {
   mdiAccountMusic,
   mdiAlbum,
+  mdiBookmarkMusicOutline,
   mdiClipboardPlusOutline,
   mdiDotsHorizontal,
   mdiHeart,
@@ -26,8 +27,9 @@ import { SearchMediaEvent } from '../events/search-media';
 import { getIdFromSpotifyUri } from '../services/spotifyplus-service';
 import { formatDateHHMMSSFromMilliseconds } from '../utils/utils';
 import { openWindowNewTab } from '../utils/media-browser-utils';
-import { RADIO_SEARCH_KEY } from '../constants';
+import { ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD, RADIO_SEARCH_KEY } from '../constants';
 import { GetCopyrights } from '../types/spotifyplus/copyright';
+import { GetUserPresetConfigEntry } from '../types/spotifyplus/user-preset';
 import { IAlbum } from '../types/spotifyplus/album';
 import { ITrackPageSimplified } from '../types/spotifyplus/track-page-simplified';
 
@@ -35,6 +37,7 @@ import { ITrackPageSimplified } from '../types/spotifyplus/track-page-simplified
  * Album actions.
  */
 enum Actions {
+  AlbumCopyPresetToClipboard = "AlbumCopyPresetToClipboard",
   AlbumCopyUriToClipboard = "AlbumCopyUriToClipboard",
   AlbumFavoriteAdd = "AlbumFavoriteAdd",
   AlbumFavoriteRemove = "AlbumFavoriteRemove",
@@ -49,6 +52,12 @@ enum Actions {
   ArtistSearchPlaylists = "ArtistSearchPlaylists",
   ArtistSearchRadio = "ArtistSearchRadio",
   ArtistSearchTracks = "ArtistSearchTracks",
+  ArtistShowAlbums = "ArtistShowAlbums",
+  ArtistShowAlbumsAppearsOn = "ArtistShowAlbumsAppearsOn",
+  ArtistShowAlbumsCompilation = "ArtistShowAlbumsCompilation",
+  ArtistShowAlbumsSingle = "ArtistShowAlbumsSingle",
+  ArtistShowRelatedArtists = "ArtistShowRelatedArtists",
+  ArtistShowTopTracks = "ArtistShowTopTracks",
 }
 
 
@@ -167,6 +176,10 @@ class AlbumActions extends FavActionsBase {
           <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
           <div slot="headline">Copy Album URI to Clipboard</div>
         </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.AlbumCopyPresetToClipboard)}>
+          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          <div slot="headline">Copy Album Preset Info to Clipboard</div>
+        </ha-md-menu-item>
       </ha-md-button-menu>
       `;
 
@@ -189,6 +202,31 @@ class AlbumActions extends FavActionsBase {
           <div slot="headline">Search for Artist Radio</div>
         </ha-md-menu-item>
         <ha-md-divider role="separator" tabindex="-1"></ha-md-divider>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistShowTopTracks)} hide=${this.hideSearchType(SearchMediaTypes.TRACKS)}>
+          <ha-svg-icon slot="start" .path=${mdiMusic}></ha-svg-icon>
+          <div slot="headline">Show Artist Top Tracks</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistShowAlbums)} hide=${this.hideSearchType(SearchMediaTypes.ALBUMS)}>
+          <ha-svg-icon slot="start" .path=${mdiAlbum}></ha-svg-icon>
+          <div slot="headline">Show Artist Albums</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistShowAlbumsCompilation)} hide=${this.hideSearchType(SearchMediaTypes.ALBUMS)}>
+          <ha-svg-icon slot="start" .path=${mdiAlbum}></ha-svg-icon>
+          <div slot="headline">Show Artist Albums Compilations</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistShowAlbumsSingle)} hide=${this.hideSearchType(SearchMediaTypes.ALBUMS)}>
+          <ha-svg-icon slot="start" .path=${mdiAlbum}></ha-svg-icon>
+          <div slot="headline">Show Artist Albums Singles</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistShowAlbumsAppearsOn)} hide=${this.hideSearchType(SearchMediaTypes.ALBUMS)}>
+          <ha-svg-icon slot="start" .path=${mdiAlbum}></ha-svg-icon>
+          <div slot="headline">Show Artist Albums AppearsOn</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistShowRelatedArtists)} hide=${this.hideSearchType(SearchMediaTypes.ARTISTS)}>
+          <ha-svg-icon slot="start" .path=${mdiAccountMusic}></ha-svg-icon>
+          <div slot="headline">Show Related Artists</div>
+        </ha-md-menu-item>
+        <ha-md-divider role="separator" tabindex="-1"></ha-md-divider>
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistCopyUriToClipboard)}>
           <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
           <div slot="headline">Copy Artist URI to Clipboard</div>
@@ -203,6 +241,7 @@ class AlbumActions extends FavActionsBase {
     return html` 
       <div class="album-actions-container">
         ${this.alertError ? html`<ha-alert alert-type="error" dismissable @alert-dismissed-clicked=${this.alertErrorClear}>${this.alertError}</ha-alert>` : ""}
+        ${this.alertInfo ? html`<ha-alert alert-type="info" dismissable @alert-dismissed-clicked=${this.alertInfoClear}>${this.alertInfo}</ha-alert>` : ""}
         <div class="media-info-content">
           <div class="img" style="background:url(${this.mediaItem.image_url});"></div>
           <div class="media-info-details">
@@ -322,7 +361,13 @@ class AlbumActions extends FavActionsBase {
     try {
 
       // process actions that don't require a progress indicator.
-      if (action == Actions.AlbumCopyUriToClipboard) {
+      if (action == Actions.AlbumCopyPresetToClipboard) {
+
+        copyTextToClipboard(GetUserPresetConfigEntry(this.mediaItem, this.mediaItem.artists[0].name));
+        this.alertInfoSet(ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD);
+        return true;
+
+      } else if (action == Actions.AlbumCopyUriToClipboard) {
 
         copyTextToClipboard(this.mediaItem.uri);
         return true;
@@ -345,6 +390,36 @@ class AlbumActions extends FavActionsBase {
       } else if (action == Actions.ArtistSearchRadio) {
 
         this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.PLAYLISTS, this.mediaItem.artists[0].name + RADIO_SEARCH_KEY));
+        return true;
+
+      } else if (action == Actions.ArtistShowAlbums) {
+
+        this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.ARTIST_ALBUMS, this.mediaItem.artists[0].name, this.mediaItem.artists[0].name, this.mediaItem.artists[0].uri));
+        return true;
+
+      } else if (action == Actions.ArtistShowAlbumsAppearsOn) {
+
+        this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.ARTIST_ALBUMS_APPEARSON, this.mediaItem.artists[0].name, this.mediaItem.artists[0].name, this.mediaItem.artists[0].uri));
+        return true;
+
+      } else if (action == Actions.ArtistShowAlbumsCompilation) {
+
+        this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.ARTIST_ALBUMS_COMPILATION, this.mediaItem.artists[0].name, this.mediaItem.artists[0].name, this.mediaItem.artists[0].uri));
+        return true;
+
+      } else if (action == Actions.ArtistShowAlbumsSingle) {
+
+        this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.ARTIST_ALBUMS_SINGLE, this.mediaItem.artists[0].name, this.mediaItem.artists[0].name, this.mediaItem.artists[0].uri));
+        return true;
+
+      } else if (action == Actions.ArtistShowRelatedArtists) {
+
+        this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.ARTIST_RELATED_ARTISTS, this.mediaItem.artists[0].name, this.mediaItem.artists[0].name, this.mediaItem.artists[0].uri));
+        return true;
+
+      } else if (action == Actions.ArtistShowTopTracks) {
+
+        this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.ARTIST_TOP_TRACKS, this.mediaItem.artists[0].name, this.mediaItem.artists[0].name, this.mediaItem.artists[0].uri));
         return true;
 
       } else if (action == Actions.ArtistSearchTracks) {

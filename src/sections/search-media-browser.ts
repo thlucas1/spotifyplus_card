@@ -2,12 +2,12 @@
 import { css, html, TemplateResult } from 'lit';
 import { customElement, query, state } from 'lit/decorators.js';
 import {
+  mdiAccountMusic,
   mdiAlbum,
   mdiBookOpenVariant,
   mdiMicrophone,
   mdiMenuDown,
   mdiMusic,
-  mdiAccountMusic,
   mdiPlaylistPlay,
   mdiPodcast,
 } from '@mdi/js';
@@ -27,6 +27,8 @@ import { FavBrowserBase } from './fav-browser-base';
 import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
 import { formatTitleInfo } from '../utils/media-browser-utils';
+import { getUtcNowTimestamp } from '../utils/utils';
+import { getIdFromSpotifyUri } from '../services/spotifyplus-service';
 import { storageService } from '../decorators/storage';
 import { SearchMediaTypes } from '../types/search-media-types';
 import { SearchMediaEventArgs } from '../events/search-media';
@@ -38,8 +40,13 @@ const debuglog = Debug(DEBUG_APP_NAME + ":search-media-browser");
 
 /** Keys used to access cached storage items. */
 const CACHE_KEY_SEARCH_MEDIA_TYPE = "_searchmediatype";
+const CACHE_KEY_SEARCH_EVENT_ARGS = "_searcheventargs";
 
 const SEARCH_FOR_PREFIX = "Search for ";
+
+// basic search types that require filter criteria.
+const SEARCH_TYPES_BASIC = [SearchMediaTypes.ALBUMS, SearchMediaTypes.ARTISTS, SearchMediaTypes.AUDIOBOOKS, SearchMediaTypes.EPISODES,
+SearchMediaTypes.PLAYLISTS, SearchMediaTypes.SHOWS, SearchMediaTypes.TRACKS]
 
 
 @customElement("spc-search-media-browser")
@@ -48,6 +55,7 @@ export class SearchBrowser extends FavBrowserBase {
   // private state properties.
   @state() private searchMediaType?: string;
   @state() private searchMediaTypeTitle?: string;
+  @state() private searchEventArgs?: SearchMediaEventArgs | null;
 
   // html form element objects.
   @query("#searchMediaType", false) private searchMediaTypeElement!: HTMLElement;
@@ -84,6 +92,7 @@ export class SearchBrowser extends FavBrowserBase {
     const searchType = this.searchMediaType;
     let itemsPerRow = this.config.searchMediaBrowserItemsPerRow || 4;
     if (!(this.config.searchMediaBrowserUseDisplaySettings || false)) {
+      // general searches:
       if (searchType == SearchMediaTypes.ALBUMS) {
         itemsPerRow = this.config.albumFavBrowserItemsPerRow || 4;
       } else if (searchType == SearchMediaTypes.ARTISTS) {
@@ -98,15 +107,42 @@ export class SearchBrowser extends FavBrowserBase {
         itemsPerRow = this.config.showFavBrowserItemsPerRow || 4;
       } else if (searchType == SearchMediaTypes.TRACKS) {
         itemsPerRow = this.config.trackFavBrowserItemsPerRow || 4;
+        // artists-specific searches:
+      } else if (searchType == SearchMediaTypes.ARTIST_ALBUMS) {
+        itemsPerRow = this.config.albumFavBrowserItemsPerRow || 4;
+        this.isFilterCriteriaReadOnly = true;
+      } else if (searchType == SearchMediaTypes.ARTIST_ALBUMS_APPEARSON) {
+        itemsPerRow = this.config.albumFavBrowserItemsPerRow || 4;
+        this.isFilterCriteriaReadOnly = true;
+      } else if (searchType == SearchMediaTypes.ARTIST_ALBUMS_COMPILATION) {
+        itemsPerRow = this.config.albumFavBrowserItemsPerRow || 4;
+        this.isFilterCriteriaReadOnly = true;
+      } else if (searchType == SearchMediaTypes.ARTIST_ALBUMS_SINGLE) {
+        itemsPerRow = this.config.albumFavBrowserItemsPerRow || 4;
+        this.isFilterCriteriaReadOnly = true;
+      } else if (searchType == SearchMediaTypes.ARTIST_RELATED_ARTISTS) {
+        itemsPerRow = this.config.artistFavBrowserItemsPerRow || 4;
+        this.isFilterCriteriaReadOnly = true;
+      } else if (searchType == SearchMediaTypes.ARTIST_TOP_TRACKS) {
+        itemsPerRow = this.config.trackFavBrowserItemsPerRow || 4;
+        this.isFilterCriteriaReadOnly = true;
+        // audiobook-specific searches:
+      } else if (searchType == SearchMediaTypes.AUDIOBOOK_EPISODES) {
+        itemsPerRow = this.config.episodeFavBrowserItemsPerRow || 4;
+        this.isFilterCriteriaReadOnly = true;
+        // show-specific searches:
+      } else if (searchType == SearchMediaTypes.SHOW_EPISODES) {
+        itemsPerRow = this.config.episodeFavBrowserItemsPerRow || 4;
+        this.isFilterCriteriaReadOnly = true;
       }
     }
 
     // update search media type if configuration options changed.
-    //if (this.isCardInEditPreview) {
-    if ((this.config.searchMediaBrowserSearchTypes) && (this.config.searchMediaBrowserSearchTypes.length > 0)) {
+    if ((!this.isFilterCriteriaReadOnly) && (this.config.searchMediaBrowserSearchTypes) && (this.config.searchMediaBrowserSearchTypes.length > 0)) {
       if (!(this.config.searchMediaBrowserSearchTypes?.includes(this.searchMediaType as SearchMediaTypes))) {
 
-        // hidden type is currently selected - reset current selection to first enabled.
+        // hidden type is currently selected - reset current selection to first enabled
+        // if a general search type is selected.
         this.searchMediaType = this.config.searchMediaBrowserSearchTypes[0];
         this.searchMediaTypeTitle = SEARCH_FOR_PREFIX + this.searchMediaType;
 
@@ -116,11 +152,16 @@ export class SearchBrowser extends FavBrowserBase {
         this.scrollTopSaved = 0;
       }
     }
-    //}
+
+    // set flags that control search media type menu item visibility.
+    const isSearchArgsUriArtist = ((this.searchEventArgs?.uri || "").indexOf(":artist:") > -1);
+    const isSearchArgsUriAudiobook = (((this.searchEventArgs?.uri || "").indexOf(":show:") > -1) && (this.searchEventArgs?.subtype == "audiobook"));
+    const isSearchArgsUriShow = (((this.searchEventArgs?.uri || "").indexOf(":show:") > -1) && (this.searchEventArgs?.subtype == "podcast"));
+    const isSearchArgsUri = isSearchArgsUriArtist || isSearchArgsUriAudiobook || isSearchArgsUriShow;
 
     // define control to render - search media type.
     const searchMediaTypeHtml = html`
-      <ha-md-button-menu id="searchMediaType" slot="selection-bar" style="padding-right: 0.5rem;">
+      <ha-md-button-menu id="searchMediaType" slot="selection-bar" positioning="popover" style="padding-right: 0.5rem;">
         <ha-assist-chip id="searchMediaTypeTitle" slot="trigger" .label=${this.searchMediaTypeTitle || SEARCH_FOR_PREFIX + " ..."}>
           <ha-svg-icon slot="trailing-icon" .path=${mdiMenuDown}></ha-svg-icon>
         </ha-assist-chip>
@@ -152,6 +193,39 @@ export class SearchBrowser extends FavBrowserBase {
           <ha-svg-icon slot="start" .path=${mdiMusic}></ha-svg-icon>
           <div slot="headline">${SearchMediaTypes.TRACKS}</div>
         </ha-md-menu-item>
+        <ha-md-divider role="separator" tabindex="-1" hide=${!isSearchArgsUri}></ha-md-divider>
+        <ha-md-menu-item .value=${SearchMediaTypes.ARTIST_TOP_TRACKS} @click=${this.onSearchMediaTypeChanged} hide=${(!isSearchArgsUriArtist)}>
+          <ha-svg-icon slot="start" .path=${mdiMusic}></ha-svg-icon>
+          <div slot="headline">${SearchMediaTypes.ARTIST_TOP_TRACKS}</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item .value=${SearchMediaTypes.ARTIST_ALBUMS} @click=${this.onSearchMediaTypeChanged} hide=${(!isSearchArgsUriArtist)}>
+          <ha-svg-icon slot="start" .path=${mdiAlbum}></ha-svg-icon>
+          <div slot="headline">${SearchMediaTypes.ARTIST_ALBUMS}</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item .value=${SearchMediaTypes.ARTIST_ALBUMS_COMPILATION} @click=${this.onSearchMediaTypeChanged} hide=${(!isSearchArgsUriArtist)}>
+          <ha-svg-icon slot="start" .path=${mdiAlbum}></ha-svg-icon>
+          <div slot="headline">${SearchMediaTypes.ARTIST_ALBUMS_COMPILATION}</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item .value=${SearchMediaTypes.ARTIST_ALBUMS_SINGLE} @click=${this.onSearchMediaTypeChanged} hide=${(!isSearchArgsUriArtist)}>
+          <ha-svg-icon slot="start" .path=${mdiAlbum}></ha-svg-icon>
+          <div slot="headline">${SearchMediaTypes.ARTIST_ALBUMS_SINGLE}</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item .value=${SearchMediaTypes.ARTIST_ALBUMS_APPEARSON} @click=${this.onSearchMediaTypeChanged} hide=${(!isSearchArgsUriArtist)}>
+          <ha-svg-icon slot="start" .path=${mdiAlbum}></ha-svg-icon>
+          <div slot="headline">${SearchMediaTypes.ARTIST_ALBUMS_APPEARSON}</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item .value=${SearchMediaTypes.ARTIST_RELATED_ARTISTS} @click=${this.onSearchMediaTypeChanged} hide=${(!isSearchArgsUriArtist)}>
+          <ha-svg-icon slot="start" .path=${mdiAccountMusic}></ha-svg-icon>
+          <div slot="headline">${SearchMediaTypes.ARTIST_RELATED_ARTISTS}</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item .value=${SearchMediaTypes.AUDIOBOOK_EPISODES} @click=${this.onSearchMediaTypeChanged} hide=${(!isSearchArgsUriAudiobook)}>
+          <ha-svg-icon slot="start" .path=${mdiMicrophone}></ha-svg-icon>
+          <div slot="headline">${SearchMediaTypes.AUDIOBOOK_EPISODES}</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item .value=${SearchMediaTypes.SHOW_EPISODES} @click=${this.onSearchMediaTypeChanged} hide=${(!isSearchArgsUriShow)}>
+          <ha-svg-icon slot="start" .path=${mdiMicrophone}></ha-svg-icon>
+          <div slot="headline">${SearchMediaTypes.SHOW_EPISODES}</div>
+        </ha-md-menu-item>
       </ha-md-button-menu>
       `;
 
@@ -166,7 +240,11 @@ export class SearchBrowser extends FavBrowserBase {
         ${subtitle ? html`<div class="media-browser-section-subtitle">${subtitle}</div>` : html``}
         <div class="search-media-browser-controls">
           ${!(this.isActionsVisible || false) ? html`` : html`${this.btnHideActionsHtml}`}
-          ${searchMediaTypeHtml}${this.filterCriteriaHtml}${this.refreshMediaListHtml}
+          ${searchMediaTypeHtml}
+          ${(this.isFilterCriteriaVisible) ? html`
+            ${(this.isFilterCriteriaReadOnly) ? html`${this.filterCriteriaReadOnlyHtml}` : html`${this.filterCriteriaHtml}`}
+            ` : html``}
+          ${this.refreshMediaListHtml}
         </div>
         <div id="mediaBrowserContentElement" class="media-browser-content">
           ${this.alertError ? html`<ha-alert alert-type="error" dismissable @alert-dismissed-clicked=${this.alertErrorClear}>${this.alertError}</ha-alert>` : ""}
@@ -179,7 +257,7 @@ export class SearchBrowser extends FavBrowserBase {
                   html`<spc-media-browser-list class="media-browser-list"
                         .items=${this.mediaList}
                         .store=${this.store}
-                        .mediaType=${this.searchMediaType}
+                        .searchMediaType=${this.searchMediaType}
                         @item-selected=${this.onItemSelected}
                         @item-selected-with-hold=${this.onItemSelectedWithHold}
                       ></spc-media-browser-list>`
@@ -189,26 +267,27 @@ export class SearchBrowser extends FavBrowserBase {
                   html`<spc-media-browser-icons class="media-browser-list"
                         .items=${this.mediaList}
                         .store=${this.store}
-                        .mediaType=${this.searchMediaType}
+                        .searchMediaType=${this.searchMediaType}
                         @item-selected=${this.onItemSelected}
                         @item-selected-with-hold=${this.onItemSelectedWithHold}
                       ></spc-media-browser-icons>`
                 )
               }
-            // if actions are visbile, then render the actions display.
-            } else if (this.searchMediaType == SearchMediaTypes.ALBUMS) {
+              // if actions are visbile, then render the actions display.
+            } else if ([SearchMediaTypes.ALBUMS, SearchMediaTypes.ARTIST_ALBUMS, SearchMediaTypes.ARTIST_ALBUMS_APPEARSON, SearchMediaTypes.ARTIST_ALBUMS_COMPILATION,
+                        SearchMediaTypes.ARTIST_ALBUMS_SINGLE].indexOf(this.searchMediaType as any) > -1) {
               return (html`<spc-album-actions class="search-media-browser-actions" .store=${this.store} .mediaItem=${this.mediaItem}></spc-album-actions>`);
-            } else if (this.searchMediaType == SearchMediaTypes.ARTISTS) {
+            } else if ([SearchMediaTypes.ARTISTS, SearchMediaTypes.ARTIST_RELATED_ARTISTS].indexOf(this.searchMediaType as any) > -1) {
               return (html`<spc-artist-actions class="search-media-browser-actions" .store=${this.store} .mediaItem=${this.mediaItem}></spc-artist-actions>`);
             } else if (this.searchMediaType == SearchMediaTypes.AUDIOBOOKS) {
               return (html`<spc-audiobook-actions class="search-media-browser-actions" .store=${this.store} .mediaItem=${this.mediaItem}></spc-audiobook-actions>`);
-            } else if (this.searchMediaType == SearchMediaTypes.EPISODES) {
+            } else if ([SearchMediaTypes.EPISODES, SearchMediaTypes.AUDIOBOOK_EPISODES, SearchMediaTypes.SHOW_EPISODES].indexOf(this.searchMediaType as any) > -1) {
               return (html`<spc-episode-actions class="search-media-browser-actions" .store=${this.store} .mediaItem=${this.mediaItem}></spc-episode-actions>`);
-            } else if (this.searchMediaType == SearchMediaTypes.PLAYLISTS) {
+            } else if ([SearchMediaTypes.PLAYLISTS].indexOf(this.searchMediaType as any) > -1) {
               return (html`<spc-playlist-actions class="search-media-browser-actions" .store=${this.store} .mediaItem=${this.mediaItem}></spc-playlist-actions>`);
             } else if (this.searchMediaType == SearchMediaTypes.SHOWS) {
               return (html`<spc-show-actions class="search-media-browser-actions" .store=${this.store} .mediaItem=${this.mediaItem}></spc-show-actions>`);
-            } else if (this.searchMediaType == SearchMediaTypes.TRACKS) {
+            } else if ([SearchMediaTypes.TRACKS, SearchMediaTypes.ARTIST_TOP_TRACKS].indexOf(this.searchMediaType as any) > -1) {
               return (html`<spc-track-actions class="search-media-browser-actions" .store=${this.store} .mediaItem=${this.mediaItem}></spc-track-actions>`);
             } else {
               return (html``);
@@ -246,7 +325,7 @@ export class SearchBrowser extends FavBrowserBase {
         --md-menu-item-one-line-container-height: 2.0rem;  /* menu item height */
         display: inline-flex;
         flex-direction: row;
-        justify-content: left;
+        justify-content: space-between;
       }
 
       .search-media-browser-actions {
@@ -299,7 +378,7 @@ export class SearchBrowser extends FavBrowserBase {
       }
 
       *[hide="false"] {
-        display: block;
+        display: flex;
       }
     `
     ];
@@ -315,7 +394,9 @@ export class SearchBrowser extends FavBrowserBase {
   private hideSearchType(searchType: SearchMediaTypes) {
 
     if ((this.config.searchMediaBrowserSearchTypes) && (this.config.searchMediaBrowserSearchTypes.length > 0)) {
-      if (this.config.searchMediaBrowserSearchTypes?.includes(searchType)) {
+      if (this.config.searchMediaBrowserSearchTypes?.includes(searchType as SearchMediaTypes)) {
+        return false;  // show searchType
+      } else if ((this.searchEventArgs) && (this.searchEventArgs?.searchCriteria == searchType)) {
         return false;  // show searchType
       } else {
         return true;   // hide searchType.
@@ -341,6 +422,15 @@ export class SearchBrowser extends FavBrowserBase {
     // prepare to search.
     this.initSearchValues(args.searchType);
     this.filterCriteria = args.searchCriteria;
+    this.searchMediaType = args.searchType;
+
+    if (SEARCH_TYPES_BASIC.includes(args.searchType)) {
+      // if search type is a basic search item, then just reset search event args.
+      this.searchEventArgs = null;
+    } else {
+      // otherwise, save the search arguments for later.
+      this.searchEventArgs = args;
+    }
 
     // execute the search.
     this.updateMediaList(this.player);
@@ -357,20 +447,24 @@ export class SearchBrowser extends FavBrowserBase {
     super.storageValuesLoad();
 
     // get default search type, based on enabled status.
-    // if none enabled, then use playlists; if playlists not enabled, then use first enabled.
-    let searchType = SearchMediaTypes.PLAYLISTS;
-    if ((this.config.searchMediaBrowserSearchTypes) && (this.config.searchMediaBrowserSearchTypes.length > 0)) {
-      if (!(this.config.searchMediaBrowserSearchTypes.includes(searchType))) {
-        searchType = ((this.config?.searchMediaBrowserSearchTypes[0] || "") as SearchMediaTypes);
+    // we only need to do this if it's a basic search type (e.g. filter criteria is not readonly).
+    // if none enabled, then use default; if default not enabled, then use first enabled.
+    let defaultSearchType = SearchMediaTypes.PLAYLISTS;
+    if (!this.isFilterCriteriaReadOnly) {
+      if ((this.config.searchMediaBrowserSearchTypes) && (this.config.searchMediaBrowserSearchTypes.length > 0)) {
+        if (!(this.config.searchMediaBrowserSearchTypes.includes(defaultSearchType))) {
+          defaultSearchType = ((this.config?.searchMediaBrowserSearchTypes[0] || "") as SearchMediaTypes);
+        }
       }
     }
 
     // load search-related values from the cache.
-    this.searchMediaType = storageService.getStorageValue(this.cacheKeyBase + this.mediaType + CACHE_KEY_SEARCH_MEDIA_TYPE, searchType);
+    this.searchMediaType = storageService.getStorageValue(this.cacheKeyBase + this.mediaType + CACHE_KEY_SEARCH_MEDIA_TYPE, defaultSearchType);
+    this.searchEventArgs = storageService.getStorageValue(this.cacheKeyBase + this.mediaType + CACHE_KEY_SEARCH_EVENT_ARGS, defaultSearchType);
     this.searchMediaTypeTitle = SEARCH_FOR_PREFIX + this.searchMediaType;
 
     if (debuglog.enabled) {
-      debuglog("storageValuesLoad - parameters loaded from cache: searchMediaType");
+      debuglog("storageValuesLoad - parameters loaded from cache: searchMediaType, searchEventArgs");
     }
 
   }
@@ -386,9 +480,10 @@ export class SearchBrowser extends FavBrowserBase {
 
     // save search-related values to the cache.
     storageService.setStorageValue(this.cacheKeyBase + this.mediaType + CACHE_KEY_SEARCH_MEDIA_TYPE, this.searchMediaType);
+    storageService.setStorageValue(this.cacheKeyBase + this.mediaType + CACHE_KEY_SEARCH_EVENT_ARGS, this.searchEventArgs);
 
     if (debuglog.enabled) {
-      debuglog("storageValuesSave - parameters saved to cache: searchMediaType");
+      debuglog("storageValuesSave - parameters saved to cache: searchMediaType, searchEventArgs");
     }
 
   }
@@ -402,6 +497,30 @@ export class SearchBrowser extends FavBrowserBase {
   private onSearchMediaTypeChanged(ev) {
 
     this.initSearchValues(ev.currentTarget.value);
+    const selValue = ev.currentTarget.value;
+
+    if (debuglog.enabled) {
+      debuglog("onSearchMediaTypeChanged - selected value = %s ",
+        JSON.stringify(selValue)
+      );
+    }
+
+    if (SEARCH_TYPES_BASIC.includes(selValue)) {
+
+      // if basic search item selected, then reset search event args.
+      this.searchEventArgs = null;
+
+    } else if (this.searchEventArgs) {
+
+      // if extended search item selected, then update the media list.
+      this.searchEventArgs.searchType = selValue;
+      this.updateMediaList(this.player);
+
+    } else {
+
+      debuglog("%conSearchMediaTypeChanged - searchEventArgs not set; event ignored!", "color:red");
+
+    }
 
   }
 
@@ -417,6 +536,12 @@ export class SearchBrowser extends FavBrowserBase {
     // if searchType did not change then don't bother.
     if (this.searchMediaType == searchType) {
       return;
+    }
+
+    if (debuglog.enabled) {
+      debuglog("initSearchValues - preparing to search for type: %s",
+        JSON.stringify(searchType),
+      );
     }
 
     // store searchType and adjust the title.
@@ -441,24 +566,26 @@ export class SearchBrowser extends FavBrowserBase {
 
   /**
    * Updates the mediaList display.
+   * 
+   * @param player MediaPlayer object that will process the request.
+   * 
+   * @returns Return value is ignored when called from the inheriting class.
    */
-  protected override updateMediaList(player: MediaPlayer): boolean {
-
-    if (debuglog.enabled) {
-      debuglog("%c updateMediaList - updating medialist",
-        "color: yellow;",
-      );
-    }
+  protected override updateMediaList(
+    player: MediaPlayer,
+    //updateType: SearchMediaTypes | null = null,
+  ): boolean {
 
     // validations.
-    if (!this.filterCriteria) {
-      this.alertErrorSet("Please enter criteria to search for");
-      this.filterCriteriaElement.focus();
-      return false;
-    }
     if (!this.searchMediaType) {
       this.alertErrorSet("Please select the type of content to search for");
       this.searchMediaTypeElement.focus();
+      return false;
+    }
+
+    if ((!this.isFilterCriteriaReadOnly) && (!this.filterCriteria)) {
+      this.alertErrorSet("Please enter criteria to search for");
+      this.filterCriteriaElement.focus();
       return false;
     }
 
@@ -473,53 +600,426 @@ export class SearchBrowser extends FavBrowserBase {
       // that we can easily add promises if more data gathering is needed in the future.
       const promiseRequests = new Array<Promise<unknown>>();
 
-      // create promise - get media list.
-      const promiseUpdateMediaList = new Promise((resolve, reject) => {
+      if (debuglog.enabled) {
+        debuglog("%cupdateMediaList\n- mediaType = %s\n- searchMediaType = %s\n- searchEventArgs = %s",
+          "color:green",
+          JSON.stringify(this.mediaType),
+          JSON.stringify(this.searchMediaType),
+          JSON.stringify(this.searchEventArgs, null, 2)
+        );
+      }
 
-        // update status.
-        this.alertInfo = "Searching Spotify " + this.searchMediaType + " catalog for \"" + this.filterCriteria + "\" ...";
+      //// was main menu selected?
+      //if (this.searchMediaType == SearchMediaTypes.MAIN_MENU) {
 
-        // set service parameters.
-        const limitTotal = this.config.searchMediaBrowserSearchLimit || 50;
-        const market: string | undefined = undefined;            // market code.
-        const includeExternal: string | undefined = undefined;   // include_exclude code.
+      //  // build media list.
+      //  const result = new Array<IUserPreset>();
+      //  result.push(<IUserPreset>{ name: SearchMediaTypes.ALBUM_NEW_RELEASES, subtitle: "", image_url: getMdiIconImageUrl(mdiAlbum), type: SEARCH_MENU_TYPE, uri: SEARCH_MENU_NEW_RELEASES });
+      //  //result.push(<IUserPreset>{ name: SearchMediaTypes.PLAYLISTS_FEATURED, subtitle: "", image_url: getMdiIconImageUrl(mdiPlaylistPlay), type: SEARCH_MENU_TYPE, uri: SEARCH_MENU_FEATURED_PLAYLISTS });
 
-        // call the service to retrieve the media list.
-        this.spotifyPlusService.Search(this.searchMediaType as SearchMediaTypes, player.id, this.filterCriteria || "", 0, 0, market, includeExternal, limitTotal)
-          .then(result => {
+      //  // load media list results.
+      //  this.mediaList = result;
+      //  this.mediaListLastUpdatedOn = getUtcNowTimestamp();
 
-            // load media list results.
-            this.mediaList = result.items as [any];
-            this.mediaListLastUpdatedOn = result.date_last_refreshed || (Date.now() / 1000);
+      //  if (debuglog.enabled) {
+      //    debuglog("updateMediaList - Search Main Menu items:\n%s",
+      //      JSON.stringify(result, null, 2)
+      //    );
+      //  }
 
-            // clear certain info messsages if they are temporary.
-            if (this.alertInfo?.startsWith("Searching Spotify")) {
-              this.alertInfoClear();
-            }
+      //  // call base class method, indicating media list update succeeded.
+      //  this.isUpdateInProgress = false;
+      //  super.updatedMediaListOk();
+      //  return true;
 
-            // call base class method, indicating media list update succeeded.
-            super.updatedMediaListOk();
+      if (SEARCH_TYPES_BASIC.includes(this.searchMediaType as any)) {
 
-            // resolve the promise.
-            resolve(true);
+        // create promise - basic search.
+        const promiseUpdateMediaList = new Promise((resolve, reject) => {
 
-          })
-          .catch(error => {
+          // update status.
+          this.alertInfo = "Searching Spotify " + this.searchMediaType + " catalog for \"" + this.filterCriteria + "\" ...";
 
-            // clear results, and reject the promise.
-            this.mediaList = undefined;
-            this.mediaListLastUpdatedOn = 0;
+          // set service parameters.
+          const limitTotal = this.config.searchMediaBrowserSearchLimit || 50;
+          const market: string | null = null;            // market code.
+          const includeExternal: string | null = null;   // include_exclude code.
 
-            // call base class method, indicating media list update failed.
-            super.updatedMediaListError("Spotify " + this.searchMediaType + " search failed: \n" + (error as Error).message);
+          // call the service to retrieve the media list.
+          this.spotifyPlusService.Search(this.searchMediaType as SearchMediaTypes, player.id, this.filterCriteria || "", 0, 0, market, includeExternal, limitTotal)
+            .then(result => {
 
-            // reject the promise.
-            reject(error);
+              // load media list results.
+              this.mediaList = result.items as [any];
+              this.mediaListLastUpdatedOn = result.date_last_refreshed || getUtcNowTimestamp();
 
-          })
-      });
+              // clear certain info messsages if they are temporary.
+              if (this.alertInfo?.startsWith("Searching ")) {
+                this.alertInfoClear();
+              }
 
-      promiseRequests.push(promiseUpdateMediaList);
+              // call base class method, indicating media list update succeeded.
+              super.updatedMediaListOk();
+              resolve(true);
+
+            })
+            .catch(error => {
+
+              // clear results, and reject the promise.
+              this.mediaList = undefined;
+              this.mediaListLastUpdatedOn = 0;
+
+              // call base class method, indicating media list update failed.
+              super.updatedMediaListError("Spotify " + this.searchMediaType + " search failed: " + (error as Error).message);
+              reject(error);
+
+            })
+        });
+
+        promiseRequests.push(promiseUpdateMediaList);
+
+      } else if (this.searchMediaType == SearchMediaTypes.ARTIST_ALBUMS) {
+
+        // create promise - get artists' compilation albums.
+        const promiseGetArtistAlbums = new Promise((resolve, reject) => {
+
+          // update status.
+          this.alertInfo = "Searching " + this.searchMediaType + " for \"" + this.searchEventArgs?.title + "\" ...";
+
+          // set service parameters.
+          const artistId = getIdFromSpotifyUri(this.searchEventArgs?.uri);
+          const market = null;
+          const include_groups = "album";
+          const limit_total = this.config.searchMediaBrowserSearchLimit || 50;
+          const sort_result = this.config.artistFavBrowserItemsSortTitle || false;
+
+          // call the service to retrieve the media list.
+          this.spotifyPlusService.GetArtistAlbums(player.id, artistId, include_groups, 0, 0, market, limit_total, sort_result)
+            .then(result => {
+
+              // load media list results.
+              this.mediaList = result.items;
+              this.mediaListLastUpdatedOn = result.date_last_refreshed || getUtcNowTimestamp();
+
+              // clear certain info messsages if they are temporary.
+              if (this.alertInfo?.startsWith("Searching ")) {
+                this.alertInfoClear();
+              }
+
+              // call base class method, indicating media list update succeeded.
+              super.updatedMediaListOk();
+              resolve(true);
+
+            })
+            .catch(error => {
+
+              // clear results, and reject the promise.
+              this.mediaList = undefined;
+              this.mediaListLastUpdatedOn = 0;
+
+              // call base class method, indicating media list update failed.
+              super.updatedMediaListError("Spotify " + this.searchMediaType + " search failed: " + (error as Error).message);
+              reject(error);
+
+            })
+        });
+
+        promiseRequests.push(promiseGetArtistAlbums);
+
+      } else if (this.searchMediaType == SearchMediaTypes.ARTIST_ALBUMS_APPEARSON) {
+
+        // create promise - get artists' compilation albums.
+        const promiseGetArtistAlbumsAppearsOn = new Promise((resolve, reject) => {
+
+          // update status.
+          this.alertInfo = "Searching " + this.searchMediaType + " for \"" + this.searchEventArgs?.title + "\" ...";
+
+          // set service parameters.
+          const artistId = getIdFromSpotifyUri(this.searchEventArgs?.uri);
+          const market = null;
+          const include_groups = "appears_on";
+          const limit_total = this.config.searchMediaBrowserSearchLimit || 50;
+          const sort_result = this.config.artistFavBrowserItemsSortTitle || false;
+
+          // call the service to retrieve the media list.
+          this.spotifyPlusService.GetArtistAlbums(player.id, artistId, include_groups, 0, 0, market, limit_total, sort_result)
+            .then(result => {
+
+              // load media list results.
+              this.mediaList = result.items;
+              this.mediaListLastUpdatedOn = result.date_last_refreshed || getUtcNowTimestamp();
+
+              // clear certain info messsages if they are temporary.
+              if (this.alertInfo?.startsWith("Searching ")) {
+                this.alertInfoClear();
+              }
+
+              // call base class method, indicating media list update succeeded.
+              super.updatedMediaListOk();
+              resolve(true);
+
+            })
+            .catch(error => {
+
+              // clear results, and reject the promise.
+              this.mediaList = undefined;
+              this.mediaListLastUpdatedOn = 0;
+
+              // call base class method, indicating media list update failed.
+              super.updatedMediaListError("Spotify " + this.searchMediaType + " search failed: " + (error as Error).message);
+              reject(error);
+
+            })
+        });
+
+        promiseRequests.push(promiseGetArtistAlbumsAppearsOn);
+
+      } else if (this.searchMediaType == SearchMediaTypes.ARTIST_ALBUMS_COMPILATION) {
+
+        // create promise - get artists' compilation albums.
+        const promiseGetArtistAlbumsCompilation = new Promise((resolve, reject) => {
+
+          // update status.
+          this.alertInfo = "Searching " + this.searchMediaType + " for \"" + this.searchEventArgs?.title + "\" ...";
+
+          // set service parameters.
+          const artistId = getIdFromSpotifyUri(this.searchEventArgs?.uri);
+          const market = null;
+          const include_groups = "compilation";
+          const limit_total = this.config.searchMediaBrowserSearchLimit || 50;
+          const sort_result = this.config.artistFavBrowserItemsSortTitle || false;
+
+          // call the service to retrieve the media list.
+          this.spotifyPlusService.GetArtistAlbums(player.id, artistId, include_groups, 0, 0, market, limit_total, sort_result)
+            .then(result => {
+
+              // load media list results.
+              this.mediaList = result.items;
+              this.mediaListLastUpdatedOn = result.date_last_refreshed || getUtcNowTimestamp();
+
+              // clear certain info messsages if they are temporary.
+              if (this.alertInfo?.startsWith("Searching ")) {
+                this.alertInfoClear();
+              }
+
+              // call base class method, indicating media list update succeeded.
+              super.updatedMediaListOk();
+              resolve(true);
+
+            })
+            .catch(error => {
+
+              // clear results, and reject the promise.
+              this.mediaList = undefined;
+              this.mediaListLastUpdatedOn = 0;
+
+              // call base class method, indicating media list update failed.
+              super.updatedMediaListError("Spotify " + this.searchMediaType + " search failed: " + (error as Error).message);
+              reject(error);
+
+            })
+        });
+
+        promiseRequests.push(promiseGetArtistAlbumsCompilation);
+
+      } else if (this.searchMediaType == SearchMediaTypes.ARTIST_ALBUMS_SINGLE) {
+
+        // create promise - get artists' compilation albums.
+        const promiseGetArtistAlbumsSingle = new Promise((resolve, reject) => {
+
+          // update status.
+          this.alertInfo = "Searching " + this.searchMediaType + " for \"" + this.searchEventArgs?.title + "\" ...";
+
+          // set service parameters.
+          const artistId = getIdFromSpotifyUri(this.searchEventArgs?.uri);
+          const market = null;
+          const include_groups = "single";
+          const limit_total = this.config.searchMediaBrowserSearchLimit || 50;
+          const sort_result = this.config.artistFavBrowserItemsSortTitle || false;
+
+          // call the service to retrieve the media list.
+          this.spotifyPlusService.GetArtistAlbums(player.id, artistId, include_groups, 0, 0, market, limit_total, sort_result)
+            .then(result => {
+
+              // load media list results.
+              this.mediaList = result.items;
+              this.mediaListLastUpdatedOn = result.date_last_refreshed || getUtcNowTimestamp();
+
+              // clear certain info messsages if they are temporary.
+              if (this.alertInfo?.startsWith("Searching ")) {
+                this.alertInfoClear();
+              }
+
+              // call base class method, indicating media list update succeeded.
+              super.updatedMediaListOk();
+              resolve(true);
+
+            })
+            .catch(error => {
+
+              // clear results, and reject the promise.
+              this.mediaList = undefined;
+              this.mediaListLastUpdatedOn = 0;
+
+              // call base class method, indicating media list update failed.
+              super.updatedMediaListError("Spotify " + this.searchMediaType + " search failed: " + (error as Error).message);
+              reject(error);
+
+            })
+        });
+
+        promiseRequests.push(promiseGetArtistAlbumsSingle);
+
+      } else if (this.searchMediaType == SearchMediaTypes.ARTIST_RELATED_ARTISTS) {
+
+        // create promise - get artists' related artists.
+        const promiseGetArtistRelatedArtists = new Promise((resolve, reject) => {
+
+          // update status.
+          this.alertInfo = "Searching " + this.searchMediaType + " for \"" + this.searchEventArgs?.title + "\" ...";
+
+          // set service parameters.
+          const artistId = getIdFromSpotifyUri(this.searchEventArgs?.uri);
+          const sortResult = this.config.searchMediaBrowserItemsSortTitle || false;
+
+          // call the service to retrieve the media list.
+          this.spotifyPlusService.GetArtistRelatedArtists(player.id, artistId, sortResult)
+            .then(result => {
+
+              // load media list results.
+              this.mediaList = result;
+              this.mediaListLastUpdatedOn = getUtcNowTimestamp();
+
+              // clear certain info messsages if they are temporary.
+              if (this.alertInfo?.startsWith("Searching ")) {
+                this.alertInfoClear();
+              }
+
+              // call base class method, indicating media list update succeeded.
+              super.updatedMediaListOk();
+              resolve(true);
+
+            })
+            .catch(error => {
+
+              // clear results, and reject the promise.
+              this.mediaList = undefined;
+              this.mediaListLastUpdatedOn = 0;
+
+              // call base class method, indicating media list update failed.
+              super.updatedMediaListError("Spotify " + this.searchMediaType + " search failed: " + (error as Error).message);
+              reject(error);
+
+            })
+        });
+
+        promiseRequests.push(promiseGetArtistRelatedArtists);
+
+      } else if (this.searchMediaType == SearchMediaTypes.ARTIST_TOP_TRACKS) {
+
+        // create promise - get artists' top tracks.
+        const promiseGetArtistTopTracks = new Promise((resolve, reject) => {
+
+          // update status.
+          this.alertInfo = "Searching " + this.searchMediaType + " for \"" + this.searchEventArgs?.title + "\" ...";
+
+          // set service parameters.
+          const artistId = getIdFromSpotifyUri(this.searchEventArgs?.uri);
+          const sortResult = this.config.searchMediaBrowserItemsSortTitle || false;
+          const market = null;
+
+          // call the service to retrieve the media list.
+          this.spotifyPlusService.GetArtistTopTracks(player.id, artistId, market, sortResult)
+            .then(result => {
+
+              // load media list results.
+              this.mediaList = result;
+              this.mediaListLastUpdatedOn = getUtcNowTimestamp();
+
+              // clear certain info messsages if they are temporary.
+              if (this.alertInfo?.startsWith("Searching ")) {
+                this.alertInfoClear();
+              }
+
+              // call base class method, indicating media list update succeeded.
+              super.updatedMediaListOk();
+              resolve(true);
+
+            })
+            .catch(error => {
+
+              // clear results, and reject the promise.
+              this.mediaList = undefined;
+              this.mediaListLastUpdatedOn = 0;
+
+              // call base class method, indicating media list update failed.
+              super.updatedMediaListError("Spotify " + this.searchMediaType + " search failed: " + (error as Error).message);
+              reject(error);
+
+            })
+        });
+
+        promiseRequests.push(promiseGetArtistTopTracks);
+
+      } else if (this.searchMediaType == SearchMediaTypes.SHOW_EPISODES) {
+
+        // create promise - get show episodes.
+        const promiseGetShowEpisodes = new Promise((resolve, reject) => {
+
+          // update status.
+          this.alertInfo = "Searching " + this.searchMediaType + " for \"" + this.searchEventArgs?.title + "\" ...";
+
+          // set service parameters.
+          const showId = getIdFromSpotifyUri(this.searchEventArgs?.uri);
+          const market = null;
+          const limit_total = this.config.searchMediaBrowserSearchLimit || 50;
+
+          // call the service to retrieve the media list.
+          this.spotifyPlusService.GetShowEpisodes(player.id, showId, 0, 0, market, limit_total)
+            .then(result => {
+
+              // load media list results.
+              this.mediaList = result.items;
+              this.mediaListLastUpdatedOn = result.date_last_refreshed || getUtcNowTimestamp();
+
+              // clear certain info messsages if they are temporary.
+              if (this.alertInfo?.startsWith("Searching ")) {
+                this.alertInfoClear();
+              }
+
+              // call base class method, indicating media list update succeeded.
+              super.updatedMediaListOk();
+              resolve(true);
+
+            })
+            .catch(error => {
+
+              // clear results, and reject the promise.
+              this.mediaList = undefined;
+              this.mediaListLastUpdatedOn = 0;
+
+              // call base class method, indicating media list update failed.
+              super.updatedMediaListError("Spotify " + this.searchMediaType + " search failed: " + (error as Error).message);
+              reject(error);
+
+            })
+        });
+
+        promiseRequests.push(promiseGetShowEpisodes);
+
+      } else {
+
+        // if no search type was selected, then log it as we will need to modify code.
+        this.isUpdateInProgress = false;
+
+        console.log("%cSpotifyPlus Card: updateMediaList - searchMediaType was not processed:\n- mediaType = %s\n- searchMediaType = %s\n- searchEventArgs = %s",
+          "color:red",
+          JSON.stringify(this.mediaType),
+          JSON.stringify(this.searchMediaType),
+          JSON.stringify(this.searchEventArgs, null, 2)
+        );
+
+      }
 
       // show visual progress indicator.
       this.progressShow();
@@ -544,7 +1044,7 @@ export class SearchBrowser extends FavBrowserBase {
       this.progressHide();
 
       // set alert error message.
-      super.updatedMediaListError("Spotify " + this.searchMediaType + " search failed: \n" + (error as Error).message);
+      super.updatedMediaListError("Spotify " + this.searchMediaType + " search failed: " + (error as Error).message);
       return true;
 
     }

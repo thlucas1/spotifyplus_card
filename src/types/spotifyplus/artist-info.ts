@@ -31,12 +31,18 @@ export interface IArtistInfo {
 
 
   /** 
-   * Biography text.
+   * Biography text, in plain-text format.
    */
   bio: string | null;
 
 
   /** 
+   * Biography text, in html format.
+   */
+  bio_html: string | null;
+
+
+  /**
    * The Spotify ID for the artist.
    */
   id: string;

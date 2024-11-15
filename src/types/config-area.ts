@@ -5,6 +5,7 @@ export enum ConfigArea {
   ALBUM_FAVORITES = 'Albums',
   ARTIST_FAVORITES = 'Artists',
   AUDIOBOOK_FAVORITES = 'Audiobooks',
+  CATEGORY_BROWSER = 'Categorys',
   DEVICE_BROWSER = 'Devices',
   EPISODE_FAVORITES = 'Episodes',
   GENERAL = 'General',

@@ -18,6 +18,8 @@ import { IShowSimplified } from '../types/spotifyplus/show-simplified';
 import { ISpotifyConnectDevice } from '../types/spotifyplus/spotify-connect-device';
 import { ITrackSimplified } from '../types/spotifyplus/track-simplified';
 import { IUserPreset } from '../types/spotifyplus/user-preset';
+import { SearchMediaTypes } from '../types/search-media-types';
+import { ICategory } from '../types/spotifyplus/category';
 
 const DEFAULT_MEDIA_IMAGEURL =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAAGQCAYAAACAvzbMAAABhWlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw1AUhU9TS0UqDnYQcchQnexiRXQrVSyChdJWaNXB5KV/0KQhSXFxFFwLDv4sVh1cnHV1cBUEwR8QZwcnRRcp8b6k0CLGC4/3cd49h/fuA4RWjalmXxxQNcvIJBNivrAqBl8RgA8hxDAnMVNPZRdz8Kyve+qluovyLO++P2tQKZoM8InEcaYbFvEG8cympXPeJw6ziqQQnxNPGnRB4keuyy6/cS47LPDMsJHLzBOHicVyD8s9zCqGSjxNHFFUjfKFvMsK5y3Oaq3BOvfkLwwVtZUs12mNIYklpJCGCBkNVFGDhSjtGikmMnSe8PCPOv40uWRyVcHIsYA6VEiOH/wPfs/WLMWm3KRQAgi82PbHOBDcBdpN2/4+tu32CeB/Bq60rr/eAmY/SW92tcgRMLQNXFx3NXkPuNwBRp50yZAcyU9LKJWA9zP6pgIwfAsMrLlz65zj9AHI0ayWb4CDQ2CiTNnrHu/u753bvz2d+f0A+AZy3KgprtwAAAAGYktHRAD/AP8A/6C9p5MAAAAJcEhZcwAALiMAAC4jAXilP3YAAAAHdElNRQfoBQEMNhNCJ/KVAAACg0lEQVR42u3BgQAAAADDoPlTX+EAVQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwG/GFwABsN92WwAAAABJRU5ErkJggg==';
@@ -131,11 +133,12 @@ function hasItemsWithImage(items: any[]) {
  * 
  * @items Collection of items to display in the media browser.
  * @config CardConfig object that contains card configuration details.
- * @section Current section that is active.
+ * @mediaItemType Type of media items displayed (a Section value).
+ * @searchMediaType Current search media type, if section is SEARCH_MEDIA.
  * @store Common application storage area.
  * @returns The collection of items, with each item containing IMediaListItem arguments that will be used by the media browser.
  */
-export function buildMediaBrowserItems(items: any, config: CardConfig, section: Section, store: Store) {
+export function buildMediaBrowserItems(items: any, config: CardConfig, mediaItemType: Section, searchMediaType: SearchMediaTypes | null, store: Store) {
 
   // do ANY of the items have images?  returns true if so, otherwise false.
   const itemsWithImage = hasItemsWithImage(items);
@@ -159,18 +162,25 @@ export function buildMediaBrowserItems(items: any, config: CardConfig, section: 
     };
 
     // modify subtitle value based on selected section type.
-    if (section == Section.ALBUM_FAVORITES) {
+    if (mediaItemType == Section.ALBUM_FAVORITES) {
       const itemInfo = (item as IAlbumSimplified);
       if ((itemInfo.artists) && (itemInfo.artists.length > 0)) {
-        mbi_info.subtitle = itemInfo.artists[0]?.name || (itemInfo.total_tracks || 0 + " tracks") || item.type;
+        if (searchMediaType == SearchMediaTypes.ARTIST_ALBUMS) {
+          mbi_info.subtitle = itemInfo.release_date || itemInfo.artists[0]?.name || (itemInfo.total_tracks || 0 + " tracks") || item.type;
+        } else {
+          mbi_info.subtitle = itemInfo.artists[0]?.name || (itemInfo.total_tracks || 0 + " tracks") || item.type;
+        }
       }
-    } else if (section == Section.ARTIST_FAVORITES) {
+    } else if (mediaItemType == Section.ARTIST_FAVORITES) {
       const itemInfo = (item as IArtist);
       mbi_info.subtitle = ((itemInfo?.followers?.total || 0) + " followers") || item.type;
-    } else if (section == Section.AUDIOBOOK_FAVORITES) {
+    } else if (mediaItemType == Section.AUDIOBOOK_FAVORITES) {
       const itemInfo = (item as IAudiobookSimplified);
       mbi_info.subtitle = GetAudiobookAuthors(itemInfo, ", ") || item.type;
-    } else if (section == Section.DEVICES) {
+    } else if (mediaItemType == Section.CATEGORYS) {
+      const itemInfo = (item as ICategory);
+      mbi_info.subtitle = itemInfo.type;
+    } else if (mediaItemType == Section.DEVICES) {
       // for device item, the object uses Camel-case names, so we have to use "Name" instead of "name".
       // we will also show the device brand and model names as the subtitle.
       // we will also indicate which device is active.
@@ -178,26 +188,30 @@ export function buildMediaBrowserItems(items: any, config: CardConfig, section: 
       mbi_info.title = device.Name;
       mbi_info.subtitle = (device.DeviceInfo.BrandDisplayName || "unknown") + ", " + (device.DeviceInfo.ModelDisplayName || "unknown");
       mbi_info.is_active = (item.Name == store.player.attributes.source);
-    } else if (section == Section.EPISODE_FAVORITES) {
-      // spotify search episode returns an IEpisodeSimplified, so show property will by null.
+    } else if (mediaItemType == Section.EPISODE_FAVORITES) {
+      // spotify search episode returns an IEpisodeSimplified, so show property will be null.
       // for search results, use release date for subtitle.
       // for favorite results, use the show name for subtitle.
       const itemInfo = (item as IEpisode);
       mbi_info.subtitle = itemInfo.show?.name || itemInfo.release_date || "";
-    } else if (section == Section.PLAYLIST_FAVORITES) {
+    } else if (mediaItemType == Section.PLAYLIST_FAVORITES) {
       const itemInfo = (item as IPlaylistSimplified);
       mbi_info.subtitle = (itemInfo.tracks?.total || 0) + " tracks";
-    } else if (section == Section.SHOW_FAVORITES) {
+    } else if (mediaItemType == Section.RECENTS) {
+      // nothing to do here - already set.
+    } else if (mediaItemType == Section.SHOW_FAVORITES) {
       const itemInfo = (item as IShowSimplified);
       mbi_info.subtitle = (itemInfo.total_episodes || 0) + " episodes";
-    } else if (section == Section.TRACK_FAVORITES) {
+    } else if (mediaItemType == Section.TRACK_FAVORITES) {
       const itemInfo = (item as ITrackSimplified);
       if ((itemInfo.artists) && (itemInfo.artists.length > 0)) {
         mbi_info.subtitle = itemInfo.artists[0].name || item.type;
       }
-    } else if (section == Section.USERPRESETS) {
+    } else if (mediaItemType == Section.USERPRESETS) {
       const itemInfo = (item as IUserPreset);
       mbi_info.subtitle = itemInfo.subtitle || item.uri;
+    } else {
+      console.log("%cmedia-browser-utils - unknown mediaItemType = %s; mbi_info not set!", "color:red", JSON.stringify(mediaItemType));
     }
 
     //console.log("%c buildMediaBrowserItems - media browser item:\n%s",
@@ -382,10 +396,10 @@ export function formatConfigInfo(
 /**
  * Style definition used to style a media browser item background image.
  */
-export function styleMediaBrowserItemBackgroundImage(thumbnail: string, index: number, section: Section) {
+export function styleMediaBrowserItemBackgroundImage(thumbnail: string, index: number, mediaItemType: Section) {
 
   let bgSize = '100%';
-  if (section == Section.DEVICES) {
+  if (mediaItemType == Section.DEVICES) {
     bgSize = '50%';
   }
 

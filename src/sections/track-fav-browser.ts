@@ -1,5 +1,5 @@
 // lovelace card imports.
-import { css, html, TemplateResult } from 'lit';
+import { html, TemplateResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
 
 // our imports.
@@ -7,12 +7,12 @@ import '../components/media-browser-list';
 import '../components/media-browser-icons';
 import '../components/track-actions';
 import { FavBrowserBase } from './fav-browser-base';
-import { sharedStylesFavBrowser } from '../styles/shared-styles-fav-browser.js';
 import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
 import { formatTitleInfo } from '../utils/media-browser-utils';
-import { ITrack } from '../types/spotifyplus/track';
+import { getUtcNowTimestamp } from '../utils/utils';
 import { GetTracks } from '../types/spotifyplus/track-page-saved';
+import { ITrack } from '../types/spotifyplus/track';
 
 
 @customElement("spc-track-fav-browser")
@@ -96,21 +96,6 @@ export class TrackFavBrowser extends FavBrowserBase {
   }
 
 
-  /** 
-   * style definitions used by this component.
-   * */
-  static get styles() {
-
-    return [
-      sharedStylesFavBrowser,
-      css`
-
-      /* extra styles not defined in sharedStylesFavBrowser would go here. */
-      `
-    ];
-  }
-
-
   /**
    * Updates the mediaList display.
    */
@@ -133,7 +118,7 @@ export class TrackFavBrowser extends FavBrowserBase {
         // set service parameters.
         const limitTotal = this.LIMIT_TOTAL_MAX;     // max # of items to return
         const sortResult = this.config.trackFavBrowserItemsSortTitle || false;
-        const market = undefined;   // market code.
+        const market = null;   // market code.
 
         // call the service to retrieve the media list.
         this.spotifyPlusService.GetTrackFavorites(player.id, 0, 0, market, limitTotal, sortResult)
@@ -141,7 +126,7 @@ export class TrackFavBrowser extends FavBrowserBase {
 
             // load media list results.
             this.mediaList = GetTracks(result);
-            this.mediaListLastUpdatedOn = result.date_last_refreshed || (Date.now() / 1000);
+            this.mediaListLastUpdatedOn = result.date_last_refreshed || getUtcNowTimestamp();
 
             // call base class method, indicating media list update succeeded.
             super.updatedMediaListOk();
@@ -157,7 +142,7 @@ export class TrackFavBrowser extends FavBrowserBase {
             this.mediaListLastUpdatedOn = 0;
 
             // call base class method, indicating media list update failed.
-            super.updatedMediaListError("Get Track Favorites failed: \n" + (error as Error).message);
+            super.updatedMediaListError("Get Track Favorites failed: " + (error as Error).message);
 
             // reject the promise.
             reject(error);
@@ -190,7 +175,7 @@ export class TrackFavBrowser extends FavBrowserBase {
       this.progressHide();
 
       // set alert error message.
-      super.updatedMediaListError("Track favorites refresh failed: \n" + (error as Error).message);
+      super.updatedMediaListError("Track favorites refresh failed: " + (error as Error).message);
       return true;
 
     }

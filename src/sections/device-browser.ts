@@ -1,5 +1,5 @@
 // lovelace card imports.
-import { css, html, TemplateResult } from 'lit';
+import { html, TemplateResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
 
 // our imports.
@@ -7,10 +7,10 @@ import '../components/media-browser-list';
 import '../components/media-browser-icons';
 import '../components/device-actions';
 import { FavBrowserBase } from './fav-browser-base';
-import { sharedStylesFavBrowser } from '../styles/shared-styles-fav-browser.js';
 import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
 import { formatTitleInfo } from '../utils/media-browser-utils';
+import { getUtcNowTimestamp } from '../utils/utils';
 import { ISpotifyConnectDevice } from '../types/spotifyplus/spotify-connect-device';
 
 // debug logging.
@@ -103,21 +103,6 @@ export class DeviceBrowser extends FavBrowserBase {
   }
 
 
-  /** 
-   * style definitions used by this component.
-   * */
-  static get styles() {
-
-    return [
-      sharedStylesFavBrowser,
-      css`
-
-      /* extra styles not defined in sharedStylesFavBrowser would go here. */
-      `
-    ];
-  }
-
-
   protected override onFilterActionsClick(ev: MouseEvent) {
 
     // get action to perform.
@@ -141,7 +126,8 @@ export class DeviceBrowser extends FavBrowserBase {
    * 
    * @param args Event arguments that contain the media item that was clicked on.
    */
-  protected override onItemSelected = (args: CustomEvent) => {
+  protected override onItemSelected(args: CustomEvent) {
+  //protected override onItemSelected = (args: CustomEvent) => {
 
     if (debuglog.enabled) {
       debuglog("onItemSelected - device item selected:\n%s",
@@ -221,7 +207,7 @@ export class DeviceBrowser extends FavBrowserBase {
 
             // load media list results.
             this.mediaList = result.Items;
-            this.mediaListLastUpdatedOn = result.DateLastRefreshed || (Date.now() / 1000);
+            this.mediaListLastUpdatedOn = result.DateLastRefreshed || getUtcNowTimestamp();
 
             // call base class method, indicating media list update succeeded.
             super.updatedMediaListOk();
@@ -237,7 +223,7 @@ export class DeviceBrowser extends FavBrowserBase {
             this.mediaListLastUpdatedOn = 0;
 
             // call base class method, indicating media list update failed.
-            super.updatedMediaListError("Get Spotify Connect Devices failed: \n" + (error as Error).message);
+            super.updatedMediaListError("Get Spotify Connect Devices failed: " + (error as Error).message);
 
             // reject the promise.
             reject(error);
@@ -270,7 +256,7 @@ export class DeviceBrowser extends FavBrowserBase {
       this.progressHide();
 
       // set alert error message.
-      super.updatedMediaListError("Spotify Connect Device refresh failed: \n" + (error as Error).message);
+      super.updatedMediaListError("Spotify Connect Device refresh failed: " + (error as Error).message);
       return true;
 
     }

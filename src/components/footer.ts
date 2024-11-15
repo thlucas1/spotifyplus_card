@@ -6,6 +6,7 @@ import {
   mdiAlbum,
   mdiBookmarkMusicOutline,
   mdiBookOpenVariant,
+  mdiDramaMasks,
   mdiHistory,
   mdiMicrophone,
   mdiMusic,
@@ -64,6 +65,13 @@ export class Footer extends LitElement {
         @click=${() => this.onSectionClick(Section.RECENTS)}
         selected=${this.getSectionSelected(Section.RECENTS)}
         hide=${this.getSectionEnabled(Section.RECENTS)}
+      ></ha-icon-button>
+      <ha-icon-button
+        .path=${mdiDramaMasks}
+        label='Episode Favorites'
+        @click=${() => this.onSectionClick(Section.CATEGORYS)}
+        selected=${this.getSectionSelected(Section.CATEGORYS)}
+        hide=${this.getSectionEnabled(Section.CATEGORYS)}
       ></ha-icon-button>
       <ha-icon-button
         .path=${mdiPlaylistPlay}

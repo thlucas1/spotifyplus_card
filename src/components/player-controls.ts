@@ -243,7 +243,7 @@ class PlayerControls extends LitElement {
     //}
 
     //if (debuglog.enabled) {
-    //  debuglog("%c update - changed properties: %s",
+    //  debuglog("%cupdate - changed properties: %s",
     //    "color: gold;",
     //    JSON.stringify(changedPropKeys),
     //  );

@@ -12,6 +12,12 @@ export interface IArtistInfoTourEvent {
 
 
   /** 
+   * Link to the concert information, if supplied; otherwise, null.
+   */
+  href: string | null;
+
+
+  /**
    * Title given to the event by the promoter, if supplied; otherwise, null.
    */
   title: string | null;

@@ -50,9 +50,9 @@ export class MediaBrowserList extends MediaBrowserBase {
     // render html.
     return html`
       <mwc-list multi class="list" style="--items-per-row: ${this.itemsPerRow}">
-        ${buildMediaBrowserItems(this.items || [], this.config, this.mediaType, this.store).map((item, index) => {
+        ${buildMediaBrowserItems(this.items || [], this.config, this.mediaItemType, this.searchMediaType, this.store).map((item, index) => {
           return html`
-            ${styleMediaBrowserItemBackgroundImage(item.mbi_item.image_url, index, this.mediaType)}
+            ${styleMediaBrowserItemBackgroundImage(item.mbi_item.image_url, index, this.mediaItemType)}
             ${(() => {
               if (this.isTouchDevice) {
                 return (html`

@@ -56,6 +56,38 @@ export function unescapeHtml(escapedHtml: string): string {
 
 
 /**
+ * Return POSIX utc timestamp (e.g. the number of seconds since the utc epoch date).
+ * 
+ * This is the equivalent of the Python `datetime.utcnow().timestamp()` function.
+ * 
+ * @returns number of milliseconds between current UTC time and midnight of January 1, 1970.
+ */
+export function getUtcNowTimestamp(): number {
+
+  const tmLoc = new Date();
+  const tmDiffMS = tmLoc.getTime() + (tmLoc.getTimezoneOffset() * 60000);  // offset is in minutes; convert it to milliseconds.
+  return (tmDiffMS / 1000);   // convert milliseconds to seconds.
+
+}
+
+
+/**
+ * Converts a UTC datetime object to local datetime object.
+ * 
+ * @param date A UTC datetime object to convert.
+ * @returns A local datetime object.
+ */
+export function convertUTCDateToLocalDate(date): Date {
+
+  const newDate = new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
+  const offset = date.getTimezoneOffset() / 60;
+  const hours = date.getHours();
+  newDate.setHours(hours - offset);
+  return newDate;
+}
+
+
+/**
  * Formats an epoch date to a date locale string.
  * 
  * The date is converted by a call to the `Date.toLocaleString()` method.
@@ -72,8 +104,10 @@ export function formatDateEpochSecondsToLocaleString(epochSeconds: number | unde
   // convert epoch number of seconds to epoch number of milliseconds (for JavaScript Date function).
   const epochMS = (epochSeconds || 0) * 1000;
   const epochMSDate = new Date(epochMS);
-  const localeDate = epochMSDate.toLocaleString();
-  return localeDate
+  const localeDate = convertUTCDateToLocalDate(epochMSDate);
+  const localeDateString = localeDate.toLocaleString();
+  //const localeDateString = epochMSDate.toLocaleString();
+  return localeDateString
 }
 
 
@@ -132,6 +166,8 @@ export function getSectionForConfigArea(configArea: ConfigArea) {
     section = Section.ARTIST_FAVORITES;
   } else if (configArea == ConfigArea.AUDIOBOOK_FAVORITES) {
     section = Section.AUDIOBOOK_FAVORITES;
+  } else if (configArea == ConfigArea.CATEGORY_BROWSER) {
+    section = Section.CATEGORYS;
   } else if (configArea == ConfigArea.DEVICE_BROWSER) {
     section = Section.DEVICES;
   } else if (configArea == ConfigArea.EPISODE_FAVORITES) {
@@ -173,6 +209,8 @@ export function getConfigAreaForSection(section: Section) {
     configArea = ConfigArea.ARTIST_FAVORITES;
   } else if (section == Section.AUDIOBOOK_FAVORITES) {
     configArea = ConfigArea.AUDIOBOOK_FAVORITES;
+  } else if (section == Section.CATEGORYS) {
+    configArea = ConfigArea.CATEGORY_BROWSER;
   } else if (section == Section.DEVICES) {
     configArea = ConfigArea.DEVICE_BROWSER;
   } else if (section == Section.EPISODE_FAVORITES) {
@@ -497,3 +535,23 @@ export function copyToClipboard(ev): boolean {
   window.status = "text copied to clipboard";
   return result;
 }
+
+
+//export const getLovelace = () => {
+//  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//  let root: any = document.querySelector('home-assistant');
+//  root = root && root.shadowRoot;
+//  root = root && root.querySelector('home-assistant-main');
+//  root = root && root.shadowRoot;
+//  root = root && root.querySelector('app-drawer-layout partial-panel-resolver, ha-drawer partial-panel-resolver');
+//  root = (root && root.shadowRoot) || root;
+//  root = root && root.querySelector('ha-panel-lovelace');
+//  root = root && root.shadowRoot;
+//  root = root && root.querySelector('hui-root');
+//  if (root) {
+//    const ll = root.lovelace;
+//    ll.current_view = root.___curView;
+//    return ll;
+//  }
+//  return null;
+//}

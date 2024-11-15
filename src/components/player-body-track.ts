@@ -5,6 +5,7 @@ import copyTextToClipboard from 'copy-text-to-clipboard';
 import {
   mdiAccountMusic,
   mdiAlbum,
+  mdiBookmarkMusicOutline,
   mdiClipboardPlusOutline,
   mdiDotsHorizontal,
   mdiHeart,
@@ -25,7 +26,8 @@ import { SearchMediaEvent } from '../events/search-media';
 import { getIdFromSpotifyUri } from '../services/spotifyplus-service';
 import { openWindowNewTab } from '../utils/media-browser-utils';
 import { formatDateHHMMSSFromMilliseconds } from '../utils/utils';
-import { RADIO_SEARCH_KEY } from '../constants.js';
+import { ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD, RADIO_SEARCH_KEY } from '../constants.js';
+import { GetUserPresetConfigEntry } from '../types/spotifyplus/user-preset.js';
 import { ITrack } from '../types/spotifyplus/track';
 
 /**
@@ -33,6 +35,7 @@ import { ITrack } from '../types/spotifyplus/track';
  */
 enum Actions {
   GetPlayingItem = "GetPlayingItem",
+  AlbumCopyPresetToClipboard = "AlbumCopyPresetToClipboard",
   AlbumCopyUriToClipboard = "AlbumCopyUriToClipboard",
   AlbumFavoriteAdd = "AlbumFavoriteAdd",
   AlbumFavoriteRemove = "AlbumFavoriteRemove",
@@ -45,6 +48,12 @@ enum Actions {
   ArtistSearchPlaylists = "ArtistSearchPlaylists",
   ArtistSearchRadio = "ArtistSearchRadio",
   ArtistSearchTracks = "ArtistSearchTracks",
+  ArtistShowAlbums = "ArtistShowAlbums",
+  ArtistShowAlbumsAppearsOn = "ArtistShowAlbumsAppearsOn",
+  ArtistShowAlbumsCompilation = "ArtistShowAlbumsCompilation",
+  ArtistShowAlbumsSingle = "ArtistShowAlbumsSingle",
+  ArtistShowRelatedArtists = "ArtistShowRelatedArtists",
+  ArtistShowTopTracks = "ArtistShowTopTracks",
   TrackCopyUriToClipboard = "TrackCopyUriToClipboard",
   TrackFavoriteAdd = "TrackFavoriteAdd",
   TrackFavoriteRemove = "TrackFavoriteRemove",
@@ -211,6 +220,10 @@ class PlayerBodyTrack extends PlayerBodyBase {
           <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
           <div slot="headline">Copy Album URI to Clipboard</div>
         </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.AlbumCopyPresetToClipboard)}>
+          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          <div slot="headline">Copy Album Preset Info to Clipboard</div>
+        </ha-md-menu-item>
       </ha-md-button-menu>
       `;
 
@@ -231,6 +244,31 @@ class PlayerBodyTrack extends PlayerBodyBase {
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistSearchRadio)} hide=${this.hideSearchType(SearchMediaTypes.PLAYLISTS)}>
           <ha-svg-icon slot="start" .path=${mdiRadio}></ha-svg-icon>
           <div slot="headline">Search for Artist Radio</div>
+        </ha-md-menu-item>
+        <ha-md-divider role="separator" tabindex="-1"></ha-md-divider>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistShowTopTracks)} hide=${this.hideSearchType(SearchMediaTypes.TRACKS)}>
+          <ha-svg-icon slot="start" .path=${mdiMusic}></ha-svg-icon>
+          <div slot="headline">Show Artist Top Tracks</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistShowAlbums)} hide=${this.hideSearchType(SearchMediaTypes.ALBUMS)}>
+          <ha-svg-icon slot="start" .path=${mdiAlbum}></ha-svg-icon>
+          <div slot="headline">Show Artist Albums</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistShowAlbumsCompilation)} hide=${this.hideSearchType(SearchMediaTypes.ALBUMS)}>
+          <ha-svg-icon slot="start" .path=${mdiAlbum}></ha-svg-icon>
+          <div slot="headline">Show Artist Albums Compilations</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistShowAlbumsSingle)} hide=${this.hideSearchType(SearchMediaTypes.ALBUMS)}>
+          <ha-svg-icon slot="start" .path=${mdiAlbum}></ha-svg-icon>
+          <div slot="headline">Show Artist Albums Singles</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistShowAlbumsAppearsOn)} hide=${this.hideSearchType(SearchMediaTypes.ALBUMS)}>
+          <ha-svg-icon slot="start" .path=${mdiAlbum}></ha-svg-icon>
+          <div slot="headline">Show Artist Albums AppearsOn</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistShowRelatedArtists)} hide=${this.hideSearchType(SearchMediaTypes.ARTISTS)}>
+          <ha-svg-icon slot="start" .path=${mdiAccountMusic}></ha-svg-icon>
+          <div slot="headline">Show Related Artists</div>
         </ha-md-menu-item>
         <ha-md-divider role="separator" tabindex="-1"></ha-md-divider>
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistCopyUriToClipboard)}>
@@ -315,6 +353,7 @@ class PlayerBodyTrack extends PlayerBodyBase {
       <div class="player-body-container" hide=${this.isPlayerStopped}>
         <div class="player-body-container-scrollable">
           ${this.alertError ? html`<ha-alert alert-type="error" dismissable @alert-dismissed-clicked=${this.alertErrorClear}>${this.alertError}</ha-alert>` : ""}
+          ${this.alertInfo ? html`<ha-alert alert-type="info" dismissable @alert-dismissed-clicked=${this.alertInfoClear}>${this.alertInfo}</ha-alert>` : ""}
           ${(() => {
             if (this.player.attributes.sp_item_type == 'track') {
               return (html`${actionTrackSummary}`)
@@ -354,15 +393,16 @@ class PlayerBodyTrack extends PlayerBodyBase {
    */
   protected override async onClickAction(action: Actions): Promise<boolean> {
 
-    //// if card is being edited, then don't bother.
-    //if (this.isCardInEditPreview) {
-    //  return true;
-    //}
-
     try {
 
       // process actions that don't require a progress indicator.
-      if (action == Actions.AlbumCopyUriToClipboard) {
+      if (action == Actions.AlbumCopyPresetToClipboard) {
+
+        copyTextToClipboard(GetUserPresetConfigEntry(this.track?.album, this.track?.album.artists[0].name));
+        this.alertInfoSet(ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD);
+        return true;
+
+      } else if (action == Actions.AlbumCopyUriToClipboard) {
 
         copyTextToClipboard(this.track?.album.uri || "");
         return true;
@@ -390,6 +430,36 @@ class PlayerBodyTrack extends PlayerBodyBase {
       } else if (action == Actions.ArtistSearchTracks) {
 
         this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.TRACKS, this.track?.artists[0].name));
+        return true;
+
+      } else if (action == Actions.ArtistShowAlbums) {
+
+        this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.ARTIST_ALBUMS, this.track?.artists[0].name, this.track?.artists[0].name, this.track?.artists[0].uri));
+        return true;
+
+      } else if (action == Actions.ArtistShowAlbumsAppearsOn) {
+
+        this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.ARTIST_ALBUMS_APPEARSON, this.track?.artists[0].name, this.track?.artists[0].name, this.track?.artists[0].uri));
+        return true;
+
+      } else if (action == Actions.ArtistShowAlbumsCompilation) {
+
+        this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.ARTIST_ALBUMS_COMPILATION, this.track?.artists[0].name, this.track?.artists[0].name, this.track?.artists[0].uri));
+        return true;
+
+      } else if (action == Actions.ArtistShowAlbumsSingle) {
+
+        this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.ARTIST_ALBUMS_SINGLE, this.track?.artists[0].name, this.track?.artists[0].name, this.track?.artists[0].uri));
+        return true;
+
+      } else if (action == Actions.ArtistShowRelatedArtists) {
+
+        this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.ARTIST_RELATED_ARTISTS, this.track?.artists[0].name, this.track?.artists[0].name, this.track?.artists[0].uri));
+        return true;
+
+      } else if (action == Actions.ArtistShowTopTracks) {
+
+        this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.ARTIST_TOP_TRACKS, this.track?.artists[0].name, this.track?.artists[0].name, this.track?.artists[0].uri));
         return true;
 
       } else if (action == Actions.TrackCopyUriToClipboard) {

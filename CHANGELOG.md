@@ -6,6 +6,21 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.12 ] - 2024/11/15
+
+  * This release requires the SpotifyPlus v1.0.65 release; please make sure you update the SpotifyPlus integration prior to updating this SpotifyPlus Card release.
+  * Added category browser: browse Spotify playlists by categories; existing card configurations have to enable the section in the general configuration settings.
+  * Added dynamic track recommendation capability to user-defined presets. Simply put, you define a preset with the parameters of what you want to play and Spotify searches its media catalog for tracks that match. The matching tracks are then added to a play queue and played in random order. The matching tracks will change over time, as Spotify adds new content to its media catalog.
+  * Added action for all playable media types: Copy Preset Info to Clipboard.  This will create a user-preset configuration entry for the selected media and copy it to the clipboard; the entry can then be pasted into the configuration editor under the `userPresets:` key, which will create a user preset for the media item.
+  * Updated artist details to show more information about the artist.  Note that actions menu can be used to display more artist-related details (albums, top tracks, etc).
+  * Added artist action: show artist albums; lists only the artist albums (no compilations, no appears on, no singles, etc).
+  * Added artist action: show artist album compilations; lists only the artist compilation albums (no appears on, no singles, etc).
+  * Added artist action: show artist albums appears on (aka collaborations); lists only the artist appears on albums (no compilations, no singles, etc).
+  * Added artist action: show artist album singles; lists only the artist single release albums (no compilations, no appears on, etc).
+  * Added artist action: show artist related artists; lists artists that are similar to the selected artist.
+  * Added show action: search show episodes; lists show episodes with cover art for the selected show.
+  * Updated show details form to only display the first 20 episodes of the show after the show description.  This will make the UI much more responsive, as most shows have 200+ episodes.  More shows can be listed by using the actions menu drop down.
+
 ###### [ 1.0.11 ] - 2024/11/04
 
   * Fixed a bug in all media list rendering controls that was causing the media list not to render for some browser types (Fire HD, iPad Air, etc).

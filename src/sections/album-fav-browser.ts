@@ -1,5 +1,5 @@
 // lovelace card imports.
-import { css, html, TemplateResult } from 'lit';
+import { html, TemplateResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
 
 // our imports.
@@ -7,10 +7,10 @@ import '../components/media-browser-list';
 import '../components/media-browser-icons';
 import '../components/album-actions';
 import { FavBrowserBase } from './fav-browser-base';
-import { sharedStylesFavBrowser } from '../styles/shared-styles-fav-browser.js';
 import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
 import { formatTitleInfo } from '../utils/media-browser-utils';
+import { getUtcNowTimestamp } from '../utils/utils';
 import { IAlbum } from '../types/spotifyplus/album';
 import { GetAlbums } from '../types/spotifyplus/album-page-saved';
 
@@ -96,21 +96,6 @@ export class AlbumFavBrowser extends FavBrowserBase {
   }
 
 
-  /** 
-   * style definitions used by this component.
-   * */
-  static get styles() {
-
-    return [
-      sharedStylesFavBrowser,
-      css`
-
-      /* extra styles not defined in sharedStylesFavBrowser would go here. */
-      `
-    ];
-  }
-
-
   /**
    * Updates the mediaList display.
    */
@@ -141,7 +126,7 @@ export class AlbumFavBrowser extends FavBrowserBase {
 
             // load media list results.
             this.mediaList = GetAlbums(result);
-            this.mediaListLastUpdatedOn = result.date_last_refreshed || (Date.now() / 1000);
+            this.mediaListLastUpdatedOn = result.date_last_refreshed || getUtcNowTimestamp();
 
             // call base class method, indicating media list update succeeded.
             super.updatedMediaListOk();
@@ -157,7 +142,7 @@ export class AlbumFavBrowser extends FavBrowserBase {
             this.mediaListLastUpdatedOn = 0;
 
             // call base class method, indicating media list update failed.
-            super.updatedMediaListError("Get Album Favorites failed: \n" + (error as Error).message);
+            super.updatedMediaListError("Get Album Favorites failed: " + (error as Error).message);
 
             // reject the promise.
             reject(error);
@@ -190,7 +175,7 @@ export class AlbumFavBrowser extends FavBrowserBase {
       this.progressHide();
 
       // set alert error message.
-      super.updatedMediaListError("Album favorites refresh failed: \n" + (error as Error).message);
+      super.updatedMediaListError("Album favorites refresh failed: " + (error as Error).message);
       return true;
 
     }

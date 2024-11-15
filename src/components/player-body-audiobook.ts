@@ -4,6 +4,7 @@ import { state } from 'lit/decorators.js';
 import copyTextToClipboard from 'copy-text-to-clipboard';
 import {
   mdiAccountDetailsOutline,
+  mdiBookmarkMusicOutline,
   mdiBookOpenVariant,
   mdiClipboardPlusOutline,
   mdiDotsHorizontal,
@@ -23,23 +24,28 @@ import { SearchMediaEvent } from '../events/search-media';
 import { getIdFromSpotifyUri } from '../services/spotifyplus-service';
 import { formatDateHHMMSSFromMilliseconds, unescapeHtml } from '../utils/utils';
 import { openWindowNewTab } from '../utils/media-browser-utils';
+import { ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD } from '../constants';
 import { GetAudiobookAuthors, GetAudiobookNarrators } from '../types/spotifyplus/audiobook-simplified';
+import { GetUserPresetConfigEntry } from '../types/spotifyplus/user-preset';
 import { IChapter } from '../types/spotifyplus/chapter';
 
 /**
  * Audiobook actions.
  */
 enum Actions {
+  AudiobookCopyPresetToClipboard = "AudiobookCopyPresetToClipboard",
   AudiobookCopyUriToClipboard = "AudiobookCopyUriToClipboard",
   AudiobookFavoriteAdd = "AudiobookFavoriteAdd",
   AudiobookFavoriteRemove = "AudiobookFavoriteRemove",
   AudiobookFavoriteUpdate = "AudiobookFavoriteUpdate",
+  AudiobookSearchAuthor = "AudiobookSearchAuthor",
+  AudiobookSearchNarrator = "AudiobookSearchNarrator",
+  ChapterCopyPresetToClipboard = "ChapterCopyPresetToClipboard",
+  ChapterCopyUriToClipboard = "ChapterCopyUriToClipboard",
   ChapterFavoriteAdd = "ChapterFavoriteAdd",
   ChapterFavoriteRemove = "ChapterFavoriteRemove",
   ChapterFavoriteUpdate = "ChapterFavoriteUpdate",
   GetPlayingItem = "GetPlayingItem",
-  AudiobookSearchAuthor = "AudiobookSearchAuthor",
-  AudiobookSearchNarrator = "AudiobookSearchNarrator",
 }
 
 
@@ -148,6 +154,27 @@ class PlayerBodyAudiobook extends PlayerBodyBase {
           <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
           <div slot="headline">Copy Audiobook URI to Clipboard</div>
         </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.AudiobookCopyPresetToClipboard)}>
+          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          <div slot="headline">Copy Audiobook Preset Info to Clipboard</div>
+        </ha-md-menu-item>
+      </ha-md-button-menu>
+      `;
+
+    // define dropdown menu actions - audiobook.
+    const actionsChapterHtml = html`
+      <ha-md-button-menu slot="selection-bar" positioning="popover">
+        <ha-assist-chip slot="trigger">
+          <ha-svg-icon slot="icon" .path=${mdiDotsHorizontal}></ha-svg-icon>
+        </ha-assist-chip>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ChapterCopyUriToClipboard)}>
+          <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
+          <div slot="headline">Copy Chapter URI to Clipboard</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ChapterCopyPresetToClipboard)}>
+          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          <div slot="headline">Copy Chapter Preset Info to Clipboard</div>
+        </ha-md-menu-item>
       </ha-md-button-menu>
       `;
 
@@ -166,6 +193,9 @@ class PlayerBodyAudiobook extends PlayerBodyBase {
             ${iconChapter}
             ${this.chapter?.name}
             ${(this.isChapterFavorite ? actionChapterFavoriteRemove : actionChapterFavoriteAdd)}
+            <span class="actions-dropdown-menu">
+              ${actionsChapterHtml}
+            </span>
           </div>
           <div class="grid audiobook-info-grid">
 
@@ -218,6 +248,7 @@ class PlayerBodyAudiobook extends PlayerBodyBase {
       <div class="player-body-container" hide=${this.isPlayerStopped}>
         <div class="player-body-container-scrollable">
           ${this.alertError ? html`<ha-alert alert-type="error" dismissable @alert-dismissed-clicked=${this.alertErrorClear}>${this.alertError}</ha-alert>` : ""}
+          ${this.alertInfo ? html`<ha-alert alert-type="info" dismissable @alert-dismissed-clicked=${this.alertInfoClear}>${this.alertInfo}</ha-alert>` : ""}
           ${(() => {
             if (this.player.attributes.sp_item_type == 'audiobook') {
               return (html`${actionEpisodeSummary}`)
@@ -272,15 +303,16 @@ class PlayerBodyAudiobook extends PlayerBodyBase {
    */
   protected override async onClickAction(action: Actions): Promise<boolean> {
 
-    //// if card is being edited, then don't bother.
-    //if (this.isCardInEditPreview) {
-    //  return true;
-    //}
-
     try {
 
       // process actions that don't require a progress indicator.
-      if (action == Actions.AudiobookCopyUriToClipboard) {
+      if (action == Actions.AudiobookCopyPresetToClipboard) {
+
+        copyTextToClipboard(GetUserPresetConfigEntry(this.chapter?.audiobook, GetAudiobookAuthors(this.chapter?.audiobook, ", ")));
+        this.alertInfoSet(ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD);
+        return true;
+
+      } else if (action == Actions.AudiobookCopyUriToClipboard) {
 
         copyTextToClipboard(this.chapter?.audiobook.uri || "");
         return true;
@@ -293,6 +325,17 @@ class PlayerBodyAudiobook extends PlayerBodyBase {
       } else if (action == Actions.AudiobookSearchNarrator) {
 
         this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.AUDIOBOOKS, GetAudiobookNarrators(this.chapter?.audiobook, " ")));
+        return true;
+
+      } else if (action == Actions.ChapterCopyPresetToClipboard) {
+
+        copyTextToClipboard(GetUserPresetConfigEntry(this.chapter, this.chapter?.audiobook.name));
+        this.alertInfoSet(ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD);
+        return true;
+
+      } else if (action == Actions.ChapterCopyUriToClipboard) {
+
+        copyTextToClipboard(this.chapter?.uri || "");
         return true;
 
       }

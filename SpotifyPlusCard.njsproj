@@ -127,9 +127,7 @@
     <TypeScriptCompile Include="src\components\media-browser-icons.ts" />
     <TypeScriptCompile Include="src\components\media-browser-list.ts" />
     <TypeScriptCompile Include="src\components\player-body-audiobook.ts" />
-    <TypeScriptCompile Include="src\components\player-body-queue.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\components\player-body-queue.ts" />
     <TypeScriptCompile Include="src\components\player-body-track.ts" />
     <TypeScriptCompile Include="src\components\player-body-show.ts" />
     <TypeScriptCompile Include="src\components\player-controls.ts" />
@@ -140,10 +138,10 @@
     <TypeScriptCompile Include="src\components\show-actions.ts" />
     <TypeScriptCompile Include="src\components\track-actions.ts" />
     <TypeScriptCompile Include="src\components\userpreset-actions.ts" />
+    <TypeScriptCompile Include="src\editor\category-browser-editor.ts" />
     <TypeScriptCompile Include="src\editor\episode-fav-browser-editor.ts" />
-    <TypeScriptCompile Include="src\events\search-media.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\events\search-media.ts" />
+    <TypeScriptCompile Include="src\sections\category-browser.ts" />
     <TypeScriptCompile Include="src\sections\episode-fav-browser.ts" />
     <TypeScriptCompile Include="src\sections\fav-browser-base.ts" />
     <TypeScriptCompile Include="src\styles\shared-styles-grid.js" />
@@ -201,6 +199,8 @@
     <TypeScriptCompile Include="src\types\spotifyplus\audiobook-page-simplified.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus\audiobook-simplified.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus\author.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\category-page.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\category.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus\chapter-page-simplified.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus\chapter-simplified.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus\chapter.ts" />
@@ -219,12 +219,11 @@
     <TypeScriptCompile Include="src\types\spotifyplus\narrator.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus\play-history.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus\play-history-page.ts" />
-    <TypeScriptCompile Include="src\types\spotifyplus\player-queue-info.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\types\spotifyplus\player-queue-info.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus\playlist-page.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus\playlist-track.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus\playlist.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\recommendation-seed.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus\restrictions.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus\resume-point.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus\show.ts" />
@@ -235,6 +234,8 @@
     <TypeScriptCompile Include="src\types\spotifyplus\spotify-basic-object.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus\spotify-connect-device.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus\spotify-connect-devices.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\track-recommendations.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\track-recommendations-properties.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus\track.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus\track-page.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus\track-page-saved.ts" />
@@ -256,6 +257,7 @@
     <TypeScriptCompile Include="src\types\spotifyplus\zeroconf-property.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus\zeroconf-response.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus\user-preset.ts" />
+    <TypeScriptCompile Include="src\utils\config-util.ts" />
     <TypeScriptCompile Include="src\utils\media-browser-utils.ts" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />

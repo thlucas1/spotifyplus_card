@@ -162,7 +162,7 @@ class Form extends BaseEditor {
               if (haFormField?.tagName == "HA-FORMFIELD") {
                 haFormField.setAttribute("style", "min-height: var(--ha-form-style-selector-boolean-min-height, 56px);");
               } else {
-                console.log("%c HA-SELECTOR underlying type was not styled: %s", "color:orange", child.tagName);
+                console.log("%c HA-SELECTOR underlying type was not styled: %s", "color:red", child.tagName);
               }
             }
 
@@ -177,7 +177,7 @@ class Form extends BaseEditor {
           child.setAttribute("style", "margin-bottom: var(--ha-form-style-integer-margin-bottom, 24px);");
 
         } else {
-          console.log("%c _styleRenderRootElements (editor-form) - did not style %s element", "color:orange", child.tagName);
+          console.log("%c _styleRenderRootElements (editor-form) - did not style %s element", "color:red", child.tagName);
         }
       }
 

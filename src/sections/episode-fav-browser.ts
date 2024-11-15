@@ -1,5 +1,5 @@
 // lovelace card imports.
-import { css, html, TemplateResult } from 'lit';
+import { html, TemplateResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
 
 // our imports.
@@ -7,12 +7,12 @@ import '../components/media-browser-list';
 import '../components/media-browser-icons';
 import '../components/episode-actions';
 import { FavBrowserBase } from './fav-browser-base';
-import { sharedStylesFavBrowser } from '../styles/shared-styles-fav-browser.js';
 import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
 import { formatTitleInfo } from '../utils/media-browser-utils';
-import { IEpisode } from '../types/spotifyplus/episode';
+import { getUtcNowTimestamp } from '../utils/utils';
 import { GetEpisodes } from '../types/spotifyplus/episode-page-saved';
+import { IEpisode } from '../types/spotifyplus/episode';
 
 
 @customElement("spc-episode-fav-browser")
@@ -96,21 +96,6 @@ export class EpisodeFavBrowser extends FavBrowserBase {
   }
 
 
-  /** 
-   * style definitions used by this component.
-   * */
-  static get styles() {
-
-    return [
-      sharedStylesFavBrowser,
-      css`
-
-      /* extra styles not defined in sharedStylesFavBrowser would go here. */
-      `
-    ];
-  }
-
-
   /**
    * Updates the mediaList display.
    */
@@ -140,7 +125,7 @@ export class EpisodeFavBrowser extends FavBrowserBase {
 
             // load media list results.
             this.mediaList = GetEpisodes(result);
-            this.mediaListLastUpdatedOn = result.date_last_refreshed || (Date.now() / 1000);
+            this.mediaListLastUpdatedOn = result.date_last_refreshed || getUtcNowTimestamp();
 
             // call base class method, indicating media list update succeeded.
             super.updatedMediaListOk();
@@ -156,7 +141,7 @@ export class EpisodeFavBrowser extends FavBrowserBase {
             this.mediaListLastUpdatedOn = 0;
 
             // call base class method, indicating media list update failed.
-            super.updatedMediaListError("Get Episode Favorites failed: \n" + (error as Error).message);
+            super.updatedMediaListError("Get Episode Favorites failed: " + (error as Error).message);
 
             // reject the promise.
             reject(error);
@@ -189,7 +174,7 @@ export class EpisodeFavBrowser extends FavBrowserBase {
       this.progressHide();
 
       // set alert error message.
-      super.updatedMediaListError("Episode favorites refresh failed: \n" + (error as Error).message);
+      super.updatedMediaListError("Episode favorites refresh failed: " + (error as Error).message);
       return true;
 
     }

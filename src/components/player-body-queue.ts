@@ -114,6 +114,7 @@ export class PlayerBodyQueue extends PlayerBodyBase {
       <div class="player-body-container" hide=${this.isPlayerStopped}>
         <div class="player-body-container-scrollable">
           ${this.alertError ? html`<ha-alert alert-type="error" dismissable @alert-dismissed-clicked=${this.alertErrorClear}>${this.alertError}</ha-alert>` : ""}
+          ${this.alertInfo ? html`<ha-alert alert-type="info" dismissable @alert-dismissed-clicked=${this.alertInfoClear}>${this.alertInfo}</ha-alert>` : ""}
           <div class="media-info-text-ms-c queue-info-grid-container">
             Player Queue Info - ${queueInfoTitle}
           </div>

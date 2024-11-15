@@ -13,30 +13,87 @@ export const SEARCH_MEDIA = DOMAIN_SPOTIFYPLUS + '-card-search-media';
 export class SearchMediaEventArgs {
 
   // property storage.
+
+  /**
+   * Media type to search.
+   */
   public searchType: SearchMediaTypes;
+
+  /**
+   * Criteria to search for.
+   */
   public searchCriteria: string;
 
   /**
+   * Title to search for.
+   */
+  public title: string | undefined | null;
+
+  /**
+   * Uri to search for.
+   */
+  public uri: string | undefined | null;
+
+  /**
+   * Item sub-type (if required); for show search type, this should be 'Audiobook' or 'Podcast'. 
+   */
+  public subtype: string | undefined | null;
+
+  /**
    * Initializes a new instance of the class.
-   *
+   * 
    * @param searchType Media type to search.
    * @param searchCriteria Criteria to search.
+   * @param title Title to search for.
+   * @param uri Uri to search for.
+   * @param subtype Item sub-type (if required); for show search type, this should be 'audiobook' or 'podcast'.
    */
-  constructor() {
-    this.searchType = SearchMediaTypes.PLAYLISTS;
-    this.searchCriteria = "";
+  constructor(
+    searchType: SearchMediaTypes,
+    searchCriteria: string | undefined | null = null,
+    title: string | undefined | null = null,
+    uri: string | undefined | null = null,
+    subtype: string | undefined | null = null,
+  ) {
+    this.searchType = searchType || SearchMediaTypes.PLAYLISTS;
+    this.searchCriteria = searchCriteria || "";
+    this.title = title || "";
+    this.uri = uri || "";
+    this.subtype = subtype || "";
   }
 }
 
 
 /**
  * Event constructor.
+ * 
+ * @param searchType Media type to search.
+ * @param searchCriteria Criteria to search.
+ * @param title Title to search for.
+ * @param uri Uri to search for.
+ * @param subtype Item sub-type (if required); for show search type, this should be 'audiobook' or 'podcast'.
  */
-export function SearchMediaEvent(searchType: SearchMediaTypes, searchCriteria: string | undefined | null) {
+export function SearchMediaEvent(
+  searchType: SearchMediaTypes,
+  searchCriteria: string | undefined | null,
+  title: string | undefined | null = null,
+  uri: string | undefined | null = null,
+  subtype: string | undefined | null = null,
+) {
 
-  const args = new SearchMediaEventArgs();
-  args.searchType = searchType;
+  const args = new SearchMediaEventArgs(searchType);
   args.searchCriteria = (searchCriteria || "").trim();
+  args.title = title || "";
+  args.uri = uri || "";
+  args.subtype = subtype || "";
+
+  if (!args.subtype) {
+    if (searchType == SearchMediaTypes.AUDIOBOOK_EPISODES) {
+      args.subtype = 'audiobook';
+    } else if (searchType == SearchMediaTypes.SHOW_EPISODES) {
+      args.subtype = 'podcast';
+    }
+  }
 
   return new CustomEvent(SEARCH_MEDIA, {
     bubbles: true,

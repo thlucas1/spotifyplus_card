@@ -1,7 +1,7 @@
 import { css } from 'lit';
 
 /** current version of the card. */
-export const CARD_VERSION = '1.0.11';
+export const CARD_VERSION = '1.0.12';
 
 /** SpotifyPlus integration domain identifier. */
 export const DOMAIN_SPOTIFYPLUS = 'spotifyplus';
@@ -57,3 +57,5 @@ export const listStyle = css`
     overflow: hidden;
   }
 `;
+
+export const ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD = "Preset info copied to clipboard; please edit the card configuration (via show code editor) and paste copied text under the \"userPresets:\" key."

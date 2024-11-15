@@ -26,6 +26,7 @@ export class FavActionsBase extends LitElement {
 
   // private state properties.
   @state() protected alertError?: string;
+  @state() protected alertInfo?: string;
 
   /** MediaPlayer instance created from the configuration entity id. */
   protected player!: MediaPlayer;
@@ -128,6 +129,7 @@ export class FavActionsBase extends LitElement {
    */
   protected alertClear() {
     this.alertError = undefined;
+    this.alertInfo = undefined;
   }
 
 
@@ -144,6 +146,24 @@ export class FavActionsBase extends LitElement {
    */
   protected alertErrorSet(message: string): void {
     this.alertError = message;
+    this.alertInfo = undefined;
+  }
+
+
+  /**
+   * Clears the info alert text.
+   */
+  protected alertInfoClear() {
+    this.alertInfo = undefined;
+  }
+
+
+  /**
+   * Sets the alert info message, and clears the informational alert message.
+   */
+  protected alertInfoSet(message: string): void {
+    this.alertInfo = message;
+    this.alertError = undefined;
   }
 
 
@@ -311,15 +331,17 @@ export class FavActionsBase extends LitElement {
       return false;
     }
 
-    // if player reference not set then we are done.
-    if (!player) {
+    // if player reference not set then we are done;
+    // this does not need to be checked for DEVICE section.
+    if ((!player) && (this.section != Section.DEVICES)) {
       this.isUpdateInProgress = false;
       this.alertErrorSet("Player reference not set in updateActions");
       return false;
     }
 
-    // if no media item uri, then don't bother.
-    if (!this.mediaItem.uri) {
+    // if no media item uri, then don't bother;
+    // this does not need to be checked for DEVICE section.
+    if ((!this.mediaItem.uri) && (this.section != Section.DEVICES)) {
       this.isUpdateInProgress = false;
       this.alertErrorSet("MediaItem not set in updateActions");
       return false;

@@ -184,7 +184,7 @@ export class PlayerBodyBase extends LitElement {
     if (changedPropKeys.includes('mediaContentId')) {
 
       if (debuglog.enabled) {
-        debuglog("%c update - player content changed:\n- NEW CONTENT ID = %s\n- isCardInEditPreview = %s",
+        debuglog("%cupdate - player content changed:\n- NEW CONTENT ID = %s\n- isCardInEditPreview = %s",
           "color: gold;",
           JSON.stringify(this.player.attributes.media_content_id),
           JSON.stringify(isCardInEditPreview(this.store.card)),
@@ -225,6 +225,23 @@ export class PlayerBodyBase extends LitElement {
   protected alertErrorSet(message: string): void {
     this.alertError = message;
     this.alertInfo = undefined;
+  }
+
+
+  /**
+   * Clears the info alert text.
+   */
+  protected alertInfoClear() {
+    this.alertInfo = undefined;
+  }
+
+
+  /**
+   * Sets the alert info message, and clears the informational alert message.
+   */
+  protected alertInfoSet(message: string): void {
+    this.alertInfo = message;
+    this.alertError = undefined;
   }
 
 

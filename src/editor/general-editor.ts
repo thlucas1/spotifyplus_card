@@ -20,6 +20,7 @@ const CONFIG_SETTINGS_SCHEMA = [
       albumfavorites: 'Album Favorites',          /* Section.ALBUM_FAVORITES */
       artistfavorites: 'Artist Favorites',        /* Section.ARTIST_FAVORITES */
       audiobookfavorites: 'Audiobook Favorites',  /* Section.AUDIOBOOK_FAVORITES */
+      categorys: 'Categorys',                     /* Section.CATEGORYS */
       devices: 'Devices',                         /* Section.DEVICES */
       episodefavorites: 'Episode Favorites',      /* Section.EPISODE_FAVORITES */
       playlistfavorites: 'Playlist Favorites',    /* Section.PLAYLIST_FAVORITES */

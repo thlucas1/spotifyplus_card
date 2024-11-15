@@ -173,6 +173,46 @@ export interface CardConfig extends LovelaceCardConfig {
   audiobookFavBrowserItemsSortTitle?: boolean;
 
   /**
+   * Title displayed at the top of the Category media browser section form.
+   * Omit this parameter to hide the title display area.
+   * This value supports Title Formatter Options.
+   */
+  categoryBrowserTitle?: string;
+
+  /**
+   * Sub-title displayed at the top of the Category media browser section form.
+   * Omit this parameter to hide the sub-title display area.
+   * This value supports Title Formatter Options.
+   */
+  categoryBrowserSubTitle?: string;
+
+  /**
+   * Number of items to display in a single row of the Category media browser section form.
+   * Use a value of 1 to display the items as a vertical list.
+   * Default is 3.
+   */
+  categoryBrowserItemsPerRow?: number;
+
+  /** 
+   * Hide titles displayed for Category media browser items.
+   * Default is false.
+   */
+  categoryBrowserItemsHideTitle?: boolean;
+
+  /** 
+   * Hide sub-titles displayed for Category media browser items.
+   * Default is false.
+   */
+  categoryBrowserItemsHideSubTitle?: boolean;
+
+  /**
+   * True to sort displayed Category Playlist media browser item titles by name;
+   * Otherwise, False to display in the order returned from the Spotify Web API. 
+   * Default is false.
+   */
+  categoryBrowserItemsSortTitle?: boolean;
+
+  /**
    * Title displayed at the top of the Device browser section form.
    * Omit this parameter to hide the title display area.
    * This value supports Title Formatter Options.

@@ -10,6 +10,7 @@ import { when } from 'lit/directives/when.js';
 import './sections/album-fav-browser';          // SECTION.ALBUM_FAVORITES
 import './sections/artist-fav-browser';         // SECTION.ARTIST_FAVORITES
 import './sections/audiobook-fav-browser';      // SECTION.AUDIOBOOK_FAVORITES
+import './sections/category-browser';           // SECTION.CATEGORYS
 import './sections/device-browser';             // SECTION.DEVICES
 import './sections/episode-fav-browser';        // SECTION.EPISODE_FAVORITES
 import './sections/player';                     // SECTION.PLAYER
@@ -168,6 +169,7 @@ export class Card extends LitElement {
                 [Section.ALBUM_FAVORITES, () => html`<spc-album-fav-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected}></spc-album-fav-browser>`],
                 [Section.ARTIST_FAVORITES, () => html`<spc-artist-fav-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected}></spc-artist-fav-browser>`],
                 [Section.AUDIOBOOK_FAVORITES, () => html`<spc-audiobook-fav-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected}></spc-audiobook-fav-browser>`],
+                [Section.CATEGORYS, () => html`<spc-category-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected}></spc-category-browser>`],
                 [Section.DEVICES, () => html`<spc-device-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected}></spc-device-browser>`],
                 [Section.EPISODE_FAVORITES, () => html`<spc-episode-fav-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected}></spc-episode-fav-browser>`],
                 [Section.PLAYER, () => html`<spc-player id="spcPlayer" .store=${this.store}></spc-player>`],
@@ -484,6 +486,8 @@ export class Card extends LitElement {
         sectionNew = Section.USERPRESETS;
       } else if (sectionsConfigured.includes(Section.RECENTS)) {
         sectionNew = Section.RECENTS;
+      } else if (sectionsConfigured.includes(Section.CATEGORYS)) {
+        sectionNew = Section.CATEGORYS;
       } else if (sectionsConfigured.includes(Section.PLAYLIST_FAVORITES)) {
         sectionNew = Section.PLAYLIST_FAVORITES;
       } else if (sectionsConfigured.includes(Section.ALBUM_FAVORITES)) {
@@ -664,7 +668,6 @@ export class Card extends LitElement {
       // show the search section.
       this.section = Section.SEARCH_MEDIA;
       this.store.section = this.section;
-      //this.dispatchEvent(customEvent(SHOW_SECTION, Section.SEARCH_MEDIA));
 
       // wait just a bit before executing the search.
       setTimeout(() => {
@@ -746,6 +749,10 @@ export class Card extends LitElement {
     newConfig.audiobookFavBrowserItemsPerRow = newConfig.audiobookFavBrowserItemsPerRow || 4;
     newConfig.audiobookFavBrowserItemsHideTitle = newConfig.audiobookFavBrowserItemsHideTitle || false;
     newConfig.audiobookFavBrowserItemsSortTitle = newConfig.audiobookFavBrowserItemsSortTitle || false;
+
+    newConfig.categoryBrowserItemsPerRow = newConfig.categoryBrowserItemsPerRow || 4;
+    newConfig.categoryBrowserItemsHideTitle = newConfig.categoryBrowserItemsHideTitle || false;
+    newConfig.categoryBrowserItemsSortTitle = newConfig.categoryBrowserItemsSortTitle || false;
 
     newConfig.deviceBrowserItemsPerRow = newConfig.deviceBrowserItemsPerRow || 1;
     newConfig.deviceBrowserItemsHideSubTitle = newConfig.deviceBrowserItemsHideSubTitle || false;
@@ -854,9 +861,9 @@ export class Card extends LitElement {
   public static getStubConfig(): Record<string, unknown> {
 
     return {
-      sections: [Section.PLAYER, Section.ALBUM_FAVORITES, Section.ARTIST_FAVORITES, Section.PLAYLIST_FAVORITES, Section.RECENTS,
-        Section.DEVICES, Section.TRACK_FAVORITES, Section.USERPRESETS, Section.AUDIOBOOK_FAVORITES, Section.SHOW_FAVORITES,
-        Section.EPISODE_FAVORITES, Section.SEARCH_MEDIA],
+      sections: [Section.PLAYER, Section.ALBUM_FAVORITES, Section.ARTIST_FAVORITES, Section.CATEGORYS, Section.PLAYLIST_FAVORITES,
+        Section.RECENTS, Section.DEVICES, Section.TRACK_FAVORITES, Section.USERPRESETS, Section.AUDIOBOOK_FAVORITES, 
+        Section.SHOW_FAVORITES, Section.EPISODE_FAVORITES, Section.SEARCH_MEDIA],
       entity: "",
 
       playerHeaderTitle: "{player.source}",
@@ -884,6 +891,13 @@ export class Card extends LitElement {
       audiobookFavBrowserItemsHideTitle: false,
       audiobookFavBrowserItemsHideSubTitle: false,
       audiobookFavBrowserItemsSortTitle: true,
+
+      categoryBrowserTitle: "Categorys for {player.sp_user_display_name} ({medialist.itemcount} items)",
+      categoryBrowserSubTitle: "click a tile item to view the content; click-hold for actions",
+      categoryBrowserItemsPerRow: 4,
+      categoryBrowserItemsHideTitle: false,
+      categoryBrowserItemsHideSubTitle: true,
+      categoryBrowserItemsSortTitle: true,
 
       deviceBrowserTitle: "Spotify Connect Devices ({medialist.itemcount} items)",
       deviceBrowserSubTitle: "click an item to select the device; click-hold for device info",

@@ -1,23 +1,31 @@
 // lovelace card imports.
-import { css, html, LitElement, PropertyValues, TemplateResult } from 'lit';
-import { property, state } from 'lit/decorators.js';
+import { css, html, TemplateResult } from 'lit';
+import { property } from 'lit/decorators.js';
 
 // our imports.
 import { sharedStylesGrid } from '../styles/shared-styles-grid.js';
 import { sharedStylesMediaInfo } from '../styles/shared-styles-media-info.js';
-import { Store } from '../model/store';
+import { FavActionsBase } from './fav-actions-base';
+import { Section } from '../types/section';
+import { copyToClipboard } from '../utils/utils';
 import { ISpotifyConnectDevice } from '../types/spotifyplus/spotify-connect-device';
-import { copyToClipboard } from '../utils/utils.js';
 
 
-class DeviceActions extends LitElement {
+class DeviceActions extends FavActionsBase {
 
   // public state properties.
-  @property({ attribute: false }) store!: Store;
   @property({ attribute: false }) mediaItem!: ISpotifyConnectDevice;
 
-  // private state properties.
-  @state() private _alertError?: string;
+
+  /**
+   * Initializes a new instance of the class.
+   */
+  constructor() {
+
+    // invoke base class method.
+    super(Section.DEVICES);
+
+  }
 
 
  /**
@@ -30,7 +38,8 @@ class DeviceActions extends LitElement {
     // render html.
     return html` 
       <div class="device-actions-container">
-        ${this._alertError ? html`<ha-alert alert-type="error" dismissable @alert-dismissed-clicked=${this._alertErrorClear}>${this._alertError}</ha-alert>` : ""}
+        ${this.alertError ? html`<ha-alert alert-type="error" dismissable @alert-dismissed-clicked=${this.alertErrorClear}>${this.alertError}</ha-alert>` : ""}
+        ${this.alertInfo ? html`<ha-alert alert-type="info" dismissable @alert-dismissed-clicked=${this.alertInfoClear}>${this.alertInfo}</ha-alert>` : ""}
         <div class="media-info-content">
           <div class="img" style="background:url(${this.mediaItem.image_url});"></div>
           <div class="media-info-details">
@@ -123,27 +132,6 @@ class DeviceActions extends LitElement {
 
     `
     ];
-  }
-
-
-  /**
-   * Called when the element has rendered for the first time. Called once in the
-   * lifetime of an element. Useful for one-time setup work that requires access to
-   * the DOM.
-   */
-  protected firstUpdated(changedProperties: PropertyValues): void {
-
-    // invoke base class method.
-    super.firstUpdated(changedProperties);
-
-  }
-
-
-  /**
-   * Clears the error alert text.
-   */
-  private _alertErrorClear() {
-    this._alertError = undefined;
   }
 
 }

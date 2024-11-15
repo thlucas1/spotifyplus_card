@@ -61,7 +61,14 @@ export const sharedStylesFavBrowser = css`
     padding-right: 0.5rem;
     padding-left: 0.5rem;
     width: 100%;
-    /* min-width: 300px; */
+  }
+
+  .media-browser-control-filter-disabled {
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+    width: 100%;
+    align-self: center;
+    color: var(--dark-primary-color);
   }
 
   .media-browser-content {

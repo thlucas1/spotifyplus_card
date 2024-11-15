@@ -3,11 +3,13 @@ import { css, html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import copyTextToClipboard from 'copy-text-to-clipboard';
 import {
+  mdiBookmarkMusicOutline,
   mdiClipboardPlusOutline,
   mdiDotsHorizontal,
   mdiHeart,
   mdiHeartOutline,
   mdiPlaylistPlay,
+  mdiMicrophone,
   mdiPodcast,
 } from '@mdi/js';
 
@@ -22,8 +24,10 @@ import { SearchMediaTypes } from '../types/search-media-types';
 import { SearchMediaEvent } from '../events/search-media';
 import { formatDateHHMMSSFromMilliseconds, unescapeHtml } from '../utils/utils';
 import { openWindowNewTab } from '../utils/media-browser-utils';
-import { GetResumeInfo } from '../types/spotifyplus/resume-point';
+import { ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD } from '../constants';
 import { GetCopyrights } from '../types/spotifyplus/copyright';
+import { GetResumeInfo } from '../types/spotifyplus/resume-point';
+import { GetUserPresetConfigEntry } from '../types/spotifyplus/user-preset';
 import { IShowSimplified } from '../types/spotifyplus/show-simplified';
 import { IEpisodePageSimplified } from '../types/spotifyplus/episode-page-simplified';
 
@@ -31,6 +35,7 @@ import { IEpisodePageSimplified } from '../types/spotifyplus/episode-page-simpli
  * Show actions.
  */
 enum Actions {
+  ShowCopyPresetToClipboard = "ShowCopyPresetToClipboard",
   ShowCopyUriToClipboard = "ShowCopyUriToClipboard",
   ShowEpisodesUpdate = "ShowEpisodesUpdate",
   ShowFavoriteAdd = "ShowFavoriteAdd",
@@ -113,13 +118,17 @@ class ShowActions extends FavActionsBase {
           <ha-svg-icon slot="icon" .path=${mdiDotsHorizontal}></ha-svg-icon>
         </ha-assist-chip>
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.ShowSearchEpisodes)} hide=${this.hideSearchType(SearchMediaTypes.EPISODES)}>
-          <ha-svg-icon slot="start" .path=${mdiPodcast}></ha-svg-icon>
+          <ha-svg-icon slot="start" .path=${mdiMicrophone}></ha-svg-icon>
           <div slot="headline">Search for Show Episodes</div>
         </ha-md-menu-item>
         <ha-md-divider role="separator" tabindex="-1"></ha-md-divider>
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.ShowCopyUriToClipboard)}>
           <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
           <div slot="headline">Copy Show URI to Clipboard</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ShowCopyPresetToClipboard)}>
+          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          <div slot="headline">Copy Show Preset Info to Clipboard</div>
         </ha-md-menu-item>
 
       </ha-md-button-menu>
@@ -132,6 +141,7 @@ class ShowActions extends FavActionsBase {
     return html`
       <div class="show-actions-container">
         ${this.alertError ? html`<ha-alert alert-type="error" dismissable @alert-dismissed-clicked=${this.alertErrorClear}>${this.alertError}</ha-alert>` : ""}
+        ${this.alertInfo ? html`<ha-alert alert-type="info" dismissable @alert-dismissed-clicked=${this.alertInfoClear}>${this.alertInfo}</ha-alert>` : ""}
         <div class="media-info-content">
           <div class="img" style="background:url(${this.mediaItem.image_url});"></div>
           <div class="media-info-details">
@@ -242,14 +252,20 @@ class ShowActions extends FavActionsBase {
     try {
 
       // process actions that don't require a progress indicator.
-      if (action == Actions.ShowCopyUriToClipboard) {
+      if (action == Actions.ShowCopyPresetToClipboard) {
+
+        copyTextToClipboard(GetUserPresetConfigEntry(this.mediaItem, "Podcast"));
+        this.alertInfoSet(ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD);
+        return true;
+
+      } else if (action == Actions.ShowCopyUriToClipboard) {
 
         copyTextToClipboard(this.mediaItem.uri);
         return true;
 
       } else if (action == Actions.ShowSearchEpisodes) {
 
-        this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.EPISODES, this.mediaItem.name));
+        this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.SHOW_EPISODES, this.mediaItem.name, this.mediaItem.name, this.mediaItem.uri));
         return true;
 
       }
@@ -319,7 +335,7 @@ class ShowActions extends FavActionsBase {
         const promiseGetShowEpisodes = new Promise((resolve, reject) => {
 
           const market = null;
-          const limit_total = 200;
+          const limit_total = 20;
 
           // call service to retrieve show episodes.
           this.spotifyPlusService.GetShowEpisodes(player.id, this.mediaItem.id, 0, 0, market, limit_total)
