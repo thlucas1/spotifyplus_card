@@ -10,10 +10,11 @@ Extended support for the Spotify Service for use in Home Assistant.
 ## Features
 
 * Spotify Media player interface with customizable controls and information display.
-* Spotify real-time search for all media types.
+* Search Spotify catalog for all media types (tracks, playlists, albums, artists, shows, audiobooks, episodes, categories, etc).
 * Display / Select your Spotify favorites: Albums, Artists, Audiobooks, Episodes, Shows, Tracks.
 * Display / Select Spotify Connect device outputs.
 * User-defined media item presets (both file and code edited supported).
+* User-defined recommendation presets; play dynamically generated content based on user-defined criteria (e.g. energy, loudness, danceability, etc).
 * Favorite status / add / remove support for all media types.
 * View Player Queue information.
 * Card Configuration Editor User-Interface for changing options.

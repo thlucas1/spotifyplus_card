@@ -432,9 +432,9 @@ export function getObjectDifferences(obj1: any, obj2: any): any {
  * 
  * examples:
  * - find element by it's `id=` value:
- *   const container = this.closestElement('#spcPlayer');
+ *   const container = this.closestElement('#spcPlayer', this);
  * - find element by it's html tag name (e.g. `<spc-player>`):
- *   const container = this.closestElement('spc-player');
+ *   const container = this.closestElement('spc-player', this);
  */
 export function closestElement(selector: string, base: Element) {
 
@@ -535,23 +535,3 @@ export function copyToClipboard(ev): boolean {
   window.status = "text copied to clipboard";
   return result;
 }
-
-
-//export const getLovelace = () => {
-//  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//  let root: any = document.querySelector('home-assistant');
-//  root = root && root.shadowRoot;
-//  root = root && root.querySelector('home-assistant-main');
-//  root = root && root.shadowRoot;
-//  root = root && root.querySelector('app-drawer-layout partial-panel-resolver, ha-drawer partial-panel-resolver');
-//  root = (root && root.shadowRoot) || root;
-//  root = root && root.querySelector('ha-panel-lovelace');
-//  root = root && root.shadowRoot;
-//  root = root && root.querySelector('hui-root');
-//  if (root) {
-//    const ll = root.lovelace;
-//    ll.current_view = root.___curView;
-//    return ll;
-//  }
-//  return null;
-//}

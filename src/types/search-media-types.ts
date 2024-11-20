@@ -15,6 +15,7 @@ export enum SearchMediaTypes {
 
   // album-specific search types.
   ALBUM_NEW_RELEASES = "Album New Releases",
+  ALBUM_TRACKS = "Album Tracks",
 
   // artist-specific search types.
   ARTIST_ALBUMS = "Artist Albums",

@@ -41,6 +41,8 @@ enum Actions {
   AlbumFavoriteRemove = "AlbumFavoriteRemove",
   AlbumFavoriteUpdate = "AlbumFavoriteUpdate",
   AlbumSearchRadio = "AlbumSearchRadio",
+  AlbumShowTracks = "AlbumShowTracks",
+  ArtistCopyPresetToClipboard = "ArtistCopyPresetToClipboard",
   ArtistCopyUriToClipboard = "ArtistCopyUriToClipboard",
   ArtistFavoriteAdd = "ArtistFavoriteAdd",
   ArtistFavoriteRemove = "ArtistFavoriteRemove",
@@ -54,6 +56,7 @@ enum Actions {
   ArtistShowAlbumsSingle = "ArtistShowAlbumsSingle",
   ArtistShowRelatedArtists = "ArtistShowRelatedArtists",
   ArtistShowTopTracks = "ArtistShowTopTracks",
+  TrackCopyPresetToClipboard = "TrackCopyPresetToClipboard",
   TrackCopyUriToClipboard = "TrackCopyUriToClipboard",
   TrackFavoriteAdd = "TrackFavoriteAdd",
   TrackFavoriteRemove = "TrackFavoriteRemove",
@@ -91,7 +94,7 @@ class TrackActions extends FavActionsBase {
    * This method may return any value renderable by lit-html's `ChildPart` (typically a `TemplateResult`). 
    * Setting properties inside this method will *not* trigger the element to update.
   */
-  protected render(): TemplateResult | void {
+  protected override render(): TemplateResult | void {
 
     // invoke base class method.
     super.render();
@@ -221,6 +224,10 @@ class TrackActions extends FavActionsBase {
           <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
           <div slot="headline">Copy Track URI to Clipboard</div>
         </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.TrackCopyPresetToClipboard)}>
+          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          <div slot="headline">Copy Track Preset Info to Clipboard</div>
+        </ha-md-menu-item>
       </ha-md-button-menu>
       `;
 
@@ -230,6 +237,10 @@ class TrackActions extends FavActionsBase {
         <ha-assist-chip slot="trigger">
           <ha-svg-icon slot="icon" .path=${mdiDotsHorizontal}></ha-svg-icon>
         </ha-assist-chip>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.AlbumShowTracks)} hide=${this.hideSearchType(SearchMediaTypes.TRACKS)}>
+          <ha-svg-icon slot="start" .path=${mdiMusic}></ha-svg-icon>
+          <div slot="headline">Show Album Tracks</div>
+        </ha-md-menu-item>
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.AlbumSearchRadio)} hide=${this.hideSearchType(SearchMediaTypes.PLAYLISTS)}>
           <ha-svg-icon slot="start" .path=${mdiRadio}></ha-svg-icon>
           <div slot="headline">Search for Album Radio</div>
@@ -293,6 +304,10 @@ class TrackActions extends FavActionsBase {
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistCopyUriToClipboard)}>
           <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
           <div slot="headline">Copy Artist URI to Clipboard</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistCopyPresetToClipboard)}>
+          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          <div slot="headline">Copy Artist Preset Info to Clipboard</div>
         </ha-md-menu-item>
       </ha-md-button-menu>
       `;
@@ -433,6 +448,17 @@ class TrackActions extends FavActionsBase {
         this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.PLAYLISTS, this.mediaItem.album.name + RADIO_SEARCH_KEY + this.mediaItem.artists[0].name));
         return true;
 
+      } else if (action == Actions.AlbumShowTracks) {
+
+        this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.ALBUM_TRACKS, this.mediaItem.album.name + "; " + this.mediaItem.artists[0].name, this.mediaItem.album.name, this.mediaItem.album.uri, null, this.mediaItem.album));
+        return true;
+
+      } else if (action == Actions.ArtistCopyPresetToClipboard) {
+
+        copyTextToClipboard(GetUserPresetConfigEntry(this.mediaItem.artists[0]));
+        this.alertInfoSet(ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD);
+        return true;
+
       } else if (action == Actions.ArtistCopyUriToClipboard) {
 
         copyTextToClipboard(this.mediaItem.artists[0].uri);
@@ -481,6 +507,12 @@ class TrackActions extends FavActionsBase {
       } else if (action == Actions.ArtistSearchTracks) {
 
         this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.TRACKS, this.mediaItem.artists[0].name));
+        return true;
+
+      } else if (action == Actions.TrackCopyPresetToClipboard) {
+
+        copyTextToClipboard(GetUserPresetConfigEntry(this.mediaItem, this.mediaItem.artists[0].name));
+        this.alertInfoSet(ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD);
         return true;
 
       } else if (action == Actions.TrackCopyUriToClipboard) {
@@ -553,7 +585,7 @@ class TrackActions extends FavActionsBase {
 
       // clear the progress indicator and set alert error message.
       this.progressHide();
-      this.alertErrorSet("Action failed: \n" + (error as Error).message);
+      this.alertErrorSet("Action failed: " + (error as Error).message);
       return true;
 
     }
@@ -604,7 +636,7 @@ class TrackActions extends FavActionsBase {
 
               // clear results, and reject the promise.
               this.isAlbumFavorite = undefined;
-              this.alertErrorSet("Check Album Favorite failed: \n" + (error as Error).message);
+              this.alertErrorSet("Check Album Favorite failed: " + (error as Error).message);
               reject(error);
 
             })
@@ -633,7 +665,7 @@ class TrackActions extends FavActionsBase {
 
               // clear results, and reject the promise.
               this.isArtistFavorite = undefined;
-              this.alertErrorSet("Check Artist Following failed: \n" + (error as Error).message);
+              this.alertErrorSet("Check Artist Following failed: " + (error as Error).message);
               reject(error);
 
             })
@@ -662,7 +694,7 @@ class TrackActions extends FavActionsBase {
 
               // clear results, and reject the promise.
               this.isTrackFavorite = undefined;
-              this.alertErrorSet("Check Track Favorites failed: \n" + (error as Error).message);
+              this.alertErrorSet("Check Track Favorites failed: " + (error as Error).message);
               reject(error);
 
             })
@@ -691,7 +723,7 @@ class TrackActions extends FavActionsBase {
 
       // clear the progress indicator and set alert error message.
       this.progressHide();
-      this.alertErrorSet("Track actions refresh failed: \n" + (error as Error).message);
+      this.alertErrorSet("Track actions refresh failed: " + (error as Error).message);
       return true;
 
     }

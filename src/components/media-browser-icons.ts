@@ -5,12 +5,6 @@ import { css, html, TemplateResult } from 'lit';
 import { MediaBrowserBase } from './media-browser-base';
 import { ITEM_SELECTED } from '../constants';
 import { customEvent } from '../utils/utils';
-import {
-  buildMediaBrowserItems,
-  renderMediaBrowserItem,
-  styleMediaBrowserItemBackgroundImage,
-  styleMediaBrowserItemTitle
-} from '../utils/media-browser-utils';
 
 
 export class MediaBrowserIcons extends MediaBrowserBase {
@@ -39,9 +33,9 @@ export class MediaBrowserIcons extends MediaBrowserBase {
     // render html.
     return html`
       <div class="icons" style="--items-per-row: ${this.itemsPerRow}">
-        ${buildMediaBrowserItems(this.items || [], this.config, this.mediaItemType, this.searchMediaType, this.store).map(
+        ${this.buildMediaBrowserItems().map(
           (item, index) => html`
-            ${styleMediaBrowserItemBackgroundImage(item.mbi_item.image_url, index, this.mediaItemType)}
+            ${this.styleMediaBrowserItemBackgroundImage(item.mbi_item.image_url, index)}
             ${(() => {
               if (this.isTouchDevice) {
                 return (html`
@@ -51,7 +45,7 @@ export class MediaBrowserIcons extends MediaBrowserBase {
                     @touchstart=${{handleEvent: () => this.onMediaBrowserItemTouchStart(customEvent(ITEM_SELECTED, item)), passive: true }}
                     @touchend=${() => this.onMediaBrowserItemTouchEnd(customEvent(ITEM_SELECTED, item))}
                   >
-                    ${renderMediaBrowserItem(item, !item.mbi_item.image_url || !this.hideTitle, !this.hideSubTitle)}
+                    ${this.renderMediaBrowserItem(item, !item.mbi_item.image_url || !this.hideTitle, !this.hideSubTitle)}
                   </ha-control-button>
                 `);
               } else {
@@ -63,7 +57,7 @@ export class MediaBrowserIcons extends MediaBrowserBase {
                     @mousedown=${() => this.onMediaBrowserItemMouseDown()}
                     @mouseup=${() => this.onMediaBrowserItemMouseUp(customEvent(ITEM_SELECTED, item))}
                   >
-                    ${renderMediaBrowserItem(item, !item.mbi_item.image_url || !this.hideTitle, !this.hideSubTitle)}
+                    ${this.renderMediaBrowserItem(item, !item.mbi_item.image_url || !this.hideTitle, !this.hideSubTitle)}
                   </ha-control-button>
                 `);
               }
@@ -82,7 +76,6 @@ export class MediaBrowserIcons extends MediaBrowserBase {
    */
   static get styles() {
     return [
-      styleMediaBrowserItemTitle,
       css`
         .icons {
           display: flex;
@@ -114,9 +107,15 @@ export class MediaBrowserIcons extends MediaBrowserBase {
           line-height: 160%;
           bottom: 0;
           background-color: rgba(var(--rgb-card-background-color), 0.733);
+          color: var(--secondary-text-color);
+          font-weight: normal;
+          padding: 0 0.5rem;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
         }
 
-        .title-source {
+        .subtitle {
           font-size: 0.8rem;
           width: 100%;
           line-height: 160%;

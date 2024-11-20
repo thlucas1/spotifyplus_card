@@ -455,7 +455,7 @@ class PlayerControls extends LitElement {
     catch (error) {
 
       // set alert error message.
-      this.alertErrorSet("Control action failed: \n" + (error as Error).message);
+      this.alertErrorSet("Control action failed: " + (error as Error).message);
       this.progressHide();
       return true;
 

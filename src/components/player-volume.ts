@@ -102,7 +102,7 @@ class Volume extends LitElement {
     catch (error) {
 
       // set alert error message.
-      this.alertErrorSet("Volume set failed: \n" + (error as Error).message);
+      this.alertErrorSet("Volume set failed: " + (error as Error).message);
       return true;
 
     }
@@ -134,7 +134,7 @@ class Volume extends LitElement {
     catch (error) {
 
       // set alert error message.
-      this.alertErrorSet("Volume mute failed: \n" + (error as Error).message);
+      this.alertErrorSet("Volume mute failed: " + (error as Error).message);
       return true;
 
     }
@@ -190,7 +190,7 @@ class Volume extends LitElement {
     catch (error) {
 
       // set alert error message.
-      this.alertErrorSet("Volume action failed: \n" + (error as Error).message);
+      this.alertErrorSet("Volume action failed: " + (error as Error).message);
       return true;
 
     }

@@ -226,7 +226,7 @@ export class PlayerBodyQueue extends PlayerBodyBase {
 
       // clear the progress indicator and set alert error message.
       this.progressHide();
-      this.alertErrorSet("Action failed: \n" + (error as Error).message);
+      this.alertErrorSet("Action failed: " + (error as Error).message);
       return true;
 
     }
@@ -296,7 +296,7 @@ export class PlayerBodyQueue extends PlayerBodyBase {
 
               // clear results, and reject the promise.
               this.queueInfo = undefined;
-              this.alertErrorSet("Get Player Queue Info call failed: \n" + (error as Error).message);
+              this.alertErrorSet("Get Player Queue Info call failed: " + (error as Error).message);
               reject(error);
 
             })
@@ -328,7 +328,7 @@ export class PlayerBodyQueue extends PlayerBodyBase {
 
       // clear the progress indicator and set alert error message.
       this.progressHide();
-      this.alertErrorSet("Queue info refresh failed: \n" + (error as Error).message);
+      this.alertErrorSet("Queue info refresh failed: " + (error as Error).message);
       return true;
 
     }

@@ -69,6 +69,8 @@ export const sharedStylesFavBrowser = css`
     width: 100%;
     align-self: center;
     color: var(--dark-primary-color);
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .media-browser-content {

@@ -39,6 +39,7 @@ import { IPlayHistoryPage } from '../types/spotifyplus/play-history-page';
 import { IShowPageSaved } from '../types/spotifyplus/show-page-saved';
 import { IShowPageSimplified } from '../types/spotifyplus/show-page-simplified';
 import { IShowSimplified } from '../types/spotifyplus/show-simplified';
+import { ISpotifyConnectDevice } from '../types/spotifyplus/spotify-connect-device';
 import { ISpotifyConnectDevices } from '../types/spotifyplus/spotify-connect-devices';
 import { ITrack } from '../types/spotifyplus/track';
 import { ITrackPage } from '../types/spotifyplus/track-page';
@@ -46,6 +47,7 @@ import { ITrackPageSaved } from '../types/spotifyplus/track-page-saved';
 import { ITrackPageSimplified } from '../types/spotifyplus/track-page-simplified';
 import { ITrackRecommendations } from '../types/spotifyplus/track-recommendations';
 import { ITrackRecommendationsProperties } from '../types/spotifyplus/track-recommendations-properties';
+import { IZeroconfResponse } from '../types/spotifyplus/zeroconf-response';
 
 // debug logging.
 import Debug from 'debug/src/browser.js';
@@ -2169,6 +2171,93 @@ export class SpotifyPlusService {
 
 
   /**
+   * Get information about a single Spotify Connect player device.
+   * 
+   * @param device_value The id (e.g. '30fbc80e35598f3c242f2120413c943dfd9715fe') or name (e.g. 'Office') of the Spotify Connect Player device this command is targeting.  If an '*' is specified, then the SpotifyPlus default device is used.
+   * @param verify_user_context If True, the active user context of the resolved device is checked to ensure it matches the Spotify Connect user context specified in the SpotifyPlus configuration options.  If False, the user context will not be checked.  Default is True.
+   * @param verify_timeout Maximum time to wait (in seconds) for the device to become active in the Spotify Connect device list.  This value is only used if a Connect command has to be issued to activate the device. Default is 5; value range is 0 - 10.
+   * @param refresh_device_list True to refresh the Spotify Connect device list; otherwise, False to use the Spotify Connect device list cache.  Default is True.
+   * @param activate_device True to activate the device if necessary; otherwise, False.
+   * @param delay Time delay (in seconds) to wait AFTER issuing any command to the device.  This delay will give the spotify zeroconf api time to process the change before another command is issued.  Default is 0.25; value range is 0 - 10.
+   * @returns An ISpotifyConnectDevice object.
+  */
+  public async GetSpotifyConnectDevice(
+    entity_id: string,
+    device_value: string,
+    verify_user_context: boolean | null = null,
+    verify_timeout: number | null = null,
+    refresh_device_list: boolean | null = null,
+    activate_device: boolean | null = null,
+    delay: number | null = null,
+  ): Promise<ISpotifyConnectDevice> {
+
+    try {
+
+      // create service data (with required parameters).
+      const serviceData: { [key: string]: any } = {
+        entity_id: entity_id,
+        device_value: device_value,
+      };
+
+      // update service data parameters (with optional parameters).
+      if (verify_user_context)
+        serviceData['verify_user_context'] = verify_user_context;
+      if (verify_timeout)
+        serviceData['verify_timeout'] = verify_timeout;
+      if (refresh_device_list)
+        serviceData['refresh_device_list'] = refresh_device_list;
+      if (activate_device)
+        serviceData['activate_device'] = activate_device;
+      if (delay)
+        serviceData['delay'] = delay;
+
+      // create service request.
+      const serviceRequest: ServiceCallRequest = {
+        domain: DOMAIN_SPOTIFYPLUS,
+        service: 'get_spotify_connect_device',
+        serviceData: serviceData
+      };
+
+      // call the service, and return the response.
+      const response = await this.CallServiceWithResponse(serviceRequest);
+
+      // get the "result" portion of the response, and convert it to a type.
+      const responseObj = response["result"] as ISpotifyConnectDevice;
+
+      // set image_url property based on device type.
+      if (responseObj != null) {
+        // set image_url path using mdi icons for common sources.
+        const sourceCompare = (responseObj.Name || "").toLocaleLowerCase();
+        if (sourceCompare.includes('web player (chrome)')) {
+          responseObj.image_url = getMdiIconImageUrl(mdiGoogleChrome);
+        } else if (sourceCompare.includes('web player (microsoft edge)')) {
+          responseObj.image_url = getMdiIconImageUrl(mdiMicrosoftEdge);
+        } else if (sourceCompare.includes('web player')) {
+          responseObj.image_url = getMdiIconImageUrl(mdiWeb);
+        } else {
+          responseObj.image_url = getMdiIconImageUrl(mdiSpeaker);
+        }
+      }
+
+      // trace.
+      if (debuglog.enabled) {
+        debuglog("%cCallServiceWithResponse - Service %s response (trimmed):\n%s",
+          "color: orange",
+          JSON.stringify(serviceRequest.service),
+          JSON.stringify(responseObj, null, 2)
+        );
+      }
+
+      // return results to caller.
+      return responseObj;
+
+    }
+    finally {
+    }
+  }
+
+
+  /**
    * Get information about all available Spotify Connect player devices.
    * 
    * @param refresh True to return real-time information from the spotify zeroconf api and update the cache; otherwise, False to just return the cached value.
@@ -4005,6 +4094,135 @@ export class SpotifyPlusService {
 
       // call the service (no response).
       await this.CallService(serviceRequest);
+
+    }
+    finally {
+    }
+  }
+
+
+  /**
+   * Calls the `addUser` Spotify Zeroconf API endpoint to issue a call to SpConnectionLoginBlob.  If successful,
+   * the associated device id is added to the Spotify Connect active device list for the specified user account.
+   * 
+   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param device A ISpotifyConnectDevice object that contains Spotify Connect details for the device.
+   * @param username (optional) Spotify Connect user name to login with (e.g. "yourspotifyusername").  If null, the SpotifyPlus integration options username value will be used.
+   * @param password (optional) Spotify Connect user password to login with.  If null, the SpotifyPlus integration options password value will be used.
+   * @param loginid (optional) Spotify Connect login id to login with (e.g. '31l77fd87g8h9j00k89f07jf87ge'). This is also known as the canonical user id value. This MUST be the value that relates to the `username` argument.
+   * @param pre_disconnect (optional) True if a Disconnect should be made prior to the Connect call.  This will ensure that the active user is logged out, which must be done if switching user accounts; otherwise, False to not issue a Disconnect call.  Default is False.
+   * @param verify_device_list_entry (optional) True to ensure that the device id is present in the Spotify Connect device list before issuing a call to Connect; Connect will not be called if the device id is already in the list; otherwise, False to always call Connect to add the device.  Default is False.
+   * @param delay (optional) (optional) Time delay (in seconds) to wait AFTER issuing a command to the device. This delay will give the spotify zeroconf api time to process the change before another command is issued. Default is 0.50; value range is 0 - 10.
+   * @returns Response data, in the form of a Record<string, any> (e.g. dictionary).
+  */
+  public async ZeroconfDeviceConnect(
+    entity_id: string,
+    device: ISpotifyConnectDevice,
+    username: string | undefined | null = null,
+    password: string | undefined | null = null,
+    loginid: string | undefined | null = null,
+    pre_disconnect: boolean | undefined | null = true,
+    verify_device_list_entry: boolean | undefined | null = true,
+    delay: number | undefined | null = null,
+  ): Promise<IZeroconfResponse> {
+
+    try {
+
+      if (debuglog.enabled) {
+        debuglog("ZeroconfDeviceDisconnect - device item:\n%s",
+          JSON.stringify(device, null, 2),
+        );
+      }
+
+      // create service data (with required parameters).
+      const serviceData: { [key: string]: any } = {
+        entity_id: entity_id,
+        host_ipv4_address: device.DiscoveryResult.HostIpAddress,
+        host_ip_port: device.DiscoveryResult.HostIpPort,
+        cpath: device.DiscoveryResult.SpotifyConnectCPath,
+        version: device.DiscoveryResult.SpotifyConnectVersion,
+        use_ssl: (device.DiscoveryResult.ZeroconfApiEndpointAddUser.startsWith("https:")),
+      };
+
+      // update service data parameters (with optional parameters).
+      if (username)
+        serviceData['username'] = username;
+      if (password)
+        serviceData['password'] = password;
+      if (loginid)
+        serviceData['loginid'] = loginid;
+      if (pre_disconnect)
+        serviceData['pre_disconnect'] = pre_disconnect;
+      if (verify_device_list_entry)
+        serviceData['verify_device_list_entry'] = verify_device_list_entry;
+      if (delay)
+        serviceData['delay'] = delay;
+
+      // create service request.
+      const serviceRequest: ServiceCallRequest = {
+        domain: DOMAIN_SPOTIFYPLUS,
+        service: 'zeroconf_device_connect',
+        serviceData: serviceData
+      };
+
+      // call the service, and return the response.
+      const response = await this.CallServiceWithResponse(serviceRequest);
+      return response["result"];
+
+    }
+    finally {
+    }
+  }
+
+
+  /**
+   * Calls the `resetUsers` Spotify Zeroconf API endpoint to issue a call to SpConnectionLogout.
+   * The currently logged in user (if any) will be logged out of Spotify Connect, and the 
+   * device id removed from the active Spotify Connect device list.      
+   * 
+   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param device A ISpotifyConnectDevice object that contains Spotify Connect details for the device.
+   * @param delay (optional) (optional) Time delay (in seconds) to wait AFTER issuing a command to the device. This delay will give the spotify zeroconf api time to process the change before another command is issued. Default is 0.50; value range is 0 - 10.
+   * @returns Response data, in the form of a Record<string, any> (e.g. dictionary).
+  */
+  public async ZeroconfDeviceDisconnect(
+    entity_id: string,
+    device: ISpotifyConnectDevice,
+    delay: number | undefined | null = null,
+  ): Promise<IZeroconfResponse> {
+
+    try {
+
+      if (debuglog.enabled) {
+        debuglog("ZeroconfDeviceDisconnect - device item:\n%s",
+          JSON.stringify(device, null, 2),
+        );
+      }
+
+      // create service data (with required parameters).
+      const serviceData: { [key: string]: any } = {
+        entity_id: entity_id,
+        host_ipv4_address: device.DiscoveryResult.HostIpAddress,
+        host_ip_port: device.DiscoveryResult.HostIpPort,
+        cpath: device.DiscoveryResult.SpotifyConnectCPath,
+        version: device.DiscoveryResult.SpotifyConnectVersion,
+        use_ssl: (device.DiscoveryResult.ZeroconfApiEndpointAddUser.startsWith("https:")),
+      };
+
+      // update service data parameters (with optional parameters).
+      if (delay)
+        serviceData['delay'] = delay;
+
+      // create service request.
+      const serviceRequest: ServiceCallRequest = {
+        domain: DOMAIN_SPOTIFYPLUS,
+        service: 'zeroconf_device_disconnect',
+        serviceData: serviceData
+      };
+
+      // call the service, and return the response.
+      const response = await this.CallServiceWithResponse(serviceRequest);
+      return response["result"];
 
     }
     finally {

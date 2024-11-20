@@ -154,6 +154,9 @@ export class DeviceBrowser extends FavBrowserBase {
       // show progress indicator.
       this.progressShow();
 
+      // update status.
+      this.alertInfo = "Transferring playback to device \"" + mediaItem.Name + "\" ...";
+
       // select the source.
       await this.store.mediaControlService.select_source(this.player, mediaItem.Name || '');
 

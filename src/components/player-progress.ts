@@ -120,7 +120,7 @@ class Progress extends LitElement {
     catch (error) {
 
       // set alert error message.
-      this.alertErrorSet("Seek position failed: \n" + (error as Error).message);
+      this.alertErrorSet("Seek position failed: " + (error as Error).message);
       return true;
 
     }

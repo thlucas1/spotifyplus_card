@@ -41,6 +41,8 @@ enum Actions {
   AlbumFavoriteRemove = "AlbumFavoriteRemove",
   AlbumFavoriteUpdate = "AlbumFavoriteUpdate",
   AlbumSearchRadio = "AlbumSearchRadio",
+  AlbumShowTracks = "AlbumShowTracks",
+  ArtistCopyPresetToClipboard = "ArtistCopyPresetToClipboard",
   ArtistCopyUriToClipboard = "ArtistCopyUriToClipboard",
   ArtistFavoriteAdd = "ArtistFavoriteAdd",
   ArtistFavoriteRemove = "ArtistFavoriteRemove",
@@ -54,6 +56,7 @@ enum Actions {
   ArtistShowAlbumsSingle = "ArtistShowAlbumsSingle",
   ArtistShowRelatedArtists = "ArtistShowRelatedArtists",
   ArtistShowTopTracks = "ArtistShowTopTracks",
+  TrackCopyPresetToClipboard = "TrackCopyPresetToClipboard",
   TrackCopyUriToClipboard = "TrackCopyUriToClipboard",
   TrackFavoriteAdd = "TrackFavoriteAdd",
   TrackFavoriteRemove = "TrackFavoriteRemove",
@@ -202,6 +205,10 @@ class PlayerBodyTrack extends PlayerBodyBase {
           <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
           <div slot="headline">Copy Track URI to Clipboard</div>
         </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.TrackCopyPresetToClipboard)}>
+          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          <div slot="headline">Copy Track Preset Info to Clipboard</div>
+        </ha-md-menu-item>
       </ha-md-button-menu>
       `;
 
@@ -211,6 +218,10 @@ class PlayerBodyTrack extends PlayerBodyBase {
         <ha-assist-chip slot="trigger">
           <ha-svg-icon slot="icon" .path=${mdiDotsHorizontal}></ha-svg-icon>
         </ha-assist-chip>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.AlbumShowTracks)} hide=${this.hideSearchType(SearchMediaTypes.TRACKS)}>
+          <ha-svg-icon slot="start" .path=${mdiMusic}></ha-svg-icon>
+          <div slot="headline">Show Album Tracks</div>
+        </ha-md-menu-item>
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.AlbumSearchRadio)} hide=${this.hideSearchType(SearchMediaTypes.PLAYLISTS)}>
           <ha-svg-icon slot="start" .path=${mdiRadio}></ha-svg-icon>
           <div slot="headline">Search for Album Radio</div>
@@ -274,6 +285,10 @@ class PlayerBodyTrack extends PlayerBodyBase {
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistCopyUriToClipboard)}>
           <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
           <div slot="headline">Copy Artist URI to Clipboard</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistCopyPresetToClipboard)}>
+          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          <div slot="headline">Copy Artist Preset Info to Clipboard</div>
         </ha-md-menu-item>
       </ha-md-button-menu>
       `;
@@ -412,6 +427,17 @@ class PlayerBodyTrack extends PlayerBodyBase {
         this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.PLAYLISTS, this.track?.album.name + RADIO_SEARCH_KEY + this.track?.artists[0].name));
         return true;
 
+      } else if (action == Actions.AlbumShowTracks) {
+
+        this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.ALBUM_TRACKS, this.track?.album.name + "; " + this.track?.artists[0].name, this.track?.album.name, this.track?.album.uri, null, this.track?.album));
+        return true;
+
+      } else if (action == Actions.ArtistCopyPresetToClipboard) {
+
+        copyTextToClipboard(GetUserPresetConfigEntry(this.track?.artists[0]));
+        this.alertInfoSet(ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD);
+        return true;
+
       } else if (action == Actions.ArtistCopyUriToClipboard) {
 
         copyTextToClipboard(this.track?.artists[0].uri || "");
@@ -460,6 +486,12 @@ class PlayerBodyTrack extends PlayerBodyBase {
       } else if (action == Actions.ArtistShowTopTracks) {
 
         this.dispatchEvent(SearchMediaEvent(SearchMediaTypes.ARTIST_TOP_TRACKS, this.track?.artists[0].name, this.track?.artists[0].name, this.track?.artists[0].uri));
+        return true;
+
+      } else if (action == Actions.TrackCopyPresetToClipboard) {
+
+        copyTextToClipboard(GetUserPresetConfigEntry(this.track, this.track?.artists[0].name));
+        this.alertInfoSet(ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD);
         return true;
 
       } else if (action == Actions.TrackCopyUriToClipboard) {
@@ -526,7 +558,7 @@ class PlayerBodyTrack extends PlayerBodyBase {
 
       // clear the progress indicator and set alert error message.
       this.progressHide();
-      this.alertErrorSet("Track action failed: \n" + (error as Error).message);
+      this.alertErrorSet("Track action failed: " + (error as Error).message);
       return true;
 
     }
@@ -589,7 +621,7 @@ class PlayerBodyTrack extends PlayerBodyBase {
 
               // clear results, and reject the promise.
               this.track = undefined;
-              this.alertErrorSet("Get Track call failed: \n" + (error as Error).message);
+              this.alertErrorSet("Get Track call failed: " + (error as Error).message);
               reject(error);
 
             })
@@ -618,7 +650,7 @@ class PlayerBodyTrack extends PlayerBodyBase {
 
               // clear results, and reject the promise.
               this.isAlbumFavorite = undefined;
-              this.alertErrorSet("Check Album Favorites failed: \n" + (error as Error).message);
+              this.alertErrorSet("Check Album Favorites failed: " + (error as Error).message);
               reject(error);
 
             })
@@ -647,7 +679,7 @@ class PlayerBodyTrack extends PlayerBodyBase {
 
               // clear results, and reject the promise.
               this.isArtistFavorite = undefined;
-              this.alertErrorSet("Check Artist Favorites failed: \n" + (error as Error).message);
+              this.alertErrorSet("Check Artist Favorites failed: " + (error as Error).message);
               reject(error);
 
             })
@@ -676,7 +708,7 @@ class PlayerBodyTrack extends PlayerBodyBase {
 
               // clear results, and reject the promise.
               this.isTrackFavorite = undefined;
-              this.alertErrorSet("Check Track Favorites failed: \n" + (error as Error).message);
+              this.alertErrorSet("Check Track Favorites failed: " + (error as Error).message);
               reject(error);
 
             })
@@ -708,7 +740,7 @@ class PlayerBodyTrack extends PlayerBodyBase {
 
       // clear the progress indicator and set alert error message.
       this.progressHide();
-      this.alertErrorSet("Track actions refresh failed: \n" + (error as Error).message);
+      this.alertErrorSet("Track actions refresh failed: " + (error as Error).message);
       return true;
 
     }

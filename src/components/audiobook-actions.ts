@@ -72,7 +72,7 @@ class AudiobookActions extends FavActionsBase {
    * This method may return any value renderable by lit-html's `ChildPart` (typically a `TemplateResult`). 
    * Setting properties inside this method will *not* trigger the element to update.
   */
-  protected render(): TemplateResult | void {
+  protected override render(): TemplateResult | void {
 
     // invoke base class method.
     super.render();
@@ -313,7 +313,7 @@ class AudiobookActions extends FavActionsBase {
 
       // clear the progress indicator and set alert error message.
       this.progressHide();
-      this.alertErrorSet("Action failed: \n" + (error as Error).message);
+      this.alertErrorSet("Action failed: " + (error as Error).message);
       return true;
 
     }
@@ -366,7 +366,7 @@ class AudiobookActions extends FavActionsBase {
 
               // clear results, and reject the promise.
               this.audiobookChapters = undefined;
-              this.alertErrorSet("Get Audiobook Chapters failed: \n" + (error as Error).message);
+              this.alertErrorSet("Get Audiobook Chapters failed: " + (error as Error).message);
               reject(error);
 
             })
@@ -395,7 +395,7 @@ class AudiobookActions extends FavActionsBase {
 
               // clear results, and reject the promise.
               this.isAudiobookFavorite = undefined;
-              this.alertErrorSet("Check Audiobook Favorites failed: \n" + (error as Error).message);
+              this.alertErrorSet("Check Audiobook Favorites failed: " + (error as Error).message);
               reject(error);
 
             })
@@ -424,7 +424,7 @@ class AudiobookActions extends FavActionsBase {
 
       // clear the progress indicator and set alert error message.
       this.progressHide();
-      this.alertErrorSet("Audiobook actions refresh failed: \n" + (error as Error).message);
+      this.alertErrorSet("Audiobook actions refresh failed: " + (error as Error).message);
       return true;
 
     }

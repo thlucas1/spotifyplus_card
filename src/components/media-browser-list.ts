@@ -7,12 +7,6 @@ import { MediaBrowserBase } from './media-browser-base';
 import { Section } from '../types/section';
 import { listStyle, ITEM_SELECTED } from '../constants';
 import { customEvent } from '../utils/utils';
-import {
-  buildMediaBrowserItems,
-  renderMediaBrowserItem,
-  styleMediaBrowserItemBackgroundImage,
-  styleMediaBrowserItemTitle
-} from '../utils/media-browser-utils';
 
 
 export class MediaBrowserList extends MediaBrowserBase {
@@ -50,9 +44,9 @@ export class MediaBrowserList extends MediaBrowserBase {
     // render html.
     return html`
       <mwc-list multi class="list" style="--items-per-row: ${this.itemsPerRow}">
-        ${buildMediaBrowserItems(this.items || [], this.config, this.mediaItemType, this.searchMediaType, this.store).map((item, index) => {
+        ${this.buildMediaBrowserItems().map((item, index) => {
           return html`
-            ${styleMediaBrowserItemBackgroundImage(item.mbi_item.image_url, index, this.mediaItemType)}
+            ${this.styleMediaBrowserItemBackgroundImage(item.mbi_item.image_url, index)}
             ${(() => {
               if (this.isTouchDevice) {
                 return (html`
@@ -62,7 +56,7 @@ export class MediaBrowserList extends MediaBrowserBase {
                     @touchstart=${{handleEvent: () => this.onMediaBrowserItemTouchStart(customEvent(ITEM_SELECTED, item)), passive: true }}
                     @touchend=${() => this.onMediaBrowserItemTouchEnd(customEvent(ITEM_SELECTED, item))}
                   >
-                    <div class="row">${renderMediaBrowserItem(item, !item.mbi_item.image_url || !this.hideTitle, !this.hideSubTitle)}</div>
+                    <div class="row">${this.renderMediaBrowserItem(item, !item.mbi_item.image_url || !this.hideTitle, !this.hideSubTitle)}</div>
                     ${when(
                       item.mbi_item.is_active && this.store.player.isPlaying() && this.section == Section.DEVICES,
                       () => html`${nowPlayingBars}`,
@@ -78,7 +72,7 @@ export class MediaBrowserList extends MediaBrowserBase {
                     @mousedown=${() => this.onMediaBrowserItemMouseDown()}
                     @mouseup=${() => this.onMediaBrowserItemMouseUp(customEvent(ITEM_SELECTED, item))}
                   >
-                    <div class="row">${renderMediaBrowserItem(item, !item.mbi_item.image_url || !this.hideTitle, !this.hideSubTitle)}</div>
+                    <div class="row">${this.renderMediaBrowserItem(item, !item.mbi_item.image_url || !this.hideTitle, !this.hideSubTitle)}</div>
                     ${when(
                       item.mbi_item.is_active && this.store.player.isPlaying() && this.section == Section.DEVICES,
                       () => html`${nowPlayingBars}`,
@@ -109,9 +103,15 @@ export class MediaBrowserList extends MediaBrowserBase {
           margin: 0.4rem 0.0rem;
         }
 
-        .button-source {
+        .button-device {
           --icon-width: 50px !important;
           margin: 0 !important;
+        }
+
+        .button-track {
+          --icon-width: 80px !important;
+          margin: 0 !important;
+          padding: 0.25rem;
         }
 
         .row {
@@ -131,6 +131,12 @@ export class MediaBrowserList extends MediaBrowserBase {
           font-size: 1.1rem;
           align-self: center;
           flex: 1;
+          color: var(--secondary-text-color);
+          font-weight: normal;
+          padding: 0 0.5rem;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
         }
 
         /* *********************************************************** */
@@ -178,7 +184,6 @@ export class MediaBrowserList extends MediaBrowserBase {
         /*.bar:nth-child(10) { left: 37px; animation-duration: 442ms; }*/
 
       `,
-      styleMediaBrowserItemTitle,
       listStyle,
     ];
   }

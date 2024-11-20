@@ -71,7 +71,7 @@ class ShowActions extends FavActionsBase {
    * This method may return any value renderable by lit-html's `ChildPart` (typically a `TemplateResult`). 
    * Setting properties inside this method will *not* trigger the element to update.
   */
-  protected render(): TemplateResult | void {
+  protected override render(): TemplateResult | void {
 
     // invoke base class method.
     super.render();
@@ -297,7 +297,7 @@ class ShowActions extends FavActionsBase {
 
       // clear the progress indicator and set alert error message.
       this.progressHide();
-      this.alertErrorSet("Action failed: \n" + (error as Error).message);
+      this.alertErrorSet("Action failed: " + (error as Error).message);
       return true;
 
     }
@@ -350,7 +350,7 @@ class ShowActions extends FavActionsBase {
 
               // clear results, and reject the promise.
               this.showEpisodes = undefined;
-              this.alertErrorSet("Get Show Episodes failed: \n" + (error as Error).message);
+              this.alertErrorSet("Get Show Episodes failed: " + (error as Error).message);
               reject(error);
 
             })
@@ -379,7 +379,7 @@ class ShowActions extends FavActionsBase {
 
               // clear results, and reject the promise.
               this.isShowFavorite = undefined;
-              this.alertErrorSet("Check Show Favorites failed: \n" + (error as Error).message);
+              this.alertErrorSet("Check Show Favorites failed: " + (error as Error).message);
               reject(error);
 
             })
@@ -408,7 +408,7 @@ class ShowActions extends FavActionsBase {
 
       // clear the progress indicator and set alert error message.
       this.progressHide();
-      this.alertErrorSet("Show actions refresh failed: \n" + (error as Error).message);
+      this.alertErrorSet("Show actions refresh failed: " + (error as Error).message);
       return true;
 
     }

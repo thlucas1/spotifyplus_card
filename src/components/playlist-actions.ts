@@ -1,7 +1,6 @@
 // lovelace card imports.
 import { css, html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
-//import { fireEvent } from 'custom-card-helpers';
 import copyTextToClipboard from 'copy-text-to-clipboard';
 import {
   mdiBackupRestore,
@@ -23,13 +22,11 @@ import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
 import { formatDateHHMMSSFromMilliseconds, unescapeHtml } from '../utils/utils';
 import { openWindowNewTab } from '../utils/media-browser-utils';
+import { ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD } from '../constants';
 import { GetPlaylistPagePlaylistTracks } from '../types/spotifyplus/playlist-page';
 import { GetUserPresetConfigEntry } from '../types/spotifyplus/user-preset';
-import { ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD } from '../constants';
 import { IPlaylistSimplified } from '../types/spotifyplus/playlist-simplified';
 import { IPlaylistTrack } from '../types/spotifyplus/playlist-track';
-
-//import { getLovelace, parseLovelaceCardPath } from '../utils/config-util';
 
 /**
  * Playlist actions.
@@ -72,7 +69,7 @@ class PlaylistActions extends FavActionsBase {
    * This method may return any value renderable by lit-html's `ChildPart` (typically a `TemplateResult`). 
    * Setting properties inside this method will *not* trigger the element to update.
   */
-  protected render(): TemplateResult | void {
+  protected override render(): TemplateResult | void {
 
     // invoke base class method.
     super.render();
@@ -293,97 +290,6 @@ class PlaylistActions extends FavActionsBase {
         this.alertInfoSet(ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD);
         return true;
 
-        // the following was my attempt to automatically add the new preset to the
-        // configuration.  it partially worked, in that it would add the preset to
-        // the configuration in memory, the preset would be displayed in the preset
-        // browser, but the update was not applied to the lovelace configuration that
-        // is stored on disk in the `\config\.storage\lovelace.xxxxx` location.
-
-        //// create user preset object.
-        //const preset: IUserPreset = {
-        //  name: this.mediaItem.name,
-        //  image_url: this.mediaItem.image_url || "",
-        //  subtitle: this.mediaItem.type,
-        //  type: this.mediaItem.type,
-        //  uri: this.mediaItem.uri,
-        //};
-
-        //const CRLF = "\n";
-        //let presetText = "";
-        //presetText += "  - name: " + preset.name + CRLF;
-        //presetText += "    subtitle: " + preset.subtitle + CRLF;
-        //presetText += "    image_url: " + preset.image_url + CRLF;
-        //presetText += "    uri: " + preset.uri + CRLF;
-        //presetText += "    type: " + preset.type + CRLF;
-
-        //// add to configuration; insert new item at the beginning.
-        //this.store.config.userPresets?.unshift(preset);
-
-        //// update configuration (in memory).
-        //// note that this will ONLY update the configuration stored in memory; it
-        //// does not apply the updates to the lovelace raw config stored on disk in
-        //// the `\config\.storage\lovelace.xxxxx` location!
-        //fireEvent(this, 'config-changed', { config: this.store.config });
-
-        //// prepare to update the lovelace configuration (on disk).
-        //const lovelace = getLovelace();
-        //if (lovelace) {
-
-        //  console.log("%conClickAction - lovelace data:\n- editMode = %s\n- mode = %s\n- locale = %s\n- urlPath = %s",
-        //    "color: gold",
-        //    JSON.stringify(lovelace.editMode),
-        //    JSON.stringify(lovelace.mode),
-        //    JSON.stringify(lovelace.locale),
-        //    JSON.stringify(lovelace.urlPath),
-        //  );
-
-        //  console.log("%conClickAction - lovelace.rawConfig:\n%s",
-        //    "color: red",
-        //    JSON.stringify(lovelace.rawConfig, null, 2),
-        //  );
-
-        //  console.log("%conClickAction - lovelace.config:\n%s",
-        //    "color: gold",
-        //    JSON.stringify(lovelace.config, null, 2),
-        //  );
-
-        //  //export const replaceCard = (
-        //  //  config: LovelaceConfig,
-        //  //  path: LovelaceCardPath,
-        //  //  cardConfig: LovelaceCardConfig
-        //  //): LovelaceConfig => {
-
-        //  //  const { cardIndex } = parseLovelaceCardPath(path);
-        //  //  const containerPath = getLovelaceContainerPath(path);
-
-        //  //  const cards = findLovelaceItems("cards", config, containerPath);
-
-        //  //  const newCards = (cards ?? []).map((origConf, ind) =>
-        //  //    ind === cardIndex ? cardConfig : origConf
-        //  //  );
-
-        //  //  const newConfig = updateLovelaceItems(
-        //  //    "cards",
-        //  //    config,
-        //  //    containerPath,
-        //  //    newCards
-        //  //  );
-        //  //  return newConfig;
-        //  //};
-
-        //  //let config: LovelaceRawConfig;
-        //  //await lovelace.saveConfig(config);   <- this is the LovelaceRawConfig, not the card config!!!
-
-        //} else {
-
-        //  //console.log("%conClickAction - could not get lovelace object!",
-        //  //  "color: red",
-        //  //);
-
-        //}
-
-        //return true;
-
       }
 
       // show progress indicator.
@@ -418,7 +324,7 @@ class PlaylistActions extends FavActionsBase {
 
       // clear the progress indicator and set alert error message.
       this.progressHide();
-      this.alertErrorSet("Action failed: \n" + (error as Error).message);
+      this.alertErrorSet("Action failed: " + (error as Error).message);
       return true;
 
     }
@@ -482,7 +388,7 @@ class PlaylistActions extends FavActionsBase {
 
               // clear results, and reject the promise.
               this.playlistTracks = undefined;
-              this.alertErrorSet("Get Playlist Items failed: \n" + (error as Error).message);
+              this.alertErrorSet("Get Playlist Items failed: " + (error as Error).message);
               reject(error);
 
             })
@@ -511,7 +417,7 @@ class PlaylistActions extends FavActionsBase {
 
               // clear results, and reject the promise.
               this.isPlaylistFavorite = undefined;
-              this.alertErrorSet("Check Playlist Followers failed: \n" + (error as Error).message);
+              this.alertErrorSet("Check Playlist Followers failed: " + (error as Error).message);
               reject(error);
 
             })
@@ -540,7 +446,7 @@ class PlaylistActions extends FavActionsBase {
 
       // clear the progress indicator and set alert error message.
       this.progressHide();
-      this.alertErrorSet("Playlist actions refresh failed: \n" + (error as Error).message);
+      this.alertErrorSet("Playlist actions refresh failed: " + (error as Error).message);
       return true;
 
     }

@@ -102,24 +102,40 @@ export class UserPresetBrowser extends FavBrowserBase {
    */
   protected override onItemSelected(evArgs: CustomEvent) {
 
-    // event could contains an IUserPreset item.
-    const eventType = evArgs.detail.type;
-
     // is this a recommendations type?
-    if (eventType == "recommendations") {
+    if (evArgs.detail.type == "recommendations") {
 
       const mediaItem = evArgs.detail as IUserPreset;
       this.PlayTrackRecommendations(mediaItem);
 
     } else {
 
-      // category playlist was selected; event argument is an IPlayListSimplified item.
-      // just call base class method to play the media item (it's a playlist).
+      // call base class method to handle it.
       super.onItemSelected(evArgs);
 
     }
 
   }
+
+
+  /**
+   * Handles the `item-selected-with-hold` event fired when a media browser item is clicked and held.
+   * 
+   * @param args Event arguments that contain the media item that was clicked on.
+   */
+  protected override onItemSelectedWithHold(args: CustomEvent) {
+
+    // is this a recommendations type?
+    if (args.detail.type == "recommendations") {
+      // set the uri value to fool the base class validations.
+      // note that uri property is not used by recommendations.
+      args.detail.uri = "unknown";
+    }
+
+    // call base class method to handle it.
+    super.onItemSelectedWithHold(args);
+
+  };
 
 
   /**
@@ -160,7 +176,8 @@ export class UserPresetBrowser extends FavBrowserBase {
       this.requestUpdate();
 
       // play recommended tracks.
-      await this.spotifyPlusService.PlayerMediaPlayTracks(this.player.id, uris.join(","), null, null);
+      const device_id = this.player.attributes.source || null;
+      await this.spotifyPlusService.PlayerMediaPlayTracks(this.player.id, uris.join(","), null, device_id);
 
       // show player section.
       this.store.card.SetSection(Section.PLAYER);

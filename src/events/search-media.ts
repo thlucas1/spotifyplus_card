@@ -12,7 +12,10 @@ export const SEARCH_MEDIA = DOMAIN_SPOTIFYPLUS + '-card-search-media';
  */
 export class SearchMediaEventArgs {
 
-  // property storage.
+  /**
+   * Parent media item.
+   */
+  public parentMediaItem: any | null;
 
   /**
    * Media type to search.
@@ -47,6 +50,7 @@ export class SearchMediaEventArgs {
    * @param title Title to search for.
    * @param uri Uri to search for.
    * @param subtype Item sub-type (if required); for show search type, this should be 'audiobook' or 'podcast'.
+   * @param parentMediaItem Parent media item.
    */
   constructor(
     searchType: SearchMediaTypes,
@@ -54,12 +58,14 @@ export class SearchMediaEventArgs {
     title: string | undefined | null = null,
     uri: string | undefined | null = null,
     subtype: string | undefined | null = null,
+    parentMediaItem: any | undefined | null = null,
   ) {
     this.searchType = searchType || SearchMediaTypes.PLAYLISTS;
     this.searchCriteria = searchCriteria || "";
     this.title = title || "";
     this.uri = uri || "";
     this.subtype = subtype || "";
+    this.parentMediaItem = parentMediaItem;
   }
 }
 
@@ -72,6 +78,7 @@ export class SearchMediaEventArgs {
  * @param title Title to search for.
  * @param uri Uri to search for.
  * @param subtype Item sub-type (if required); for show search type, this should be 'audiobook' or 'podcast'.
+ * @param parentMediaItem Parent media item.
  */
 export function SearchMediaEvent(
   searchType: SearchMediaTypes,
@@ -79,6 +86,7 @@ export function SearchMediaEvent(
   title: string | undefined | null = null,
   uri: string | undefined | null = null,
   subtype: string | undefined | null = null,
+  parentMediaItem: any | undefined | null = null,
 ) {
 
   const args = new SearchMediaEventArgs(searchType);
@@ -86,6 +94,7 @@ export function SearchMediaEvent(
   args.title = title || "";
   args.uri = uri || "";
   args.subtype = subtype || "";
+  args.parentMediaItem = parentMediaItem;
 
   if (!args.subtype) {
     if (searchType == SearchMediaTypes.AUDIOBOOK_EPISODES) {
