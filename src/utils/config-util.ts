@@ -1,4 +1,4 @@
-import { HomeAssistant } from 'custom-card-helpers';
+import { HomeAssistant } from '../types/home-assistant-frontend/home-assistant';
 import type { Connection } from "home-assistant-js-websocket";
 
 //import { LovelaceBadgeConfig } from "../../../data/lovelace/config/badge";

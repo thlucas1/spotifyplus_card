@@ -622,6 +622,8 @@ export class MediaBrowserBase extends LitElement {
       } else if (this.mediaItemType == Section.USERPRESETS) {
         const itemInfo = (item as IUserPreset);
         mbi_info.subtitle = itemInfo.subtitle || item.uri;
+      } else if (this.mediaItemType == Section.PLAYER) {
+        // this condition can be ignored, as the player does not contain a media-browser.
       } else {
         console.log("%cmedia-browser-utils - unknown mediaItemType = %s; mbi_info not set!", "color:red", JSON.stringify(this.mediaItemType));
       }

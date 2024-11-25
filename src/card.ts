@@ -1,10 +1,10 @@
 // lovelace card imports.
-import { HomeAssistant } from 'custom-card-helpers';
 import { css, html, LitElement, PropertyValues, TemplateResult } from 'lit';
 import { styleMap } from 'lit-html/directives/style-map.js';
 import { customElement, property, query, state } from 'lit/decorators.js';
 import { choose } from 'lit/directives/choose.js';
 import { when } from 'lit/directives/when.js';
+import { HomeAssistant } from './types/home-assistant-frontend/home-assistant';
 
 // our imports - card sections and editor.
 import './sections/album-fav-browser';          // SECTION.ALBUM_FAVORITES

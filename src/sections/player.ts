@@ -20,7 +20,6 @@ import '../components/player-volume';
 import { CardConfig } from '../types/card-config';
 import { Store } from '../model/store';
 import { MediaPlayer } from '../model/media-player';
-import { HomeAssistantEx } from '../types/home-assistant-ex';
 import { Palette } from '@vibrant/color';
 import { isCardInEditPreview } from '../utils/utils';
 import { playerAlerts } from '../types/playerAlerts';
@@ -393,7 +392,7 @@ export class Player extends LitElement implements playerAlerts {
       if (oldPlayer) {
         oldImage = (oldPlayer.attributes.entity_picture || oldPlayer.attributes.entity_picture_local);
         if (oldImage) {
-          oldImage = (this.store.hass as HomeAssistantEx).hassUrl(oldImage);
+          oldImage = this.store.hass.hassUrl(oldImage);
           oldMediaContentId = oldPlayer.attributes.media_content_id;
         }
       }
@@ -406,7 +405,7 @@ export class Player extends LitElement implements playerAlerts {
       // if image not set, then there's nothing left to do.
       newImage = (this.store.player.attributes.entity_picture || this.store.player.attributes.entity_picture_local);
       if (newImage) {
-        newImage = (this.store.hass as HomeAssistantEx).hassUrl(newImage);
+        newImage = this.store.hass.hassUrl(newImage);
         newMediaContentId = this.store.player.attributes.media_content_id;
         this.playerImage = newImage;
       } else {

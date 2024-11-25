@@ -1,5 +1,3 @@
-import { HomeAssistant } from 'custom-card-helpers';
-
 declare global {
   // noinspection JSUnusedGlobalSymbols
   interface Window {
@@ -20,14 +18,4 @@ export interface MediaPlayerItem {
 
 export interface TemplateResult {
   result: string[];
-}
-
-interface HassEntityExtended {
-  platform: string;
-}
-
-export interface HomeAssistantWithEntities extends HomeAssistant {
-  entities: {
-    [entity_id: string]: HassEntityExtended;
-  };
 }

@@ -1,7 +1,7 @@
 // lovelace card imports.
-import { HomeAssistant } from 'custom-card-helpers';
-import { ServiceCallRequest } from 'custom-card-helpers/dist/types';
 import { HassEntity } from 'home-assistant-js-websocket';
+import { HomeAssistant } from '../types/home-assistant-frontend/home-assistant';
+import { ServiceCallRequest } from '../types/home-assistant-frontend/service-call-request';
 
 // our imports.
 import { MediaPlayer } from '../model/media-player';

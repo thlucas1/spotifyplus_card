@@ -113,6 +113,7 @@
     <Folder Include="src\types\" />
     <Folder Include="src\sections" />
     <Folder Include="src\services" />
+    <Folder Include="src\types\home-assistant-frontend\" />
     <Folder Include="src\types\spotifyplus\" />
     <Folder Include="src\utils" />
   </ItemGroup>
@@ -180,11 +181,15 @@
     <TypeScriptCompile Include="src\types\config-area.ts" />
     <TypeScriptCompile Include="src\types\custom-image-urls.ts" />
     <TypeScriptCompile Include="src\types\hass-entity-attributes-media-player.ts" />
+    <TypeScriptCompile Include="src\types\home-assistant-frontend\fire-event.ts" />
+    <TypeScriptCompile Include="src\types\home-assistant-frontend\home-assistant.ts" />
+    <TypeScriptCompile Include="src\types\home-assistant-frontend\lovelace-card-config.ts" />
+    <TypeScriptCompile Include="src\types\home-assistant-frontend\service-call-request.ts" />
+    <TypeScriptCompile Include="src\types\home-assistant-frontend\service-call-response.ts" />
     <TypeScriptCompile Include="src\types\playerAlerts.ts" />
     <TypeScriptCompile Include="src\types\search-media-types.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus-hass-entity.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus-hass-entity-attributes.ts" />
-    <TypeScriptCompile Include="src\types\home-assistant-ex.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus\album.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus\album-page-saved.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus\album-page-simplified.ts" />
@@ -248,8 +253,6 @@
     <TypeScriptCompile Include="src\types\spotifyplus\playlist-simplified.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus\playlist-track-summary.ts" />
     <TypeScriptCompile Include="src\types\section.ts" />
-    <TypeScriptCompile Include="src\types\service-call-request.ts" />
-    <TypeScriptCompile Include="src\types\service-call-response.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus\zeroconf-discovery-result.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus\zeroconf-get-info.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus\zeroconf-get-info-alias.ts" />

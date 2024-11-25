@@ -1,6 +1,6 @@
 // lovelace card imports.
-import { HomeAssistant } from 'custom-card-helpers';
-import { ServiceCallRequest } from 'custom-card-helpers/dist/types';
+import { HomeAssistant } from '../types/home-assistant-frontend/home-assistant';
+import { ServiceCallRequest } from '../types/home-assistant-frontend/service-call-request';
 import {
   mdiGoogleChrome,
   mdiMicrosoftEdge,
@@ -10,7 +10,6 @@ import {
 
 // our imports.
 import { DOMAIN_SPOTIFYPLUS } from '../constants';
-import { ServiceCallResponse } from '../types/service-call-response';
 import { MediaPlayer } from '../model/media-player';
 import { getMdiIconImageUrl } from '../utils/media-browser-utils';
 import { SearchMediaTypes } from '../types/search-media-types';
@@ -135,20 +134,20 @@ export class SpotifyPlusService {
         );
       }
 
-      // call the service as a script.
-      const serviceResponse = await this.hass.connection.sendMessagePromise<ServiceCallResponse>({
-        type: "execute_script",
-        sequence: [{
-          "service": serviceRequest.domain + "." + serviceRequest.service,
-          "data": serviceRequest.serviceData,
-          "target": serviceRequest.target,
-          "response_variable": "service_result"
-        },
-        {
-          "stop": "done",
-          "response_variable": "service_result"
-        }]
-      });
+      //// ensure user is administrator; left this in here in case we need it in the future.
+      //if (!this.hass.user.is_admin) {
+      //  throw Error("User account \"" + this.hass.user.name + "\" is not an Administrator; execute_script cannot be called by non-administrator accounts");
+      //}
+
+      // call the service.
+      const serviceResponse = await this.hass.callService(
+        serviceRequest.domain,
+        serviceRequest.service,
+        serviceRequest.serviceData,
+        serviceRequest.target,
+        undefined,                  // notify on error
+        true,                       // return response data
+      )
 
       //if (debuglog.enabled) {
       //  debuglog("%cCallServiceWithResponse - Service %s response:\n%s",

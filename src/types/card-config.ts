@@ -1,5 +1,5 @@
 // lovelace card imports.
-import { LovelaceCardConfig } from 'custom-card-helpers';
+import { LovelaceCardConfig } from '../types/home-assistant-frontend/lovelace-card-config';
 
 // our imports.
 import { Section } from './section';

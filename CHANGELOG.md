@@ -6,9 +6,16 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.14 ] - 2024/11/25
+
+  * Non-Administrator accounts can now use the card without receiving the `unauthorized` message.  Note that non-administrators cannot change the card configuration (as designed).
+  * Changed the way calls are made to the underlying SpotifyPlus integration services.  Calls are now made using the `hass.callService` method instead of the `hass.connection.sendMessagePromise` with type `execute_script`.  This was causing all calls that returned service response data to fail with `unauthorized` errors.
+  * Removed references to `custom-card-helpers` npm package, as it was outdated and is not being maintained.  We will now create our own card helpers when needed.
+  * Added reference to `home-assistant-js-websocket` version 9.4.0, as it was a dependency of `custom-card-helpers` npm package.
+
 ###### [ 1.0.13 ] - 2024/11/20
 
-  * This release requires the SpotifyPlus v1.0.66+ release; please make sure you update the SpotifyPlus integration prior to updating this SpotifyPlus Card release.
+  * This release requires the SpotifyPlus Integration v1.0.66+ release; please make sure you update the SpotifyPlus integration prior to updating this SpotifyPlus Card release.
   * Added "Copy Preset Info to Clipboard" action for track and artist in the player track details action menu.  This will create a user-preset configuration entry for the selected media and copy it to the clipboard; the entry can then be pasted into the configuration editor under the `userPresets:` key, which will create a user preset for the media item.
   * Added "Copy Preset Info to Clipboard" action for track and artist in the favorites track details action menu.  This will create a user-preset configuration entry for the selected media and copy it to the clipboard; the entry can then be pasted into the configuration editor under the `userPresets:` key, which will create a user preset for the media item.
   * Added "Show Album Tracks" action for all album action menus.  This will display all tracks on the album in the search browser.
@@ -18,7 +25,7 @@ Change are listed in reverse chronological order (newest to oldest).
 
 ###### [ 1.0.12 ] - 2024/11/15
 
-  * This release requires the SpotifyPlus v1.0.65+ release; please make sure you update the SpotifyPlus integration prior to updating this SpotifyPlus Card release.
+  * This release requires the SpotifyPlus Integration v1.0.65+ release; please make sure you update the SpotifyPlus integration prior to updating this SpotifyPlus Card release.
   * Added category browser: browse Spotify playlists by categories; existing card configurations have to enable the section in the general configuration settings.
   * Added dynamic track recommendation capability to user-defined presets. Simply put, you define a preset with the parameters of what you want to play and Spotify searches its media catalog for tracks that match. The matching tracks are then added to a play queue and played in random order. The matching tracks will change over time, as Spotify adds new content to its media catalog.
   * Added action for all playable media types: Copy Preset Info to Clipboard.  This will create a user-preset configuration entry for the selected media and copy it to the clipboard; the entry can then be pasted into the configuration editor under the `userPresets:` key, which will create a user preset for the media item.
@@ -38,7 +45,7 @@ Change are listed in reverse chronological order (newest to oldest).
 
 ###### [ 1.0.10 ] - 2024/11/03
 
-  * This release requires the SpotifyPlus v1.0.64 release; please make sure you update the SpotifyPlus integration prior to updating this SpotifyPlus Card release.
+  * This release requires the SpotifyPlus Integration v1.0.64 release; please make sure you update the SpotifyPlus integration prior to updating this SpotifyPlus Card release.
   * Added `footerIconSize` general config option to change the size of the footer area icons.
   * Added `playerControlsIconSize` player controls config option to change the size of the player control area icons, volume mute icon, and power on/off icons.
   * Added actions dropdown menu to all section favorites browser details; most of these are the ability to search for related details.  More actions to come in future releases.
@@ -54,7 +61,7 @@ Change are listed in reverse chronological order (newest to oldest).
 
 ###### [ 1.0.9 ] - 2024/10/30
 
-  * This release requires the SpotifyPlus v1.0.63 release; please make sure you update the SpotifyPlus integration prior to updating this SpotifyPlus Card release.
+  * This release requires the SpotifyPlus Integration v1.0.63 release; please make sure you update the SpotifyPlus integration prior to updating this SpotifyPlus Card release.
   * Added `searchMediaBrowserSearchTypes` config option to enable / disable selected search types.
   * Added `playerControlsHidePlayQueue` config option to enable / disable play queue information area.
 

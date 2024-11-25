@@ -107,7 +107,7 @@ export function GetUserPresetConfigEntry(
   // the following was located in the `playlist-actions.ts` module, `onClickAction` method.
 
   //import { IUserPreset } from '../types/spotifyplus/user-preset';
-  //import { fireEvent } from 'custom-card-helpers';
+  //import { fireEvent } from '../types/home-assistant-frontend/fire-event';
   //import { getLovelace } from '../utils/config-util';
   //import { parseLovelaceCardPath } from '../utils/config-util';
 

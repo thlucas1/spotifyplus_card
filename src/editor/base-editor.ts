@@ -1,7 +1,8 @@
 // lovelace card imports.
 import { css, LitElement } from 'lit';
 import { property } from 'lit/decorators.js';
-import { fireEvent, HomeAssistant } from 'custom-card-helpers';
+import { HomeAssistant } from '../types/home-assistant-frontend/home-assistant';
+import { fireEvent } from '../types/home-assistant-frontend/fire-event';
 
 // our imports.
 import { CardConfig } from '../types/card-config';

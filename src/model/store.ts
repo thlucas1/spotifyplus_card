@@ -1,5 +1,5 @@
 // lovelace card imports.
-import { HomeAssistant } from 'custom-card-helpers';
+import { HomeAssistant } from '../types/home-assistant-frontend/home-assistant';
 
 // our imports.
 import { HassService } from '../services/hass-service';

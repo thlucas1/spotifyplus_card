@@ -1,7 +1,7 @@
 // lovelace card imports.
 import { css, html, LitElement, PropertyValues, TemplateResult } from 'lit';
 import { property, query, state } from 'lit/decorators.js';
-import { HomeAssistant } from 'custom-card-helpers';
+import { HomeAssistant } from '../types/home-assistant-frontend/home-assistant';
 import {
   mdiArrowLeft,
   mdiRefresh,
@@ -742,7 +742,8 @@ export class FavBrowserBase extends LitElement {
     this.alertInfoClear();
 
     if (debuglog.enabled) {
-      debuglog("updatedMediaListError - %s",
+      debuglog("%cupdatedMediaListError - %s",
+        "color:red",
         JSON.stringify(alertErrorMessage),
       );
     }
