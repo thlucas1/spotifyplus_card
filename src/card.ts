@@ -25,6 +25,7 @@ import './editor/editor';
 
 // our imports.
 import { SEARCH_MEDIA, SearchMediaEventArgs } from './events/search-media';
+import { CATEGORY_DISPLAY, CategoryDisplayEventArgs } from './events/category-display';
 import { EDITOR_CONFIG_AREA_SELECTED, EditorConfigAreaSelectedEventArgs } from './events/editor-config-area-selected';
 import { PROGRESS_STARTED } from './events/progress-started';
 import { PROGRESS_ENDED } from './events/progress-ended';
@@ -35,6 +36,7 @@ import { CardConfig } from './types/card-config';
 import { CustomImageUrls } from './types/custom-image-urls';
 import { SearchMediaTypes } from './types/search-media-types';
 import { SearchBrowser } from './sections/search-media-browser';
+import { CategoryBrowser } from './sections/category-browser';
 import { formatTitleInfo, removeSpecialChars } from './utils/media-browser-utils';
 import { BRAND_LOGO_IMAGE_BASE64, BRAND_LOGO_IMAGE_SIZE, FOOTER_ICON_SIZE_DEFAULT } from './constants';
 import {
@@ -97,7 +99,7 @@ export class Card extends LitElement {
   @state() private playerId!: string;
 
   @query("#elmSearchMediaBrowserForm", false) private elmSearchMediaBrowserForm!: SearchBrowser;
-
+  @query("#elmCategoryBrowserForm", false) private elmCategoryBrowserForm!: CategoryBrowser;
 
   /** Indicates if createStore method is executing for the first time (true) or not (false). */
   private isFirstTimeSetup: boolean = true;
@@ -169,7 +171,7 @@ export class Card extends LitElement {
                 [Section.ALBUM_FAVORITES, () => html`<spc-album-fav-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected}></spc-album-fav-browser>`],
                 [Section.ARTIST_FAVORITES, () => html`<spc-artist-fav-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected}></spc-artist-fav-browser>`],
                 [Section.AUDIOBOOK_FAVORITES, () => html`<spc-audiobook-fav-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected}></spc-audiobook-fav-browser>`],
-                [Section.CATEGORYS, () => html`<spc-category-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected}></spc-category-browser>`],
+                [Section.CATEGORYS, () => html`<spc-category-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected} id="elmCategoryBrowserForm"></spc-category-browser>`],
                 [Section.DEVICES, () => html`<spc-device-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected}></spc-device-browser>`],
                 [Section.EPISODE_FAVORITES, () => html`<spc-episode-fav-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected}></spc-episode-fav-browser>`],
                 [Section.PLAYER, () => html`<spc-player id="spcPlayer" .store=${this.store}></spc-player>`],
@@ -412,6 +414,7 @@ export class Card extends LitElement {
     this.addEventListener(PROGRESS_ENDED, this.onProgressEndedEventHandler);
     this.addEventListener(PROGRESS_STARTED, this.onProgressStartedEventHandler);
     this.addEventListener(SEARCH_MEDIA, this.onSearchMediaEventHandler);
+    this.addEventListener(CATEGORY_DISPLAY, this.onCategoryDisplayEventHandler);
 
     // only add the following events if card configuration is being edited.
     if (isCardInEditPreview(this)) {
@@ -440,6 +443,7 @@ export class Card extends LitElement {
     this.removeEventListener(PROGRESS_ENDED, this.onProgressEndedEventHandler);
     this.removeEventListener(PROGRESS_STARTED, this.onProgressStartedEventHandler);
     this.removeEventListener(SEARCH_MEDIA, this.onSearchMediaEventHandler);
+    this.removeEventListener(CATEGORY_DISPLAY, this.onCategoryDisplayEventHandler);
 
     // the following event is only added when the card configuration editor is created.
     // always remove the following events, as isCardInEditPreview() can sometimes
@@ -686,7 +690,52 @@ export class Card extends LitElement {
     } else {
 
       // section is not activated; cannot search.
-      debuglog("onSearchMediaEventHandler - Search section is not enabled; ignoring search request:\n%s",
+      debuglog("%conSearchMediaEventHandler - Search section is not enabled; ignoring search request:\n%s",
+        "color:red",
+        JSON.stringify(evArgs, null, 2),
+      );
+
+    }
+  }
+
+
+  /**
+   * Handles the `CATEGORY_DISPLAY` event.
+   * This will display the specified category list in the event arguments.
+   * 
+   * @param ev Event definition and arguments.
+  */
+  protected onCategoryDisplayEventHandler = (ev: Event) => {
+
+    // map event arguments.
+    const evArgs = (ev as CustomEvent).detail as CategoryDisplayEventArgs;
+
+    // is section activated?  if so, then select it.
+    if (this.config.sections?.includes(Section.CATEGORYS)) {
+
+      // show the category section.
+      this.section = Section.CATEGORYS;
+      this.store.section = this.section;
+
+      // wait just a bit before displaying the category.
+      setTimeout(() => {
+
+        if (debuglog.enabled) {
+          debuglog("onCategoryDisplayEventHandler - displaying category:\n%s",
+            JSON.stringify(evArgs, null, 2),
+          );
+        }
+
+        // display category.
+        this.elmCategoryBrowserForm.displayCategory(evArgs);
+
+      }, 250);
+
+    } else {
+
+      // section is not activated; cannot search.
+      debuglog("%conCategoryDisplayEventHandler - Category section is not enabled; ignoring display request:\n%s",
+        "color:red",
         JSON.stringify(evArgs, null, 2),
       );
 

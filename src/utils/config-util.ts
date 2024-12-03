@@ -81,16 +81,15 @@ export function getLovelace(): Lovelace | null {
   if (root) {
     // dump property keys of HUI-ROOT:
     //for (const key of Object.keys(root)) {
-    //  //console.log("root property key: " + key)    // + ": " + root[key]);
-    //  console.log("root property key: " + key + " = " + root[key]);
+    //  //console.log("root property key: " + key + " = " + root[key]);
     //}
     const ll = root.lovelace;
     //if (!ll) {
-    //  console.log("%cLL root.lovelace not found - getting root.__lovelace", "color:red");
+    //  //console.log("%cLL root.lovelace not found - getting root.__lovelace", "color:red");
     //  ll = root.__lovelace;
     //}
     //if (!ll) {
-    //  console.log("%cLL root.lovelace not found - getting root[__lovelace]", "color:red");
+    //  //console.log("%cLL root.lovelace not found - getting root[__lovelace]", "color:red");
     //  ll = root["__lovelace"];
     //}
     //console.log("%cLL 06 = %s", "color:red", ll)

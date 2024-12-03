@@ -419,7 +419,7 @@ export class SearchBrowser extends FavBrowserBase {
 
 
   /**
-   * Toggle action visibility - queue items body.
+   * Execute search based on passed arguments.
    */
   public searchExecute(args: SearchMediaEventArgs): void {
 

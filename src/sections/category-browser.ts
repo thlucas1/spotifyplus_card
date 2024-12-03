@@ -9,6 +9,7 @@ import '../components/playlist-actions';
 import { FavBrowserBase } from './fav-browser-base';
 import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
+import { CategoryDisplayEventArgs } from '../events/category-display';
 import { formatTitleInfo } from '../utils/media-browser-utils';
 import { getUtcNowTimestamp } from '../utils/utils';
 import { ICategory } from '../types/spotifyplus/category';
@@ -17,6 +18,7 @@ import { IPlaylistSimplified } from '../types/spotifyplus/playlist-simplified';
 // debug logging.
 import Debug from 'debug/src/browser.js';
 import { DEBUG_APP_NAME } from '../constants';
+import { getIdFromSpotifyUri } from '../services/spotifyplus-service';
 const debuglog = Debug(DEBUG_APP_NAME + ":category-browser");
 
 
@@ -146,6 +148,31 @@ export class CategoryBrowser extends FavBrowserBase {
       </div>
     `;
   }
+
+
+  /**
+   * Display category based on passed arguments.
+   */
+  public displayCategory(args: CategoryDisplayEventArgs): void {
+
+    if (debuglog.enabled) {
+      debuglog("displayCategory - displaying Spotify category:\n%s",
+        JSON.stringify(args, null, 2),
+      );
+    }
+
+    // save category id and display playlists for the selected category.
+    this.categoryId = getIdFromSpotifyUri(args.uri) || "";
+    this.isCategoryVisible = true;
+    this.categoryListFilter = args.title || "";
+    this.categoryListScrollTopSaved = this.scrollTopSaved;
+    this.filterCriteria = args.filterCriteria;
+    this.categoryPlaylists = undefined;
+    this.requestUpdate();
+    this.updateMediaList(this.player);
+
+  }
+
 
 
   /**

@@ -6,6 +6,14 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.15 ] - 2024/12/02
+
+  * This release requires the SpotifyPlus Integration v1.0.67+ release; please make sure you update the SpotifyPlus integration prior to updating this SpotifyPlus Card release.
+  * Some Spotify Web API functionality has been deprecated unexpectedly (and without prior notice!) by the Spotify Development Team, and has affected SpotifyPlus Card functionality.  More information can be found on the [SpotifyPlus Card Troubleshooting Guide](https://github.com/thlucas1/spotifyplus_card/wiki/Troubleshooting-Guide#issue---sam1010e-deprecated-error-messages) wiki page, as well as the [Spotify Developer Forum Blog](https://developer.spotify.com/blog/2024-11-27-changes-to-the-web-api).
+  * Due to the above chnages made by Spotify, any Algorithmic and Spotify-owned editorial playlists are no longer accessible or have more limited functionality.  This means that you can no longer obtain details via the `SpotifyClient.GetPlaylist` and `SpotifyClient.GetPlaylistItems` methods for Spotify-owned / generated content (e.g. "Made For You", etc).  A `404 - Not Found` error will be returned when trying to retrieve information for these playlist types.
+  * Added category shortcut capability to user-defined presets. This will allow you to quickly display category playlists.  This change is irrelevant though, as the support for category playlists was deprecated by the above Spotify Development team changes to their API!
+  * I am leaving the deprecated functionality within the card for the time being, with the hope that Spotify changes it's mind and restores the functionality.
+
 ###### [ 1.0.14 ] - 2024/11/25
 
   * Non-Administrator accounts can now use the card without receiving the `unauthorized` message.  Note that non-administrators cannot change the card configuration (as designed).
