@@ -6,6 +6,11 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.16 ] - 2024/12/06
+
+  * This release requires the SpotifyPlus Integration v1.0.68+ release; please make sure you update the SpotifyPlus integration prior to updating this SpotifyPlus Card release.
+  * Added "Active User" information to Spotify Connect Device details display.
+
 ###### [ 1.0.15 ] - 2024/12/02
 
   * This release requires the SpotifyPlus Integration v1.0.67+ release; please make sure you update the SpotifyPlus integration prior to updating this SpotifyPlus Card release.

@@ -151,6 +151,9 @@ class DeviceActions extends FavActionsBase {
             <div class="grid-action-info-hdr-s">Library Version</div>
             <div class="grid-action-info-text-s copy2cb" @click=${copyToClipboard}>${this.deviceInfo?.DeviceInfo.LibraryVersion}</div>
 
+            <div class="grid-action-info-hdr-s">Active User</div>
+            <div class="grid-action-info-text-s copy2cb" @click=${copyToClipboard}>${this.deviceInfo?.DeviceInfo.ActiveUser}</div>
+
           </div>
         </div>    
       </div>`;
