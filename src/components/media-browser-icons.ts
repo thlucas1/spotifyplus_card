@@ -106,10 +106,10 @@ export class MediaBrowserIcons extends MediaBrowserBase {
           width: 100%;
           line-height: 160%;
           bottom: 0;
-          background-color: rgba(var(--rgb-card-background-color), 0.733);
-          color: var(--secondary-text-color);
+          background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.6));
+          color: var(--spc-medialist-items-color, white);
           font-weight: normal;
-          padding: 0 0.5rem;
+          padding: 0.75rem 0.5rem 0rem;
           text-overflow: ellipsis;
           overflow: hidden;
           white-space: nowrap;
@@ -118,7 +118,8 @@ export class MediaBrowserIcons extends MediaBrowserBase {
         .subtitle {
           font-size: 0.8rem;
           width: 100%;
-          line-height: 160%;
+          line-height: 120%;
+          padding-bottom: 0.25rem;
         }
       `,
     ];

@@ -6,6 +6,14 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.17 ] - 2024/12/09
+
+  * This release requires the SpotifyPlus Integration v1.0.69+ release; please make sure you update the SpotifyPlus integration prior to updating this SpotifyPlus Card release.
+  * Modified the media list items' text color to use the `--spc-medialist-items-color` variable (defaults to `white`) instead of the `--secondary-text-color`, as well as the title and sub-title background gradient.  Media list item text was difficult to read using certain themes.
+  * Disabled `Categories` section by default when adding instance from card picker.  Spotify Web API functionality was deprecated unexpectedly (and without prior notice!) by the Spotify Development Team.
+  * Updated underlying `turn_on` service to first check if the previously selected source is active or not; if so, then play is resumed immediately; if not, then a `source_select` is performed to activate the selected source.  This result in a faster time to play when powering on the media player.
+  * Updated various underlying `SpotifyClient` methods to discard favorites that do not contain a valid URI value.  Sometimes the Spotify Web API returns favorite items with no information, which causes exceptions in the card while trying to display them!  The following methods were updated: `GetAlbumFavorites`, `GetEpisodeFavorites`, `GetShowFavorites`, `GetTrackFavorites`.
+
 ###### [ 1.0.16 ] - 2024/12/06
 
   * This release requires the SpotifyPlus Integration v1.0.68+ release; please make sure you update the SpotifyPlus integration prior to updating this SpotifyPlus Card release.

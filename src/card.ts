@@ -910,7 +910,7 @@ export class Card extends LitElement {
   public static getStubConfig(): Record<string, unknown> {
 
     return {
-      sections: [Section.PLAYER, Section.ALBUM_FAVORITES, Section.ARTIST_FAVORITES, Section.CATEGORYS, Section.PLAYLIST_FAVORITES,
+      sections: [Section.PLAYER, Section.ALBUM_FAVORITES, Section.ARTIST_FAVORITES, Section.PLAYLIST_FAVORITES,
         Section.RECENTS, Section.DEVICES, Section.TRACK_FAVORITES, Section.USERPRESETS, Section.AUDIOBOOK_FAVORITES, 
         Section.SHOW_FAVORITES, Section.EPISODE_FAVORITES, Section.SEARCH_MEDIA],
       entity: "",
