@@ -115,7 +115,7 @@ export class ArtistFavBrowser extends FavBrowserBase {
       const promiseUpdateMediaList = new Promise((resolve, reject) => {
 
         // set service parameters.
-        const limitTotal = this.LIMIT_TOTAL_MAX;
+        const limitTotal = this.config.artistFavBrowserItemsLimit || this.LIMIT_TOTAL_MAX;
         const sortResult = this.config.artistFavBrowserItemsSortTitle || false;
 
         // call the service to retrieve the media list.

@@ -27,9 +27,9 @@ import { SearchMediaEvent } from '../events/search-media';
 import { getIdFromSpotifyUri } from '../services/spotifyplus-service';
 import { formatDateHHMMSSFromMilliseconds } from '../utils/utils';
 import { openWindowNewTab } from '../utils/media-browser-utils';
-import { ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD, RADIO_SEARCH_KEY } from '../constants';
+import { ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD, ALERT_INFO_PRESET_JSON_COPIED_TO_CLIPBOARD, RADIO_SEARCH_KEY } from '../constants';
 import { GetCopyrights } from '../types/spotifyplus/copyright';
-import { GetUserPresetConfigEntry } from '../types/spotifyplus/user-preset';
+import { GetUserPresetConfigEntry, GetUserPresetConfigEntryJson } from '../types/spotifyplus/user-preset';
 import { IAlbum } from '../types/spotifyplus/album';
 import { ITrackPageSimplified } from '../types/spotifyplus/track-page-simplified';
 
@@ -38,6 +38,7 @@ import { ITrackPageSimplified } from '../types/spotifyplus/track-page-simplified
  */
 enum Actions {
   AlbumCopyPresetToClipboard = "AlbumCopyPresetToClipboard",
+  AlbumCopyPresetJsonToClipboard = "AlbumCopyPresetJsonToClipboard",
   AlbumCopyUriToClipboard = "AlbumCopyUriToClipboard",
   AlbumFavoriteAdd = "AlbumFavoriteAdd",
   AlbumFavoriteRemove = "AlbumFavoriteRemove",
@@ -47,6 +48,7 @@ enum Actions {
   AlbumSearchRadio = "AlbumSearchRadio",
   AlbumShowTracks = "AlbumShowTracks",
   ArtistCopyPresetToClipboard = "ArtistCopyPresetToClipboard",
+  ArtistCopyPresetJsonToClipboard = "ArtistCopyPresetJsonToClipboard",
   ArtistCopyUriToClipboard = "ArtistCopyUriToClipboard",
   ArtistFavoriteAdd = "ArtistFavoriteAdd",
   ArtistFavoriteRemove = "ArtistFavoriteRemove",
@@ -186,6 +188,10 @@ class AlbumActions extends FavActionsBase {
           <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
           <div slot="headline">Copy Album Preset Info to Clipboard</div>
         </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.AlbumCopyPresetJsonToClipboard)}>
+          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          <div slot="headline">Copy Album Preset JSON to Clipboard</div>
+        </ha-md-menu-item>
       </ha-md-button-menu>
       `;
 
@@ -240,6 +246,10 @@ class AlbumActions extends FavActionsBase {
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistCopyPresetToClipboard)}>
           <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
           <div slot="headline">Copy Artist Preset Info to Clipboard</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistCopyPresetJsonToClipboard)}>
+          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          <div slot="headline">Copy Artist Preset JSON to Clipboard</div>
         </ha-md-menu-item>
       </ha-md-button-menu>
       `;
@@ -377,6 +387,12 @@ class AlbumActions extends FavActionsBase {
         this.alertInfoSet(ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD);
         return true;
 
+      } else if (action == Actions.AlbumCopyPresetJsonToClipboard) {
+
+        copyTextToClipboard(GetUserPresetConfigEntryJson(this.mediaItem, this.mediaItem.artists[0].name));
+        this.alertInfoSet(ALERT_INFO_PRESET_JSON_COPIED_TO_CLIPBOARD);
+        return true;
+
       } else if (action == Actions.AlbumCopyUriToClipboard) {
 
         copyTextToClipboard(this.mediaItem.uri);
@@ -396,6 +412,12 @@ class AlbumActions extends FavActionsBase {
 
         copyTextToClipboard(GetUserPresetConfigEntry(this.mediaItem.artists[0]));
         this.alertInfoSet(ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD);
+        return true;
+
+      } else if (action == Actions.ArtistCopyPresetJsonToClipboard) {
+
+        copyTextToClipboard(GetUserPresetConfigEntryJson(this.mediaItem.artists[0]));
+        this.alertInfoSet(ALERT_INFO_PRESET_JSON_COPIED_TO_CLIPBOARD);
         return true;
 
       } else if (action == Actions.ArtistCopyUriToClipboard) {

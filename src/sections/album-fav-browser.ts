@@ -116,7 +116,7 @@ export class AlbumFavBrowser extends FavBrowserBase {
       const promiseUpdateMediaList = new Promise((resolve, reject) => {
 
         // set service parameters.
-        const limitTotal = this.LIMIT_TOTAL_MAX;
+        const limitTotal = this.config.albumFavBrowserItemsLimit || this.LIMIT_TOTAL_MAX;
         const sortResult = this.config.albumFavBrowserItemsSortTitle || false;
         const market = null;
 

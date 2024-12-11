@@ -23,6 +23,8 @@ export const sharedStylesFavActions = css`
     height: inherit;
     overflow-y: auto;
     overflow-x: clip;
+    scrollbar-color: var(--primary-text-color) var(--secondary-background-color);
+    scrollbar-width: inherit;
     color: white;
   }
 

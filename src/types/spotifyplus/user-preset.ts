@@ -57,17 +57,16 @@ export interface IUserPreset {
 
 
 /**
-* Gets a text-representation of an `IUserPreset` object, which can then be pasted into
-* the card configuration under the `userPresets:` key.
-* 
-* @param mediaItem A media item object that contains the following properties: name, type, image_url, and uri.
-* @param subTitle Value to use for the sub-title text; null value will use the mediaItem type value.
-* @returns An array of `ITrack` objects that exist in the collection; otherwise, an empty array.
+ * Gets an `IUserPreset` object from a media item content.
+ * 
+ * @param mediaItem A media item object that contains the following properties: name, type, image_url, and uri.
+ * @param subTitle Value to use for the sub-title text; null value will use the mediaItem type value.
+ * @returns An `IUserPreset` object.
 */
-export function GetUserPresetConfigEntry(
+export function GetUserPresetObject(
   mediaItem: any,
   subTitle: string | undefined | null = null,
-): string {
+): IUserPreset {
 
   // create user preset object.
   const preset: IUserPreset = {
@@ -86,6 +85,26 @@ export function GetUserPresetConfigEntry(
     );
   }
 
+  // return to caller.
+  return preset;
+}
+
+/**
+ * Gets a text-representation of an `IUserPreset` object, which can then be pasted into
+ * the card configuration under the `userPresets:` key.
+ * 
+ * @param mediaItem A media item object that contains the following properties: name, type, image_url, and uri.
+ * @param subTitle Value to use for the sub-title text; null value will use the mediaItem type value.
+ * @returns A text-representation of an `IUserPreset` object.
+*/
+export function GetUserPresetConfigEntry(
+  mediaItem: any,
+  subTitle: string | undefined | null = null,
+): string {
+
+  // create user preset object.
+  const preset = GetUserPresetObject(mediaItem, subTitle);
+
   // create text-representation of user preset object.
   const CRLF = "\n";
   let presetText = "";
@@ -97,6 +116,38 @@ export function GetUserPresetConfigEntry(
 
   // return to caller.
   return presetText;
+}
+
+/**
+ * Gets a JSON-representation of an `IUserPreset` object, which can then be pasted into
+ * the userPresets.json file.
+ * 
+ * @param mediaItem A media item object that contains the following properties: name, type, image_url, and uri.
+ * @param subTitle Value to use for the sub-title text; null value will use the mediaItem type value.
+ * @returns A JSON-representation of an `IUserPreset` object.
+*/
+export function GetUserPresetConfigEntryJson(
+  mediaItem: any,
+  subTitle: string | undefined | null = null,
+): string {
+
+  // create user preset object.
+  const preset = GetUserPresetObject(mediaItem, subTitle);
+
+  // create text-representation of user preset object.
+  const CRLF = "\n";
+  let presetText = "";
+  presetText += "  {" + CRLF;
+  presetText += "    \"name\": \"" + preset.name + "\"," + CRLF;
+  presetText += "    \"subtitle\": \"" + preset.type + "\"," + CRLF;
+  presetText += "    \"image_url\": \"" + preset.image_url + "\"," + CRLF;
+  presetText += "    \"uri\": \"" + preset.uri + "\"," + CRLF;
+  presetText += "    \"type\": \"" + preset.type + "\"" + CRLF;
+  presetText += "  }," + CRLF;
+
+  // return to caller.
+  return presetText;
+}
 
 
   // the following was my attempt to automatically add the new preset to the
@@ -205,4 +256,4 @@ export function GetUserPresetConfigEntry(
 
   //}
 
-}
+//}

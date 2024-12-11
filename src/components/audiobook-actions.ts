@@ -24,10 +24,10 @@ import { SearchMediaTypes } from '../types/search-media-types';
 import { SearchMediaEvent } from '../events/search-media';
 import { formatDateHHMMSSFromMilliseconds, unescapeHtml } from '../utils/utils';
 import { openWindowNewTab } from '../utils/media-browser-utils';
-import { ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD } from '../constants';
+import { ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD, ALERT_INFO_PRESET_JSON_COPIED_TO_CLIPBOARD } from '../constants';
 import { GetCopyrights } from '../types/spotifyplus/copyright';
 import { GetResumeInfo } from '../types/spotifyplus/resume-point';
-import { GetUserPresetConfigEntry } from '../types/spotifyplus/user-preset';
+import { GetUserPresetConfigEntry, GetUserPresetConfigEntryJson } from '../types/spotifyplus/user-preset';
 import { IAudiobookSimplified, GetAudiobookNarrators, GetAudiobookAuthors } from '../types/spotifyplus/audiobook-simplified';
 import { IChapterPageSimplified } from '../types/spotifyplus/chapter-page-simplified';
 
@@ -36,6 +36,7 @@ import { IChapterPageSimplified } from '../types/spotifyplus/chapter-page-simpli
  */
 enum Actions {
   AudiobookCopyPresetToClipboard = "AudiobookCopyPresetToClipboard",
+  AudiobookCopyPresetJsonToClipboard = "AudiobookCopyPresetJsonToClipboard",
   AudiobookCopyUriToClipboard = "AudiobookCopyUriToClipboard",
   AudiobookFavoriteAdd = "AudiobookFavoriteAdd",
   AudiobookFavoriteRemove = "AudiobookFavoriteRemove",
@@ -134,6 +135,10 @@ class AudiobookActions extends FavActionsBase {
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.AudiobookCopyPresetToClipboard)}>
           <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
           <div slot="headline">Copy Audiobook Preset Info to Clipboard</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.AudiobookCopyPresetJsonToClipboard)}>
+          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          <div slot="headline">Copy Audiobook Preset JSON to Clipboard</div>
         </ha-md-menu-item>
       </ha-md-button-menu>
       `;
@@ -267,6 +272,12 @@ class AudiobookActions extends FavActionsBase {
 
         copyTextToClipboard(GetUserPresetConfigEntry(this.mediaItem, GetAudiobookAuthors(this.mediaItem, ", ")));
         this.alertInfoSet(ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD);
+        return true;
+
+      } else if (action == Actions.AudiobookCopyPresetJsonToClipboard) {
+
+        copyTextToClipboard(GetUserPresetConfigEntryJson(this.mediaItem, GetAudiobookAuthors(this.mediaItem, ", ")));
+        this.alertInfoSet(ALERT_INFO_PRESET_JSON_COPIED_TO_CLIPBOARD);
         return true;
 
       } else if (action == Actions.AudiobookCopyUriToClipboard) {

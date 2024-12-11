@@ -24,10 +24,10 @@ import { SearchMediaTypes } from '../types/search-media-types';
 import { SearchMediaEvent } from '../events/search-media';
 import { formatDateHHMMSSFromMilliseconds, unescapeHtml } from '../utils/utils';
 import { openWindowNewTab } from '../utils/media-browser-utils';
-import { ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD } from '../constants';
+import { ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD, ALERT_INFO_PRESET_JSON_COPIED_TO_CLIPBOARD } from '../constants';
 import { GetCopyrights } from '../types/spotifyplus/copyright';
 import { GetResumeInfo } from '../types/spotifyplus/resume-point';
-import { GetUserPresetConfigEntry } from '../types/spotifyplus/user-preset';
+import { GetUserPresetConfigEntry, GetUserPresetConfigEntryJson } from '../types/spotifyplus/user-preset';
 import { IShowSimplified } from '../types/spotifyplus/show-simplified';
 import { IEpisodePageSimplified } from '../types/spotifyplus/episode-page-simplified';
 
@@ -36,6 +36,7 @@ import { IEpisodePageSimplified } from '../types/spotifyplus/episode-page-simpli
  */
 enum Actions {
   ShowCopyPresetToClipboard = "ShowCopyPresetToClipboard",
+  ShowCopyPresetJsonToClipboard = "ShowCopyPresetJsonToClipboard",
   ShowCopyUriToClipboard = "ShowCopyUriToClipboard",
   ShowEpisodesUpdate = "ShowEpisodesUpdate",
   ShowFavoriteAdd = "ShowFavoriteAdd",
@@ -129,6 +130,10 @@ class ShowActions extends FavActionsBase {
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.ShowCopyPresetToClipboard)}>
           <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
           <div slot="headline">Copy Show Preset Info to Clipboard</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ShowCopyPresetJsonToClipboard)}>
+          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          <div slot="headline">Copy Show Preset JSON to Clipboard</div>
         </ha-md-menu-item>
 
       </ha-md-button-menu>
@@ -256,6 +261,12 @@ class ShowActions extends FavActionsBase {
 
         copyTextToClipboard(GetUserPresetConfigEntry(this.mediaItem, "Podcast"));
         this.alertInfoSet(ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD);
+        return true;
+
+      } else if (action == Actions.ShowCopyPresetJsonToClipboard) {
+
+        copyTextToClipboard(GetUserPresetConfigEntryJson(this.mediaItem, "Podcast"));
+        this.alertInfoSet(ALERT_INFO_PRESET_JSON_COPIED_TO_CLIPBOARD);
         return true;
 
       } else if (action == Actions.ShowCopyUriToClipboard) {

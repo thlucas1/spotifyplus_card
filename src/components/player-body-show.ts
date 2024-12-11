@@ -23,8 +23,8 @@ import { SearchMediaEvent } from '../events/search-media';
 import { getIdFromSpotifyUri } from '../services/spotifyplus-service';
 import { formatDateHHMMSSFromMilliseconds, unescapeHtml } from '../utils/utils';
 import { openWindowNewTab } from '../utils/media-browser-utils';
-import { ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD } from '../constants';
-import { GetUserPresetConfigEntry } from '../types/spotifyplus/user-preset';
+import { ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD, ALERT_INFO_PRESET_JSON_COPIED_TO_CLIPBOARD } from '../constants';
+import { GetUserPresetConfigEntry, GetUserPresetConfigEntryJson } from '../types/spotifyplus/user-preset';
 import { IEpisode } from '../types/spotifyplus/episode';
 
 /**
@@ -32,12 +32,14 @@ import { IEpisode } from '../types/spotifyplus/episode';
  */
 enum Actions {
   EpisodeCopyPresetToClipboard = "EpisodeCopyPresetToClipboard",
+  EpisodeCopyPresetJsonToClipboard = "EpisodeCopyPresetJsonToClipboard",
   EpisodeCopyUriToClipboard = "EpisodeCopyUriToClipboard",
   EpisodeFavoriteAdd = "EpisodeFavoriteAdd",
   EpisodeFavoriteRemove = "EpisodeFavoriteRemove",
   EpisodeFavoriteUpdate = "EpisodeFavoriteUpdate",
   GetPlayingItem = "GetPlayingItem",
   ShowCopyPresetToClipboard = "ShowCopyPresetToClipboard",
+  ShowCopyPresetJsonToClipboard = "ShowCopyPresetJsonToClipboard",
   ShowCopyUriToClipboard = "ShowCopyUriToClipboard",
   ShowFavoriteAdd = "ShowFavoriteAdd",
   ShowFavoriteRemove = "ShowFavoriteRemove",
@@ -151,6 +153,10 @@ class PlayerBodyShow extends PlayerBodyBase {
           <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
           <div slot="headline">Copy Show Preset Info to Clipboard</div>
         </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ShowCopyPresetJsonToClipboard)}>
+          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          <div slot="headline">Copy Show Preset JSON to Clipboard</div>
+        </ha-md-menu-item>
       </ha-md-button-menu>
       `;
 
@@ -167,6 +173,10 @@ class PlayerBodyShow extends PlayerBodyBase {
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.EpisodeCopyPresetToClipboard)}>
           <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
           <div slot="headline">Copy Episode Preset Info to Clipboard</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.EpisodeCopyPresetJsonToClipboard)}>
+          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          <div slot="headline">Copy Episode Preset JSON to Clipboard</div>
         </ha-md-menu-item>
       </ha-md-button-menu>
       `;
@@ -279,6 +289,12 @@ class PlayerBodyShow extends PlayerBodyBase {
         this.alertInfoSet(ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD);
         return true;
 
+      } else if (action == Actions.EpisodeCopyPresetJsonToClipboard) {
+
+        copyTextToClipboard(GetUserPresetConfigEntryJson(this.episode, this.episode?.show.name));
+        this.alertInfoSet(ALERT_INFO_PRESET_JSON_COPIED_TO_CLIPBOARD);
+        return true;
+
       } else if (action == Actions.EpisodeCopyUriToClipboard) {
 
         copyTextToClipboard(this.episode?.uri || "");
@@ -288,6 +304,12 @@ class PlayerBodyShow extends PlayerBodyBase {
 
         copyTextToClipboard(GetUserPresetConfigEntry(this.episode?.show, "Podcast"));
         this.alertInfoSet(ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD);
+        return true;
+
+      } else if (action == Actions.ShowCopyPresetJsonToClipboard) {
+
+        copyTextToClipboard(GetUserPresetConfigEntryJson(this.episode?.show, "Podcast"));
+        this.alertInfoSet(ALERT_INFO_PRESET_JSON_COPIED_TO_CLIPBOARD);
         return true;
 
       } else if (action == Actions.ShowCopyUriToClipboard) {

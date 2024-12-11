@@ -116,7 +116,7 @@ export class EpisodeFavBrowser extends FavBrowserBase {
       const promiseUpdateMediaList = new Promise((resolve, reject) => {
 
         // set service parameters.
-        const limitTotal = this.LIMIT_TOTAL_MAX;     // max # of items to return
+        const limitTotal = this.config.episodeFavBrowserItemsLimit || this.LIMIT_TOTAL_MAX;
         const sortResult = this.config.episodeFavBrowserItemsSortTitle || false;
 
         // call the service to retrieve the media list.

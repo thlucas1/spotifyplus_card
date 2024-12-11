@@ -30,7 +30,13 @@ const CONFIG_SETTINGS_SCHEMA = [
   },
   {
     name: 'playerVolumeControlsHideSlider',
-    label: 'Hide volume slider in the volume controls area',
+    label: 'Hide volume slider and levels in the volume controls area',
+    required: false,
+    selector: { boolean: {} },
+  },
+  {
+    name: 'playerVolumeControlsHideLevels',
+    label: "Hide volume level numbers / %'s in the volume controls area",
     required: false,
     selector: { boolean: {} },
   },

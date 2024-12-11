@@ -280,6 +280,9 @@ export class Card extends LitElement {
         display: flex;
         align-items: center;
         background-repeat: no-repeat;
+        color: var(--spc-card-footer-color, inherit);
+        background-color: var(--spc-card-footer-background-color, var(--spc-player-footer-bg-color, var(--card-background-color, transparent)));
+        background-image: var(--spc-card-footer-background-image, linear-gradient(rgba(0, 0, 0, 0.6), rgb(0, 0, 0)));
       }
 
       .spc-card-footer {
@@ -1167,8 +1170,6 @@ export class Card extends LitElement {
         '--spc-footer-icon-size': `${footerIconSize}`,
         '--spc-footer-icon-button-size': `var(--spc-footer-icon-size, ${FOOTER_ICON_SIZE_DEFAULT}) + 0.75rem`,
         '--spc-player-footer-bg-color': `${this.footerBackgroundColor || 'transparent'}`,
-        'background-color': 'var(--spc-player-footer-bg-color)',
-        'background-image': 'linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 1.6))',
       });
 
     } else {
@@ -1177,6 +1178,7 @@ export class Card extends LitElement {
       return styleMap({
         '--spc-footer-icon-size': `${footerIconSize}`,
         '--spc-footer-icon-button-size': `var(--spc-footer-icon-size, ${FOOTER_ICON_SIZE_DEFAULT}) + 0.75rem`,
+        'background': 'unset',
       });
 
     }

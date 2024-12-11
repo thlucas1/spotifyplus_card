@@ -30,8 +30,8 @@ import { SearchMediaTypes } from '../types/search-media-types';
 import { SearchMediaEvent } from '../events/search-media';
 import { openWindowNewTab } from '../utils/media-browser-utils';
 import { unescapeHtml } from '../utils/utils';
-import { GetUserPresetConfigEntry } from '../types/spotifyplus/user-preset';
-import { ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD } from '../constants';
+import { GetUserPresetConfigEntry, GetUserPresetConfigEntryJson } from '../types/spotifyplus/user-preset';
+import { ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD, ALERT_INFO_PRESET_JSON_COPIED_TO_CLIPBOARD } from '../constants';
 import { IArtist, GetGenres } from '../types/spotifyplus/artist';
 import { IArtistInfo } from '../types/spotifyplus/artist-info';
 
@@ -46,6 +46,7 @@ const debuglog = Debug(DEBUG_APP_NAME + ":artist-actions");
 enum Actions {
   ArtistAlbumsUpdate = "ArtistAlbumsUpdate",
   ArtistCopyPresetToClipboard = "ArtistCopyPresetToClipboard",
+  ArtistCopyPresetJsonToClipboard = "ArtistCopyPresetJsonToClipboard",
   ArtistCopyUriToClipboard = "ArtistCopyUriToClipboard",
   ArtistGetInfo = "ArtistGetInfo",
   ArtistFavoriteAdd = "ArtistFavoriteAdd",
@@ -180,6 +181,10 @@ class ArtistActions extends FavActionsBase {
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistCopyPresetToClipboard)}>
           <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
           <div slot="headline">Copy Artist Preset Info to Clipboard</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistCopyPresetJsonToClipboard)}>
+          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          <div slot="headline">Copy Artist Preset JSON to Clipboard</div>
         </ha-md-menu-item>
       </ha-md-button-menu>
       `;
@@ -319,6 +324,12 @@ class ArtistActions extends FavActionsBase {
 
         copyTextToClipboard(GetUserPresetConfigEntry(this.mediaItem));
         this.alertInfoSet(ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD);
+        return true;
+
+      } else if (action == Actions.ArtistCopyPresetJsonToClipboard) {
+
+        copyTextToClipboard(GetUserPresetConfigEntryJson(this.mediaItem));
+        this.alertInfoSet(ALERT_INFO_PRESET_JSON_COPIED_TO_CLIPBOARD);
         return true;
 
       } else if (action == Actions.ArtistCopyUriToClipboard) {

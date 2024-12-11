@@ -59,3 +59,4 @@ export const listStyle = css`
 `;
 
 export const ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD = "Preset info copied to clipboard; please edit the card configuration (via show code editor) and paste copied text under the \"userPresets:\" key."
+export const ALERT_INFO_PRESET_JSON_COPIED_TO_CLIPBOARD = "Preset JSON copied to clipboard; please edit the userPresets.json file and paste the copied text at the desired position.  Be sure to remove ending comma if last (or only) entry in the file."

@@ -6,6 +6,23 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.18 ] - 2024/12/11
+
+  * This release requires the SpotifyPlus Integration v1.0.69+ release; please make sure you update the SpotifyPlus integration prior to updating this SpotifyPlus Card release.
+  * Added `playerVolumeControlsHideLevels` config option that hides volume level numbers and percentages in the volume controls area of the Player section form.  Volume slider control is not affected by this setting.
+  * Added `albumFavBrowserItemsLimit` config option that specifies the maximum number of items to be returned by the Album Favorites media browser.
+  * Added `artistFavBrowserItemsLimit` config option that specifies the maximum number of items to be returned by the Artist Favorites media browser.
+  * Added `audiobookFavBrowserItemsLimit` config option that specifies the maximum number of items to be returned by the Audiobook Favorites media browser.
+  * Added `episodeFavBrowserItemsLimit` config option that specifies the maximum number of items to be returned by the Episode Favorites media browser.
+  * Added `playlistFavBrowserItemsLimit` config option that specifies the maximum number of items to be returned by the Playlist Favorites media browser.
+  * Added `showFavBrowserItemsLimit` config option that specifies the maximum number of items to be returned by the Show Favorites media browser.
+  * Added `trackFavBrowserItemsLimit` config option that specifies the maximum number of items to be returned by the Track Favorites media browser.
+  * Added "Copy X Preset JSON to Clipboard" action for all section detail displays that contain a "Copy X Preset Info to Clipboard" action.  This will create a user-preset JSON format configuration entry for the selected media and copy it to the clipboard; the entry can then be pasted into the `userPresets.json` file, which will create a user preset for the media item.
+  * Added theme variable `--spc-card-footer-background-color` to set card footer area background color; default value for the player section is vibrant color (based on cover art colors); default value for all other sections is card background color.
+  * Added theme variable `--spc-card-footer-background-image` to set card footer area background image; default value for the player section is a gradient, which provides good contrast; default value for all other sections is card background color.
+  * Added theme variable `--spc-card-footer-color` to set card footer icon foreground color; default value is `inherit`, which is card foreground color value.
+  * Adjusted scrollbar colors to more closely match selected theme.
+
 ###### [ 1.0.17 ] - 2024/12/09
 
   * This release requires the SpotifyPlus Integration v1.0.69+ release; please make sure you update the SpotifyPlus integration prior to updating this SpotifyPlus Card release.

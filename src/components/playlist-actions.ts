@@ -22,9 +22,9 @@ import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
 import { formatDateHHMMSSFromMilliseconds, unescapeHtml } from '../utils/utils';
 import { openWindowNewTab } from '../utils/media-browser-utils';
-import { ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD } from '../constants';
+import { ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD, ALERT_INFO_PRESET_JSON_COPIED_TO_CLIPBOARD } from '../constants';
 import { GetPlaylistPagePlaylistTracks } from '../types/spotifyplus/playlist-page';
-import { GetUserPresetConfigEntry } from '../types/spotifyplus/user-preset';
+import { GetUserPresetConfigEntry, GetUserPresetConfigEntryJson } from '../types/spotifyplus/user-preset';
 import { IPlaylistSimplified } from '../types/spotifyplus/playlist-simplified';
 import { IPlaylistTrack } from '../types/spotifyplus/playlist-track';
 
@@ -33,6 +33,7 @@ import { IPlaylistTrack } from '../types/spotifyplus/playlist-track';
  */
 enum Actions {
   PlaylistCopyPresetToClipboard = "PlaylistCopyPresetToClipboard",
+  PlaylistCopyPresetJsonToClipboard = "PlaylistCopyPresetJsonToClipboard",
   PlaylistCopyUriToClipboard = "PlaylistCopyUriToClipboard",
   PlaylistDelete = "PlaylistDelete",
   PlaylistFavoriteAdd = "PlaylistFavoriteAdd",
@@ -131,6 +132,10 @@ class PlaylistActions extends FavActionsBase {
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.PlaylistCopyPresetToClipboard)}>
           <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
           <div slot="headline">Copy Playlist Preset Info to Clipboard</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.PlaylistCopyPresetJsonToClipboard)}>
+          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          <div slot="headline">Copy Playlist Preset JSON to Clipboard</div>
         </ha-md-menu-item>
       </ha-md-button-menu>
       `;
@@ -288,6 +293,12 @@ class PlaylistActions extends FavActionsBase {
 
         copyTextToClipboard(GetUserPresetConfigEntry(this.mediaItem));
         this.alertInfoSet(ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD);
+        return true;
+
+      } else if (action == Actions.PlaylistCopyPresetJsonToClipboard) {
+
+        copyTextToClipboard(GetUserPresetConfigEntryJson(this.mediaItem));
+        this.alertInfoSet(ALERT_INFO_PRESET_JSON_COPIED_TO_CLIPBOARD);
         return true;
 
       }

@@ -31,6 +31,8 @@ export const sharedStylesMediaInfo = css`
 
   .media-info-description {
     overflow-y: auto;
+    scrollbar-color: var(--primary-text-color) var(--secondary-background-color);
+    scrollbar-width: inherit;
     display: block;
     height: inherit;  
     padding-top: 10px;

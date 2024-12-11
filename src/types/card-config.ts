@@ -86,6 +86,12 @@ export interface CardConfig extends LovelaceCardConfig {
   albumFavBrowserItemsHideSubTitle?: boolean;
 
   /**
+   * Maximum number of items to be returned by the Album Favorites media browser.
+   * Default is 200.
+   */
+  albumFavBrowserItemsLimit?: number;
+
+  /**
    * True to sort displayed Album Favorites media browser item titles by name;
    * Otherwise, False to display in the order returned from the Spotify Web API. 
    * Default is false.
@@ -126,6 +132,12 @@ export interface CardConfig extends LovelaceCardConfig {
   artistFavBrowserItemsHideSubTitle?: boolean;
 
   /**
+   * Maximum number of items to be returned by the Artist Favorites media browser.
+   * Default is 200.
+   */
+  artistFavBrowserItemsLimit?: number;
+
+  /**
    * True to sort displayed Artist Favorites media browser item titles by name;
    * Otherwise, False to display in the order returned from the Spotify Web API. 
    * Default is false.
@@ -164,6 +176,12 @@ export interface CardConfig extends LovelaceCardConfig {
    * Default is false.
    */
   audiobookFavBrowserItemsHideSubTitle?: boolean;
+
+  /**
+   * Maximum number of items to be returned by the Audiobook Favorites media browser.
+   * Default is 200.
+   */
+  audiobookFavBrowserItemsLimit?: number;
 
   /**
    * True to sort displayed Audiobook Favorites media browser item titles by name;
@@ -277,6 +295,12 @@ export interface CardConfig extends LovelaceCardConfig {
    * Default is false.
    */
   episodeFavBrowserItemsHideSubTitle?: boolean;
+
+  /**
+   * Maximum number of items to be returned by the Episode Favorites media browser.
+   * Default is 200.
+   */
+  episodeFavBrowserItemsLimit?: number;
 
   /**
    * True to sort displayed Episode Favorites media browser item titles by name;
@@ -395,6 +419,13 @@ export interface CardConfig extends LovelaceCardConfig {
   playerControlsIconSize?: string;
 
   /**
+   * Hide volume level numbers and percentages in the volume controls area of the Player 
+   * section form.  Volume slider control is not affected by this setting.
+   * Default is false.
+   */
+  playerVolumeControlsHideLevels?: boolean;
+
+  /**
    * Hide mute button in the volume controls area of the Player section form.
    * Default is false.
    */
@@ -407,7 +438,7 @@ export interface CardConfig extends LovelaceCardConfig {
   playerVolumeControlsHidePower?: boolean;
 
   /**
-   * Hide volume slider in the volume controls area of the Player section form.
+   * Hide volume slider and levels in the volume controls area of the Player section form.
    * Default is false.
    */
   playerVolumeControlsHideSlider?: boolean;
@@ -444,6 +475,12 @@ export interface CardConfig extends LovelaceCardConfig {
    * Default is false.
    */
   playlistFavBrowserItemsHideSubTitle?: boolean;
+
+  /**
+   * Maximum number of items to be returned by the Playlist Favorites media browser.
+   * Default is 200.
+   */
+  playlistFavBrowserItemsLimit?: number;
 
   /**
    * True to sort displayed Playlist Favorites media browser item titles by name;
@@ -581,6 +618,12 @@ export interface CardConfig extends LovelaceCardConfig {
   showFavBrowserItemsHideSubTitle?: boolean;
 
   /**
+   * Maximum number of items to be returned by the Show Favorites media browser.
+   * Default is 200.
+   */
+  showFavBrowserItemsLimit?: number;
+
+  /**
    * True to sort displayed Show Favorites media browser item titles by name;
    * Otherwise, False to display in the order returned from the Spotify Web API. 
    * Default is false.
@@ -619,6 +662,12 @@ export interface CardConfig extends LovelaceCardConfig {
    * Default is false.
    */
   trackFavBrowserItemsHideSubTitle?: boolean;
+
+  /**
+   * Maximum number of items to be returned by the Track Favorites media browser.
+   * Default is 200.
+   */
+  trackFavBrowserItemsLimit?: number;
 
   /**
    * True to sort displayed Track Favorites media browser item titles by name;

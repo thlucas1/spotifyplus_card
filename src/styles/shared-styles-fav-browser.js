@@ -78,6 +78,8 @@ export const sharedStylesFavBrowser = css`
     flex: 3;
     max-height: 100vh;
     overflow-y: auto;
+    scrollbar-color: var(--primary-text-color) var(--secondary-background-color);
+    scrollbar-width: inherit;
   }
 
   .media-browser-list {

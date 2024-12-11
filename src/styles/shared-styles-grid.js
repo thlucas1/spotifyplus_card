@@ -17,6 +17,8 @@ export const sharedStylesGrid = css`
   /* style grid container */
   .grid-container-scrollable {
     overflow-y: auto;
+    scrollbar-color: var(--primary-text-color) var(--secondary-background-color);
+    scrollbar-width: inherit;
     max-height: 100vh;
     margin: 0.25rem;
     align-self: stretch
@@ -48,6 +50,7 @@ export const sharedStylesGrid = css`
   /* scrolling text bleeds through if you set BG-COLOR to transparent! */
   .grid-header {
     background-color: var(--card-background-color);
+    color: var(--accent-color);
     position: sticky;
     top: 0;
     z-index: 1;

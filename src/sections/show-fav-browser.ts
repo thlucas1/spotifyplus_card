@@ -116,7 +116,7 @@ export class ShowFavBrowser extends FavBrowserBase {
       const promiseUpdateMediaList = new Promise((resolve, reject) => {
 
         // set service parameters.
-        const limitTotal = this.LIMIT_TOTAL_MAX;   // max # of items to return
+        const limitTotal = this.config.showFavBrowserItemsLimit || this.LIMIT_TOTAL_MAX;
         const sortResult = this.config.showFavBrowserItemsSortTitle || false;
         const excludeAudiobooks = true;
 

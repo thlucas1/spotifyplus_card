@@ -48,6 +48,7 @@ class Volume extends LitElement {
 
     // get volume hide configuration setting.
     const hideMute = this.config.playerVolumeControlsHideMute || false;
+    const hideLevels = this.config.playerVolumeControlsHideLevels || false;
     const muteIcon = this.player.isMuted() ? mdiVolumeMute : mdiVolumeHigh;
 
     // set button color based on selected option.
@@ -68,11 +69,13 @@ class Volume extends LitElement {
             max=${maxVolume}
             @value-changed=${this.onVolumeValueChanged}
           ></ha-control-slider>
-          <div class="volume-level">
-            <div style="flex: ${volume};text-align: left">0%</div>
-            <div class="volume-percentage">${Math.round(volume)}%</div>
-            <div style="flex: ${maxVolume - volume};text-align: right">${maxVolume}%</div>
-          </div>
+          ${!hideLevels ? html`
+            <div class="volume-level">
+              <div style="flex: ${volume};text-align: left">0%</div>
+              <div class="volume-percentage">${Math.round(volume)}%</div>
+              <div style="flex: ${maxVolume - volume};text-align: right">${maxVolume}%</div>
+            </div>
+          ` : html``}
         </div>
         <ha-icon-button .path=${mdiPower} @click=${() => this.onClickAction(TURN_ON)}  hide=${this.hideFeature(TURN_ON)}  label="Turn On"  style=${this.styleIcon(colorPower)}></ha-icon-button>
         <ha-icon-button .path=${mdiPower} @click=${() => this.onClickAction(TURN_OFF)} hide=${this.hideFeature(TURN_OFF)} label="Turn Off"></ha-icon-button>

@@ -22,6 +22,16 @@ const CONFIG_SETTINGS_SCHEMA = [
     type: 'string',
   },
   {
+    name: 'audiobookFavBrowserItemsLimit',
+    label: 'Maximum # of favorite items to return',
+    help: '1000 max, 200 default',
+    required: false,
+    type: 'integer',
+    default: 200,
+    valueMin: 1,
+    valueMax: 1000,
+  },
+  {
     name: 'audiobookFavBrowserItemsPerRow',
     label: '# of items to display per row',
     help: 'use 1 for list format',

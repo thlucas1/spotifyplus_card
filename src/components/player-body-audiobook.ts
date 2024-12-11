@@ -24,9 +24,9 @@ import { SearchMediaEvent } from '../events/search-media';
 import { getIdFromSpotifyUri } from '../services/spotifyplus-service';
 import { formatDateHHMMSSFromMilliseconds, unescapeHtml } from '../utils/utils';
 import { openWindowNewTab } from '../utils/media-browser-utils';
-import { ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD } from '../constants';
+import { ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD, ALERT_INFO_PRESET_JSON_COPIED_TO_CLIPBOARD } from '../constants';
 import { GetAudiobookAuthors, GetAudiobookNarrators } from '../types/spotifyplus/audiobook-simplified';
-import { GetUserPresetConfigEntry } from '../types/spotifyplus/user-preset';
+import { GetUserPresetConfigEntry, GetUserPresetConfigEntryJson } from '../types/spotifyplus/user-preset';
 import { IChapter } from '../types/spotifyplus/chapter';
 
 /**
@@ -34,6 +34,7 @@ import { IChapter } from '../types/spotifyplus/chapter';
  */
 enum Actions {
   AudiobookCopyPresetToClipboard = "AudiobookCopyPresetToClipboard",
+  AudiobookCopyPresetJsonToClipboard = "AudiobookCopyPresetJsonToClipboard",
   AudiobookCopyUriToClipboard = "AudiobookCopyUriToClipboard",
   AudiobookFavoriteAdd = "AudiobookFavoriteAdd",
   AudiobookFavoriteRemove = "AudiobookFavoriteRemove",
@@ -41,6 +42,7 @@ enum Actions {
   AudiobookSearchAuthor = "AudiobookSearchAuthor",
   AudiobookSearchNarrator = "AudiobookSearchNarrator",
   ChapterCopyPresetToClipboard = "ChapterCopyPresetToClipboard",
+  ChapterCopyPresetJsonToClipboard = "ChapterCopyPresetJsonToClipboard",
   ChapterCopyUriToClipboard = "ChapterCopyUriToClipboard",
   ChapterFavoriteAdd = "ChapterFavoriteAdd",
   ChapterFavoriteRemove = "ChapterFavoriteRemove",
@@ -158,6 +160,10 @@ class PlayerBodyAudiobook extends PlayerBodyBase {
           <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
           <div slot="headline">Copy Audiobook Preset Info to Clipboard</div>
         </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.AudiobookCopyPresetJsonToClipboard)}>
+          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          <div slot="headline">Copy Audiobook Preset JSON to Clipboard</div>
+        </ha-md-menu-item>
       </ha-md-button-menu>
       `;
 
@@ -174,6 +180,10 @@ class PlayerBodyAudiobook extends PlayerBodyBase {
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.ChapterCopyPresetToClipboard)}>
           <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
           <div slot="headline">Copy Chapter Preset Info to Clipboard</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ChapterCopyPresetJsonToClipboard)}>
+          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          <div slot="headline">Copy Chapter Preset JSON to Clipboard</div>
         </ha-md-menu-item>
       </ha-md-button-menu>
       `;
@@ -312,6 +322,12 @@ class PlayerBodyAudiobook extends PlayerBodyBase {
         this.alertInfoSet(ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD);
         return true;
 
+      } else if (action == Actions.AudiobookCopyPresetJsonToClipboard) {
+
+        copyTextToClipboard(GetUserPresetConfigEntryJson(this.chapter?.audiobook, GetAudiobookAuthors(this.chapter?.audiobook, ", ")));
+        this.alertInfoSet(ALERT_INFO_PRESET_JSON_COPIED_TO_CLIPBOARD);
+        return true;
+
       } else if (action == Actions.AudiobookCopyUriToClipboard) {
 
         copyTextToClipboard(this.chapter?.audiobook.uri || "");
@@ -331,6 +347,12 @@ class PlayerBodyAudiobook extends PlayerBodyBase {
 
         copyTextToClipboard(GetUserPresetConfigEntry(this.chapter, this.chapter?.audiobook.name));
         this.alertInfoSet(ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD);
+        return true;
+
+      } else if (action == Actions.ChapterCopyPresetJsonToClipboard) {
+
+        copyTextToClipboard(GetUserPresetConfigEntryJson(this.chapter, this.chapter?.audiobook.name));
+        this.alertInfoSet(ALERT_INFO_PRESET_JSON_COPIED_TO_CLIPBOARD);
         return true;
 
       } else if (action == Actions.ChapterCopyUriToClipboard) {
