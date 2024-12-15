@@ -5,10 +5,14 @@ import { styleMap } from 'lit-html/directives/style-map.js';
 
 // our imports.
 import '../components/player-progress';
+import { sharedStylesFavActions } from '../styles/shared-styles-fav-actions.js';
 import { CardConfig } from '../types/card-config';
 import { Store } from '../model/store';
 import { MediaPlayer } from '../model/media-player';
 import { formatTitleInfo } from '../utils/media-browser-utils';
+import { PlayerBodyAudiobook } from './player-body-audiobook';
+import { PlayerBodyShow } from './player-body-show';
+import { PlayerBodyTrack } from './player-body-track';
 
 class PlayerHeader extends LitElement {
 
@@ -46,6 +50,45 @@ class PlayerHeader extends LitElement {
       artistTrack = artistTrack.replace(/^ - | - $/g, '');
     }
 
+    // initialize favorite settings.
+    let isFavoriteReady = false;
+    let isFavorite: boolean | undefined = undefined;
+    let actionFavoriteAdd = html``;
+    let actionFavoriteRemove = html``;
+
+    // only need to do this if media is playing.
+    if (this.player.isPlaying()) {
+
+      // find body content element; this could be any of the following:
+      // SPC-PLAYER-BODY-AUDIOBOOK, SPC-PLAYER-BODY-SHOW, SPC-PLAYER-BODY-TRACK.
+      const elmBody = this.parentElement?.querySelector(".player-section-body-content") as HTMLElement;
+      if (elmBody) {
+
+        const tagName = elmBody.tagName.toLowerCase();
+
+        // retrieve favorite details based on the player body type (audiobook chapter, show episode, track).
+        if (tagName == ("spc-player-body-track")) {
+          const elmPlayerBodyTrack = elmBody as PlayerBodyTrack
+          isFavorite = elmPlayerBodyTrack.isTrackFavorite;
+          actionFavoriteAdd = elmPlayerBodyTrack.actionTrackFavoriteAdd;
+          actionFavoriteRemove = elmPlayerBodyTrack.actionTrackFavoriteRemove;
+          isFavoriteReady = true;
+        } else if (tagName == ("spc-player-body-show")) {
+          const elmPlayerBodyShow = elmBody as PlayerBodyShow
+          isFavorite = elmPlayerBodyShow.isEpisodeFavorite;
+          actionFavoriteAdd = elmPlayerBodyShow.actionEpisodeFavoriteAdd;
+          actionFavoriteRemove = elmPlayerBodyShow.actionEpisodeFavoriteRemove;
+          isFavoriteReady = true;
+        } else if (tagName == ("spc-player-body-audiobook")) {
+          const elmPlayerBodyAudiobook = elmBody as PlayerBodyAudiobook
+          isFavorite = elmPlayerBodyAudiobook.isAudiobookFavorite;
+          actionFavoriteAdd = elmPlayerBodyAudiobook.actionAudiobookFavoriteAdd;
+          actionFavoriteRemove = elmPlayerBodyAudiobook.actionAudiobookFavoriteRemove
+          isFavoriteReady = true;
+        }
+      }
+    }
+
     // if nothing is playing then display configured 'no media playing' text.
     if (!this.player.attributes.media_title) {
       artistTrack = formatTitleInfo(this.config.playerHeaderNoMediaPlayingText, this.config, this.player) || 'No Media Playing';
@@ -57,7 +100,11 @@ class PlayerHeader extends LitElement {
       <div class="player-header-container" style=${this.styleContainer()}>
         ${!hideProgress ? html`<spc-player-progress .store=${this.store}></spc-player-progress>` : html``}
         <div class="header-title">${title}</div>
-        ${artistTrack ? html`<div class="header-artist-track">${artistTrack}</div>` : html``}
+        ${artistTrack ? html`
+        <div class="header-artist-track">${artistTrack}
+          ${(isFavoriteReady ? html`${(isFavorite ? actionFavoriteRemove : actionFavoriteAdd)}` : html``)}
+        </div>
+        ` : html``}
         ${album ? html`<div class="header-artist-album">${album}</div>` : html``}
       </div>`;
   }
@@ -75,7 +122,9 @@ class PlayerHeader extends LitElement {
    * style definitions used by this component.
    * */
 static get styles() {
-    return css`
+  return [
+    sharedStylesFavActions,
+    css`
 
       .player-header-container {
         margin: 0.75rem 3.25rem;
@@ -127,7 +176,8 @@ static get styles() {
         color: var(--spc-player-header-color);
         mix-blend-mode: screen;
       }
-    `;
+    `
+    ];
   }
 }
 

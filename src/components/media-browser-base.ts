@@ -105,12 +105,6 @@ export class MediaBrowserBase extends LitElement {
         // album-specific search types:
       } else if (this.searchMediaType == SearchMediaTypes.ALBUM_TRACKS) {
         this.mediaItemType = Section.TRACK_FAVORITES;
-        //this.mediaItemType = Section.TRACK_FAVORITES;  // TODO REMOVEME
-        //this.itemsPerRow = 1;
-        //this.hideTitle = false;
-        //this.hideSubTitle = false;
-        //this.listItemClass += ' button-track';
-        //return;
         // artist-specific search types:
       } else if (this.searchMediaType == SearchMediaTypes.ARTIST_ALBUMS) {
         this.mediaItemType = Section.ALBUM_FAVORITES;
@@ -610,12 +604,6 @@ export class MediaBrowserBase extends LitElement {
         mbi_info.subtitle = (itemInfo.total_episodes || 0) + " episodes";
       } else if (this.mediaItemType == Section.TRACK_FAVORITES) {
         const itemInfo = (item as ITrackSimplified);
-        //if (this.searchMediaType == SearchMediaTypes.ALBUM_TRACKS) {    // TODO REMOVEME
-        //  mbi_info.subtitle = "Track " + itemInfo.track_number;
-        //  if (itemInfo.disc_number > 1) {
-        //    mbi_info.subtitle += ", Disc " + itemInfo.disc_number;
-        //  }
-        //}
         if ((itemInfo.artists) && (itemInfo.artists.length > 0)) {
           mbi_info.subtitle = itemInfo.artists[0].name || item.type;
         }

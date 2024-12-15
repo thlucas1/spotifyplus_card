@@ -65,6 +65,7 @@ enum Actions {
   TrackFavoriteRemove = "TrackFavoriteRemove",
   TrackFavoriteUpdate = "TrackFavoriteUpdate",
   TrackPlayQueueAdd = "TrackPlayQueueAdd",
+  TrackPlayTrackFavorites = "TrackPlayTrackFavorites",
   TrackSearchPlaylists = "TrackSearchPlaylists",
   TrackSearchRadio = "TrackSearchRadio",
 }
@@ -221,6 +222,10 @@ class TrackActions extends FavActionsBase {
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.TrackPlayQueueAdd)}>
           <ha-svg-icon slot="start" .path=${mdiPlaylistMusic}></ha-svg-icon>
           <div slot="headline">Add Track to Play Queue</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.TrackPlayTrackFavorites)}>
+          <ha-svg-icon slot="start" .path=${mdiPlaylistPlay}></ha-svg-icon>
+          <div slot="headline">Play All Track Favorites</div>
         </ha-md-menu-item>
         <ha-md-divider role="separator" tabindex="-1"></ha-md-divider>
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.TrackCopyUriToClipboard)}>
@@ -604,6 +609,15 @@ class TrackActions extends FavActionsBase {
         // have to hide the progress indicator manually since it does not call updateActions.
         await this.spotifyPlusService.AddPlayerQueueItems(this.player.id, this.mediaItem.uri, null, false);
         this.progressHide();
+
+      } else if (action == Actions.TrackPlayTrackFavorites) {
+
+        // have to hide the progress indicator manually since it does not call updateActions.
+        await this.spotifyPlusService.PlayerMediaPlayTrackFavorites(this.player.id, null, true, null, false, this.store.config.trackFavBrowserItemsLimit);
+        this.progressHide();
+
+        // show player section.
+        this.store.card.SetSection(Section.PLAYER);
 
       } else {
 

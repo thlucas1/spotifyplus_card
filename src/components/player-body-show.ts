@@ -48,12 +48,16 @@ enum Actions {
 }
 
 
-class PlayerBodyShow extends PlayerBodyBase {
+export class PlayerBodyShow extends PlayerBodyBase {
 
   // private state properties.
   @state() private isShowFavorite?: boolean;
-  @state() private isEpisodeFavorite?: boolean;
+  @state() public isEpisodeFavorite?: boolean;
   @state() private episode?: IEpisode;
+
+  // public properties.
+  public actionEpisodeFavoriteAdd?: any;
+  public actionEpisodeFavoriteRemove?: any;
 
 
   /**
@@ -89,7 +93,7 @@ class PlayerBodyShow extends PlayerBodyBase {
       </div>
      `;
 
-    const actionEpisodeFavoriteAdd = html`
+    this.actionEpisodeFavoriteAdd = html`
       <div class="display-inline">
         <ha-icon-button
           .path=${mdiHeartOutline}
@@ -100,7 +104,7 @@ class PlayerBodyShow extends PlayerBodyBase {
       </div>
      `;
 
-    const actionEpisodeFavoriteRemove = html`
+    this.actionEpisodeFavoriteRemove = html`
       <div class="display-inline">
         <ha-icon-button
           .path=${mdiHeart}
@@ -195,7 +199,7 @@ class PlayerBodyShow extends PlayerBodyBase {
           <div class="media-info-text-ms">
             ${iconEpisode}
             ${this.episode?.name}
-            ${(this.isEpisodeFavorite ? actionEpisodeFavoriteRemove : actionEpisodeFavoriteAdd)}
+            ${(this.isEpisodeFavorite ? this.actionEpisodeFavoriteRemove : this.actionEpisodeFavoriteAdd)}
             <span class="actions-dropdown-menu">
               ${actionsEpisodeHtml}
             </span>

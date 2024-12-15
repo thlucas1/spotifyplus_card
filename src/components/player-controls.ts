@@ -27,11 +27,11 @@ import { ProgressEndedEvent } from '../events/progress-ended';
 import { ProgressStartedEvent } from '../events/progress-started';
 import { closestElement, isCardInEditPreview } from '../utils/utils';
 import { Player } from '../sections/player';
+import { PlayerBodyQueue } from './player-body-queue';
 
 // debug logging.
 import Debug from 'debug/src/browser.js';
 import { DEBUG_APP_NAME } from '../constants';
-import { PlayerBodyQueue } from './player-body-queue';
 const debuglog = Debug(DEBUG_APP_NAME + ":player-controls");
 
 const { NEXT_TRACK, PAUSE, PLAY, PREVIOUS_TRACK, REPEAT_SET, SHUFFLE_SET, TURN_ON, ACTION_FAVES, PLAY_QUEUE } = MediaPlayerEntityFeature;
@@ -420,7 +420,25 @@ class PlayerControls extends LitElement {
 
       } else if (action == PREVIOUS_TRACK) {
 
-        await this.mediaControlService.media_previous_track(this.player);
+        // the following is the same formula used in Progress class (trackProgress method).
+        // get current track positioning from media player attributes.
+        const position = this.player?.attributes.media_position || 0;
+        const playing = this.player?.isPlaying();
+        const updatedAt = this.player?.attributes.media_position_updated_at || 0;
+        let playingProgress = position;
+
+        // calculate progress.
+        if (playing) {
+          playingProgress = position + (Date.now() - new Date(updatedAt).getTime()) / 1000.0;
+        }
+
+        // if more than 8 seconds have passed then just restart the track;
+        // otherwise, select the previous track.
+        if (playingProgress > 8) {
+          await this.mediaControlService.media_seek(this.player, 0);
+        } else {
+          await this.mediaControlService.media_previous_track(this.player);
+        }
 
       } else if (action == REPEAT_SET) {
 

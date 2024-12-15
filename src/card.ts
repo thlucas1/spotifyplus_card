@@ -920,7 +920,7 @@ export class Card extends LitElement {
 
       playerHeaderTitle: "{player.source}",
       playerHeaderArtistTrack: "{player.media_artist} - {player.media_title}",
-      playerHeaderAlbum: "{player.media_album_name}",
+      playerHeaderAlbum: "{player.media_album_name} {player.sp_playlist_name_title}",
       playerHeaderNoMediaPlayingText: "\"{player.name}\" state is \"{player.state}\"",
 
       albumFavBrowserTitle: "Album Favorites for {player.sp_user_display_name} ({medialist.itemcount} items)",

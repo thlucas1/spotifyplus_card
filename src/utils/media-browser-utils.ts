@@ -225,7 +225,11 @@ export function formatPlayerInfo(
     text = text.replace("{player.sp_device_name}", player.attributes.sp_device_name || '');
     text = text.replace("{player.sp_item_type}", player.attributes.sp_item_type || '');
     text = text.replace("{player.sp_playlist_name}", player.attributes.sp_playlist_name || '');
-    text = text.replace("{player.sp_playlist_name_title}", "Playlist: " + (player.attributes.sp_playlist_name || 'n/a'));
+    if ((player.attributes.sp_playlist_name) && (player.attributes.sp_playlist_name != "Unknown")) {
+      text = text.replace("{player.sp_playlist_name_title}", " (" + player.attributes.sp_playlist_name + ")");
+    } else {
+      text = text.replace("{player.sp_playlist_name_title}", "");
+    }
     text = text.replace("{player.sp_playlist_uri}", player.attributes.sp_playlist_uri || '');
     text = text.replace("{player.sp_user_country}", player.attributes.sp_user_country || '');
     text = text.replace("{player.sp_user_display_name}", player.attributes.sp_user_display_name || '');

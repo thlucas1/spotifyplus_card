@@ -69,13 +69,17 @@ enum Actions {
 }
 
 
-class PlayerBodyTrack extends PlayerBodyBase {
+export class PlayerBodyTrack extends PlayerBodyBase {
 
   // private state properties.
   @state() private isAlbumFavorite?: boolean;
   @state() private isArtistFavorite?: boolean;
-  @state() private isTrackFavorite?: boolean;
+  @state() public isTrackFavorite?: boolean;
   @state() private track?: ITrack;
+
+  // public properties.
+  public actionTrackFavoriteAdd?: any;
+  public actionTrackFavoriteRemove?: any;
 
 
   /**
@@ -133,7 +137,7 @@ class PlayerBodyTrack extends PlayerBodyBase {
       </div>
      `;
 
-    const actionTrackFavoriteAdd = html`
+    this.actionTrackFavoriteAdd = html`
       <div class="display-inline">
         <ha-icon-button
           .path=${mdiHeartOutline}
@@ -144,7 +148,7 @@ class PlayerBodyTrack extends PlayerBodyBase {
       </div>
      `;
 
-    const actionTrackFavoriteRemove = html`
+    this.actionTrackFavoriteRemove = html`
       <div class="display-inline">
         <ha-icon-button
           .path=${mdiHeart}
@@ -314,7 +318,7 @@ class PlayerBodyTrack extends PlayerBodyBase {
           <div class="media-info-text-ms-c">
             ${iconTrack}
             ${this.track?.name}
-            ${(this.isTrackFavorite ? actionTrackFavoriteRemove : actionTrackFavoriteAdd)}
+            ${(this.isTrackFavorite ? this.actionTrackFavoriteRemove : this.actionTrackFavoriteAdd)}
             <span class="actions-dropdown-menu">
               ${actionsTrackHtml}
             </span>

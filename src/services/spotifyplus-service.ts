@@ -2924,6 +2924,75 @@ export class SpotifyPlusService {
 
 
   /**
+   * Get a list of the tracks saved in the current Spotify user's 'Your Library'
+   * and starts playing them.
+   * 
+   * @param entity_id 
+   *    Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param device_id
+   *    The name or id of the device this command is targeting.  
+   *    If not supplied, the user's currently active device is the target.  
+   *    Example: `Office`, `0d1841b0976bae2a3a310dd74c0f3df354899bc8`
+   * @param shuffle
+   *    True to set player shuffle mode to on; otherwise, False for no shuffle.
+   * @param delay
+   *    Time delay (in seconds) to wait AFTER issuing the command to the player.  
+   *    This delay will give the spotify web api time to process the change before 
+   *    another command is issued.  
+   *    Default is 0.50; value range is 0 - 10.
+   * @param resolve_device_id
+   *    True to resolve the supplied `deviceId` value; otherwise, False not resolve the `deviceId`
+   *    value as it has already been resolved.  
+   *    Default is True.  
+   * @param limit_total
+   *    The maximum number of items to retrieve from favorites.  
+   *    Default: 200.
+  */
+  public async PlayerMediaPlayTrackFavorites(
+    entity_id: string,
+    device_id: string | undefined | null = null,
+    shuffle: boolean | undefined | null = null,
+    delay: number | null = null,
+    resolve_device_id: boolean | undefined | null = null,
+    limit_total: number | null = null,
+  ): Promise<void> {
+
+    try {
+
+      // create service data (with required parameters).
+      const serviceData: { [key: string]: any } = {
+        entity_id: entity_id,
+      };
+
+      // update service data parameters (with optional parameters).
+      if (device_id)
+        serviceData['device_id'] = device_id;
+      if (shuffle != null)
+        serviceData['shuffle'] = shuffle;
+      if (delay)
+        serviceData['delay'] = delay;
+      if (resolve_device_id)
+        serviceData['resolve_device_id'] = resolve_device_id;
+      if (limit_total)
+        serviceData['limit_total'] = limit_total;
+
+      // create service request.
+      const serviceRequest: ServiceCallRequest = {
+        domain: DOMAIN_SPOTIFYPLUS,
+        service: 'player_media_play_track_favorites',
+        serviceData: serviceData
+      };
+
+      // call the service (no response).
+      await this.CallService(serviceRequest);
+
+    }
+    finally {
+    }
+  }
+
+
+  /**
    * Start playing one or more tracks of the specified context on a Spotify Connect device.
    * 
    * @param entity_id 

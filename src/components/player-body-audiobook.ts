@@ -51,12 +51,16 @@ enum Actions {
 }
 
 
-class PlayerBodyAudiobook extends PlayerBodyBase {
+export class PlayerBodyAudiobook extends PlayerBodyBase {
 
   // private state properties.
-  @state() private isAudiobookFavorite?: boolean;
+  @state() public isAudiobookFavorite?: boolean;
   @state() private isChapterFavorite?: boolean;
   @state() private chapter?: IChapter;
+
+  // private properties.
+  public actionAudiobookFavoriteAdd?: any;
+  public actionAudiobookFavoriteRemove?: any;
 
 
   /**
@@ -70,7 +74,7 @@ class PlayerBodyAudiobook extends PlayerBodyBase {
     super.render();
 
     // define actions - audiobook.
-    const actionAudiobookFavoriteAdd = html`
+    this.actionAudiobookFavoriteAdd = html`
       <div class="display-inline">
         <ha-icon-button
           .path=${mdiHeartOutline}
@@ -81,7 +85,7 @@ class PlayerBodyAudiobook extends PlayerBodyBase {
       </div>
      `;
 
-    const actionAudiobookFavoriteRemove = html`
+    this.actionAudiobookFavoriteRemove = html`
       <div class="display-inline">
         <ha-icon-button
           .path=${mdiHeart}
@@ -194,7 +198,7 @@ class PlayerBodyAudiobook extends PlayerBodyBase {
           <div class="media-info-text-ms-c">
             ${iconAudiobook}
             ${this.chapter?.audiobook.name}
-            ${(this.isAudiobookFavorite ? actionAudiobookFavoriteRemove : actionAudiobookFavoriteAdd)}
+            ${(this.isAudiobookFavorite ? this.actionAudiobookFavoriteRemove : this.actionAudiobookFavoriteAdd)}
             <span class="actions-dropdown-menu">
               ${actionsAudiobookHtml}
             </span>
