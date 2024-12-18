@@ -48,10 +48,16 @@ export interface IUserPreset {
 
 
   /**
-   * Properties used for calls to the GetTrackRecommendations service. or null.
+   * Properties used for calls to the GetTrackRecommendations service, or null.
    * This property should only be populated for type = "recommendations".
    */
   recommendations?: ITrackRecommendationsProperties | null;
+
+  /**
+   * True if shuffle is enabled; otherwise, false (or null).
+   * This property should only be populated for type = "trackfavorites".
+   */
+  shuffle?: boolean | null;
 
 }
 

@@ -1,5 +1,6 @@
 // lovelace card imports.
 import { HomeAssistant } from '../types/home-assistant-frontend/home-assistant';
+import { HassEntity } from 'home-assistant-js-websocket';
 
 // our imports.
 import { HassService } from '../services/hass-service';
@@ -89,16 +90,30 @@ export class Store {
    */
   public getMediaPlayerObject(entityId: string) {
 
-    // does entity id exist in hass state data?
-    const hassEntity = Object.values(this.hass.states)
+    // does entity id prefix exist in hass state data?
+    const hassEntitys = Object.values(this.hass.states)
       .filter((ent) => ent.entity_id.match(entityId));
 
     // if not, then it's an error!
-    if (!hassEntity)
-      throw new Error("Entity id '" + JSON.stringify(entityId) + "' does not exist in the state machine");
+    if (!hassEntitys) {
+      throw new Error("Entity id '" + JSON.stringify(entityId) + "' could not be matched in the state machine");
+    }
 
-    // convert the hass state representation to a media player object.
-    return new MediaPlayer(hassEntity[0]);
+    // find the exact matching HA media player entity and create the media player instance.
+    let player: MediaPlayer | null = null;
+    hassEntitys.forEach(item => {
+      const haEntity = item as HassEntity;
+      if (haEntity.entity_id.toLowerCase() == entityId.toLowerCase()) {
+        player = new MediaPlayer(haEntity);
+      }
+    })
+
+    // did we find the player?
+    if (player) {
+      return player;
+    } else {
+      throw new Error("Entity id '" + JSON.stringify(entityId) + "' does not exist in the state machine");
+    }
   }
 
 }

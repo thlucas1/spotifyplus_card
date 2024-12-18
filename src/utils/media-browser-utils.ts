@@ -223,7 +223,9 @@ export function formatPlayerInfo(
     text = text.replace("{player.sp_context_uri}", player.attributes.sp_context_uri || '');
     text = text.replace("{player.sp_device_id}", player.attributes.sp_device_id || '');
     text = text.replace("{player.sp_device_name}", player.attributes.sp_device_name || '');
+    text = text.replace("{player.sp_device_is_brand_sonos}", (player.attributes.sp_device_is_brand_sonos + "") || '');
     text = text.replace("{player.sp_item_type}", player.attributes.sp_item_type || '');
+    text = text.replace("{player.sp_playing_type}", player.attributes.sp_playing_type || '');
     text = text.replace("{player.sp_playlist_name}", player.attributes.sp_playlist_name || '');
     if ((player.attributes.sp_playlist_name) && (player.attributes.sp_playlist_name != "Unknown")) {
       text = text.replace("{player.sp_playlist_name_title}", " (" + player.attributes.sp_playlist_name + ")");
@@ -231,23 +233,13 @@ export function formatPlayerInfo(
       text = text.replace("{player.sp_playlist_name_title}", "");
     }
     text = text.replace("{player.sp_playlist_uri}", player.attributes.sp_playlist_uri || '');
+    text = text.replace("{player.sp_track_is_explicit}", (player.attributes.sp_track_is_explicit + "") || '');
     text = text.replace("{player.sp_user_country}", player.attributes.sp_user_country || '');
     text = text.replace("{player.sp_user_display_name}", player.attributes.sp_user_display_name || '');
     text = text.replace("{player.sp_user_email}", player.attributes.sp_user_email || '');
     text = text.replace("{player.sp_user_id}", player.attributes.sp_user_id || '');
     text = text.replace("{player.sp_user_product}", player.attributes.sp_user_product || '');
     text = text.replace("{player.sp_user_uri}", player.attributes.sp_user_uri || '');
-
-    // other possible keywords:
-    //media_duration: 276
-    //media_position: 182
-    //media_position_updated_at: "2024-04-30T21:32:12.303343+00:00"
-    //shuffle: false
-    //repeat: "off"
-    //device_class: speaker
-    //entity_picture: /api/media_player_proxy/media_player.bose_st10_1?token=f447f9b3fbdb647d9df2f7b0a5a474be9e17ffa51d26eb18f414d5120a2bdeb8&cache=2a8a6a76b27e209a
-    //icon: mdi: speaker
-    //supported_features: 1040319
 
   }
 

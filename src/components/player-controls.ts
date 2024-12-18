@@ -34,7 +34,9 @@ import Debug from 'debug/src/browser.js';
 import { DEBUG_APP_NAME } from '../constants';
 const debuglog = Debug(DEBUG_APP_NAME + ":player-controls");
 
-const { NEXT_TRACK, PAUSE, PLAY, PREVIOUS_TRACK, REPEAT_SET, SHUFFLE_SET, TURN_ON, ACTION_FAVES, PLAY_QUEUE } = MediaPlayerEntityFeature;
+const { NEXT_TRACK, PAUSE, PLAY, PREVIOUS_TRACK, REPEAT_SET, SHUFFLE_SET, TURN_ON } = MediaPlayerEntityFeature;
+const ACTION_FAVES = 900000000000;
+const PLAY_QUEUE = 990000000000;
 
 class PlayerControls extends LitElement {
 
@@ -328,7 +330,7 @@ class PlayerControls extends LitElement {
    * 
    * @param action Action to execute.
    */
-  private async onClickAction(action: MediaPlayerEntityFeature): Promise<boolean> {
+  private async onClickAction(action: any): Promise<boolean> {
 
     try {
 
@@ -493,7 +495,7 @@ class PlayerControls extends LitElement {
    * 
    * @param feature Feature identifier to check.
    */
-  private hideFeature(feature: MediaPlayerEntityFeature) {
+  private hideFeature(feature: any) {
 
     if (feature == PAUSE) {
 

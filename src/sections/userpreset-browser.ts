@@ -13,6 +13,7 @@ import { formatTitleInfo } from '../utils/media-browser-utils';
 import { getUtcNowTimestamp } from '../utils/utils';
 import { IUserPreset } from '../types/spotifyplus/user-preset';
 import { CategoryDisplayEvent } from '../events/category-display';
+import { ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED } from '../constants';
 
 
 @customElement("spc-userpreset-browser")
@@ -114,6 +115,11 @@ export class UserPresetBrowser extends FavBrowserBase {
       const preset = evArgs.detail as IUserPreset;
       this.dispatchEvent(CategoryDisplayEvent(preset.subtitle, preset.name, preset.uri));
 
+    } else if (evArgs.detail.type == "trackfavorites") {
+
+      const mediaItem = evArgs.detail as IUserPreset;
+      this.PlayTrackFavorites(mediaItem);
+
     } else {
 
       // call base class method to handle it.
@@ -131,8 +137,8 @@ export class UserPresetBrowser extends FavBrowserBase {
    */
   protected override onItemSelectedWithHold(args: CustomEvent) {
 
-    // is this a recommendations type?
-    if (args.detail.type == "recommendations") {
+    // does media item have a uri value (e.g. "recommendations","trackfavorites", etc)?
+    if ((args.detail.uri || "") == "") {
       // set the uri value to fool the base class validations.
       // note that uri property is not used by recommendations.
       args.detail.uri = "unknown";
@@ -153,6 +159,10 @@ export class UserPresetBrowser extends FavBrowserBase {
   protected async PlayTrackRecommendations(preset: IUserPreset): Promise<void> {
 
     try {
+
+      if (!this.player.isUserProductPremium()) {
+        throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
+      }
 
       // show progress indicator.
       this.progressShow();
@@ -193,6 +203,52 @@ export class UserPresetBrowser extends FavBrowserBase {
 
       // set error message and reset scroll position to zero so the message is displayed.
       this.alertErrorSet("Could not get track recommendations for user preset.  " + (error as Error).message);
+      this.mediaBrowserContentElement.scrollTop = 0;
+
+    }
+    finally {
+
+      // hide progress indicator.
+      this.progressHide();
+
+    }
+  }
+
+
+  /**
+   * Calls the SpotifyPlusService PlayerMediaPlayTrackFavorites method to play all 
+   * track favorites.
+   * 
+   * @param preset The user preset item that was selected.
+   */
+  protected async PlayTrackFavorites(preset: IUserPreset): Promise<void> {
+
+    try {
+
+      if (!this.player.isUserProductPremium()) {
+        throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
+      }
+
+      // show progress indicator.
+      this.progressShow();
+
+      // update status.
+      this.alertInfo = "Playing track favorites ...";
+      this.requestUpdate();
+
+      // play favorite tracks.
+      const device_id = this.player.attributes.source || null;
+      const shuffle = preset.shuffle || ((this.player.attributes.shuffle != null) ? this.player.attributes.shuffle : true);
+      await this.spotifyPlusService.PlayerMediaPlayTrackFavorites(this.player.id, device_id, shuffle, null, true, this.config.trackFavBrowserItemsLimit || 200);
+
+      // show player section.
+      this.store.card.SetSection(Section.PLAYER);
+
+    }
+    catch (error) {
+
+      // set error message and reset scroll position to zero so the message is displayed.
+      this.alertErrorSet("Could not play track favorites for user preset.  " + (error as Error).message);
       this.mediaBrowserContentElement.scrollTop = 0;
 
     }

@@ -262,6 +262,12 @@ export class PlayerBodyQueue extends PlayerBodyBase {
       // we want to manually force the refresh when the queue body is is displayed.
       if (updateActions.indexOf(Actions.GetPlayerQueueInfo) != -1) {
 
+        // if not premium account then don't allow it as it will fail anyway.
+        if (!this.player.isUserProductPremium()) {
+          this.alertErrorSet("Spotify Premium is required to display the player queue.");
+          return true;
+        }
+
         // create promise - update currently playing media item.
         const promiseGetPlayingItem = new Promise((resolve, reject) => {
 

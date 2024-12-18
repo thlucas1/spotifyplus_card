@@ -5,7 +5,7 @@ import { ServiceCallRequest } from '../types/home-assistant-frontend/service-cal
 // our imports.
 import { MediaPlayerItem } from '../types';
 import { MediaPlayer } from '../model/media-player';
-import { DOMAIN_MEDIA_PLAYER } from '../constants';
+import { ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED, DOMAIN_MEDIA_PLAYER } from '../constants';
 
 // media player services.
 const SERVICE_TURN_ON = "turn_on";
@@ -317,6 +317,11 @@ export class MediaControlService {
    */
   public async select_source(player: MediaPlayer, source: string) {
 
+    // spotify premium required for this function.
+    if (!player.isUserProductPremium()) {
+      throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
+    }
+
     // create service request.
     const serviceRequest: ServiceCallRequest = {
       domain: DOMAIN_MEDIA_PLAYER,
@@ -518,9 +523,6 @@ export enum MediaPlayerEntityFeature {
   REPEAT_SET = 262144,
   GROUPING = 524288,
 
-  // added the following for SpotifyPlus custom functions.
-  ACTION_FAVES = 900000000000,
-  PLAY_QUEUE  = 990000000000,
 }
 
 

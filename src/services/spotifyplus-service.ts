@@ -9,7 +9,7 @@ import {
 } from '@mdi/js';
 
 // our imports.
-import { DOMAIN_SPOTIFYPLUS } from '../constants';
+import { ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED, DOMAIN_SPOTIFYPLUS } from '../constants';
 import { MediaPlayer } from '../model/media-player';
 import { getMdiIconImageUrl } from '../utils/media-browser-utils';
 import { SearchMediaTypes } from '../types/search-media-types';
@@ -193,7 +193,7 @@ export class SpotifyPlusService {
       // update service data parameters (with optional parameters).
       if (device_id)
         serviceData['device_id'] = device_id;
-      if (verify_device_id)
+      if (verify_device_id != null)
         serviceData['verify_device_id'] = verify_device_id;
       if (delay)
         serviceData['delay'] = delay;
@@ -563,7 +563,7 @@ export class SpotifyPlusService {
       // update service data parameters (with optional parameters).
       if (playlist_id)
         serviceData['playlist_id'] = playlist_id;
-      if (is_public)
+      if (is_public != null)
         serviceData['public'] = is_public;
 
       // create service request.
@@ -2971,7 +2971,7 @@ export class SpotifyPlusService {
         serviceData['shuffle'] = shuffle;
       if (delay)
         serviceData['delay'] = delay;
-      if (resolve_device_id)
+      if (resolve_device_id != null)
         serviceData['resolve_device_id'] = resolve_device_id;
       if (limit_total)
         serviceData['limit_total'] = limit_total;
@@ -4219,9 +4219,9 @@ export class SpotifyPlusService {
         serviceData['password'] = password;
       if (loginid)
         serviceData['loginid'] = loginid;
-      if (pre_disconnect)
+      if (pre_disconnect != null)
         serviceData['pre_disconnect'] = pre_disconnect;
-      if (verify_device_list_entry)
+      if (verify_device_list_entry != null)
         serviceData['verify_device_list_entry'] = verify_device_list_entry;
       if (delay)
         serviceData['delay'] = delay;
@@ -4319,6 +4319,9 @@ export class SpotifyPlusService {
     }
     if (!mediaItem) {
       throw new Error("Media browser item argument was not supplied to the PlayMediaBrowserItem service.");
+    }
+    if (!player.isUserProductPremium()) {
+      throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
     }
 
     try {

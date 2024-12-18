@@ -47,6 +47,15 @@ export class MediaPlayer {
 
 
   /**
+   * Returns true if the user is a Spotify Premium account member;
+   * otherwise, false.
+   */
+  public isUserProductPremium() {
+    return this.attributes.sp_user_product === "premium";
+  }
+
+
+  /**
    * Returns true if the player is currently playing something (e.g. state = 'playing'); 
    * otherwise, false.
    */
@@ -87,7 +96,7 @@ export class MediaPlayer {
    * otherwise, false.
    */
   public supportsFeature(feature: MediaPlayerEntityFeature) {
-    return ((this.attributes.supported_features || 0) & feature) == feature;
+    return ((this.attributes.supported_features || 0) & feature) !== 0;
   }
 
 }

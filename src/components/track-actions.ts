@@ -27,7 +27,7 @@ import { SearchMediaTypes } from '../types/search-media-types';
 import { SearchMediaEvent } from '../events/search-media';
 import { formatDateHHMMSSFromMilliseconds } from '../utils/utils';
 import { openWindowNewTab } from '../utils/media-browser-utils';
-import { ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD, ALERT_INFO_PRESET_JSON_COPIED_TO_CLIPBOARD, RADIO_SEARCH_KEY } from '../constants.js';
+import { ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED, ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD, ALERT_INFO_PRESET_JSON_COPIED_TO_CLIPBOARD, RADIO_SEARCH_KEY } from '../constants.js';
 import { GetUserPresetConfigEntry, GetUserPresetConfigEntryJson } from '../types/spotifyplus/user-preset.js';
 import { ITrack } from '../types/spotifyplus/track';
 
@@ -611,6 +611,10 @@ class TrackActions extends FavActionsBase {
         this.progressHide();
 
       } else if (action == Actions.TrackPlayTrackFavorites) {
+
+        if (!this.player.isUserProductPremium()) {
+          throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
+        }
 
         // have to hide the progress indicator manually since it does not call updateActions.
         await this.spotifyPlusService.PlayerMediaPlayTrackFavorites(this.player.id, null, true, null, false, this.store.config.trackFavBrowserItemsLimit);

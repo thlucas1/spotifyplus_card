@@ -6,10 +6,22 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.21 ] - 2024/12/18
+
+  * This release requires the SpotifyPlus Integration v1.0.72+ release; please make sure you update the SpotifyPlus integration prior to updating this SpotifyPlus Card release.
+  * Added new user-defined preset type `trackfavorites`, which allows you to play all track favorites by simply selecting the preset.  There is also the "Play All Track Favorites" action in the track favorites section actions, but the preset makes it easier to play all tracks.
+
+###### [ 1.0.20 ] - 2024/12/17
+
+  * This release requires the SpotifyPlus Integration v1.0.71+ release; please make sure you update the SpotifyPlus integration prior to updating this SpotifyPlus Card release.
+  * Corrected a bug that was causing the wrong media player to be displayed when multiple SpotifyPlus media players were defined with the same prefix.
+  * Hide Media controls for Spotify Free accounts, as a Spotify Premium membership is required for those functions.
+  * Hide Volume controls for Spotify Free accounts, as a Spotify Premium membership is required for those functions.
+
 ###### [ 1.0.19 ] - 2024/12/15
 
   * Added favorite indicator to the player section form for track, show episode, and audiobook items.  The heart icon will be displayed to the right of the item name.  A solid red heart indicates the item is a favorite; a transparent heart indicates the item is not a favorite.
-  * Added "Play All Track Favorites" action to the track favorites section actions.  This will get a list of the tracks saved in the current Spotify user's 'Your Library' and starts playing them, with shuffle enabled..
+  * Added "Play All Track Favorites" action to the track favorites section actions.  This will get a list of the tracks saved in the current Spotify user's 'Your Library' and starts playing them, with shuffle enabled.
   * Added logic to player `PREVIOUS_TRACK` control so that if more than 8 seconds have passed the currently playing track is just restarted from the beginning; otherwise, the previous track is selected if progress is past the 8 second point.
 
 ###### [ 1.0.18 ] - 2024/12/11

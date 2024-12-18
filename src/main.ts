@@ -11,11 +11,15 @@ console.groupCollapsed(
   "color: green; font-weight: bold"
 );
 console.log(
-  "Wiki Docs:",
+  "SpotifyPlus Card Wiki Docs:",
   "https://github.com/thlucas1/spotifyplus_card/wiki/Configuration-Options"
 );
 console.log(
-  "Debug logging commands:\n",
+  "SpotifyPlus Integration Wiki Docs:",
+  "https://github.com/thlucas1/homeassistantcomponent_spotifyplus/wiki"
+);
+console.log(
+  "SpotifyPlus Card Debug Logging Console Commands:\n",
   "- enable:  localStorage.setItem('debug', 'spotifyplus-card:*');\n",
   "- disable: localStorage.setItem('debug', '');"
  );

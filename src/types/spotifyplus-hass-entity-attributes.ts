@@ -27,7 +27,7 @@ export declare type SpotifyPlusHassEntityAttributes = HassEntityAttributesMediaP
   /**
    * Denotes if the source device is a Sonos brand device (true) or not (false).
    */
-  sp_device_is_brand_sonos?: string;
+  sp_device_is_brand_sonos?: boolean;
 
   /**
    * Denotes the type of item being played: `track`, `podcast`, or `audiobook`.
@@ -35,7 +35,13 @@ export declare type SpotifyPlusHassEntityAttributes = HassEntityAttributesMediaP
   sp_item_type?: string;
 
   /**
-   * Playlist name being played, if the current context is a playlist (e.g. "Daily Mix 1").
+   * The object type of the currently playing item, or null if nothing is playing.
+   * If not null, it can be one of `track`, `episode`, `ad` or `unknown`.
+   */
+  sp_playing_type?: string;
+
+  /**
+   * Playlist name being played, if the current context is a playlist (e.g. "DJ").
    */
   sp_playlist_name?: string;
 
@@ -43,6 +49,11 @@ export declare type SpotifyPlusHassEntityAttributes = HassEntityAttributesMediaP
    * Playlist uri being played, if the current context is a playlist (e.g. "spotify:playlist:37i9dQZF1EYkqdzj48dyYq").
    */
   sp_playlist_uri?: string;
+
+  /**
+   * True if the track / episode has explicit content; otherwise, false.
+   */
+  sp_track_is_explicit?: boolean;
 
   /**
    * Country code for the active Spotify user account (e.g. "US").

@@ -18,7 +18,7 @@ import { ProgressStartedEvent } from '../events/progress-started';
 import { closestElement } from '../utils/utils';
 import { Player } from '../sections/player';
 
-const { TURN_OFF, TURN_ON } = MediaPlayerEntityFeature;
+const { TURN_OFF, TURN_ON, VOLUME_MUTE, VOLUME_SET } = MediaPlayerEntityFeature;
 
 
 class Volume extends LitElement {
@@ -62,8 +62,15 @@ class Volume extends LitElement {
     // render control.
     return html`
       <div class="volume-container icons" slim=${this.slim || nothing}>
-        ${!hideMute ? html`<ha-icon-button @click=${this.onMuteClick} .path=${muteIcon} label="Mute Toggle" style=${this.styleIcon(colorMute)}></ha-icon-button>` : html``}
-        <div class="volume-slider" style=${this.styleVolumeSlider()}>
+        ${!hideMute ? html`
+          <ha-icon-button
+            hide=${this.hideFeature(VOLUME_MUTE)}
+            @click=${this.onMuteClick} 
+            .path=${muteIcon} 
+            label="Mute Toggle"
+            style=${this.styleIcon(colorMute)}></ha-icon-button>
+        ` : html``}
+        <div class="volume-slider" hide=${this.hideFeature(VOLUME_SET)} style=${this.styleVolumeSlider()}>
           <ha-control-slider
             .value=${volume}
             max=${maxVolume}
@@ -233,6 +240,15 @@ class Volume extends LitElement {
         }
         return true; // hide icon
       }
+
+    } else if (feature == VOLUME_MUTE) {
+
+      return !this.player.supportsFeature(VOLUME_MUTE);
+
+    } else if (feature == VOLUME_SET) {
+
+      return !this.player.supportsFeature(VOLUME_SET);
+
     }
 
     // default is to hide the feature.

@@ -1,7 +1,7 @@
 import { css } from 'lit';
 
 /** current version of the card. */
-export const CARD_VERSION = '1.0.19';
+export const CARD_VERSION = '1.0.21';
 
 /** SpotifyPlus integration domain identifier. */
 export const DOMAIN_SPOTIFYPLUS = 'spotifyplus';
@@ -58,5 +58,6 @@ export const listStyle = css`
   }
 `;
 
-export const ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD = "Preset info copied to clipboard; please edit the card configuration (via show code editor) and paste copied text under the \"userPresets:\" key."
-export const ALERT_INFO_PRESET_JSON_COPIED_TO_CLIPBOARD = "Preset JSON copied to clipboard; please edit the userPresets.json file and paste the copied text at the desired position.  Be sure to remove ending comma if last (or only) entry in the file."
+export const ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD = "Preset info copied to clipboard; please edit the card configuration (via show code editor) and paste copied text under the \"userPresets:\" key.";
+export const ALERT_INFO_PRESET_JSON_COPIED_TO_CLIPBOARD = "Preset JSON copied to clipboard; please edit the userPresets.json file and paste the copied text at the desired position.  Be sure to remove ending comma if last (or only) entry in the file.";
+export const ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED = "Spotify Premium required for this function.";
