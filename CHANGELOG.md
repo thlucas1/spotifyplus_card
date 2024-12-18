@@ -6,6 +6,11 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.22 ] - 2024/12/18
+
+  * This release requires the SpotifyPlus Integration v1.0.72+ release; please make sure you update the SpotifyPlus integration prior to updating this SpotifyPlus Card release.
+  * Fixed card not rendering correctly in the card picker and when an entity id was not selected.
+
 ###### [ 1.0.21 ] - 2024/12/18
 
   * This release requires the SpotifyPlus Integration v1.0.72+ release; please make sure you update the SpotifyPlus integration prior to updating this SpotifyPlus Card release.

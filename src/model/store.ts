@@ -78,6 +78,7 @@ export class Store {
     this.spotifyPlusService = new SpotifyPlusService(hass, card);
     this.player = this.getMediaPlayerObject(playerId);
     this.section = section;
+
   }
 
 
@@ -89,6 +90,26 @@ export class Store {
    * @throws Error if the specified entityId values does not exist in the hass.states data.
    */
   public getMediaPlayerObject(entityId: string) {
+
+    // has an entity been configured?
+    if ((!this.config) || (!this.config.entity) || (this.config.entity.trim() == "")) {
+
+      // entityId will not be set in the config if coming from the card picker;
+      // this is ok, as we want it to render a "needs configured" card ui.
+      // in this case, we just create an "empty" MediaPlayer instance.
+      return new MediaPlayer({
+        entity_id: "",
+        state: "",
+        last_changed: "",
+        last_updated: "",
+        attributes: {},
+        context: {
+          id: "",
+          user_id: "",
+          parent_id: "",
+        }
+      });
+    }
 
     // does entity id prefix exist in hass state data?
     const hassEntitys = Object.values(this.hass.states)

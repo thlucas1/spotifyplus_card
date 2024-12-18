@@ -1010,11 +1010,18 @@ export class Card extends LitElement {
 
       userPresets: [
         {
-          "name": "Spotify Playlist Daily Mix 1",
+          "name": "Daily Mix 1",
           "subtitle": "Various Artists",
           "image_url": "https://dailymix-images.scdn.co/v2/img/ab6761610000e5ebcd3f796bd7ea49ed7615a550/1/en/default",
           "uri": "spotify:playlist:37i9dQZF1E39vTG3GurFPW",
           "type": "playlist"
+        },
+        {
+          "name": "My Track Favorites",
+          "subtitle": "Shuffled",
+          "image_url": "https://t.scdn.co/images/728ed47fc1674feb95f7ac20236eb6d7.jpeg",
+          "shuffle": true,
+          "type": "trackfavorites"
         }
       ],
 
