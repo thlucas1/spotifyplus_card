@@ -290,9 +290,12 @@ export class UserPresetBrowser extends FavBrowserBase {
           const result = JSON.parse(JSON.stringify(this.config.userPresets || [])) as IUserPreset[];
           if (result) {
 
-            // set where the configuration items were loaded from.
+            // set where the configuration items were loaded from, and
+            // replace nocache indicator if specified.
+            const noCacheKey = "nocache=" + getUtcNowTimestamp();
             result.forEach(item => {
               item.origin = "card config";
+              item.image_url = (item.image_url || "").replace("{nocache}", noCacheKey);
             });
 
             // append results to media list.
@@ -333,9 +336,12 @@ export class UserPresetBrowser extends FavBrowserBase {
               const responseObj = response as IUserPreset[]
               if (responseObj) {
 
-                // set where the configuration items were loaded from.
+                // set where the configuration items were loaded from, and 
+                // replace nocache indicator if specified.
+                const noCacheKey = "nocache=" + getUtcNowTimestamp();
                 responseObj.forEach(item => {
                   item.origin = this.config.userPresetsFile as string;
+                  item.image_url = (item.image_url || "").replace("{nocache}", noCacheKey);
                 });
 
                 // append results to media list.

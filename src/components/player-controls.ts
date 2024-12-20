@@ -548,9 +548,8 @@ class PlayerControls extends LitElement {
     } else if (feature == TURN_ON) {
 
       if (this.player.supportsFeature(TURN_ON)) {
-        //if ([MediaPlayerState.OFF, MediaPlayerState.UNKNOWN, MediaPlayerState.STANDBY].includes(this.player.state)) {
         if ([MediaPlayerState.OFF, MediaPlayerState.STANDBY].includes(this.player.state)) {
-          return nothing; // show icon
+          return (this.config.playerVolumeControlsHidePower) ? true : nothing;
         }
         return true; // hide icon
       }

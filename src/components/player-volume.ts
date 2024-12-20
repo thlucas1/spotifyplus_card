@@ -227,7 +227,7 @@ class Volume extends LitElement {
 
       if (this.player.supportsFeature(TURN_ON)) {
         if ([MediaPlayerState.OFF, MediaPlayerState.UNKNOWN, MediaPlayerState.STANDBY].includes(this.player.state)) {
-          return (this.config.playerVolumeControlsHidePower || nothing);  // show / hide icon based on config settings
+          return (this.config.playerVolumeControlsHidePower) ? true : nothing;
         }
         return true; // hide icon
       }
@@ -236,18 +236,20 @@ class Volume extends LitElement {
 
       if (this.player.supportsFeature(TURN_OFF)) {
         if (![MediaPlayerState.OFF, MediaPlayerState.UNKNOWN, MediaPlayerState.STANDBY].includes(this.player.state)) {
-          return (this.config.playerVolumeControlsHidePower || nothing);  // show / hide icon based on config settings
+          return (this.config.playerVolumeControlsHidePower) ? true : nothing;
         }
         return true; // hide icon
       }
 
     } else if (feature == VOLUME_MUTE) {
 
-      return !this.player.supportsFeature(VOLUME_MUTE);
+      if (this.player.supportsFeature(VOLUME_MUTE))
+        return nothing;
 
     } else if (feature == VOLUME_SET) {
 
-      return !this.player.supportsFeature(VOLUME_SET);
+        if (this.player.supportsFeature(VOLUME_SET))
+          return nothing;
 
     }
 

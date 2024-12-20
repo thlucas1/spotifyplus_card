@@ -6,6 +6,12 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.23 ] - 2024/12/20
+
+  * This release requires the SpotifyPlus Integration v1.0.73+ release; please make sure you update the SpotifyPlus integration prior to updating this SpotifyPlus Card release.
+  * Fixed hidden volume controls, which was caused by a bug introduced with v1.0.20.
+  * Added the ability to disable image caching for userpreset images.  More info can be found on the [wiki docs](https://github.com/thlucas1/spotifyplus_card/wiki/Configuration-Options#userpresets-image-url-caching.)
+
 ###### [ 1.0.22 ] - 2024/12/18
 
   * This release requires the SpotifyPlus Integration v1.0.72+ release; please make sure you update the SpotifyPlus integration prior to updating this SpotifyPlus Card release.
