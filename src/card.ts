@@ -25,6 +25,7 @@ import './editor/editor';
 
 // our imports.
 import { SEARCH_MEDIA, SearchMediaEventArgs } from './events/search-media';
+import { FILTER_SECTION_MEDIA, FilterSectionMediaEventArgs } from './events/filter-section-media';
 import { CATEGORY_DISPLAY, CategoryDisplayEventArgs } from './events/category-display';
 import { EDITOR_CONFIG_AREA_SELECTED, EditorConfigAreaSelectedEventArgs } from './events/editor-config-area-selected';
 import { PROGRESS_STARTED } from './events/progress-started';
@@ -36,7 +37,18 @@ import { CardConfig } from './types/card-config';
 import { CustomImageUrls } from './types/custom-image-urls';
 import { SearchMediaTypes } from './types/search-media-types';
 import { SearchBrowser } from './sections/search-media-browser';
+import { FavBrowserBase } from './sections/fav-browser-base';
+import { AlbumFavBrowser } from './sections/album-fav-browser';
+import { ArtistFavBrowser } from './sections/artist-fav-browser';
+import { AudiobookFavBrowser } from './sections/audiobook-fav-browser';
 import { CategoryBrowser } from './sections/category-browser';
+import { DeviceBrowser } from './sections/device-browser';
+import { EpisodeFavBrowser } from './sections/episode-fav-browser';
+import { PlaylistFavBrowser } from './sections/playlist-fav-browser';
+import { RecentBrowser } from './sections/recent-browser';
+import { ShowFavBrowser } from './sections/show-fav-browser';
+import { TrackFavBrowser } from './sections/track-fav-browser';
+import { UserPresetBrowser } from './sections/userpreset-browser';
 import { formatTitleInfo, removeSpecialChars } from './utils/media-browser-utils';
 import { BRAND_LOGO_IMAGE_BASE64, BRAND_LOGO_IMAGE_SIZE, FOOTER_ICON_SIZE_DEFAULT } from './constants';
 import {
@@ -98,8 +110,19 @@ export class Card extends LitElement {
   @state() private cancelLoader!: boolean;
   @state() private playerId!: string;
 
+  // card section references.
   @query("#elmSearchMediaBrowserForm", false) private elmSearchMediaBrowserForm!: SearchBrowser;
   @query("#elmCategoryBrowserForm", false) private elmCategoryBrowserForm!: CategoryBrowser;
+  @query("#elmAlbumFavBrowserForm", false) private elmAlbumFavBrowserForm!: AlbumFavBrowser;
+  @query("#elmArtistFavBrowserForm", false) private elmArtistFavBrowserForm!: ArtistFavBrowser;
+  @query("#elmAudiobookFavBrowserForm", false) private elmAudiobookFavBrowserForm!: AudiobookFavBrowser;
+  @query("#elmDeviceBrowserForm", false) private elmDeviceBrowserForm!: DeviceBrowser;
+  @query("#elmEpisodeFavBrowserForm", false) private elmEpisodeFavBrowserForm!: EpisodeFavBrowser;
+  @query("#elmPlaylistFavBrowserForm", false) private elmPlaylistFavBrowserForm!: PlaylistFavBrowser;
+  @query("#elmRecentBrowserForm", false) private elmRecentBrowserForm!: RecentBrowser;
+  @query("#elmShowFavBrowserForm", false) private elmShowFavBrowserForm!: ShowFavBrowser;
+  @query("#elmTrackFavBrowserForm", false) private elmTrackFavBrowserForm!: TrackFavBrowser;
+  @query("#elmUserPresetBrowserForm", false) private elmUserPresetBrowserForm!: UserPresetBrowser;
 
   /** Indicates if createStore method is executing for the first time (true) or not (false). */
   private isFirstTimeSetup: boolean = true;
@@ -168,19 +191,19 @@ export class Card extends LitElement {
           ${
               this.playerId
               ? choose(this.section, [
-                [Section.ALBUM_FAVORITES, () => html`<spc-album-fav-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected}></spc-album-fav-browser>`],
-                [Section.ARTIST_FAVORITES, () => html`<spc-artist-fav-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected}></spc-artist-fav-browser>`],
-                [Section.AUDIOBOOK_FAVORITES, () => html`<spc-audiobook-fav-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected}></spc-audiobook-fav-browser>`],
+                [Section.ALBUM_FAVORITES, () => html`<spc-album-fav-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected} id="elmAlbumFavBrowserForm"></spc-album-fav-browser>`],
+                [Section.ARTIST_FAVORITES, () => html`<spc-artist-fav-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected} id="elmArtistFavBrowserForm"></spc-artist-fav-browser>`],
+                [Section.AUDIOBOOK_FAVORITES, () => html`<spc-audiobook-fav-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected} id="elmAudiobookFavBrowserForm"></spc-audiobook-fav-browser>`],
                 [Section.CATEGORYS, () => html`<spc-category-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected} id="elmCategoryBrowserForm"></spc-category-browser>`],
-                [Section.DEVICES, () => html`<spc-device-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected}></spc-device-browser>`],
-                [Section.EPISODE_FAVORITES, () => html`<spc-episode-fav-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected}></spc-episode-fav-browser>`],
+                [Section.DEVICES, () => html`<spc-device-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected} id="elmDeviceBrowserForm"></spc-device-browser>`],
+                [Section.EPISODE_FAVORITES, () => html`<spc-episode-fav-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected} id="elmEpisodeFavBrowserForm"></spc-episode-fav-browser>`],
                 [Section.PLAYER, () => html`<spc-player id="spcPlayer" .store=${this.store}></spc-player>`],
-                [Section.PLAYLIST_FAVORITES, () => html`<spc-playlist-fav-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected}></spc-playlist-fav-browser>`],
-                [Section.RECENTS, () => html`<spc-recent-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected}></spc-recents-browser>`],
+                [Section.PLAYLIST_FAVORITES, () => html`<spc-playlist-fav-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected} id="elmPlaylistFavBrowserForm"></spc-playlist-fav-browser>`],
+                [Section.RECENTS, () => html`<spc-recent-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected} id="elmRecentBrowserForm"></spc-recents-browser>`],
                 [Section.SEARCH_MEDIA, () => html`<spc-search-media-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected} id="elmSearchMediaBrowserForm"></spc-search-media-browser>`],
-                [Section.SHOW_FAVORITES, () => html`<spc-show-fav-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected}></spc-show-fav-browser>`],
-                [Section.TRACK_FAVORITES, () => html`<spc-track-fav-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected}></spc-track-fav-browser>`],
-                [Section.USERPRESETS, () => html`<spc-userpreset-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected}></spc-userpresets-browser>`],
+                [Section.SHOW_FAVORITES, () => html`<spc-show-fav-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected} id="elmShowFavBrowserForm"></spc-show-fav-browser>`],
+                [Section.TRACK_FAVORITES, () => html`<spc-track-fav-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected} id="elmTrackFavBrowserForm"></spc-track-fav-browser>`],
+                [Section.USERPRESETS, () => html`<spc-userpreset-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected} id="elmUserPresetBrowserForm"></spc-userpresets-browser>`],
                 [Section.UNDEFINED, () => html`<div class="spc-not-configured">SpotifyPlus card configuration error.<br/>Please configure section(s) to display.</div>`],
               ])
               : html`<div class="spc-initial-config">Welcome to the SpotifyPlus media player card.<br/>Start by configuring a media player entity.</div>`
@@ -418,6 +441,7 @@ export class Card extends LitElement {
     this.addEventListener(PROGRESS_STARTED, this.onProgressStartedEventHandler);
     this.addEventListener(SEARCH_MEDIA, this.onSearchMediaEventHandler);
     this.addEventListener(CATEGORY_DISPLAY, this.onCategoryDisplayEventHandler);
+    this.addEventListener(FILTER_SECTION_MEDIA, this.onFilterSectionMediaEventHandler);
 
     // only add the following events if card configuration is being edited.
     if (isCardInEditPreview(this)) {
@@ -447,6 +471,7 @@ export class Card extends LitElement {
     this.removeEventListener(PROGRESS_STARTED, this.onProgressStartedEventHandler);
     this.removeEventListener(SEARCH_MEDIA, this.onSearchMediaEventHandler);
     this.removeEventListener(CATEGORY_DISPLAY, this.onCategoryDisplayEventHandler);
+    this.removeEventListener(FILTER_SECTION_MEDIA, this.onFilterSectionMediaEventHandler);
 
     // the following event is only added when the card configuration editor is created.
     // always remove the following events, as isCardInEditPreview() can sometimes
@@ -654,6 +679,86 @@ export class Card extends LitElement {
         }
       }, 250);
 
+    }
+  }
+
+
+  /**
+   * Handles the `FILTER_SECTION_MEDIA` event.
+   * This will show the specified section, and apply the specified filter criteria 
+   * passed in the event arguments.
+   * 
+   * @param ev Event definition and arguments.
+  */
+  protected onFilterSectionMediaEventHandler = (ev: Event) => {
+
+    // map event arguments.
+    const evArgs = (ev as CustomEvent).detail as FilterSectionMediaEventArgs;
+
+    // validate section id.
+    const enumValues: string[] = Object.values(Section);
+    if (!enumValues.includes(evArgs.section || "")) {
+      debuglog("%onFilterSectionMediaEventHandler - Ignoring Filter request; section is not a valid Section enum value:\n%s",
+        "color:red",
+        JSON.stringify(evArgs, null, 2),
+      );
+    }
+
+    // is section activated?  if so, then select it.
+    if (this.config.sections?.includes(evArgs.section as Section)) {
+
+      // show the search section.
+      this.section = evArgs.section as Section;
+      this.store.section = this.section;
+
+      // wait just a bit before executing the search.
+      setTimeout(() => {
+
+        if (debuglog.enabled) {
+          debuglog("onFilterSectionMediaEventHandler - executing filter:\n%s",
+            JSON.stringify(evArgs, null, 2),
+          );
+        }
+
+        // reference the section browser.
+        let browserBase: FavBrowserBase;
+        if (evArgs.section == Section.ALBUM_FAVORITES) {
+          browserBase = this.elmAlbumFavBrowserForm;
+        } else if (evArgs.section == Section.ARTIST_FAVORITES) {
+          browserBase = this.elmArtistFavBrowserForm;
+        } else if (evArgs.section == Section.AUDIOBOOK_FAVORITES) {
+          browserBase = this.elmAudiobookFavBrowserForm;
+        } else if (evArgs.section == Section.DEVICES) {
+          browserBase = this.elmDeviceBrowserForm;
+        } else if (evArgs.section == Section.EPISODE_FAVORITES) {
+          browserBase = this.elmEpisodeFavBrowserForm;
+        } else if (evArgs.section == Section.PLAYLIST_FAVORITES) {
+          browserBase = this.elmPlaylistFavBrowserForm;
+        } else if (evArgs.section == Section.RECENTS) {
+          browserBase = this.elmRecentBrowserForm;
+        } else if (evArgs.section == Section.SHOW_FAVORITES) {
+          browserBase = this.elmShowFavBrowserForm;
+        } else if (evArgs.section == Section.TRACK_FAVORITES) {
+          browserBase = this.elmTrackFavBrowserForm;
+        } else if (evArgs.section == Section.USERPRESETS) {
+          browserBase = this.elmUserPresetBrowserForm;
+        } else {
+          return;
+        }
+
+        // execute the filter.
+        browserBase.filterSectionMedia(evArgs);
+        //super.requestUpdate();
+
+      }, 50);
+
+    } else {
+
+      // section is not activated; cannot search.
+      debuglog("%onFilterSectionMediaEventHandler - Filter section is not enabled; ignoring filter request:\n%s",
+        "color:red",
+        JSON.stringify(evArgs, null, 2),
+      );
     }
   }
 

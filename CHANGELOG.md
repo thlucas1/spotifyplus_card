@@ -6,11 +6,15 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.24 ] - 2024/12/22
+
+  * Added new userpreset type `filtersection`, which can be used to quickly display a section with the specified filter criteria applied.  More info can be found on the [wiki docs](https://github.com/thlucas1/spotifyplus_card/wiki/Configuration-Options#userpresets-filter-section-media).
+
 ###### [ 1.0.23 ] - 2024/12/20
 
   * This release requires the SpotifyPlus Integration v1.0.73+ release; please make sure you update the SpotifyPlus integration prior to updating this SpotifyPlus Card release.
   * Fixed hidden volume controls, which was caused by a bug introduced with v1.0.20.
-  * Added the ability to disable image caching for userpreset images.  More info can be found on the [wiki docs](https://github.com/thlucas1/spotifyplus_card/wiki/Configuration-Options#userpresets-image-url-caching.)
+  * Added the ability to disable image caching for userpreset images.  More info can be found on the [wiki docs](https://github.com/thlucas1/spotifyplus_card/wiki/Configuration-Options#userpresets-image-url-caching).
 
 ###### [ 1.0.22 ] - 2024/12/18
 

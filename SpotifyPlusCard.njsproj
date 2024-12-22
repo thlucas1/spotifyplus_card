@@ -144,6 +144,9 @@
     <TypeScriptCompile Include="src\events\category-display.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\events\filter-section-media.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\events\search-media.ts" />
     <TypeScriptCompile Include="src\sections\category-browser.ts" />
     <TypeScriptCompile Include="src\sections\episode-fav-browser.ts" />

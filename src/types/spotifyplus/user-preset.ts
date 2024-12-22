@@ -59,6 +59,18 @@ export interface IUserPreset {
    */
   shuffle?: boolean | null;
 
+  /**
+   * Filter criteria that will be applied to the specified filter section.
+   * This property should only be populated for type = "filtersection".
+   */
+  filter_criteria?: string | null;
+
+  /**
+   * Section to be filtered.
+   * This property should only be populated for type = "filtersection".
+   */
+  filter_section?: string | null;
+
 }
 
 

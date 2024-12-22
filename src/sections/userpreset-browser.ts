@@ -1,3 +1,8 @@
+// debug logging.
+import Debug from 'debug/src/browser.js';
+import { DEBUG_APP_NAME } from '../constants';
+const debuglog = Debug(DEBUG_APP_NAME + ":userpreset-browser");
+
 // lovelace card imports.
 import { html, TemplateResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
@@ -13,6 +18,7 @@ import { formatTitleInfo } from '../utils/media-browser-utils';
 import { getUtcNowTimestamp } from '../utils/utils';
 import { IUserPreset } from '../types/spotifyplus/user-preset';
 import { CategoryDisplayEvent } from '../events/category-display';
+import { FilterSectionMediaEvent } from '../events/filter-section-media';
 import { ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED } from '../constants';
 
 
@@ -104,11 +110,32 @@ export class UserPresetBrowser extends FavBrowserBase {
    */
   protected override onItemSelected(evArgs: CustomEvent) {
 
+    if (debuglog.enabled) {
+      debuglog("onItemSelected - media item selected:\n%s",
+        JSON.stringify(evArgs.detail, null, 2),
+      );
+    }
+
     // is this a recommendations type?
     if (evArgs.detail.type == "recommendations") {
 
       const mediaItem = evArgs.detail as IUserPreset;
       this.PlayTrackRecommendations(mediaItem);
+
+    } else if (evArgs.detail.type == "filtersection") {
+
+      const preset = evArgs.detail as IUserPreset;
+
+      // validate filter section name.
+      const enumValues: string[] = Object.values(Section);
+      if (!enumValues.includes(preset.filter_section || "")) {
+      //if (Object.values(Section) as string[]).includes(preset.filter_section || "") {
+        this.alertErrorSet("Preset filter_section \"" + preset.filter_section + "\" is not a valid section identifier.");
+        return;
+      }
+
+      // fire event.
+      this.dispatchEvent(FilterSectionMediaEvent(preset.filter_section, preset.filter_criteria));
 
     } else if (evArgs.detail.type == "category") {
 

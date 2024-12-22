@@ -17,6 +17,7 @@ import { SpotifyPlusService } from '../services/spotifyplus-service';
 import { storageService } from '../decorators/storage';
 import { truncateMediaList } from '../utils/media-browser-utils';
 import { isCardInEditPreview, loadHaFormLazyControls } from '../utils/utils';
+import { FilterSectionMediaEventArgs } from '../events/filter-section-media';
 import { ProgressEndedEvent } from '../events/progress-ended';
 import { ProgressStartedEvent } from '../events/progress-started';
 import { DOMAIN_SPOTIFYPLUS } from '../constants';
@@ -322,6 +323,27 @@ export class FavBrowserBase extends LitElement {
       }
 
     }
+
+  }
+
+
+  /**
+   * Execute filter based on passed arguments.
+   */
+  public filterSectionMedia(args: FilterSectionMediaEventArgs): void {
+
+    if (debuglog.enabled) {
+      debuglog("filterSectionMedia - filtering section media:\n%s",
+        JSON.stringify(args, null, 2),
+      );
+    }
+
+    // apply filter criteria.
+    this.filterCriteria = args.filterCriteria;
+    //this.requestUpdate();
+
+    // execute the search.
+    //this.updateMediaList(this.player);
 
   }
 
