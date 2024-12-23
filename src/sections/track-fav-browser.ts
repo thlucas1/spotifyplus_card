@@ -1,3 +1,8 @@
+// debug logging.
+import Debug from 'debug/src/browser.js';
+import { DEBUG_APP_NAME } from '../constants';
+const debuglog = Debug(DEBUG_APP_NAME + ":track-fav-browser");
+
 // lovelace card imports.
 import { html, TemplateResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
@@ -93,6 +98,84 @@ export class TrackFavBrowser extends FavBrowserBase {
         </div>
       </div>
     `;
+  }
+
+
+  /**
+   * Handles the `item-selected` event fired when a media browser item is clicked.
+   * 
+   * @param evArgs Event arguments that contain the media item that was clicked on.
+   */
+  protected override onItemSelected(evArgs: CustomEvent) {
+
+    if (debuglog.enabled) {
+      debuglog("onItemSelected - media item selected:\n%s",
+        JSON.stringify(evArgs.detail, null, 2),
+      );
+    }
+
+    try {
+
+      // set media item reference.
+      const mediaItem = evArgs.detail as ITrack;
+
+      // build track uri list from favorites list.
+      // note that Spotify web api can only play 50 tracks max.
+      const maxItems = 50;
+      const uris = new Array<string>();
+      const names = new Array<string>();
+      let count = 0;
+      let startFound = false;
+
+      for (const item of (this.mediaList || [])) {
+
+        if (item.uri == mediaItem.uri) {
+          startFound = true;
+        }
+
+        if (startFound) {
+          uris.push(item.uri);
+          names.push(item.name);
+          count += 1;
+          if (count >= maxItems) {
+            break;
+          }
+        }
+
+      }
+
+      // trace.
+      if (debuglog.enabled) {
+        debuglog("onItemSelected - tracks to play:\n%s",
+          JSON.stringify(names, null, 2),
+        );
+      }
+
+      // show progress indicator.
+      this.progressShow();
+
+      // play media item.
+      this.spotifyPlusService.PlayerMediaPlayTracks(this.player.id, uris.join(","));
+
+      // show player section.
+      this.store.card.SetSection(Section.PLAYER);
+
+    }
+    catch (error) {
+
+      // set error message and reset scroll position to zero so the message is displayed.
+      this.alertErrorSet("Could not play media item.  " + (error as Error).message);
+      this.mediaBrowserContentElement.scrollTop = 0;
+
+    }
+    finally {
+
+      // hide progress indicator.
+      this.progressHide();
+
+    }
+
+
   }
 
 

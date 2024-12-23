@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.25 ] - 2024/12/23
+
+  * Ability to play track favorites starting from selected favorite track, which will now automatically add the following tracks (up to 50) to the player queue.  Prior to this, only the selected track would play and then play would stop.  Note that the 50 track limitation is a Spotify Web API limit.
+
 ###### [ 1.0.24 ] - 2024/12/22
 
   * Added new userpreset type `filtersection`, which can be used to quickly display a section with the specified filter criteria applied.  More info can be found on the [wiki docs](https://github.com/thlucas1/spotifyplus_card/wiki/Configuration-Options#userpresets-filter-section-media).
