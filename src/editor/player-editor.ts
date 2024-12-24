@@ -6,24 +6,26 @@ import { choose } from 'lit/directives/choose.js';
 // our imports.
 import { BaseEditor } from './base-editor';
 import './editor-form';
+import './player-general-editor';
 import './player-header-editor';
 import './player-controls-editor';
 import './player-volume-editor';
 
 /** Configuration area editor sections enum. */
 enum ConfigArea {
+  GENERAL = 'General',
   HEADER = 'Header',
   CONTROLS = 'Controls',
   VOLUME = 'Volume',
 }
 
 /** Configuration area editor section keys array. */
-const { HEADER, CONTROLS, VOLUME } = ConfigArea;
+const { GENERAL, HEADER, CONTROLS, VOLUME } = ConfigArea;
 
 
 class PlayerSettingsEditor extends BaseEditor {
 
-  @state() private configArea = HEADER;
+  @state() private configArea = GENERAL;
 
   /**
    * Invoked on each update to perform rendering tasks. 
@@ -41,7 +43,7 @@ class PlayerSettingsEditor extends BaseEditor {
         Settings that control the Player section look and feel
       </div>
       <ha-control-button-group>
-        ${[HEADER, CONTROLS, VOLUME].map(
+        ${[GENERAL, HEADER, CONTROLS, VOLUME].map(
           (configArea) => html`
             <ha-control-button
               selected=${this.configArea === configArea || nothing}
@@ -62,6 +64,10 @@ class PlayerSettingsEditor extends BaseEditor {
 
     // show the desired section editor.
     return choose(this.configArea, [
+      [
+        GENERAL,
+        () => html`<spc-player-general-editor .config=${this.config} .hass=${this.hass}></spc-player-general-editor>`,
+      ],
       [
         HEADER,
         () => html`<spc-player-header-editor .config=${this.config} .hass=${this.hass}></spc-player-header-editor>`,

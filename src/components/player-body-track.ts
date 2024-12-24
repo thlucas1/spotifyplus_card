@@ -429,6 +429,12 @@ export class PlayerBodyTrack extends PlayerBodyBase {
 
     try {
 
+      // if editing the card, then don't bother updating actions as we will not
+      // display the actions dialog.
+      if (this.isCardInEditPreview) {
+        return false;
+      }
+
       // process actions that don't require a progress indicator.
       if (action == Actions.AlbumCopyPresetToClipboard) {
 

@@ -310,6 +310,16 @@ export interface CardConfig extends LovelaceCardConfig {
   episodeFavBrowserItemsSortTitle?: boolean;
 
   /**
+   * Size of the player background image.
+   * Suggested values:
+   * - "100% 100%" image size is 100%, stretching to fill available space.
+   * - "contain" image is contained in the boundaries without stretching.
+   * - "cover" image covers the entire background, stretching to fill available space.
+   * Default is "100% 100%".
+   */
+  playerBackgroundImageSize?: string;
+
+  /**
    * Title displayed in the header area of the Player section form.
    * Omit this parameter to hide the title display area.
    * This value supports Title Formatter Options.

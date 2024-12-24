@@ -141,12 +141,9 @@
     <TypeScriptCompile Include="src\components\userpreset-actions.ts" />
     <TypeScriptCompile Include="src\editor\category-browser-editor.ts" />
     <TypeScriptCompile Include="src\editor\episode-fav-browser-editor.ts" />
-    <TypeScriptCompile Include="src\events\category-display.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="src\events\filter-section-media.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\editor\player-general-editor.ts" />
+    <TypeScriptCompile Include="src\events\category-display.ts" />
+    <TypeScriptCompile Include="src\events\filter-section-media.ts" />
     <TypeScriptCompile Include="src\events\search-media.ts" />
     <TypeScriptCompile Include="src\sections\category-browser.ts" />
     <TypeScriptCompile Include="src\sections\episode-fav-browser.ts" />

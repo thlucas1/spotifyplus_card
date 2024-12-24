@@ -1,7 +1,7 @@
 // lovelace card imports.
 import { css, html, LitElement, PropertyValues, TemplateResult } from 'lit';
 import { customElement, property, state } from "lit/decorators.js";
-import { styleMap } from 'lit-html/directives/style-map.js';
+import { styleMap, StyleInfo } from 'lit-html/directives/style-map.js';
 
 // ** IMPORTANT - Vibrant notes:
 // ensure that you have "compilerOptions"."lib": [ ... , "WebWorker" ] specified
@@ -125,6 +125,7 @@ export class Player extends LitElement implements playerAlerts {
    * style definitions used by this component.
    * */
   static get styles() {
+
     return css`
 
       .hoverable:focus,
@@ -148,7 +149,7 @@ export class Player extends LitElement implements playerAlerts {
         /*background-color: #000000;*/
         background-position: center;
         background-repeat: no-repeat;
-        background-size: var(--spc-player-background-size);
+        background-size: var(--spc-player-background-size, 100% 100%);  /* PLAYER_BACKGROUND_IMAGE_SIZE_DEFAULT */
         text-align: -webkit-center;
         height: 100%;
         width: 100%;
@@ -215,12 +216,16 @@ export class Player extends LitElement implements playerAlerts {
    */
   private styleBackgroundImage() {
 
-    // stretch the background cover art to fit the entire player.
-    //const backgroundSize = 'cover';
-    //const backgroundSize = 'contain';
-    let backgroundSize = '100% 100%';
-    if (this.config.width == 'fill') {
-      // if in fill mode, then do not stretch the image.
+    // get default player background size.
+    let backgroundSize: string | undefined;
+
+    // allow user configuration to override background size.
+    if (this.config.playerBackgroundImageSize) {
+      backgroundSize = this.config.playerBackgroundImageSize;
+    }
+
+    // if not configured AND in fill mode, then do not stretch the background image.
+    if ((!backgroundSize) && (this.config.width == 'fill')) {
       backgroundSize = 'contain';
     }
 
@@ -262,22 +267,25 @@ export class Player extends LitElement implements playerAlerts {
     // set player controls and volume controls icon size.
     const playerControlsIconSize = this.config.playerControlsIconSize || PLAYER_CONTROLS_ICON_SIZE_DEFAULT;
 
-    return styleMap({
-      'background-image': `url(${imageUrl})`,
-      '--spc-player-background-size': `${backgroundSize}`,
-      '--spc-player-header-bg-color': `${headerBackgroundColor}`,
-      '--spc-player-header-color': `#ffffff`,
-      '--spc-player-controls-bg-color': `${controlsBackgroundColor}`,
-      '--spc-player-controls-color': `#ffffff`,
-      '--spc-player-controls-icon-size': `${playerControlsIconSize}`,
-      '--spc-player-controls-icon-button-size': `var(--spc-player-controls-icon-size, ${PLAYER_CONTROLS_ICON_SIZE_DEFAULT}) + 0.75rem`,
-      '--spc-player-palette-vibrant': `${this._colorPaletteVibrant}`,
-      '--spc-player-palette-muted': `${this._colorPaletteMuted}`,
-      '--spc-player-palette-darkvibrant': `${this._colorPaletteDarkVibrant}`,
-      '--spc-player-palette-darkmuted': `${this._colorPaletteDarkMuted}`,
-      '--spc-player-palette-lightvibrant': `${this._colorPaletteLightVibrant}`,
-      '--spc-player-palette-lightmuted': `${this._colorPaletteLightMuted}`,
-    });
+    // build style info object.
+    const styleInfo: StyleInfo = <StyleInfo>{};
+    styleInfo['background-image'] = `url(${imageUrl})`;
+    if (backgroundSize)
+      styleInfo['--spc-player-background-size'] = `${backgroundSize}`;
+    styleInfo['--spc-player-header-bg-color'] = `${headerBackgroundColor}`;
+    styleInfo['--spc-player-header-color'] = `#ffffff`;
+    styleInfo['--spc-player-controls-bg-color'] = `${controlsBackgroundColor} `;
+    styleInfo['--spc-player-controls-color'] = `#ffffff`;
+    styleInfo['--spc-player-controls-icon-size'] = `${playerControlsIconSize}`;
+    styleInfo['--spc-player-controls-icon-button-size'] = `var(--spc-player-controls-icon-size, ${PLAYER_CONTROLS_ICON_SIZE_DEFAULT}) + 0.75rem`;
+    styleInfo['--spc-player-palette-vibrant'] = `${this._colorPaletteVibrant}`;
+    styleInfo['--spc-player-palette-muted'] = `${this._colorPaletteMuted}`;
+    styleInfo['--spc-player-palette-darkvibrant'] = `${this._colorPaletteDarkVibrant}`;
+    styleInfo['--spc-player-palette-darkmuted'] = `${this._colorPaletteDarkMuted}`;
+    styleInfo['--spc-player-palette-lightvibrant'] = `${this._colorPaletteLightVibrant}`;
+    styleInfo['--spc-player-palette-lightmuted'] = `${this._colorPaletteLightMuted}`;
+    return styleMap(styleInfo);
+
   }
 
 
