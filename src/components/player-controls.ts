@@ -34,7 +34,7 @@ import Debug from 'debug/src/browser.js';
 import { DEBUG_APP_NAME } from '../constants';
 const debuglog = Debug(DEBUG_APP_NAME + ":player-controls");
 
-const { NEXT_TRACK, PAUSE, PLAY, PREVIOUS_TRACK, REPEAT_SET, SHUFFLE_SET, TURN_ON } = MediaPlayerEntityFeature;
+const { NEXT_TRACK, PAUSE, PLAY, PREVIOUS_TRACK, REPEAT_SET, SHUFFLE_SET, TURN_ON, TURN_OFF } = MediaPlayerEntityFeature;
 const ACTION_FAVES = 900000000000;
 const PLAY_QUEUE = 990000000000;
 
@@ -102,6 +102,7 @@ class PlayerControls extends LitElement {
           <spc-player-volume hide=${stopped} .store=${this.store} .player=${this.player} class="player-volume-container"></spc-player-volume>
           <div class="iconsPower">
               <ha-icon-button @click=${() => this.onClickAction(TURN_ON)}        hide=${this.hideFeature(TURN_ON)}        .path=${mdiPower} label="Turn On" style=${this.styleIcon(colorPower)}></ha-icon-button>
+              <ha-icon-button @click=${() => this.onClickAction(TURN_OFF)}       hide=${this.hideFeature(TURN_OFF)}       .path=${mdiPower} label="Turn Off"></ha-icon-button>
           </div>
       </div>
   `;
@@ -458,9 +459,9 @@ class PlayerControls extends LitElement {
 
         await this.mediaControlService.shuffle_set(this.player, !this.player.attributes.shuffle);
 
-        //} else if (action == TURN_OFF) {
+      } else if (action == TURN_OFF) {
 
-        //  this.mediaControlService.turn_off(this.player);
+        await this.mediaControlService.turn_off(this.player);
 
       } else if (action == TURN_ON) {
 
@@ -554,14 +555,15 @@ class PlayerControls extends LitElement {
         return true; // hide icon
       }
 
-    //} else if (feature == TURN_OFF) {
+    } else if (feature == TURN_OFF) {
 
-    //  if (this.player.supportsFeature(TURN_OFF)) {
-    //    if (![MediaPlayerState.OFF, MediaPlayerState.UNKNOWN, MediaPlayerState.STANDBY].includes(this.player.state)) {
-    //      return nothing; // show icon
-    //    }
-    //    return true; // hide icon
-    //  }
+      // this should only be allowed if the player state is IDLE.
+      if (this.player.supportsFeature(TURN_OFF)) {
+        if ([MediaPlayerState.IDLE].includes(this.player.state)) {
+          return (this.config.playerVolumeControlsHidePower) ? true : nothing;
+        }
+        return true; // hide icon
+      }
 
     }
 

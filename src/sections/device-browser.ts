@@ -204,8 +204,11 @@ export class DeviceBrowser extends FavBrowserBase {
         const refresh = this.refreshDeviceList || false;  // refresh device list (defaults to cached list).
         const sortResult = true;  // true to sort returned items; otherwise, false
 
+        // get source items to omit.
+        const sourceListHide = player.attributes.sp_source_list_hide || [];
+
         // call the service to retrieve the media list.
-        this.spotifyPlusService.GetSpotifyConnectDevices(player.id, refresh, sortResult)
+        this.spotifyPlusService.GetSpotifyConnectDevices(player.id, refresh, sortResult, sourceListHide)
           .then(result => {
 
             // load media list results.

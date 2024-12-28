@@ -14,7 +14,7 @@ import '../components/track-actions';
 import { FavBrowserBase } from './fav-browser-base';
 import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
-import { formatTitleInfo } from '../utils/media-browser-utils';
+import { formatTitleInfo, getMediaListTrackUrisRemaining } from '../utils/media-browser-utils';
 import { getUtcNowTimestamp } from '../utils/utils';
 import { GetTracks } from '../types/spotifyplus/track-page-saved';
 import { ITrack } from '../types/spotifyplus/track';
@@ -116,43 +116,14 @@ export class TrackFavBrowser extends FavBrowserBase {
 
     try {
 
+      // show progress indicator.
+      this.progressShow();
+
       // set media item reference.
       const mediaItem = evArgs.detail as ITrack;
 
-      // build track uri list from favorites list.
-      // note that Spotify web api can only play 50 tracks max.
-      const maxItems = 50;
-      const uris = new Array<string>();
-      const names = new Array<string>();
-      let count = 0;
-      let startFound = false;
-
-      for (const item of (this.mediaList || [])) {
-
-        if (item.uri == mediaItem.uri) {
-          startFound = true;
-        }
-
-        if (startFound) {
-          uris.push(item.uri);
-          names.push(item.name);
-          count += 1;
-          if (count >= maxItems) {
-            break;
-          }
-        }
-
-      }
-
-      // trace.
-      if (debuglog.enabled) {
-        debuglog("onItemSelected - tracks to play:\n%s",
-          JSON.stringify(names, null, 2),
-        );
-      }
-
-      // show progress indicator.
-      this.progressShow();
+      // build track uri list from media list.
+      const { uris } = getMediaListTrackUrisRemaining(this.mediaList || [], mediaItem);
 
       // play media item.
       this.spotifyPlusService.PlayerMediaPlayTracks(this.player.id, uris.join(","));
@@ -174,8 +145,6 @@ export class TrackFavBrowser extends FavBrowserBase {
       this.progressHide();
 
     }
-
-
   }
 
 

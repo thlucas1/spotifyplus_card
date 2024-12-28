@@ -1,3 +1,8 @@
+// debug logging.
+import Debug from 'debug/src/browser.js';
+import { DEBUG_APP_NAME } from '../constants';
+const debuglog = Debug(DEBUG_APP_NAME + ":player-body-queue");
+
 // lovelace card imports.
 import { css, html, TemplateResult } from 'lit';
 import { state } from 'lit/decorators.js';
@@ -9,14 +14,11 @@ import {
 import { sharedStylesGrid } from '../styles/shared-styles-grid.js';
 import { sharedStylesMediaInfo } from '../styles/shared-styles-media-info.js';
 import { sharedStylesFavActions } from '../styles/shared-styles-fav-actions.js';
+import { getMediaListTrackUrisRemaining } from '../utils/media-browser-utils.js';
 import { PlayerBodyBase } from './player-body-base';
 import { MediaPlayer } from '../model/media-player';
-import { IPlayerQueueInfo } from '../types/spotifyplus/player-queue-info.js';
-
-// debug logging.
-import Debug from 'debug/src/browser.js';
-import { DEBUG_APP_NAME } from '../constants';
-const debuglog = Debug(DEBUG_APP_NAME + ":player-body-queue");
+import { IPlayerQueueInfo } from '../types/spotifyplus/player-queue-info';
+import { ITrack } from '../types/spotifyplus/track';
 
 /**
  * Track actions.
@@ -214,11 +216,19 @@ export class PlayerBodyQueue extends PlayerBodyBase {
 
       } else if (action == Actions.TrackPlay) {
 
-        await this.spotifyPlusService.Card_PlayMediaBrowserItem(this.player, item);
+        // build track uri list from media list.
+        const { uris } = getMediaListTrackUrisRemaining(this.queueInfo?.queue as ITrack[], item);
+        
+        // play media item.
+        this.spotifyPlusService.PlayerMediaPlayTracks(this.player.id, uris.join(","));
+        this.progressHide();
+
+      } else {
+
+        // no action selected - hide progress indicator.
         this.progressHide();
 
       }
-
       return true;
 
     }

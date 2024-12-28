@@ -51,6 +51,11 @@ export declare type SpotifyPlusHassEntityAttributes = HassEntityAttributesMediaP
   sp_playlist_uri?: string;
 
   /**
+   * List of device names (in lower-case) to hide from the source list.
+   */
+  sp_source_list_hide?: Array<string>;
+
+  /**
    * True if the track / episode has explicit content; otherwise, false.
    */
   sp_track_is_explicit?: boolean;

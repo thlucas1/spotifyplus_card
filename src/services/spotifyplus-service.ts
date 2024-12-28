@@ -2261,12 +2261,14 @@ export class SpotifyPlusService {
    * 
    * @param refresh True to return real-time information from the spotify zeroconf api and update the cache; otherwise, False to just return the cached value.
    * @param sort_result True to sort the items by name; otherwise, False to leave the items in the same order they were returned in by the Spotify Zeroconf API.  Default is true.
+   * @param source_list_hide List of device names to hide from the source list (colon delimited).
    * @returns A SpotifyConnectDevices object.
   */
   public async GetSpotifyConnectDevices(
     entity_id: string,
     refresh: boolean | null = null,
     sort_result: boolean | null = null,
+    source_list_hide: Array<string> | null = null,
   ): Promise<ISpotifyConnectDevices> {
 
     try {
@@ -2302,8 +2304,18 @@ export class SpotifyPlusService {
       // get the "result" portion of the response, and convert it to a type.
       const responseObj = response["result"] as ISpotifyConnectDevices;
 
-      // set image_url property based on device type.
+      // process all items returned.
       if ((responseObj != null) && (responseObj.Items != null)) {
+
+        // remove source items that are hidden (based on SpotifyPlus config options);
+        // we have to do this in reverse order, due to iteration of the array.
+        for (let i = responseObj.Items.length - 1; i >= 0; i--) {
+          if (source_list_hide?.includes(responseObj.Items[i].Name.toLowerCase())) {
+            responseObj.Items.splice(i, 1);
+          }
+        }
+
+        // set image_url property based on device type.
         responseObj.Items.forEach(item => {
           // set image_url path using mdi icons for common sources.
           const sourceCompare = (item.Name || "").toLocaleLowerCase();

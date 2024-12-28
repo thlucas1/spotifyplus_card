@@ -1,3 +1,8 @@
+// debug logging.
+import Debug from 'debug/src/browser.js';
+import { DEBUG_APP_NAME } from '../constants';
+const debuglog = Debug(DEBUG_APP_NAME + ":recent-browser");
+
 // lovelace card imports.
 import { html, TemplateResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
@@ -9,7 +14,7 @@ import '../components/track-actions';
 import { FavBrowserBase } from './fav-browser-base';
 import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
-import { formatTitleInfo } from '../utils/media-browser-utils';
+import { formatTitleInfo, getMediaListTrackUrisRemaining } from '../utils/media-browser-utils';
 import { getUtcNowTimestamp } from '../utils/utils';
 import { GetTracks } from '../types/spotifyplus/track-page-saved';
 import { ITrack } from '../types/spotifyplus/track';
@@ -93,6 +98,55 @@ export class RecentBrowser extends FavBrowserBase {
         </div>
       </div>
     `;
+  }
+
+
+
+
+  /**
+   * Handles the `item-selected` event fired when a media browser item is clicked.
+   * 
+   * @param evArgs Event arguments that contain the media item that was clicked on.
+   */
+  protected override onItemSelected(evArgs: CustomEvent) {
+
+    if (debuglog.enabled) {
+      debuglog("onItemSelected - media item selected:\n%s",
+        JSON.stringify(evArgs.detail, null, 2),
+      );
+    }
+
+    try {
+
+      // show progress indicator.
+      this.progressShow();
+
+      // set media item reference.
+      const mediaItem = evArgs.detail as ITrack;
+
+      // build track uri list from media list.
+      const { uris } = getMediaListTrackUrisRemaining(this.mediaList || [], mediaItem);
+
+      // play media item.
+      this.spotifyPlusService.PlayerMediaPlayTracks(this.player.id, uris.join(","));
+
+      // show player section.
+      this.store.card.SetSection(Section.PLAYER);
+
+    }
+    catch (error) {
+
+      // set error message and reset scroll position to zero so the message is displayed.
+      this.alertErrorSet("Could not play media item.  " + (error as Error).message);
+      this.mediaBrowserContentElement.scrollTop = 0;
+
+    }
+    finally {
+
+      // hide progress indicator.
+      this.progressHide();
+
+    }
   }
 
 

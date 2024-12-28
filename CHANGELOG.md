@@ -6,13 +6,19 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.27 ] - 2024/12/28
+
+  * Updated Devices section to remove device entries that wish to be hidden as specified by SpotifyPlus integration configuration "hide devices" option.
+  * Added ability to play recently played tracks starting from selected track, which will now automatically add the following tracks (up to 50) to the player queue.  Prior to this, only the selected track would play and then play would stop.  Note that the 50 track limitation is a Spotify Web API limit.
+  * Added ability to play player queue tracks starting from selected track, which will now automatically add the following tracks (up to 50) to the player queue.  Prior to this, only the selected track would play and then play would stop.  Note that the 50 track limitation is a Spotify Web API limit.
+
 ###### [ 1.0.26 ] - 2024/12/24
 
   * Added `playerBackgroundImageSize` config option that specifies the size of the player background image.  Defaults to "100% 100%"; More info can be found on the [wiki docs](https://github.com/thlucas1/spotifyplus_card/wiki/Configuration-Options#playerbackgroundimagesize).
 
 ###### [ 1.0.25 ] - 2024/12/23
 
-  * Ability to play track favorites starting from selected favorite track, which will now automatically add the following tracks (up to 50) to the player queue.  Prior to this, only the selected track would play and then play would stop.  Note that the 50 track limitation is a Spotify Web API limit.
+  * Added ability to play track favorites starting from selected favorite track, which will now automatically add the following tracks (up to 50) to the player queue.  Prior to this, only the selected track would play and then play would stop.  Note that the 50 track limitation is a Spotify Web API limit.
 
 ###### [ 1.0.24 ] - 2024/12/22
 

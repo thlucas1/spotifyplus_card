@@ -1,8 +1,14 @@
+// debug logging.
+import Debug from 'debug/src/browser.js';
+import { DEBUG_APP_NAME } from '../constants';
+const debuglog = Debug(DEBUG_APP_NAME + ":media-browser-utils");
+
 // our imports.
 import { MediaPlayer } from '../model/media-player';
 import { CustomImageUrls } from '../types/custom-image-urls';
 import { CardConfig } from '../types/card-config';
 import { formatDateEpochSecondsToLocaleString } from './utils';
+import { ITrack } from '../types/spotifyplus/track';
 
 
 /**
@@ -304,4 +310,74 @@ export function truncateMediaList(mediaList: any, maxItems: number): string | un
  */
 export function openWindowNewTab(url: string):void {
   window.open(url, "_blank");
+}
+
+
+/**
+ * Returns a list of track uris and names that will include the selected media 
+ * item, and subsequent media items in the list up to the maximum specified.
+ * 
+ * @param mediaList Source media list of `ITrack` items.
+ * @param mediaList Source media item that was selected.
+ * @param maxItems Maximum number of items to return (Spotify Web API can only play 50 tracks max).
+ * @param removeDuplicates True to remove duplicate items in the results list; otherwise, False to include duplicate items.
+ */
+export function getMediaListTrackUrisRemaining(
+  mediaList: Array<ITrack>,
+  mediaItem: ITrack,
+  maxItems: number | null = 50,
+  removeDuplicates: boolean | null = true,
+): { uris: string[], names: string[] } {
+
+  // build track uri list from media list.
+  const uris = new Array<string>();
+  const names = new Array<string>();
+  let count = 0;
+  let startFound = false;
+
+  // process all items in the media list.
+  for (const item of (mediaList || [])) {
+
+    // find the media item that was selected, so we can start adding
+    // all remaining items.
+    if (item.uri == mediaItem.uri) {
+      startFound = true;
+    }
+
+    if (startFound) {
+
+      // is item already in the list?
+      let isDuplicate = false;
+      if (removeDuplicates) {
+        for (const dupItem of (uris)) {
+          if (item.uri == dupItem) {
+            isDuplicate = true;
+            break;
+          }
+        }
+      }
+
+      // if not a dupllicate, then add item to return list.
+      if (!isDuplicate) {
+        uris.push(item.uri);
+        names.push(item.name);
+        count += 1;
+        if (count >= (maxItems || 50)) {
+          break;
+        }
+      }
+    }
+
+  }
+
+  // trace.
+  if (debuglog.enabled) {
+    debuglog("getMediaListTrackUrisRemaining - track name(s) remaining:\n%s",
+      JSON.stringify(names, null, 2),
+    );
+  }
+
+  // return items to caller.
+  return { uris: uris, names: names };
+
 }
