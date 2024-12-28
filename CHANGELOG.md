@@ -8,6 +8,7 @@ Change are listed in reverse chronological order (newest to oldest).
 
 ###### [ 1.0.27 ] - 2024/12/28
 
+  * This release requires the SpotifyPlus Integration v1.0.76+ release; please make sure you update the SpotifyPlus integration prior to updating this SpotifyPlus Card release.
   * Updated Devices section to remove device entries that wish to be hidden as specified by SpotifyPlus integration configuration "hide devices" option.
   * Added ability to play recently played tracks starting from selected track, which will now automatically add the following tracks (up to 50) to the player queue.  Prior to this, only the selected track would play and then play would stop.  Note that the 50 track limitation is a Spotify Web API limit.
   * Added ability to play player queue tracks starting from selected track, which will now automatically add the following tracks (up to 50) to the player queue.  Prior to this, only the selected track would play and then play would stop.  Note that the 50 track limitation is a Spotify Web API limit.
