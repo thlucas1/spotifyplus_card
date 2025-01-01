@@ -13,7 +13,7 @@
     "@vibrant/core": "^3.2.1-alpha.1",
     "@vibrant/generator-default": "^3.2.1-alpha.1",
     "@vibrant/image": "^3.2.1-alpha.1",
-    "@vibrant/image-browser": "^3.2.1-alpha.1",
+    "@vibrant/image-browser": "^4.0.0",
     "@vibrant/image-node": "^3.2.1-alpha.1",
     "@vibrant/quantizer-mmcq": "^3.2.1-alpha.1",
     "copy-text-to-clipboard": "^3.2.0",
