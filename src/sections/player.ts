@@ -262,6 +262,7 @@ export class Player extends LitElement implements playerAlerts {
       headerBackgroundColor = 'transparent';
       controlsBackgroundColor = 'transparent';
       backgroundSize = BRAND_LOGO_IMAGE_SIZE;
+      this.store.card.footerBackgroundColor = undefined;
     }
 
     // set player controls and volume controls icon size.

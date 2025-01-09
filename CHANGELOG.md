@@ -6,6 +6,12 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.28 ] - 2025/01/09
+
+  * This release requires the SpotifyPlus Integration v1.0.85+ release; please make sure you update the SpotifyPlus integration prior to updating this SpotifyPlus Card release.
+  * Added `deviceBrowserItemsShowHiddenDevices` config option to show SpotifyPlus configured hidden devices in Device browser.  If true, the SpotifyPlus configuration option to hide specified device names in the media source list is ignored and ALL known devices are listed.
+  * Added play button icon to player section, which will be displayed if the player state is IDLE.
+
 ###### [ 1.0.27 ] - 2024/12/28
 
   * This release requires the SpotifyPlus Integration v1.0.76+ release; please make sure you update the SpotifyPlus integration prior to updating this SpotifyPlus Card release.

@@ -263,6 +263,12 @@ export interface CardConfig extends LovelaceCardConfig {
    */
   deviceBrowserItemsHideSubTitle?: boolean;
 
+  /** 
+   * Show SpotifyPlus configured hidden devices in Device browser.
+   * Default is false.
+   */
+  deviceBrowserItemsShowHiddenDevices?: boolean;
+
   /**
    * Title displayed at the top of the Episode Favorites media browser section form.
    * Omit this parameter to hide the title display area.

@@ -44,6 +44,12 @@ const CONFIG_SETTINGS_SCHEMA = [
     required: false,
     selector: { boolean: {} },
   },
+  {
+    name: 'deviceBrowserItemsShowHiddenDevices',
+    label: 'Show SpotifyPlus configured hidden devices in Device browser',
+    required: false,
+    selector: { boolean: {} },
+  },
 ];
 
 

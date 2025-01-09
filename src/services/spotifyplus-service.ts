@@ -2,6 +2,7 @@
 import { HomeAssistant } from '../types/home-assistant-frontend/home-assistant';
 import { ServiceCallRequest } from '../types/home-assistant-frontend/service-call-request';
 import {
+  mdiCastAudio,
   mdiGoogleChrome,
   mdiMicrosoftEdge,
   mdiSpeaker,
@@ -2233,6 +2234,8 @@ export class SpotifyPlusService {
           responseObj.image_url = getMdiIconImageUrl(mdiMicrosoftEdge);
         } else if (sourceCompare.includes('web player')) {
           responseObj.image_url = getMdiIconImageUrl(mdiWeb);
+        } else if (responseObj.IsChromeCast == true) {
+          responseObj.image_url = getMdiIconImageUrl(mdiCastAudio);
         } else {
           responseObj.image_url = getMdiIconImageUrl(mdiSpeaker);
         }
@@ -2325,6 +2328,8 @@ export class SpotifyPlusService {
             item.image_url = getMdiIconImageUrl(mdiMicrosoftEdge);
           } else if (sourceCompare.includes('web player')) {
             item.image_url = getMdiIconImageUrl(mdiWeb);
+          } else if (item.IsChromeCast == true) {
+            item.image_url = getMdiIconImageUrl(mdiCastAudio);
           } else {
             item.image_url = getMdiIconImageUrl(mdiSpeaker);
           }

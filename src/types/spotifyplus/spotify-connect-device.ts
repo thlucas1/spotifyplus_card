@@ -28,6 +28,12 @@ export interface ISpotifyConnectDevice {
 
 
   /**
+   * True if the device is a Google ChromeCast device; otherwise, False.
+   */
+  IsChromeCast: boolean;
+
+
+  /**
    * Image to use for media browser displays.
    * 
    * This will default to the first image in the `images` collection if not set, courtesy of

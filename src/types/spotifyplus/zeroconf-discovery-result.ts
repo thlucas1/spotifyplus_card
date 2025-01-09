@@ -49,6 +49,20 @@ export interface IZeroconfDiscoveryResult {
   HostTTL: number;
 
 
+  /** 
+   * Result ID (e.g. "Bose-ST10-1" (192.168.1.81:8200)).
+   * 
+   * This is a helper property, and not part of the Zeroconf interface.
+   */
+  Id: string;
+
+
+  /**
+   * True if the device is a Google ChromeCast device; otherwise, False.
+   */
+  IsChromeCast: boolean;
+
+
   /**
    * Returns True if the device is a dynamic device;
    * otherwise, False.
@@ -155,36 +169,3 @@ export interface IZeroconfDiscoveryResult {
 
 
 }
-
-
-//# external package imports.
-//from zeroconf import ServiceInfo
-
-//    @property
-//    def ServiceInfo(self) -> ServiceInfo:
-//        """
-//        Zeroconf Service info object.
-//        """
-//        return self._ServiceInfo
-
-
-//    def GetEndpointUrl(self, action:str) -> str:
-//        """
-//        Gets a Spotify Zeroconf API endpoint url for the specified action key.
-
-//        Args:
-//            action (str):
-//                Spotify Zeroconf endpoint action to formulate (e.g. 'getInfo', 'addUser', 'resetUsers', etc).
-
-//        Returns:
-//            A string containing the endpoint url for the specified action key.
-//        """
-//        return "http://{ip}:{port}{cpath}?action={action}&version={version}".format(
-//            ip=self.HostIpAddress,
-//            port=self.HostIpPort,
-//            cpath=self.SpotifyConnectCPath,
-//            action=action,
-//            version=self.SpotifyConnectVersion or ''
-//            )
-
-
