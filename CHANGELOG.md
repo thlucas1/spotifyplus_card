@@ -6,6 +6,11 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.29 ] - 2025/01/11
+
+  * This release requires the SpotifyPlus Integration v1.0.85+ release; please make sure you update the SpotifyPlus integration prior to updating this SpotifyPlus Card release.
+  * Modified `isTouchDevice` method to better detect touchscreen support for dual-monitor setups.
+
 ###### [ 1.0.28 ] - 2025/01/09
 
   * This release requires the SpotifyPlus Integration v1.0.85+ release; please make sure you update the SpotifyPlus integration prior to updating this SpotifyPlus Card release.

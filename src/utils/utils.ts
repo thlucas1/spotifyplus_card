@@ -455,15 +455,27 @@ export function closestElement(selector: string, base: Element) {
  * Determine if the current device supports touch events.
  * 
  * @returns true if touch events are supported; otherwise, false.
- * 
- * examples:
- * - find element by it's `id=` value:
- *   const container = this.closestElement('#spcPlayer');
- * - find element by it's html tag name (e.g. `<spc-player>`):
- *   const container = this.closestElement('spc-player');
  */
 export function isTouchDevice(): boolean {
-  return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  //return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+  let result = false;
+  if (window.PointerEvent && ('maxTouchPoints' in navigator)) {
+    // if Pointer Events are supported, just check maxTouchPoints
+    if (navigator.maxTouchPoints > 0) {
+      result = true;
+    }
+  } else {
+    // no Pointer Events...
+    if (window.matchMedia && window.matchMedia("(any-pointer:coarse)").matches) {
+      // check for any-pointer:coarse which mostly means touchscreen
+      result = true;
+    } else if (window.TouchEvent || ('ontouchstart' in window)) {
+      // last resort - check for exposed touch events API / event handler
+      result = true;
+    }
+  }
+  return result;
 }
 
 
