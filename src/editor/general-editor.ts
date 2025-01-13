@@ -77,12 +77,13 @@ const CONFIG_SETTINGS_SCHEMA = [
     type: 'string',
     default: 35.15,
   },
-//  {
-//    name: 'imageUrlsReplaceHttpWithHttps',
-//    label: "Replace HTTP with HTTPS for image url's",
-//    required: false,
-//    selector: { boolean: {} },
-//  },
+  {
+    name: 'touchSupportDisabled',
+    label: "Disable touch event support",
+    help: 'force mouse events',
+    required: false,
+    selector: { boolean: {} },
+  },
 ];
 
 

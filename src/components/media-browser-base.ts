@@ -1,3 +1,8 @@
+// debug logging.
+import Debug from 'debug/src/browser.js';
+import { DEBUG_APP_NAME } from '../constants';
+const debuglog = Debug(DEBUG_APP_NAME + ":media-browser-base");
+
 // lovelace card imports.
 import { css, html, LitElement, TemplateResult } from 'lit';
 import { eventOptions, property } from 'lit/decorators.js';
@@ -284,8 +289,19 @@ export class MediaBrowserBase extends LitElement {
     // invoke base class method.
     super.connectedCallback();
 
-    // determine if this is a touch device (true) or not (false).
-    this.isTouchDevice = isTouchDevice();
+    // is touch support disabled?
+    if (this.store.config.touchSupportDisabled || false) {
+      this.isTouchDevice = false;
+      debuglog("connectedCallback - touch supported events are disabled via card configuration\n- isTouchDevice=%s",
+        JSON.stringify(this.isTouchDevice)
+      );
+    } else {
+      // determine if this is a touch device (true) or not (false).
+      this.isTouchDevice = isTouchDevice();
+      debuglog("connectedCallback - touch supported events are enabled programatically\n- isTouchDevice=%s",
+        JSON.stringify(this.isTouchDevice)
+      );
+    }
 
     if (this.isTouchDevice) {
       // for touch devices, prevent context menu from showing when user ends the touch.

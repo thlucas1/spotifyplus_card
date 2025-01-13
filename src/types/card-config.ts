@@ -52,6 +52,13 @@ export interface CardConfig extends LovelaceCardConfig {
    */
   height?: string | number;
 
+  /** 
+   * True to disable touch events and force mouse events for media browser items;
+   * othersie, False to enable touch events if they are detected.
+   * Default is false.
+   */
+  touchSupportDisabled?: boolean;
+
   /**
    * Title displayed at the top of the Album Favorites media browser section form.
    * Omit this parameter to hide the title display area.

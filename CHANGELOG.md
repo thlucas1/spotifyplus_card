@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.30 ] - 2025/01/12
+
+  * Added `touchSupportDisabled` config option to disable touch events and force mouse events for media browser items.  More info can be found on the [wiki docs](https://github.com/thlucas1/spotifyplus_card/wiki/Configuration-Options#touchSupportDisabled).
+
 ###### [ 1.0.29 ] - 2025/01/11
 
   * This release requires the SpotifyPlus Integration v1.0.85+ release; please make sure you update the SpotifyPlus integration prior to updating this SpotifyPlus Card release.
