@@ -6,6 +6,21 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.31 ] - 2025/01/14
+
+  * Renamed theming variable `--spc-medialist-items-color` to `--spc-media-browser-items-color` to more closely align with new theme naming standards.
+  * Added card configuration option `mediaBrowserItemsColor` for styling media browser items title and sub-title text colors.
+  * Added theme variable `--spc-media-browser-items-title-font-size` and `mediaBrowserItemsTitleFontSize` card configuration option for styling media browser items title text font-size.
+  * Added theme variable `--spc-media-browser-items-subtitle-font-size` and `mediaBrowserItemsSubTitleFontSize` card configuration option for styling media browser items sub-title text font-size.
+  * Added theme variable `--spc-media-browser-section-title-font-size` and `mediaBrowserSectionTitleFontSize` card configuration option for styling media browser section title text font-size.
+  * Added theme variable `--spc-media-browser-section-subtitle-font-size` and `mediaBrowserSectionSubTitleFontSize` card configuration option for styling media browser section title text font-size.
+  * Added theme variable `--spc-player-header-title1-color` and `playerHeaderTitle1Color` card configuration option for styling player section header title 1 text color.
+  * Added theme variable `--spc-player-header-title1-font-size` and `playerHeaderTitle1FontSize` card configuration option for styling player section header title 1 text font size.
+  * Added theme variable `--spc-player-header-title2-color` and `playerHeaderTitle2Color` card configuration option for styling player section header title 2 text color.
+  * Added theme variable `--spc-player-header-title2-font-size` and `playerHeaderTitle2FontSize` card configuration option for styling player section header title 2 text font size.
+  * Added theme variable `--spc-player-header-title3-color` and `playerHeaderTitle3Color` card configuration option for styling player section header title 3 text color.
+  * Added theme variable `--spc-player-header-title3-font-size` and `playerHeaderTitle3FontSize` card configuration option for styling player section header title 3 text font size.
+
 ###### [ 1.0.30 ] - 2025/01/12
 
   * Added `touchSupportDisabled` config option to disable touch events and force mouse events for media browser items.  More info can be found on the [wiki docs](https://github.com/thlucas1/spotifyplus_card/wiki/Configuration-Options#touchSupportDisabled).

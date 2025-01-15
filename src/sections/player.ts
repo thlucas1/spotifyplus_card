@@ -160,6 +160,7 @@ export class Player extends LitElement implements playerAlerts {
         grid-area: header;
         background: linear-gradient(180deg, var(--spc-player-header-bg-color) 30%, transparent 100%);
         background-repeat: no-repeat;
+        padding: 0.2rem;
       }
 
       .player-section-body {
@@ -274,7 +275,6 @@ export class Player extends LitElement implements playerAlerts {
     if (backgroundSize)
       styleInfo['--spc-player-background-size'] = `${backgroundSize}`;
     styleInfo['--spc-player-header-bg-color'] = `${headerBackgroundColor}`;
-    styleInfo['--spc-player-header-color'] = `#ffffff`;
     styleInfo['--spc-player-controls-bg-color'] = `${controlsBackgroundColor} `;
     styleInfo['--spc-player-controls-color'] = `#ffffff`;
     styleInfo['--spc-player-controls-icon-size'] = `${playerControlsIconSize}`;

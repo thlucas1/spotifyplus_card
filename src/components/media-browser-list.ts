@@ -43,7 +43,7 @@ export class MediaBrowserList extends MediaBrowserBase {
 
     // render html.
     return html`
-      <mwc-list multi class="list" style="--items-per-row: ${this.itemsPerRow}">
+      <mwc-list multi class="list" style=${this.styleMediaBrowser()}">
         ${this.buildMediaBrowserItems().map((item, index) => {
           return html`
             ${this.styleMediaBrowserItemBackgroundImage(item.mbi_item.image_url, index)}
@@ -128,10 +128,10 @@ export class MediaBrowserList extends MediaBrowserBase {
         }
 
         .title {
-          font-size: 1.1rem;
+          font-size: var(--spc-media-browser-items-title-font-size, 1.1rem);
           align-self: center;
           flex: 1;
-          color: var(--secondary-text-color);
+          color: var(--spc-media-browser-items-color, #ffffff);
           font-weight: normal;
           padding: 0 0.5rem;
           text-overflow: ellipsis;

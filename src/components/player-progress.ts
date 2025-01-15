@@ -218,6 +218,7 @@ class Progress extends LitElement {
         font-size: x-small;
         display: flex;
         color: var(--spc-player-controls-color);
+        padding-bottom: 0.2rem;
       }
 
       .bar {

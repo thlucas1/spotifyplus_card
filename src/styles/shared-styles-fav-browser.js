@@ -17,34 +17,32 @@ export const sharedStylesFavBrowser = css`
   }
 
   .media-browser-section-title {
-    margin-top: 0.5rem;
-    align-items: center;
+    padding: 0.2rem;
     display: flex;
-    flex-shrink: 0;
-    flex-grow: 0;
+    align-items: center;
     justify-content: center;
     text-align: center;
     font-weight: bold;
-    font-size: 1.0rem;
-    color: var(--secondary-text-color);
+    font-size: var(--spc-media-browser-section-title-font-size, 1.0rem);
+    line-height: var(--spc-media-browser-section-title-font-size, 1.0rem);
+    color: var(--spc-media-browser-section-title-color, var(--secondary-text-color, #ffffff)); 
+    color: var(--spc-media-browser-section-title-color);
   }
 
   .media-browser-section-subtitle {
-    margin: 0.1rem 0;
-    align-items: center;
+    padding: 0.2rem;
     display: flex;
+    align-items: center;
     justify-content: center;
     text-align: center;
     font-weight: normal;
-    font-size: 0.85rem;
-    color: var(--secondary-text-color);
+    font-size: var(--spc-media-browser-section-subtitle-font-size, 0.85rem);
+    line-height: var(--spc-media-browser-section-subtitle-font-size, 0.85rem);
+    color: var(--spc-media-browser-section-subtitle-color, var(--secondary-text-color, #ffffff));
   }
 
   .media-browser-controls {
-    margin-top: 0.25rem;
-    margin-left: 0.5rem;
-    margin-right: 0.5rem;
-    margin-bottom: 0rem;
+    padding: 0.2rem 0.4rem 0.2rem;
     white-space: nowrap;
     --ha-select-height: 2.5rem;           /* ha dropdown control height */
     --mdc-menu-item-height: 2.5rem;       /* mdc dropdown list item height */
@@ -53,8 +51,9 @@ export const sharedStylesFavBrowser = css`
     --md-menu-item-bottom-space: 0.5rem;  /* bottom spacing between items */
     --md-menu-item-one-line-container-height: 2.0rem;  /* menu item height */
     display: inline-flex;
-    flex-direction: row;
+    align-items: center;
     justify-content: center;
+    flex-direction: row;
   }
 
   .media-browser-control-filter {

@@ -32,7 +32,7 @@ export class MediaBrowserIcons extends MediaBrowserBase {
 
     // render html.
     return html`
-      <div class="icons" style="--items-per-row: ${this.itemsPerRow}">
+      <div class="icons" style=${this.styleMediaBrowser()}>
         ${this.buildMediaBrowserItems().map(
           (item, index) => html`
             ${this.styleMediaBrowserItemBackgroundImage(item.mbi_item.image_url, index)}
@@ -101,13 +101,13 @@ export class MediaBrowserIcons extends MediaBrowserBase {
         }
 
         .title {
-          font-size: 0.8rem;
+          font-size: var(--spc-media-browser-items-title-font-size, 0.8rem);
           position: absolute;
           width: 100%;
           line-height: 160%;
           bottom: 0;
           background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.6));
-          color: var(--spc-medialist-items-color, white);
+          color: var(--spc-media-browser-items-color, #ffffff);
           font-weight: normal;
           padding: 0.75rem 0.5rem 0rem;
           text-overflow: ellipsis;
@@ -116,7 +116,7 @@ export class MediaBrowserIcons extends MediaBrowserBase {
         }
 
         .subtitle {
-          font-size: 0.8rem;
+          font-size: var(--spc-media-browser-items-subtitle-font-size, 0.8rem);
           width: 100%;
           line-height: 120%;
           padding-bottom: 0.25rem;

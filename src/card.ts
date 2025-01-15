@@ -1,6 +1,6 @@
 // lovelace card imports.
 import { css, html, LitElement, PropertyValues, TemplateResult } from 'lit';
-import { styleMap } from 'lit-html/directives/style-map.js';
+import { styleMap, StyleInfo } from 'lit-html/directives/style-map.js';
 import { customElement, property, query, state } from 'lit/decorators.js';
 import { choose } from 'lit/directives/choose.js';
 import { when } from 'lit/directives/when.js';
@@ -268,17 +268,19 @@ export class Card extends LitElement {
         --spc-card-edit-tab-height: 0px;
         --spc-card-edit-bottom-toolbar-height: 0px;
         box-sizing: border-box;
-        color: var(--secondary-text-color);
-        overflow: hidden;
+        padding: 0rem;
         display: flex;
         flex-direction: column;
+        overflow: hidden;
         min-height: 20rem;
         height: calc(100vh - var(--spc-card-footer-height) - var(--spc-card-edit-tab-height) - var(--spc-card-edit-bottom-toolbar-height));
         min-width: 20rem;
         width: calc(100vw - var(--mdc-drawer-width));
+        color: var(--secondary-text-color);
       }
 
       .spc-card-header {
+        box-sizing: border-box;
         padding: 0.2rem;
         display: flex;
         align-self: flex-start;
@@ -1146,6 +1148,7 @@ export class Card extends LitElement {
   */
   private styleCard() {
 
+    // load basic layout settings.
     let cardWidth: string | undefined = undefined;
     let cardHeight: string | undefined = undefined;
     let editTabHeight = '0px';
@@ -1232,12 +1235,13 @@ export class Card extends LitElement {
     //  editBottomToolbarHeight,
     //);
 
-    return styleMap({
-      '--spc-card-edit-tab-height': `${editTabHeight}`,
-      '--spc-card-edit-bottom-toolbar-height': `${editBottomToolbarHeight}`,
-      height: `${cardHeight ? cardHeight : undefined}`,
-      width: `${cardWidth ? cardWidth : undefined}`,
-    });
+    // build style info object.
+    const styleInfo: StyleInfo = <StyleInfo>{};
+    styleInfo['--spc-card-edit-tab-height'] = `${editTabHeight}`;
+    styleInfo['--spc-card-edit-bottom-toolbar-height'] = `${editBottomToolbarHeight}`;
+    styleInfo['height'] = `${cardHeight ? cardHeight : undefined}`;
+    styleInfo['width'] = `${cardWidth ? cardWidth : undefined}`;
+    return styleMap(styleInfo);
   }
 
 

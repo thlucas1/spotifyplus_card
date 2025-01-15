@@ -245,7 +245,7 @@ export class SearchBrowser extends FavBrowserBase {
     // render html.
     return html`
 
-      <div class="media-browser-section">
+      <div class="media-browser-section" style=${this.styleMediaBrowser()}>
         ${title ? html`<div class="media-browser-section-title">${title}</div>` : html``}
         ${subtitle ? html`<div class="media-browser-section-subtitle">${subtitle}</div>` : html``}
         <div class="search-media-browser-controls">

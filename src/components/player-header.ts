@@ -1,7 +1,7 @@
 // lovelace card imports.
 import { css, html, LitElement, TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
-import { styleMap } from 'lit-html/directives/style-map.js';
+import { styleMap, StyleInfo } from 'lit-html/directives/style-map.js';
 
 // our imports.
 import '../components/player-progress';
@@ -99,22 +99,45 @@ class PlayerHeader extends LitElement {
     return html` 
       <div class="player-header-container" style=${this.styleContainer()}>
         ${!hideProgress ? html`<spc-player-progress .store=${this.store}></spc-player-progress>` : html``}
-        <div class="header-title">${title}</div>
+        ${title ? html`<div class="header-title">${title}</div>` : html``}
         ${artistTrack ? html`
-        <div class="header-artist-track">${artistTrack}
-          ${(isFavoriteReady ? html`${(isFavorite ? actionFavoriteRemove : actionFavoriteAdd)}` : html``)}
-        </div>
+          <div class="header-artist-track">${artistTrack}
+            ${(isFavoriteReady ? html`${(isFavorite ? actionFavoriteRemove : actionFavoriteAdd)}` : html``)}
+          </div>
         ` : html``}
         ${album ? html`<div class="header-artist-album">${album}</div>` : html``}
       </div>`;
   }
 
   /**
-   * Returns an element style for the progress bar portion of the control.
+   * Returns a style map for player header container.
    */
   private styleContainer() {
-    return styleMap({
-    });
+
+    // load card configuration theme settings.
+    const playerHeaderTitle1Color = this.config.playerHeaderTitle1Color;
+    const playerHeaderTitle1FontSize = this.config.playerHeaderTitle1FontSize;
+    const playerHeaderTitle2Color = this.config.playerHeaderTitle2Color;
+    const playerHeaderTitle2FontSize = this.config.playerHeaderTitle2FontSize;
+    const playerHeaderTitle3Color = this.config.playerHeaderTitle3Color;
+    const playerHeaderTitle3FontSize = this.config.playerHeaderTitle3FontSize;
+
+    // build style info object.
+    const styleInfo: StyleInfo = <StyleInfo>{};
+    if (playerHeaderTitle1Color)
+      styleInfo['--spc-player-header-title1-color'] = `${playerHeaderTitle1Color}`;
+    if (playerHeaderTitle1FontSize)
+      styleInfo['--spc-player-header-title1-font-size'] = `${playerHeaderTitle1FontSize}`;
+    if (playerHeaderTitle2Color)
+      styleInfo['--spc-player-header-title2-color'] = `${playerHeaderTitle2Color}`;
+    if (playerHeaderTitle2FontSize)
+      styleInfo['--spc-player-header-title2-font-size'] = `${playerHeaderTitle2FontSize}`;
+    if (playerHeaderTitle3Color)
+      styleInfo['--spc-player-header-title3-color'] = `${playerHeaderTitle3Color}`;
+    if (playerHeaderTitle3FontSize)
+      styleInfo['--spc-player-header-title3-font-size'] = `${playerHeaderTitle3FontSize}`;
+    return styleMap(styleInfo);
+
   }
 
 
@@ -142,39 +165,39 @@ static get styles() {
       .header-title {
         overflow: hidden;
         text-overflow: ellipsis;
-        font-size: 1rem;
+        font-size: var(--spc-player-header-title1-font-size, 1.0rem);
+        line-height: var(--spc-player-header-title1-font-size, 1.0rem);
         font-weight: 500;
         text-shadow: 0 0 2px var(--spc-player-palette-vibrant);
-        //color: var(--secondary-text-color);
-        //color: var(--spc-player-palette-vibrant);
-        color: var(--spc-player-header-color);
+        color: var(--spc-player-header-title1-color, #ffffff);
         white-space: nowrap;
         mix-blend-mode: screen;
         min-height: 0.5rem;
+        padding: 0.2rem;
       }
 
       .header-artist-track {
         overflow: hidden;
         text-overflow: ellipsis;
-        font-size: 1.15rem;
+        font-size: var(--spc-player-header-title2-font-size, 1.15rem);
+        line-height: var(--spc-player-header-title2-font-size, 1.15rem);
         font-weight: 400;
         text-shadow: 0 0 2px var(--spc-player-palette-vibrant);
-        //color: var(--dark-primary-color);
-        //color: var(--spc-player-palette-vibrant);
-        color: var(--spc-player-header-color);
+        color: var(--spc-player-header-title2-color, #ffffff);
         mix-blend-mode: screen;
+        padding: 0.1rem;
       }
 
       .header-artist-album {
         overflow: hidden;
         text-overflow: ellipsis;
-        font-size: 1rem;
-        font-weight: 300;
+        font-size: var(--spc-player-header-title3-font-size, 1.0rem);
+        line-height: var(--spc-player-header-title3-font-size, 1.0rem);
+        font-weight: 400;
         text-shadow: 0 0 2px var(--spc-player-palette-vibrant);
-        //color: var(--secondary-text-color);
-        //color: var(--spc-player-palette-vibrant);
-        color: var(--spc-player-header-color);
+        color: var(--spc-player-header-title3-color, #ffffff);
         mix-blend-mode: screen;
+        padding: 0.1rem;
       }
     `
     ];

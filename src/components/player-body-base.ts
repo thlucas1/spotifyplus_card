@@ -97,9 +97,7 @@ export class PlayerBodyBase extends LitElement {
           font-size: 1.15rem;
           font-weight: 400;
           text-shadow: 0 0 2px var(--spc-player-palette-vibrant);
-          //color: var(--dark-primary-color);
-          //color: var(--spc-player-palette-vibrant);
-          color: var(--spc-player-header-color);
+          color: var(--spc-player-header-title2-color, #ffffff);
           mix-blend-mode: screen;
         }
       `

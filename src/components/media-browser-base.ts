@@ -6,6 +6,7 @@ const debuglog = Debug(DEBUG_APP_NAME + ":media-browser-base");
 // lovelace card imports.
 import { css, html, LitElement, TemplateResult } from 'lit';
 import { eventOptions, property } from 'lit/decorators.js';
+import { styleMap, StyleInfo } from 'lit-html/directives/style-map.js';
 
 // our imports.
 import { Store } from '../model/store';
@@ -246,7 +247,7 @@ export class MediaBrowserBase extends LitElement {
 
         .title {
           position: absolute;
-          font-size: 0.8rem;
+          font-size: var(--spc-media-browser-items-title-font-size, 0.8rem);
           font-weight: normal;
           line-height: 160%;
           width: 100%;
@@ -254,7 +255,7 @@ export class MediaBrowserBase extends LitElement {
           text-overflow: ellipsis;
           bottom: 0;
           background-color: rgba(var(--rgb-card-background-color), 0.733);
-          color: var(--secondary-text-color);
+          color: var(--spc-media-browser-items-color, #ffffff);
           padding: 0 0.5rem;
           white-space: nowrap;
         }
@@ -264,6 +265,7 @@ export class MediaBrowserBase extends LitElement {
         }
 
         .subtitle {
+          font-size: var(--spc-media-browser-items-subtitle-font-size, 0.8rem);
           font-size: 0.8rem;
           font-weight: normal;
           line-height: 160%;
@@ -273,6 +275,29 @@ export class MediaBrowserBase extends LitElement {
         }
       `,
     ];
+  }
+
+
+  /**
+   * Returns a style map for media browser item theming.
+   */
+  protected styleMediaBrowser() {
+
+    // load card configuration theme settings.
+    const mediaBrowserItemsColor = this.config.mediaBrowserItemsColor
+    const mediaBrowserItemsTitleFontSize = this.config.mediaBrowserItemsTitleFontSize;
+    const mediaBrowserItemsSubTitleFontSize = this.config.mediaBrowserItemsSubTitleFontSize;
+
+    // build style info object.
+    const styleInfo: StyleInfo = <StyleInfo>{};
+    styleInfo['--items-per-row'] = `${this.itemsPerRow}`;
+    if (mediaBrowserItemsColor)
+      styleInfo['--spc-media-browser-items-color'] = `${mediaBrowserItemsColor}`;
+    if (mediaBrowserItemsTitleFontSize)
+      styleInfo['--spc-media-browser-items-title-font-size'] = `${mediaBrowserItemsTitleFontSize}`;
+    if (mediaBrowserItemsSubTitleFontSize)
+      styleInfo['--spc-media-browser-items-subtitle-font-size'] = `${mediaBrowserItemsSubTitleFontSize}`;
+    return styleMap(styleInfo);
   }
 
 

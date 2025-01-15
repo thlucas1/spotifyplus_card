@@ -52,7 +52,7 @@ export interface CardConfig extends LovelaceCardConfig {
    */
   height?: string | number;
 
-  /** 
+  /**
    * True to disable touch events and force mouse events for media browser items;
    * othersie, False to enable touch events if they are detected.
    * Default is false.
@@ -789,4 +789,74 @@ export interface CardConfig extends LovelaceCardConfig {
   customImageUrls?: CustomImageUrls;
 
   //imageUrlsReplaceHttpWithHttps?: boolean;
+
+  // **********************************************************************************************************************************
+  // * Card theming options:
+  // **********************************************************************************************************************************
+
+  /**
+   * Media Browser section title text color.
+   */
+  mediaBrowserSectionTitleColor?: string;
+
+  /**
+   * Media Browser section title text font-size (in 'rem' units).
+   */
+  mediaBrowserSectionTitleFontSize?: string;
+
+  /**
+   * Media Browser section sub-title text color.
+   */
+  mediaBrowserSectionSubTitleColor?: string;
+
+  /**
+   * Media Browser section sub-title text font-size (in 'rem' units).
+   */
+  mediaBrowserSectionSubTitleFontSize?: string;
+
+  /**
+   * Media list item title and sub-title text color.
+   */
+  mediaBrowserItemsColor?: string;
+
+  /**
+   * Media browser items title text font-size (in 'rem' units).
+   */
+  mediaBrowserItemsTitleFontSize?: string;
+
+  /**
+   * Media browser items sub-title text font-size (in 'rem' units).
+   */
+  mediaBrowserItemsSubTitleFontSize?: string;
+
+  /**
+   * Player header title 1 text color (in #xxxxxx hex format).
+   */
+  playerHeaderTitle1Color?: string;
+
+  /**
+   * Player header title 1 text font-size (in 'rem' units).
+   */
+  playerHeaderTitle1FontSize?: string;
+
+  /**
+   * Player header title 2 text color (in #xxxxxx hex format).
+   */
+  playerHeaderTitle2Color?: string;
+
+  /**
+   * Player header title 2 text font-size (in 'rem' units).
+   */
+  playerHeaderTitle2FontSize?: string;
+
+  /**
+   * Player header title 3 text color (in #xxxxxx hex format).
+   */
+  playerHeaderTitle3Color?: string;
+
+  /**
+   * Player header title 3 text font-size (in 'rem' units).
+   */
+  playerHeaderTitle3FontSize?: string;
+
 }

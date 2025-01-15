@@ -1,6 +1,7 @@
 // lovelace card imports.
 import { css, html, LitElement, PropertyValues, TemplateResult } from 'lit';
 import { property, query, state } from 'lit/decorators.js';
+import { styleMap, StyleInfo } from 'lit-html/directives/style-map.js';
 import { HomeAssistant } from '../types/home-assistant-frontend/home-assistant';
 import {
   mdiArrowLeft,
@@ -196,7 +197,32 @@ export class FavBrowserBase extends LitElement {
   }
 
 
-  /** 
+  /**
+   * Returns a style map for media browser item theming.
+   */
+  protected styleMediaBrowser() {
+
+    // load card configuration theme settings.
+    const mediaBrowserSectionTitleColor = this.config.mediaBrowserSectionTitleColor;
+    const mediaBrowserSectionTitleFontSize = this.config.mediaBrowserSectionTitleFontSize;
+    const mediaBrowserSectionSubTitleColor = this.config.mediaBrowserSectionSubTitleColor;
+    const mediaBrowserSectionSubTitleFontSize = this.config.mediaBrowserSectionSubTitleFontSize;
+
+    // build style info object.
+    const styleInfo: StyleInfo = <StyleInfo>{};
+    if (mediaBrowserSectionTitleColor)
+      styleInfo['--spc-media-browser-section-title-color'] = `${mediaBrowserSectionTitleColor}`;
+    if (mediaBrowserSectionTitleFontSize)
+      styleInfo['--spc-media-browser-section-title-font-size'] = `${mediaBrowserSectionTitleFontSize}`;
+    if (mediaBrowserSectionSubTitleColor)
+      styleInfo['--spc-media-browser-section-subtitle-color'] = `${mediaBrowserSectionSubTitleColor}`;
+    if (mediaBrowserSectionSubTitleFontSize)
+      styleInfo['--spc-media-browser-section-subtitle-font-size'] = `${mediaBrowserSectionSubTitleFontSize}`;
+    return styleMap(styleInfo);
+  }
+
+
+  /**
    * style definitions used by this component.
    * */
   static get styles() {
