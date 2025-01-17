@@ -125,11 +125,21 @@ export class TrackFavBrowser extends FavBrowserBase {
       // build track uri list from media list.
       const { uris } = getMediaListTrackUrisRemaining(this.mediaList || [], mediaItem);
 
-      // play media item.
-      this.spotifyPlusService.PlayerMediaPlayTracks(this.player.id, uris.join(","));
+      // if shuffle enabled then disable it, as we want to play the selected track first.
+      if (this.player.attributes.shuffle == true) {
+        this.store.mediaControlService.shuffle_set(this.player, false);
+      }
 
-      // show player section.
-      this.store.card.SetSection(Section.PLAYER);
+      // give the shuffle disable time to process.
+      setTimeout(() => {
+
+        // play the selected track, as well as the remaining tracks.
+        this.spotifyPlusService.PlayerMediaPlayTracks(this.player.id, uris.join(","));
+
+        // show player section.
+        this.store.card.SetSection(Section.PLAYER);
+
+      }, 250);
 
     }
     catch (error) {

@@ -360,7 +360,7 @@ export function getMediaListTrackUrisRemaining(
       // if not a dupllicate, then add item to return list.
       if (!isDuplicate) {
         uris.push(item.uri);
-        names.push(item.name);
+        names.push(item.name + " (id=" + item.id + ")");
         count += 1;
         if (count >= (maxItems || 50)) {
           break;

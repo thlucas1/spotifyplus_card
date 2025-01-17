@@ -218,12 +218,22 @@ export class UserPresetBrowser extends FavBrowserBase {
       this.alertInfo = "Playing recommended tracks ...";
       this.requestUpdate();
 
-      // play recommended tracks.
-      const device_id = this.player.attributes.source || null;
-      await this.spotifyPlusService.PlayerMediaPlayTracks(this.player.id, uris.join(","), null, device_id);
+      // if shuffle enabled then disable it, as we want to play the selected track first.
+      if (this.player.attributes.shuffle == true) {
+        await this.store.mediaControlService.shuffle_set(this.player, false);
+      }
 
-      // show player section.
-      this.store.card.SetSection(Section.PLAYER);
+      // give the shuffle disable time to process.
+      setTimeout(() => {
+
+        // play recommended tracks.
+        const device_id = this.player.attributes.source || null;
+        this.spotifyPlusService.PlayerMediaPlayTracks(this.player.id, uris.join(","), null, device_id);
+
+        // show player section.
+        this.store.card.SetSection(Section.PLAYER);
+
+      }, 250);
 
     }
     catch (error) {

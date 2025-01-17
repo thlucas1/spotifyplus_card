@@ -6,6 +6,11 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.32 ] - 2025/01/17
+
+  * Fixed issue with random track playing if shuffle mode was on while selecting a track favorite.  To fix, I had to disable shuffle prior to starting play of the track as the Spotify Web API would always play a shuffled track.  The only other alternative was to just play 1 track, which would then end play when the song ended.
+  * Fixed play button icon sizing when player is idle.
+
 ###### [ 1.0.31 ] - 2025/01/14
 
   * Renamed theming variable `--spc-medialist-items-color` to `--spc-media-browser-items-color` to more closely align with new theme naming standards.
