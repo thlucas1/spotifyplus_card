@@ -327,7 +327,7 @@ export class CategoryBrowser extends FavBrowserBase {
           const sortResult = this.config.searchMediaBrowserItemsSortTitle || false;
 
           // call the service to retrieve the media list.
-          this.spotifyPlusService.GetCategoryPlaylists(player.id, this.categoryId, 0, 0, country, limitTotal, sortResult)
+          this.spotifyPlusService.GetCategoryPlaylists(player, this.categoryId, 0, 0, country, limitTotal, sortResult)
             .then(result => {
 
               // load media list results.
@@ -365,7 +365,7 @@ export class CategoryBrowser extends FavBrowserBase {
           const refresh = true;
 
           // call the service to retrieve the media list.
-          this.spotifyPlusService.GetBrowseCategorysList(player.id, country, locale, refresh)
+          this.spotifyPlusService.GetBrowseCategorysList(player, country, locale, refresh)
             .then(result => {
 
               // load media list results.

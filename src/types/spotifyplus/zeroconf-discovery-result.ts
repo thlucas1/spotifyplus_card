@@ -15,6 +15,19 @@ export interface IZeroconfDiscoveryResult {
 
 
   /** 
+   * Returns a basic description of the device, and how source info was obtained.
+   * 
+   * Example values:
+   * - "Dynamic Device"
+   * - "Spotify Connect Zeroconf Device"
+   * - "Chromecast Zeroconf Device"
+   * 
+   * This is a helper property, and not part of the Zeroconf ServiceInfo result.
+   */
+  Description: string;
+
+
+  /**
    * Domain on which the service is located, which should match the one passed in during the query (e.g. "local.").
    */
   Domain: string;
@@ -136,12 +149,6 @@ export interface IZeroconfDiscoveryResult {
    * Spotify Connect CPath property value (e.g. "/zc").
    */
   SpotifyConnectCPath: string;
-
-
-  /** 
-   * True if the device is in the Spotify Player active device list; otherwise, False.
-   */
-  SpotifyConnectIsInDeviceList: boolean;
 
 
   /** 

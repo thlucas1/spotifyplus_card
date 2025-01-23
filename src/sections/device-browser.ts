@@ -1,5 +1,5 @@
 // lovelace card imports.
-import { html, TemplateResult } from 'lit';
+import { html, PropertyValues, TemplateResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
 
 // our imports.
@@ -103,6 +103,36 @@ export class DeviceBrowser extends FavBrowserBase {
   }
 
 
+  /**
+   * Called when the element has rendered for the first time. Called once in the
+   * lifetime of an element. Useful for one-time setup work that requires access to
+   * the DOM.
+   */
+  protected firstUpdated(changedProperties: PropertyValues): void {
+
+    // ** IMPORTANT **
+    // if editing the card in the configuration editor ...
+    // this method will fire every time the configuration changes!  for example, the
+    // method will execute for every keystroke if you are typing something into a 
+    // configuration editor field!
+
+    // invoke base class method.
+    super.firstUpdated(changedProperties);
+
+    // determine if card configuration is being edited.
+    if (!this.isCardInEditPreview) {
+
+      if (debuglog.enabled) {
+        debuglog("firstUpdated - updating mediaList on form entry");
+      }
+
+      // auto-refresh device list every time we display the section (if not in edit mode).
+      this.updateMediaList(this.player);
+    }
+
+  }
+
+
   protected override onFilterActionsClick(ev: MouseEvent) {
 
     // get action to perform.
@@ -127,7 +157,6 @@ export class DeviceBrowser extends FavBrowserBase {
    * @param args Event arguments that contain the media item that was clicked on.
    */
   protected override onItemSelected(args: CustomEvent) {
-  //protected override onItemSelected = (args: CustomEvent) => {
 
     if (debuglog.enabled) {
       debuglog("onItemSelected - device item selected:\n%s",
@@ -211,7 +240,7 @@ export class DeviceBrowser extends FavBrowserBase {
         }
 
         // call the service to retrieve the media list.
-        this.spotifyPlusService.GetSpotifyConnectDevices(player.id, refresh, sortResult, sourceListHide)
+        this.spotifyPlusService.GetSpotifyConnectDevices(player, refresh, sortResult, sourceListHide)
           .then(result => {
 
             // load media list results.

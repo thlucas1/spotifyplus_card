@@ -119,7 +119,7 @@ export class AudiobookFavBrowser extends FavBrowserBase {
         const sortResult = this.config.audiobookFavBrowserItemsSortTitle || false;
 
         // call the service to retrieve the media list.
-        this.spotifyPlusService.GetAudiobookFavorites(player.id, 0, 0, limitTotal, sortResult)
+        this.spotifyPlusService.GetAudiobookFavorites(player, 0, 0, limitTotal, sortResult)
           .then(result => {
 
             // load media list results.

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 // lovelace card imports.
 import { HomeAssistant } from '../types/home-assistant-frontend/home-assistant';
 import { ServiceCallRequest } from '../types/home-assistant-frontend/service-call-request';
@@ -169,14 +171,14 @@ export class SpotifyPlusService {
   /**
    * Add one or more items to the end of the user's current Spotify Player playback queue.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param uris A list of Spotify track or episode URIs to add to the queue (spotify:track:6zd8T1PBe9JFHmuVnurdRp, spotify:track:1kWUud3vY5ij5r62zxpTRy); values can be track or episode URIs.  All URIs must be of the same type - you cannot mix and match tracks and episodes.  An unlimited number of items can be added in one request, but the more items the longer it will take.
    * @param device_id The id or name of the Spotify Connect Player device this command is targeting.  If not supplied, the user's currently active device is the target.  If no device is active (or an '*' is specified), then the SpotifyPlus default device is activated.
    * @param verify_device_id True to verify a device id is active; otherwise, false to assume that a device id is already active. Default is True.
    * @param delay Time delay (in seconds) to wait AFTER issuing the add request (if necessary). This delay will give the spotify web api time to process the change before another command is issued.  Default is 0.15; value range is 0 - 10.
   */
   public async AddPlayerQueueItems(
-    entity_id: string,
+    player: MediaPlayer,
     uris: string | undefined | null = null,
     device_id: string | undefined | null = null,
     verify_device_id: boolean | undefined | null = true,
@@ -185,9 +187,13 @@ export class SpotifyPlusService {
 
     try {
 
+      // validations.
+      if (device_id == null)
+        device_id = player.attributes.source || null;
+
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
         uris: uris,
       };
 
@@ -219,12 +225,12 @@ export class SpotifyPlusService {
    * Check if one or more albums (or the currently playing album) exists in the current 
    * user's 'Your Library' favorites.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param ids A comma-separated list (50 max) of the Spotify IDs for the albums.  If null, the currently playing track album uri id value is used.
    * @returns Response data, in the form of a Record<string, any> (e.g. dictionary).
   */
   public async CheckAlbumFavorites(
-    entity_id: string,
+    player: MediaPlayer,
     ids: string | undefined | null = null,
   ): Promise<Record<string, boolean>> {
 
@@ -232,7 +238,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -260,12 +266,12 @@ export class SpotifyPlusService {
    * Check if one or more artists (or the currently playing artist) exists in the current 
    * user's 'Your Library' favorites.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param ids A comma-separated list (50 max) of the Spotify IDs for the artists.  If null, the currently playing track artist uri id value is used.
    * @returns Response data, in the form of a Record<string, any> (e.g. dictionary).
   */
   public async CheckArtistsFollowing(
-    entity_id: string,
+    player: MediaPlayer,
     ids: string | undefined | null = null,
   ): Promise<Record<string, boolean>> {
 
@@ -273,7 +279,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -301,12 +307,12 @@ export class SpotifyPlusService {
    * Check if one or more audiobooks (or the currently playing audiobook) exists in the current 
    * user's 'Your Library' favorites.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param ids A comma-separated list (50 max) of the Spotify IDs for the audiobooks.  If null, the currently playing audiobook uri id value is used.
    * @returns Response data, in the form of a Record<string, any> (e.g. dictionary).
   */
   public async CheckAudiobookFavorites(
-    entity_id: string,
+    player: MediaPlayer,
     ids: string | undefined | null = null,
   ): Promise<Record<string, boolean>> {
 
@@ -314,7 +320,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -342,12 +348,12 @@ export class SpotifyPlusService {
    * Check if one or more episodes (or the currently playing episode) exists in the current 
    * user's 'Your Library' favorites.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param ids A comma-separated list (50 max) of the Spotify IDs for the episodes.  If null, the currently playing episode uri id value is used.
    * @returns Response data, in the form of a Record<string, any> (e.g. dictionary).
   */
   public async CheckEpisodeFavorites(
-    entity_id: string,
+    player: MediaPlayer,
     ids: string | undefined | null = null,
   ): Promise<Record<string, boolean>> {
 
@@ -355,7 +361,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -382,12 +388,12 @@ export class SpotifyPlusService {
   /**
    * Check to see if the current user is following a specified playlist.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param playlist_id The Spotify ID of the playlist (e.g. `3cEYpjA9oz9GiPac4AsH4n`).
    * @returns Response data, in the form of a Record<string, any> (e.g. dictionary).
   */
   public async CheckPlaylistFollowers(
-    entity_id: string,
+    player: MediaPlayer,
     playlist_id: string,
     user_ids: string | undefined | null = null,
   ): Promise<Record<string, boolean>> {
@@ -396,7 +402,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
         playlist_id: playlist_id,
       };
 
@@ -425,12 +431,12 @@ export class SpotifyPlusService {
    * Check if one or more shows (or the currently playing show) exists in the current 
    * user's 'Your Library' favorites.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param ids A comma-separated list (50 max) of the Spotify IDs for the shows.  If null, the currently playing show uri id value is used.
    * @returns Response data, in the form of a Record<string, any> (e.g. dictionary).
   */
   public async CheckShowFavorites(
-    entity_id: string,
+    player: MediaPlayer,
     ids: string | undefined | null = null,
   ): Promise<Record<string, boolean>> {
 
@@ -438,7 +444,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -466,12 +472,12 @@ export class SpotifyPlusService {
    * Check if one or more tracks (or the currently playing track) exists in the current 
    * user's 'Your Library' favorites.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param ids A comma-separated list (50 max) of the Spotify IDs for the tracks.  If null, the currently playing track uri id value is used.
    * @returns Response data, in the form of a Record<string, any> (e.g. dictionary).
   */
   public async CheckTrackFavorites(
-    entity_id: string,
+    player: MediaPlayer,
     ids: string | undefined | null = null,
   ): Promise<Record<string, boolean>> {
 
@@ -479,7 +485,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -506,11 +512,11 @@ export class SpotifyPlusService {
   /**
    * Add the current user as a follower of one or more artists.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param ids A comma-separated list (50 max) of the Spotify IDs for the artists.  If null, the currently playing track artist uri id value is used.
   */
   public async FollowArtists(
-    entity_id: string,
+    player: MediaPlayer,
     ids: string | undefined | null = null,
   ): Promise<void> {
 
@@ -518,7 +524,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -544,12 +550,12 @@ export class SpotifyPlusService {
   /**
    * Add the current user as a follower of a playlist.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param playlist_id The Spotify ID of the playlist (e.g. `3cEYpjA9oz9GiPac4AsH4n`). If null, the currently playing playlist uri id value is used.
    * @param public If true the playlist will be included in user's public playlists, if false it will remain private. Default is True. 
   */
   public async FollowPlaylist(
-    entity_id: string,
+    player: MediaPlayer,
     playlist_id: string | undefined | null = null,
     is_public: boolean | undefined | null = true,
   ): Promise<void> {
@@ -558,7 +564,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -586,14 +592,14 @@ export class SpotifyPlusService {
   /**
    * Get Spotify catalog information for a single album identified by its unique Spotify ID.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param album_id The Spotify ID of the album.  If null, the currently playing album uri id value is used. Example `1kWUud3vY5ij5r62zxpTRy`.
    * @param market An ISO 3166-1 alpha-2 country code. If a country code is specified, only content that is available in that market will be returned.  If a valid user access token is specified in the request header, the country associated with the user account will take priority over this parameter.  Example = 'ES'.
    * @param trimResults True to trim certain fields of the output results that are not required and to conserve memory; otherwise, False to return all fields that were returned in by the Spotify Web API.
    * @returns A `IAlbum` object that contains the album details.
   */
   public async GetAlbum(
-    entity_id: string,
+    player: MediaPlayer,
     album_id: string | undefined | null = null,
     market: string | undefined | null = null,
     trimResults: boolean = true,
@@ -603,7 +609,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -657,7 +663,7 @@ export class SpotifyPlusService {
   /**
    * Get a list of the albums saved in the current Spotify user's 'Your Library'.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param limit The maximum number of items to return in a page of items.  Default: 20, Range: 1 to 50.
    * @param offset The index of the first item to return.  Use with limit to get the next set of items.  Default: 0(the first item).
    * @param market An ISO 3166-1 alpha-2 country code. If a country code is specified, only content that is available in that market will be returned.  If a valid user access token is specified in the request header, the country associated with the user account will take priority over this parameter.  Example = 'ES'.
@@ -667,7 +673,7 @@ export class SpotifyPlusService {
    * @returns A AlbumPageSaved object.
   */
   public async GetAlbumFavorites(
-    entity_id: string,
+    player: MediaPlayer,
     limit: number | null = null,
     offset: number | null = null,
     market: string | undefined | null = null,
@@ -680,7 +686,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -742,7 +748,7 @@ export class SpotifyPlusService {
   /**
    * Get Spotify catalog information about an album's tracks.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param album_id The Spotify ID of the album (e.g. `6vc9OTcyd3hyzabCmsdnwE`). If null, the currently playing album uri id value is used; a Spotify Free or Premium account is required to correctly read the currently playing context.
    * @param limit The maximum number of items to return in a page of items.  Default: 20, Range: 1 to 50.
    * @param offset The index of the first item to return.  Use with limit to get the next set of items.  Default: 0(the first item).
@@ -752,7 +758,7 @@ export class SpotifyPlusService {
    * @returns A TrackPageSimplified object.
   */
   public async GetAlbumTracks(
-    entity_id: string,
+    player: MediaPlayer,
     album_id: string | null = null,
     limit: number | null = null,
     offset: number | null = null,
@@ -765,7 +771,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -823,7 +829,7 @@ export class SpotifyPlusService {
   /**
    * Get Spotify catalog information about an artist's albums.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param artist_id The Spotify ID of the artist.  If omitted, the currently playing artist uri id value is used.
    * @param include_groups A comma-separated list of keywords that will be used to filter the response.  If not supplied, only `album` types will be returned. Valid values are `album`, `single`, `appears_on`, `compilation`.
    * @param limit The maximum number of items to return in a page of items.  Default: 20, Range: 1 to 50.
@@ -835,7 +841,7 @@ export class SpotifyPlusService {
    * @returns A AlbumPageSimplified object.
   */
   public async GetArtistAlbums(
-    entity_id: string,
+    player: MediaPlayer,
     artist_id: string | undefined | null = null,
     include_groups: string | undefined | null = null,
     limit: number | null = null,
@@ -850,7 +856,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -913,13 +919,13 @@ export class SpotifyPlusService {
   /**
    * Get artist about information from the Spotify Artist Biography page for the specified Spotify artist ID.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param artist_id The Spotify ID of the artist.  If omitted, the currently playing artist uri id value is used.
    * @param trimResults True to trim certain fields of the output results that are not required and to conserve memory; otherwise, False to return all fields that were returned in by the Spotify Web API.
    * @returns An IArtistInfo object.
   */
   public async GetArtistInfo(
-    entity_id: string,
+    player: MediaPlayer,
     artist_id: string | undefined | null = null,
     trimResults: boolean = true,
   ): Promise<IArtistInfo> {
@@ -928,7 +934,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -977,14 +983,14 @@ export class SpotifyPlusService {
    * Get Spotify catalog information about artists similar to a given artist.  
    * Similarity is based on analysis of the Spotify community's listening history.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param artist_id The Spotify ID of the artist (e.g. 6APm8EjxOHSYM5B4i3vT3q).  If omitted, the currently playing artist uri id value is used.
    * @param sort_result True to sort the items by name; otherwise, False to leave the items in the same order they were returned in by the Spotify Web API.  Default is true.
    * @param trimResults True to trim certain fields of the output results that are not required and to conserve memory; otherwise, False to return all fields that were returned in by the Spotify Web API.
    * @returns A list of `IArtist` objects.
   */
   public async GetArtistRelatedArtists(
-    entity_id: string,
+    player: MediaPlayer,
     artist_id: string | undefined | null = null,
     sort_result: boolean | null = null,
     trimResults: boolean = true,
@@ -994,7 +1000,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -1046,7 +1052,7 @@ export class SpotifyPlusService {
   /**
    * Get Spotify catalog information about an artist's top tracks by country.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param artist_id The Spotify ID of the artist (e.g. 6APm8EjxOHSYM5B4i3vT3q).  If omitted, the currently playing artist uri id value is used.
    * @param market An ISO 3166-1 alpha-2 country code. If a country code is specified, only content that is available in that market will be returned.  If a valid user access token is specified in the request header, the country associated with the user account will take priority over this parameter.  Example = 'ES'.
    * @param sort_result True to sort the items by name; otherwise, False to leave the items in the same order they were returned in by the Spotify Web API.  Default is true.
@@ -1054,7 +1060,7 @@ export class SpotifyPlusService {
    * @returns A list of `ITrack` objects.
   */
   public async GetArtistTopTracks(
-    entity_id: string,
+    player: MediaPlayer,
     artist_id: string | undefined | null = null,
     market: string | null = null,
     sort_result: boolean | null = null,
@@ -1065,7 +1071,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -1121,7 +1127,7 @@ export class SpotifyPlusService {
   /**
    * Get the current user's followed artists.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param after The last artist ID retrieved from the previous request, or null for the first request.  Example: `6APm8EjxOHSYM5B4i3vT3q`.
    * @param limit The maximum number of items to return in a page of items when manual paging is used.  Default: 20, Range: 1 to 50.  See the `limit_total` argument for automatic paging option.  
    * @param limit_total The maximum number of items to return for the request.  If specified, this argument overrides the limit and offset argument values and paging is automatically used to retrieve all available items up to the maximum number specified.  Default: None (disabled).
@@ -1130,7 +1136,7 @@ export class SpotifyPlusService {
    * @returns A ArtistPage object.
   */
   public async GetArtistsFollowed(
-    entity_id: string,
+    player: MediaPlayer,
     after: number | null = null, 
     limit: number | null = null,
     limit_total: number | null = null,
@@ -1142,7 +1148,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -1199,14 +1205,14 @@ export class SpotifyPlusService {
    * Get Spotify catalog information for a single audiobook.  
    * Audiobooks are only available within the US, UK, Canada, Ireland, New Zealand and Australia markets.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param audiobook_id The Spotify ID for the audiobook (e.g. `74aydHJKgYz3AIq3jjBSv1`). If null, the currently playing audiobook uri id value is used.
    * @param market An ISO 3166-1 alpha-2 country code. If a country code is specified, only content that is available in that market will be returned.  If a valid user access token is specified in the request header, the country associated with the user account will take priority over this parameter.  Example = 'ES'.
    * @param trimResults True to trim certain fields of the output results that are not required and to conserve memory; otherwise, False to return all fields that were returned in by the Spotify Web API.
    * @returns A `IAudiobook` object that contains the audiobook details.
   */
   public async GetAudiobook(
-    entity_id: string,
+    player: MediaPlayer,
     audiobook_id: string | undefined | null = null,
     market: string | null = null,
     trimResults: boolean = true,
@@ -1216,7 +1222,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -1274,7 +1280,7 @@ export class SpotifyPlusService {
   /**
    * Get Spotify catalog information about an audiobook's chapters.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param audiobook_id The Spotify ID for the audiobook (e.g. `74aydHJKgYz3AIq3jjBSv1`). If null, the currently playing audiobook uri id value is used.
    * @param limit The maximum number of items to return in a page of items.  Default: 20, Range: 1 to 50.
    * @param offset The index of the first item to return.  Use with limit to get the next set of items.  Default: 0(the first item).
@@ -1284,7 +1290,7 @@ export class SpotifyPlusService {
    * @returns A ChapterPageSimplified object.
   */
   public async GetAudiobookChapters(
-    entity_id: string,
+    player: MediaPlayer,
     audiobook_id: string | null = null,
     limit: number | null = null,
     offset: number | null = null,
@@ -1297,7 +1303,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -1357,7 +1363,7 @@ export class SpotifyPlusService {
   /**
    * Get a list of the audiobooks owned or followed by the current Spotify user.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param limit The maximum number of items to return in a page of items.  Default: 20, Range: 1 to 50.
    * @param offset The index of the first item to return.  Use with limit to get the next set of items.  Default: 0(the first item).
    * @param limit_total If specified, this argument overrides the limit and offset argument values and paging is automatically used to retrieve all available items up to the maximum count specified.  Default: None(disabled)
@@ -1366,7 +1372,7 @@ export class SpotifyPlusService {
    * @returns A AudiobookPageSimplified object.
   */
   public async GetAudiobookFavorites(
-    entity_id: string,
+    player: MediaPlayer,
     limit: number | null = null,
     offset: number | null = null,
     limit_total: number | null = null,
@@ -1378,7 +1384,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -1436,7 +1442,7 @@ export class SpotifyPlusService {
   /**
    * Get a sorted list of ALL categories used to tag items in Spotify.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param country An ISO 3166-1 alpha-2 country code. If a country code is specified, only content that is available in that market will be returned.  The country associated with the user account will take priority over this parameter.
    * @param locale The desired language, consisting of a lowercase ISO 639-1 language code and an uppercase ISO 3166-1 alpha-2 country code, joined by an underscore.  For example `es_MX`, meaning `Spanish (Mexico)`.  Provide this parameter if you want the results returned in a particular language (where available).  Note that if locale is not supplied, or if the specified language is not available, all strings will be returned in the Spotify default language (American English).
    * @param refresh True to return real-time information from the spotify web api and update the cache; otherwise, False to just return the cached value.
@@ -1444,7 +1450,7 @@ export class SpotifyPlusService {
    * @returns A ICategoryPage object.
   */
   public async GetBrowseCategorysList(
-    entity_id: string,
+    player: MediaPlayer,
     country: string | undefined | null = null,
     locale: string | undefined | null = null,
     refresh: boolean | null = null,
@@ -1455,7 +1461,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -1509,7 +1515,7 @@ export class SpotifyPlusService {
   /**
    * Get a list of Spotify playlists tagged with a particular category.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param category_id Spotify category ID (not name) for the category. 
    * @param limit The maximum number of items to return in a page of items when manual paging is used.  Default is 20, Range is 1 to 50.  See the limit_total argument for automatic paging option.
    * @param offset The index of the first item to return.  Use with limit to get the next set of items.  Default: 0(the first item).
@@ -1520,7 +1526,7 @@ export class SpotifyPlusService {
    * @returns An IPlaylistPageSimplified object.
   */
   public async GetCategoryPlaylists(
-    entity_id: string,
+    player: MediaPlayer,
     category_id: string | undefined | null = null,
     limit: number | null = null,
     offset: number | null = null,
@@ -1534,7 +1540,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
         category_id: category_id,
       };
 
@@ -1593,14 +1599,14 @@ export class SpotifyPlusService {
   /**
    * Get Spotify catalog information for a single audiobook chapter identified by its unique Spotify ID.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param chapter_id The Spotify ID of the chapter.  If null, the currently playing episode uri id value is used. Example `3V0yw9UDrYAfkhAvTrvt9Y`.
    * @param market An ISO 3166-1 alpha-2 country code. If a country code is specified, only content that is available in that market will be returned.  If a valid user access token is specified in the request header, the country associated with the user account will take priority over this parameter.  Example = 'ES'.
    * @param trimResults True to trim certain fields of the output results that are not required and to conserve memory; otherwise, False to return all fields that were returned in by the Spotify Web API.
    * @returns A `IChapter` object that contains the chapter details.
   */
   public async GetChapter(
-    entity_id: string,
+    player: MediaPlayer,
     chapter_id: string | undefined | null = null,
     market: string | undefined | null = null,
     trimResults: boolean = true,
@@ -1610,7 +1616,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -1667,14 +1673,14 @@ export class SpotifyPlusService {
   /**
    * Get Spotify catalog information for a single episode identified by its unique Spotify ID.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param episode_id The Spotify ID of the episode.  If null, the currently playing episode uri id value is used. Example `1kWUud3vY5ij5r62zxpTRy`.
    * @param market An ISO 3166-1 alpha-2 country code. If a country code is specified, only content that is available in that market will be returned.  If a valid user access token is specified in the request header, the country associated with the user account will take priority over this parameter.  Example = 'ES'.
    * @param trimResults True to trim certain fields of the output results that are not required and to conserve memory; otherwise, False to return all fields that were returned in by the Spotify Web API.
    * @returns A `IEpisode` object that contains the episode details.
   */
   public async GetEpisode(
-    entity_id: string,
+    player: MediaPlayer,
     episode_id: string | undefined | null = null,
     market: string | undefined | null = null,
     trimResults: boolean = true,
@@ -1684,7 +1690,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -1740,7 +1746,7 @@ export class SpotifyPlusService {
   /**
    * Get a list of the episodes saved in the current Spotify user's 'Your Library'.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param limit The maximum number of items to return in a page of items.  Default: 20, Range: 1 to 50.
    * @param offset The index of the first item to return.  Use with limit to get the next set of items.  Default: 0(the first item).
    * @param limit_total If specified, this argument overrides the limit and offset argument values and paging is automatically used to retrieve all available items up to the maximum count specified.  Default: None(disabled)
@@ -1750,7 +1756,7 @@ export class SpotifyPlusService {
    * @returns An IEpisodePageSaved object.
   */
   public async GetEpisodeFavorites(
-    entity_id: string,
+    player: MediaPlayer,
     limit: number | null = null,
     offset: number | null = null,
     limit_total: number | null = null,
@@ -1762,7 +1768,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -1822,11 +1828,11 @@ export class SpotifyPlusService {
   /**
    * Get the list of objects that make up the user's playback queue.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @returns A `PlayerQueueInfo` object.
   */
   public async GetPlayerQueueInfo(
-    entity_id: string,
+    player: MediaPlayer,
     trimResults: boolean = true,
   ): Promise<IPlayerQueueInfo> {
 
@@ -1834,7 +1840,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // create service request.
@@ -1871,7 +1877,7 @@ export class SpotifyPlusService {
               }
             }
           }
-          responseObj.queue.forEach(item => {
+          responseObj.queue.forEach((item: ITrack | IEpisode) => {
             if (item.type == 'track') {
               const track = item as ITrack;
               track.available_markets = [];
@@ -1917,7 +1923,7 @@ export class SpotifyPlusService {
    * The `after` and `before` arguments are based upon local time (not UTC time).  Recently
    * played item history uses a local timestamp, and NOT a UTC timestamp.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param limit The maximum number of items to return in a page of items.  Default: 20, Range: 1 to 50.
    * @param after Returns all items after (but not including) this cursor position, which is a Unix timestamp in milliseconds.  If `after` is specified, `before` must not be specified.  Use with limit to get the next set of items.  Default: `0` (the first item).  
    * @param before Returns all items before (but not including) this cursor position, which is a Unix timestamp in milliseconds.  If `before` is specified, `after` must not be specified.  Use with limit to get the next set of items.  Default: `0` (the first item).  
@@ -1926,7 +1932,7 @@ export class SpotifyPlusService {
    * @returns A PlayHistoryPage object.
   */
   public async GetPlayerRecentTracks(
-    entity_id: string,
+    player: MediaPlayer,
     limit: number | null = null,
     after: number | null = null,
     before: number | null = null,
@@ -1938,7 +1944,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -1996,7 +2002,7 @@ export class SpotifyPlusService {
   /**
    * Get a list of the playlists owned or followed by the current Spotify user.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param limit The maximum number of items to return in a page of items.  Default: 20, Range: 1 to 50.
    * @param offset The index of the first item to return.  Use with limit to get the next set of items.  Default: 0(the first item).
    * @param limit_total If specified, this argument overrides the limit and offset argument values and paging is automatically used to retrieve all available items up to the maximum count specified.  Default: None(disabled)
@@ -2005,7 +2011,7 @@ export class SpotifyPlusService {
    * @returns A PlaylistPageSimplified object.
   */
   public async GetPlaylistFavorites(
-    entity_id: string,
+    player: MediaPlayer,
     limit: number | null = null,
     offset: number | null = null,
     limit_total: number | null = null,
@@ -2017,7 +2023,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -2073,7 +2079,7 @@ export class SpotifyPlusService {
   /**
    * Get a list of the playlists owned or followed by the current Spotify user.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param playlist_id The Spotify ID of the playlist (e.g. 5v5ETK9WFXAnGQ3MRubKuE).  If null, the currently playing playlist uri id value is used.
    * @param limit The maximum number of items to return in a page of items.  Default: 20, Range: 1 to 50.
    * @param offset The index of the first item to return.  Use with limit to get the next set of items.  Default: 0(the first item).
@@ -2086,7 +2092,7 @@ export class SpotifyPlusService {
    * @returns A PlaylistPageSimplified object.
   */
   public async GetPlaylistItems(
-    entity_id: string,
+    player: MediaPlayer,
     playlist_id: string | undefined | null = null,
     limit: number | null = null,
     offset: number | null = null,
@@ -2101,7 +2107,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -2182,7 +2188,7 @@ export class SpotifyPlusService {
    * @returns An ISpotifyConnectDevice object.
   */
   public async GetSpotifyConnectDevice(
-    entity_id: string,
+    player: MediaPlayer,
     device_value: string,
     verify_user_context: boolean | null = null,
     verify_timeout: number | null = null,
@@ -2195,7 +2201,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
         device_value: device_value,
       };
 
@@ -2268,7 +2274,7 @@ export class SpotifyPlusService {
    * @returns A SpotifyConnectDevices object.
   */
   public async GetSpotifyConnectDevices(
-    entity_id: string,
+    player: MediaPlayer,
     refresh: boolean | null = null,
     sort_result: boolean | null = null,
     source_list_hide: Array<string> | null = null,
@@ -2285,7 +2291,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -2357,7 +2363,7 @@ export class SpotifyPlusService {
   /**
    * Get Spotify catalog information about a show's episodes.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param show_id The Spotify ID for the show (e.g. `6kAsbP8pxwaU2kPibKTuHE`). If null, the currently playing show uri id value is used.  
    * @param limit The maximum number of items to return in a page of items.  Default: 20, Range: 1 to 50.
    * @param offset The index of the first item to return.  Use with limit to get the next set of items.  Default: 0(the first item).
@@ -2367,7 +2373,7 @@ export class SpotifyPlusService {
    * @returns A IEpisodePageSimplified object.
   */
   public async GetShowEpisodes(
-    entity_id: string,
+    player: MediaPlayer,
     show_id: string | null = null,
     limit: number | null = null,
     offset: number | null = null,
@@ -2380,7 +2386,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -2439,7 +2445,7 @@ export class SpotifyPlusService {
   /**
    * Get a list of the shows owned or followed by the current Spotify user.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param limit The maximum number of items to return in a page of items.  Default: 20, Range: 1 to 50.
    * @param offset The index of the first item to return.  Use with limit to get the next set of items.  Default: 0(the first item).
    * @param limit_total If specified, this argument overrides the limit and offset argument values and paging is automatically used to retrieve all available items up to the maximum count specified.  Default: None(disabled)
@@ -2449,7 +2455,7 @@ export class SpotifyPlusService {
    * @returns A IShowPageSaved object.
   */
   public async GetShowFavorites(
-    entity_id: string,
+    player: MediaPlayer,
     limit: number | null = null,
     offset: number | null = null,
     limit_total: number | null = null,
@@ -2462,7 +2468,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -2522,13 +2528,13 @@ export class SpotifyPlusService {
   /**
    * Get Spotify catalog information for a single track identified by its unique Spotify ID.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param track_id The Spotify ID of the track.  If null, the currently playing track uri id value is used. Example `1kWUud3vY5ij5r62zxpTRy`.
    * @param trimResults True to trim certain fields of the output results that are not required and to conserve memory; otherwise, False to return all fields that were returned in by the Spotify Web API.
    * @returns A `ITrack` object that contains the track details.
   */
   public async GetTrack(
-    entity_id: string,
+    player: MediaPlayer,
     track_id: string | undefined | null = null,
     trimResults: boolean = true,
   ): Promise<ITrack> {
@@ -2537,7 +2543,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -2587,7 +2593,7 @@ export class SpotifyPlusService {
   /**
    * Get a list of the tracks saved in the current Spotify user's 'Your Library'.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param limit The maximum number of items to return in a page of items.  Default: 20, Range: 1 to 50.  See the `limit_total` argument for automatic paging option.  
    * @param offset The index of the first item to return.  Use with limit to get the next set of items.  Default: 0(the first item).
    * @param market An ISO 3166-1 alpha-2 country code. If a country code is specified, only content that is available in that market will be returned.  If a valid user access token is specified in the request header, the country associated with the user account will take priority over this parameter.  Example = 'ES'.
@@ -2597,7 +2603,7 @@ export class SpotifyPlusService {
    * @returns A TrackPageSaved object.
   */
   public async GetTrackFavorites(
-    entity_id: string,
+    player: MediaPlayer,
     limit: number | null = null,
     offset: number | null = null,
     market: string | undefined | null = null,
@@ -2610,7 +2616,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -2673,7 +2679,7 @@ export class SpotifyPlusService {
    * Use the `GetTrackAudioFeatures` method to get an idea of what to specify for some of the
    * minX / maxX / and targetX recommendations values.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param recommendations 
    * @param limit 
    * @param market 
@@ -2681,7 +2687,7 @@ export class SpotifyPlusService {
    * @returns A `ITrackRecommendations` object that contains the track details.
   */
   public async GetTrackRecommendations(
-    entity_id: string,
+    player: MediaPlayer,
     recommendations: ITrackRecommendationsProperties | undefined | null = null,
     limit: number | undefined | null = null,
     market: string | undefined | null = null,
@@ -2692,7 +2698,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -2855,8 +2861,8 @@ export class SpotifyPlusService {
   /**
    * Start playing one or more tracks of the specified context on a Spotify Connect device.
    * 
-   * @param entity_id 
-   *    Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player 
+   *    MediaPlayer instance that will process the request.
    * @param context_uri 
    *    Spotify URI of the context to play.  
    *    Valid contexts are albums, artists & playlists.  
@@ -2891,7 +2897,7 @@ export class SpotifyPlusService {
    *    Default is 0.50; value range is 0 - 10.
   */
   public async PlayerMediaPlayContext(
-    entity_id: string,
+    player: MediaPlayer,
     context_uri: string,
     offset_uri: string | undefined | null = null,
     offset_position: number | null = null,
@@ -2905,10 +2911,12 @@ export class SpotifyPlusService {
       // validation.
       if (!context_uri)
         throw new Error("STPC0005 context_uri argument was not supplied to the PlayerMediaPlayContext service.")
+      if (device_id == null)
+        device_id = player.attributes.source || null;
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
         context_uri: context_uri
       };
 
@@ -2944,8 +2952,8 @@ export class SpotifyPlusService {
    * Get a list of the tracks saved in the current Spotify user's 'Your Library'
    * and starts playing them.
    * 
-   * @param entity_id 
-   *    Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player 
+   *    MediaPlayer instance that will process the request.
    * @param device_id
    *    The name or id of the device this command is targeting.  
    *    If not supplied, the user's currently active device is the target.  
@@ -2966,7 +2974,7 @@ export class SpotifyPlusService {
    *    Default: 200.
   */
   public async PlayerMediaPlayTrackFavorites(
-    entity_id: string,
+    player: MediaPlayer,
     device_id: string | undefined | null = null,
     shuffle: boolean | undefined | null = null,
     delay: number | null = null,
@@ -2976,9 +2984,13 @@ export class SpotifyPlusService {
 
     try {
 
+      // validations.
+      if (device_id == null)
+        device_id = player.attributes.source || null;
+
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -3012,8 +3024,8 @@ export class SpotifyPlusService {
   /**
    * Start playing one or more tracks of the specified context on a Spotify Connect device.
    * 
-   * @param entity_id 
-   *    Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player 
+   *    MediaPlayer instance that will process the request.
    * @param uris 
    *    A comma-delimited string of Spotify URIs to play; can be track or episode URIs.  
    *    Example: `spotify:track:4iV5W9uYEdYUVa79Axb7Rh,spotify:episode:512ojhOuo1ktJprKbVcKyQ`.  
@@ -3035,7 +3047,7 @@ export class SpotifyPlusService {
    *    Default is 0.50; value range is 0 - 10.
   */
   public async PlayerMediaPlayTracks(
-    entity_id: string,
+    player: MediaPlayer,
     uris: string,
     position_ms: number | null = null,
     device_id: string | undefined | null = null,
@@ -3049,10 +3061,12 @@ export class SpotifyPlusService {
         throw new Error("STPC0005 uris argument was not supplied to the PlayerMediaPlayTracks service.")
       if (position_ms == null)
         position_ms = 0;
+      if (device_id == null)
+        device_id = player.attributes.source || null;
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
         uris: uris
       };
 
@@ -3083,11 +3097,11 @@ export class SpotifyPlusService {
   /**
    * Remove one or more albums from the current user's 'Your Library'.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param ids A comma-separated list (50 max) of the Spotify IDs for the albums.  If null, the currently playing track album uri id value is used.
   */
   public async RemoveAlbumFavorites(
-    entity_id: string,
+    player: MediaPlayer,
     ids: string | undefined | null = null,
   ): Promise<void> {
 
@@ -3095,7 +3109,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -3121,11 +3135,11 @@ export class SpotifyPlusService {
   /**
    * Remove one or more audiobooks from the current user's 'Your Library'.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param ids A comma-separated list (50 max) of the Spotify IDs for the audiobooks.  If null, the currently playing audiobook uri id value is used.
   */
   public async RemoveAudiobookFavorites(
-    entity_id: string,
+    player: MediaPlayer,
     ids: string | undefined | null = null,
   ): Promise<void> {
 
@@ -3133,7 +3147,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -3159,11 +3173,11 @@ export class SpotifyPlusService {
   /**
    * Remove one or more episodes from the current user's 'Your Library'.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param ids A comma-separated list (50 max) of the Spotify IDs for the episodes.  If null, the currently playing episode uri id value is used.
   */
   public async RemoveEpisodeFavorites(
-    entity_id: string,
+    player: MediaPlayer,
     ids: string | undefined | null = null,
   ): Promise<void> {
 
@@ -3171,7 +3185,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -3197,11 +3211,11 @@ export class SpotifyPlusService {
   /**
    * Remove one or more shows from the current user's 'Your Library'.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param ids A comma-separated list (50 max) of the Spotify IDs for the shows.  If null, the currently playing show uri id value is used.
   */
   public async RemoveShowFavorites(
-    entity_id: string,
+    player: MediaPlayer,
     ids: string | undefined | null = null,
   ): Promise<void> {
 
@@ -3209,7 +3223,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -3235,11 +3249,11 @@ export class SpotifyPlusService {
   /**
    * Remove one or more tracks from the current user's 'Your Library'.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param ids A comma-separated list (50 max) of the Spotify IDs for the tracks.  If null, the currently playing track uri id value is used.
   */
   public async RemoveTrackFavorites(
-    entity_id: string,
+    player: MediaPlayer,
     ids: string | undefined | null = null,
   ): Promise<void> {
 
@@ -3247,7 +3261,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -3273,11 +3287,11 @@ export class SpotifyPlusService {
   /**
    * Save one or more albums to the current user's 'Your Library'.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param ids A comma-separated list (50 max) of the Spotify IDs for the albums.  If null, the currently playing track album uri id value is used.
   */
   public async SaveAlbumFavorites(
-    entity_id: string,
+    player: MediaPlayer,
     ids: string | undefined | null = null,
   ): Promise<void> {
 
@@ -3285,7 +3299,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -3311,11 +3325,11 @@ export class SpotifyPlusService {
   /**
    * Save one or more audiobooks to the current user's 'Your Library'.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param ids A comma-separated list (50 max) of the Spotify IDs for the audiobooks.  If null, the currently playing audiobook uri id value is used.
   */
   public async SaveAudiobookFavorites(
-    entity_id: string,
+    player: MediaPlayer,
     ids: string | undefined | null = null,
   ): Promise<void> {
 
@@ -3323,7 +3337,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -3349,11 +3363,11 @@ export class SpotifyPlusService {
   /**
    * Save one or more episodes to the current user's 'Your Library'.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param ids A comma-separated list (50 max) of the Spotify IDs for the episodes.  If null, the currently playing episode uri id value is used.
   */
   public async SaveEpisodeFavorites(
-    entity_id: string,
+    player: MediaPlayer,
     ids: string | undefined | null = null,
   ): Promise<void> {
 
@@ -3361,7 +3375,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -3387,11 +3401,11 @@ export class SpotifyPlusService {
   /**
    * Save one or more shows to the current user's 'Your Library'.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param ids A comma-separated list (50 max) of the Spotify IDs for the shows.  If null, the currently playing show uri id value is used.
   */
   public async SaveShowFavorites(
-    entity_id: string,
+    player: MediaPlayer,
     ids: string | undefined | null = null,
   ): Promise<void> {
 
@@ -3399,7 +3413,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -3425,11 +3439,11 @@ export class SpotifyPlusService {
   /**
    * Save one or more tracks to the current user's 'Your Library'.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param ids A comma-separated list (50 max) of the Spotify IDs for the tracks.  If null, the currently playing track uri id value is used.
   */
   public async SaveTrackFavorites(
-    entity_id: string,
+    player: MediaPlayer,
     ids: string | undefined | null = null,
   ): Promise<void> {
 
@@ -3437,7 +3451,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -3464,7 +3478,7 @@ export class SpotifyPlusService {
    * Get Spotify catalog information about matching context criteria.
    * 
    * @param context Contexts to search for.
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param criteria Your search query. 
    * @param limit The maximum number of items to return in a page of items.  Default: 20, Range: 1 to 50.
    * @param offset The index of the first item to return.  Use with limit to get the next set of items.  Default: 0(the first item).
@@ -3476,7 +3490,7 @@ export class SpotifyPlusService {
   public async Search(
     searchMediaType: SearchMediaTypes.ALBUMS | SearchMediaTypes.ARTISTS | SearchMediaTypes.AUDIOBOOKS | SearchMediaTypes.EPISODES |
       SearchMediaTypes.PLAYLISTS | SearchMediaTypes.SHOWS | SearchMediaTypes.TRACKS | string,
-    entity_id: string,
+    player: MediaPlayer,
     criteria: string,
     limit: number | null = null,
     offset: number | null = null,
@@ -3489,19 +3503,19 @@ export class SpotifyPlusService {
 
       // execute based on search media type.
       if (searchMediaType == SearchMediaTypes.ALBUMS) {
-        return await this.SearchAlbums(entity_id, criteria, limit, offset, market, include_external, limit_total)
+        return await this.SearchAlbums(player, criteria, limit, offset, market, include_external, limit_total)
       } else if (searchMediaType == SearchMediaTypes.ARTISTS) {
-        return await this.SearchArtists(entity_id, criteria, limit, offset, market, include_external, limit_total)
+        return await this.SearchArtists(player, criteria, limit, offset, market, include_external, limit_total)
       } else if (searchMediaType == SearchMediaTypes.AUDIOBOOKS) {
-        return await this.SearchAudiobooks(entity_id, criteria, limit, offset, market, include_external, limit_total)
+        return await this.SearchAudiobooks(player, criteria, limit, offset, market, include_external, limit_total)
       } else if (searchMediaType == SearchMediaTypes.EPISODES) {
-        return await this.SearchEpisodes(entity_id, criteria, limit, offset, market, include_external, limit_total)
+        return await this.SearchEpisodes(player, criteria, limit, offset, market, include_external, limit_total)
       } else if (searchMediaType == SearchMediaTypes.PLAYLISTS) {
-        return await this.SearchPlaylists(entity_id, criteria, limit, offset, market, include_external, limit_total)
+        return await this.SearchPlaylists(player, criteria, limit, offset, market, include_external, limit_total)
       } else if (searchMediaType == SearchMediaTypes.SHOWS) {
-        return await this.SearchShows(entity_id, criteria, limit, offset, market, include_external, limit_total)
+        return await this.SearchShows(player, criteria, limit, offset, market, include_external, limit_total)
       } else if (searchMediaType == SearchMediaTypes.TRACKS) {
-        return await this.SearchTracks(entity_id, criteria, limit, offset, market, include_external, limit_total)
+        return await this.SearchTracks(player, criteria, limit, offset, market, include_external, limit_total)
       } else {
         throw new Error("searchMediaType was not recognized: \"" + searchMediaType + "\".");
       }
@@ -3515,7 +3529,7 @@ export class SpotifyPlusService {
   /**
    * Get Spotify catalog information about albums that match a keyword string.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param criteria Your search query. 
    * @param limit The maximum number of items to return in a page of items.  Default: 20, Range: 1 to 50.
    * @param offset The index of the first item to return.  Use with limit to get the next set of items.  Default: 0(the first item).
@@ -3526,7 +3540,7 @@ export class SpotifyPlusService {
    * @returns A AlbumPageSaved object.
   */
   public async SearchAlbums(
-    entity_id: string,
+    player: MediaPlayer,
     criteria: string,
     limit: number | null = null,
     offset: number | null = null,
@@ -3540,7 +3554,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
         criteria: criteria,
       };
 
@@ -3600,7 +3614,7 @@ export class SpotifyPlusService {
   /**
    * Get Spotify catalog information about artists that match a keyword string.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param criteria Your search query. 
    * @param limit The maximum number of items to return in a page of items.  Default: 20, Range: 1 to 50.
    * @param offset The index of the first item to return.  Use with limit to get the next set of items.  Default: 0(the first item).
@@ -3611,7 +3625,7 @@ export class SpotifyPlusService {
    * @returns An IArtistPage object.
   */
   public async SearchArtists(
-    entity_id: string,
+    player: MediaPlayer,
     criteria: string,
     limit: number | null = null,
     offset: number | null = null,
@@ -3625,7 +3639,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
         criteria: criteria,
       };
 
@@ -3684,7 +3698,7 @@ export class SpotifyPlusService {
   /**
    * Get Spotify catalog information about audiobooks that match a keyword string.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param criteria Your search query. 
    * @param limit The maximum number of items to return in a page of items.  Default: 20, Range: 1 to 50.
    * @param offset The index of the first item to return.  Use with limit to get the next set of items.  Default: 0(the first item).
@@ -3695,7 +3709,7 @@ export class SpotifyPlusService {
    * @returns An IAudiobookPageSimplified object.
   */
   public async SearchAudiobooks(
-    entity_id: string,
+    player: MediaPlayer,
     criteria: string,
     limit: number | null = null,
     offset: number | null = null,
@@ -3709,7 +3723,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
         criteria: criteria,
       };
 
@@ -3770,7 +3784,7 @@ export class SpotifyPlusService {
   /**
    * Get Spotify catalog information about episodes that match a keyword string.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param criteria Your search query. 
    * @param limit The maximum number of items to return in a page of items.  Default: 20, Range: 1 to 50.
    * @param offset The index of the first item to return.  Use with limit to get the next set of items.  Default: 0(the first item).
@@ -3781,7 +3795,7 @@ export class SpotifyPlusService {
    * @returns An IEpisodePageSimplified object.
   */
   public async SearchEpisodes(
-    entity_id: string,
+    player: MediaPlayer,
     criteria: string,
     limit: number | null = null,
     offset: number | null = null,
@@ -3795,7 +3809,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
         criteria: criteria,
       };
 
@@ -3855,7 +3869,7 @@ export class SpotifyPlusService {
   /**
    * Get Spotify catalog information about playlists that match a keyword string.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param criteria Your search query. 
    * @param limit The maximum number of items to return in a page of items.  Default: 20, Range: 1 to 50.
    * @param offset The index of the first item to return.  Use with limit to get the next set of items.  Default: 0(the first item).
@@ -3866,7 +3880,7 @@ export class SpotifyPlusService {
    * @returns An IArtistPage object.
   */
   public async SearchPlaylists(
-    entity_id: string,
+    player: MediaPlayer,
     criteria: string,
     limit: number | null = null,
     offset: number | null = null,
@@ -3880,7 +3894,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
         criteria: criteria,
       };
 
@@ -3939,7 +3953,7 @@ export class SpotifyPlusService {
   /**
    * Get Spotify catalog information about shows that match a keyword string.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param criteria Your search query. 
    * @param limit The maximum number of items to return in a page of items.  Default: 20, Range: 1 to 50.
    * @param offset The index of the first item to return.  Use with limit to get the next set of items.  Default: 0(the first item).
@@ -3950,7 +3964,7 @@ export class SpotifyPlusService {
    * @returns An IShowPageSimplified object.
   */
   public async SearchShows(
-    entity_id: string,
+    player: MediaPlayer,
     criteria: string,
     limit: number | null = null,
     offset: number | null = null,
@@ -3964,7 +3978,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
         criteria: criteria,
       };
 
@@ -4025,7 +4039,7 @@ export class SpotifyPlusService {
   /**
    * Get Spotify catalog information about tracks that match a keyword string.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param criteria Your search query. 
    * @param limit The maximum number of items to return in a page of items.  Default: 20, Range: 1 to 50.
    * @param offset The index of the first item to return.  Use with limit to get the next set of items.  Default: 0(the first item).
@@ -4036,7 +4050,7 @@ export class SpotifyPlusService {
    * @returns An IArtistPage object.
   */
   public async SearchTracks(
-    entity_id: string,
+    player: MediaPlayer,
     criteria: string,
     limit: number | null = null,
     offset: number | null = null,
@@ -4050,7 +4064,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
         criteria: criteria,
       };
 
@@ -4113,11 +4127,11 @@ export class SpotifyPlusService {
   /**
    * Remove the current user as a follower of one or more artists.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param ids A comma-separated list (50 max) of the Spotify IDs for the artists.  If null, the currently playing track artist uri id value is used.
   */
   public async UnfollowArtists(
-    entity_id: string,
+    player: MediaPlayer,
     ids: string | undefined | null = null,
   ): Promise<void> {
 
@@ -4125,7 +4139,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -4151,11 +4165,11 @@ export class SpotifyPlusService {
   /**
    * Remove the current user as a follower of one or more playlists.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param playlist_id The Spotify ID of the playlist (e.g. `3cEYpjA9oz9GiPac4AsH4n`). If null, the currently playing playlist uri id value is used.
   */
   public async UnfollowPlaylist(
-    entity_id: string,
+    player: MediaPlayer,
     playlist_id: string | undefined | null = null,
   ): Promise<void> {
 
@@ -4163,7 +4177,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
       };
 
       // update service data parameters (with optional parameters).
@@ -4190,7 +4204,7 @@ export class SpotifyPlusService {
    * Calls the `addUser` Spotify Zeroconf API endpoint to issue a call to SpConnectionLoginBlob.  If successful,
    * the associated device id is added to the Spotify Connect active device list for the specified user account.
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param device A ISpotifyConnectDevice object that contains Spotify Connect details for the device.
    * @param username (optional) Spotify Connect user name to login with (e.g. "yourspotifyusername").  If null, the SpotifyPlus integration options username value will be used.
    * @param password (optional) Spotify Connect user password to login with.  If null, the SpotifyPlus integration options password value will be used.
@@ -4201,7 +4215,7 @@ export class SpotifyPlusService {
    * @returns Response data, in the form of a Record<string, any> (e.g. dictionary).
   */
   public async ZeroconfDeviceConnect(
-    entity_id: string,
+    player: MediaPlayer,
     device: ISpotifyConnectDevice,
     username: string | undefined | null = null,
     password: string | undefined | null = null,
@@ -4221,7 +4235,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
         host_ipv4_address: device.DiscoveryResult.HostIpAddress,
         host_ip_port: device.DiscoveryResult.HostIpPort,
         cpath: device.DiscoveryResult.SpotifyConnectCPath,
@@ -4265,13 +4279,13 @@ export class SpotifyPlusService {
    * The currently logged in user (if any) will be logged out of Spotify Connect, and the 
    * device id removed from the active Spotify Connect device list.      
    * 
-   * @param entity_id Entity ID of the SpotifyPlus device that will process the request (e.g. "media_player.spotifyplus_john_smith").
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param device A ISpotifyConnectDevice object that contains Spotify Connect details for the device.
    * @param delay (optional) (optional) Time delay (in seconds) to wait AFTER issuing a command to the device. This delay will give the spotify zeroconf api time to process the change before another command is issued. Default is 0.50; value range is 0 - 10.
    * @returns Response data, in the form of a Record<string, any> (e.g. dictionary).
   */
   public async ZeroconfDeviceDisconnect(
-    entity_id: string,
+    player: MediaPlayer,
     device: ISpotifyConnectDevice,
     delay: number | undefined | null = null,
   ): Promise<IZeroconfResponse> {
@@ -4286,7 +4300,7 @@ export class SpotifyPlusService {
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
-        entity_id: entity_id,
+        entity_id: player.id,
         host_ipv4_address: device.DiscoveryResult.HostIpAddress,
         host_ip_port: device.DiscoveryResult.HostIpPort,
         cpath: device.DiscoveryResult.SpotifyConnectCPath,
@@ -4322,7 +4336,7 @@ export class SpotifyPlusService {
   /**
    * Calls the SpotifyPlusService PlayerMediaPlayX method to play media.
    * 
-   * @param player SpotifyPlus media player to direct the request to.
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
    * @param mediaItem Media Browser item that contains media content details to play.
    */
   public async Card_PlayMediaBrowserItem(
@@ -4358,14 +4372,12 @@ export class SpotifyPlusService {
       if (['album', 'artist', 'playlist', 'show', 'audiobook', 'podcast'].indexOf(uriType) > -1) {
 
         // play context.
-        const device_id = player.attributes.source || null;
-        await this.PlayerMediaPlayContext(player.id, mediaItem.uri || '', null, null, null, device_id, null);
+        await this.PlayerMediaPlayContext(player, mediaItem.uri || '');
 
       } else if (['track', 'episode', 'chapter'].indexOf(uriType) > -1) {
 
         // play track / episode / chapter.
-        const device_id = player.attributes.source || null;
-        await this.PlayerMediaPlayTracks(player.id, mediaItem.uri || '', null, device_id, null);
+        await this.PlayerMediaPlayTracks(player, mediaItem.uri || '');
 
       } else {
 

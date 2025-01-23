@@ -1,5 +1,6 @@
 import { IZeroconfDiscoveryResult } from './zeroconf-discovery-result';
 import { IZeroconfGetInfo } from './zeroconf-get-info';
+import { IZeroconfResponse } from './zeroconf-response';
 
 /**
  * Spotify Connect Device object.
@@ -28,9 +29,36 @@ export interface ISpotifyConnectDevice {
 
 
   /**
+   * True if the device is the currently active Spotify Web API player device;
+   * otherwise, False.
+   */
+  IsActiveDevice: boolean;
+
+
+  /**
    * True if the device is a Google ChromeCast device; otherwise, False.
    */
   IsChromeCast: boolean;
+
+
+  /**
+   * True if this device is a member of the Spotify Web API player device list;
+   * otherwise, False.
+   */
+  IsInDeviceList: boolean;
+
+
+  /**
+   * True if this device is a member of the Spotify Web API player device list;
+   * otherwise, False.
+   */
+  IsRestricted: boolean;
+
+
+  /**
+   * True if the device is a Sonos device; otherwise, False.
+   */
+  IsSonos: boolean;
 
 
   /**
@@ -58,5 +86,11 @@ export interface ISpotifyConnectDevice {
    * True if the device was re-connected, after being inactive or disconnected.
    */
   WasReConnected: boolean;
+
+
+  /** 
+   * Spotify Zeroconf API Zeroconf response object.
+   */
+  ZeroconfResponseInfo: IZeroconfResponse;
 
 }

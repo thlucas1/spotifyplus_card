@@ -93,6 +93,7 @@ export const sharedStylesGrid = css`
     font-size: 0.85rem;
     line-height: 1rem;
     justify-self: right;
+    text-wrap-mode: nowrap;
     padding-right: 6px;
     color: var(--accent-color);
   }

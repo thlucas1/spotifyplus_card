@@ -287,12 +287,12 @@ class ShowActions extends FavActionsBase {
       // call service based on requested action, and refresh affected action component.
       if (action == Actions.ShowFavoriteAdd) {
 
-        await this.spotifyPlusService.SaveShowFavorites(this.player.id, this.mediaItem.id);
+        await this.spotifyPlusService.SaveShowFavorites(this.player, this.mediaItem.id);
         this.updateActions(this.player, [Actions.ShowFavoriteUpdate]);
 
       } else if (action == Actions.ShowFavoriteRemove) {
 
-        await this.spotifyPlusService.RemoveShowFavorites(this.player.id, this.mediaItem.id);
+        await this.spotifyPlusService.RemoveShowFavorites(this.player, this.mediaItem.id);
         this.updateActions(this.player, [Actions.ShowFavoriteUpdate]);
 
       } else {
@@ -349,7 +349,7 @@ class ShowActions extends FavActionsBase {
           const limit_total = 20;
 
           // call service to retrieve show episodes.
-          this.spotifyPlusService.GetShowEpisodes(player.id, this.mediaItem.id, 0, 0, market, limit_total)
+          this.spotifyPlusService.GetShowEpisodes(player, this.mediaItem.id, 0, 0, market, limit_total)
             .then(episodes => {
 
               // stash the result into state, and resolve the promise.
@@ -377,7 +377,7 @@ class ShowActions extends FavActionsBase {
         const promiseCheckShowFavorites = new Promise((resolve, reject) => {
 
           // call service to retrieve favorite setting.
-          this.spotifyPlusService.CheckShowFavorites(player.id, this.mediaItem.id)
+          this.spotifyPlusService.CheckShowFavorites(player, this.mediaItem.id)
             .then(result => {
 
               // load results, and resolve the promise.

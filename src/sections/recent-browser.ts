@@ -136,7 +136,7 @@ export class RecentBrowser extends FavBrowserBase {
       setTimeout(() => {
 
         // play the selected track, as well as the remaining tracks.
-        this.spotifyPlusService.PlayerMediaPlayTracks(this.player.id, uris.join(","));
+        this.spotifyPlusService.PlayerMediaPlayTracks(this.player, uris.join(","));
 
         // show player section.
         this.store.card.SetSection(Section.PLAYER);
@@ -183,7 +183,7 @@ export class RecentBrowser extends FavBrowserBase {
         const limitTotal = this.LIMIT_TOTAL_MAX;
 
         // call the service to retrieve the media list.
-        this.spotifyPlusService.GetPlayerRecentTracks(player.id, 0, 0, 0, limitTotal)
+        this.spotifyPlusService.GetPlayerRecentTracks(player, 0, 0, 0, limitTotal)
           .then(result => {
 
             // load media list results.

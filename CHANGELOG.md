@@ -6,6 +6,15 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.33 ] - 2025/01/23
+
+  * This release requires the SpotifyPlus Integration v1.0.86+ release; please make sure you update the SpotifyPlus integration prior to updating this SpotifyPlus Card release.
+  * Added support for Google Chromecast devices.
+  * Moved support for Sonos devices to the underlying `spotifywebapiPython` package.
+  * Added support for new Zeroconf discovery process, in support of Chromecast devices.
+  * Updated underlying `spotifywebapiPython` package requirement to version 1.0.156.
+  * Updated underlying `smartinspectPython` package requirement to version 3.0.34.
+
 ###### [ 1.0.32 ] - 2025/01/17
 
   * Fixed issue with random track playing if shuffle mode was on while selecting a track favorite.  To fix, I had to disable shuffle prior to starting play of the track as the Spotify Web API would always play a shuffled track.  The only other alternative was to just play 1 track, which would then end play when the song ended.

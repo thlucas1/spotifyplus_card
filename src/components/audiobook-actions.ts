@@ -303,12 +303,12 @@ class AudiobookActions extends FavActionsBase {
       // call service based on requested action, and refresh affected action component.
       if (action == Actions.AudiobookFavoriteAdd) {
 
-        await this.spotifyPlusService.SaveAudiobookFavorites(this.player.id, this.mediaItem.id);
+        await this.spotifyPlusService.SaveAudiobookFavorites(this.player, this.mediaItem.id);
         this.updateActions(this.player, [Actions.AudiobookFavoriteUpdate]);
 
       } else if (action == Actions.AudiobookFavoriteRemove) {
 
-        await this.spotifyPlusService.RemoveAudiobookFavorites(this.player.id, this.mediaItem.id);
+        await this.spotifyPlusService.RemoveAudiobookFavorites(this.player, this.mediaItem.id);
         this.updateActions(this.player, [Actions.AudiobookFavoriteUpdate]);
 
       } else {
@@ -365,7 +365,7 @@ class AudiobookActions extends FavActionsBase {
           const limit_total = 200;
 
           // call service to retrieve audiobook chapters.
-          this.spotifyPlusService.GetAudiobookChapters(player.id, this.mediaItem.id, 0, 0, market, limit_total)
+          this.spotifyPlusService.GetAudiobookChapters(player, this.mediaItem.id, 0, 0, market, limit_total)
             .then(chapters => {
 
               // stash the result into state, and resolve the promise.
@@ -393,7 +393,7 @@ class AudiobookActions extends FavActionsBase {
         const promiseCheckAudiobookFavorites = new Promise((resolve, reject) => {
 
           // call service to retrieve favorite setting.
-          this.spotifyPlusService.CheckAudiobookFavorites(player.id, this.mediaItem.id)
+          this.spotifyPlusService.CheckAudiobookFavorites(player, this.mediaItem.id)
             .then(result => {
 
               // load results, and resolve the promise.

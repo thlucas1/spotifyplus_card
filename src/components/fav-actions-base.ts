@@ -232,7 +232,7 @@ export class FavActionsBase extends LitElement {
       this.progressShow();
 
       // add media item to play queue.
-      await this.spotifyPlusService.AddPlayerQueueItems(this.player.id, mediaItem.uri, null, false);
+      await this.spotifyPlusService.AddPlayerQueueItems(this.player, mediaItem.uri);
 
     }
     catch (error) {

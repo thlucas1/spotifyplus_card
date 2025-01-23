@@ -121,7 +121,7 @@ export class ShowFavBrowser extends FavBrowserBase {
         const excludeAudiobooks = true;
 
         // call the service to retrieve the media list.
-        this.spotifyPlusService.GetShowFavorites(player.id, 0, 0, limitTotal, sortResult, excludeAudiobooks)
+        this.spotifyPlusService.GetShowFavorites(player, 0, 0, limitTotal, sortResult, excludeAudiobooks)
           .then(result => {
 
             // load media list results.

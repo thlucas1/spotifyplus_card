@@ -576,38 +576,38 @@ class TrackActions extends FavActionsBase {
       // call service based on requested action, and refresh affected action component.
       if (action == Actions.AlbumFavoriteAdd) {
 
-        await this.spotifyPlusService.SaveAlbumFavorites(this.player.id, this.mediaItem.album.id);
+        await this.spotifyPlusService.SaveAlbumFavorites(this.player, this.mediaItem.album.id);
         this.updateActions(this.player, [Actions.AlbumFavoriteUpdate]);
 
       } else if (action == Actions.AlbumFavoriteRemove) {
 
-        await this.spotifyPlusService.RemoveAlbumFavorites(this.player.id, this.mediaItem.album.id);
+        await this.spotifyPlusService.RemoveAlbumFavorites(this.player, this.mediaItem.album.id);
         this.updateActions(this.player, [Actions.AlbumFavoriteUpdate]);
 
       } else if (action == Actions.ArtistFavoriteAdd) {
 
-        await this.spotifyPlusService.FollowArtists(this.player.id, this.mediaItem.artists[0].id);
+        await this.spotifyPlusService.FollowArtists(this.player, this.mediaItem.artists[0].id);
         this.updateActions(this.player, [Actions.ArtistFavoriteUpdate]);
 
       } else if (action == Actions.ArtistFavoriteRemove) {
 
-        await this.spotifyPlusService.UnfollowArtists(this.player.id, this.mediaItem.artists[0].id);
+        await this.spotifyPlusService.UnfollowArtists(this.player, this.mediaItem.artists[0].id);
         this.updateActions(this.player, [Actions.ArtistFavoriteUpdate]);
 
       } else if (action == Actions.TrackFavoriteAdd) {
 
-        await this.spotifyPlusService.SaveTrackFavorites(this.player.id, this.mediaItem.id);
+        await this.spotifyPlusService.SaveTrackFavorites(this.player, this.mediaItem.id);
         this.updateActions(this.player, [Actions.TrackFavoriteUpdate]);
 
       } else if (action == Actions.TrackFavoriteRemove) {
 
-        await this.spotifyPlusService.RemoveTrackFavorites(this.player.id, this.mediaItem.id);
+        await this.spotifyPlusService.RemoveTrackFavorites(this.player, this.mediaItem.id);
         this.updateActions(this.player, [Actions.TrackFavoriteUpdate]);
 
       } else if (action == Actions.TrackPlayQueueAdd) {
 
         // have to hide the progress indicator manually since it does not call updateActions.
-        await this.spotifyPlusService.AddPlayerQueueItems(this.player.id, this.mediaItem.uri, null, false);
+        await this.spotifyPlusService.AddPlayerQueueItems(this.player, this.mediaItem.uri);
         this.progressHide();
 
       } else if (action == Actions.TrackPlayTrackFavorites) {
@@ -617,7 +617,7 @@ class TrackActions extends FavActionsBase {
         }
 
         // have to hide the progress indicator manually since it does not call updateActions.
-        await this.spotifyPlusService.PlayerMediaPlayTrackFavorites(this.player.id, null, true, null, false, this.store.config.trackFavBrowserItemsLimit);
+        await this.spotifyPlusService.PlayerMediaPlayTrackFavorites(this.player, null, true, null, false, this.store.config.trackFavBrowserItemsLimit);
         this.progressHide();
 
         // show player section.
@@ -674,7 +674,7 @@ class TrackActions extends FavActionsBase {
         const promiseCheckAlbumFavorites = new Promise((resolve, reject) => {
 
           // call service to retrieve favorite setting.
-          this.spotifyPlusService.CheckAlbumFavorites(player.id, this.mediaItem.album.id)
+          this.spotifyPlusService.CheckAlbumFavorites(player, this.mediaItem.album.id)
             .then(result => {
 
               // load results, and resolve the promise.
@@ -703,7 +703,7 @@ class TrackActions extends FavActionsBase {
         const promiseCheckArtistFavorites = new Promise((resolve, reject) => {
 
           // call service to retrieve favorite setting.
-          this.spotifyPlusService.CheckArtistsFollowing(player.id, this.mediaItem.artists[0].id)
+          this.spotifyPlusService.CheckArtistsFollowing(player, this.mediaItem.artists[0].id)
             .then(result => {
 
               // load results, and resolve the promise.
@@ -732,7 +732,7 @@ class TrackActions extends FavActionsBase {
         const promiseCheckTrackFavorites = new Promise((resolve, reject) => {
 
           // call service to retrieve favorite setting.
-          this.spotifyPlusService.CheckTrackFavorites(player.id, this.mediaItem.id)
+          this.spotifyPlusService.CheckTrackFavorites(player, this.mediaItem.id)
             .then(result => {
 
               // load results, and resolve the promise.

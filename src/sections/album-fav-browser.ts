@@ -121,7 +121,7 @@ export class AlbumFavBrowser extends FavBrowserBase {
         const market = null;
 
         // call the service to retrieve the media list.
-        this.spotifyPlusService.GetAlbumFavorites(player.id, 0, 0, market, limitTotal, sortResult)
+        this.spotifyPlusService.GetAlbumFavorites(player, 0, 0, market, limitTotal, sortResult)
           .then(result => {
 
             // load media list results.

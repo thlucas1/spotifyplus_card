@@ -334,22 +334,22 @@ export class PlayerBodyShow extends PlayerBodyBase {
       // call service based on requested action, and refresh affected action component.
       if (action == Actions.ShowFavoriteAdd) {
 
-        await this.spotifyPlusService.SaveShowFavorites(this.player.id, this.episode?.show.id);
+        await this.spotifyPlusService.SaveShowFavorites(this.player, this.episode?.show.id);
         this.updateActions(this.player, [Actions.ShowFavoriteUpdate]);
 
       } else if (action == Actions.ShowFavoriteRemove) {
 
-        await this.spotifyPlusService.RemoveShowFavorites(this.player.id, this.episode?.show.id);
+        await this.spotifyPlusService.RemoveShowFavorites(this.player, this.episode?.show.id);
         this.updateActions(this.player, [Actions.ShowFavoriteUpdate]);
 
       } else if (action == Actions.EpisodeFavoriteAdd) {
 
-        await this.spotifyPlusService.SaveEpisodeFavorites(this.player.id, this.episode?.id);
+        await this.spotifyPlusService.SaveEpisodeFavorites(this.player, this.episode?.id);
         this.updateActions(this.player, [Actions.EpisodeFavoriteUpdate]);
 
       } else if (action == Actions.EpisodeFavoriteRemove) {
 
-        await this.spotifyPlusService.RemoveEpisodeFavorites(this.player.id, this.episode?.id);
+        await this.spotifyPlusService.RemoveEpisodeFavorites(this.player, this.episode?.id);
         this.updateActions(this.player, [Actions.EpisodeFavoriteUpdate]);
 
       } else {
@@ -410,7 +410,7 @@ export class PlayerBodyShow extends PlayerBodyBase {
           const uriIdMediaItem = getIdFromSpotifyUri(this.player.attributes.media_content_id);
 
           // call service to retrieve media item that is currently playing.
-          this.spotifyPlusService.GetEpisode(player.id, uriIdMediaItem)
+          this.spotifyPlusService.GetEpisode(player, uriIdMediaItem)
             .then(result => {
 
               // load results, update favorites, and resolve the promise.
@@ -443,7 +443,7 @@ export class PlayerBodyShow extends PlayerBodyBase {
         const promiseCheckShowFavorites = new Promise((resolve, reject) => {
 
           // call service to retrieve favorite setting.
-          this.spotifyPlusService.CheckShowFavorites(player.id, this.episode?.show.id)
+          this.spotifyPlusService.CheckShowFavorites(player, this.episode?.show.id)
             .then(result => {
 
               // load results, and resolve the promise.
@@ -472,7 +472,7 @@ export class PlayerBodyShow extends PlayerBodyBase {
         const promiseCheckEpisodeFavorites = new Promise((resolve, reject) => {
 
           // call service to retrieve favorite setting.
-          this.spotifyPlusService.CheckEpisodeFavorites(player.id, this.episode?.id)
+          this.spotifyPlusService.CheckEpisodeFavorites(player, this.episode?.id)
             .then(result => {
 
               // load results, and resolve the promise.

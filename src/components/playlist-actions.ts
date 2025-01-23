@@ -309,17 +309,17 @@ class PlaylistActions extends FavActionsBase {
       // call service based on requested action, and refresh affected action component.
       if (action == Actions.PlaylistDelete) {
 
-        await this.spotifyPlusService.UnfollowPlaylist(this.player.id, this.mediaItem.id);
+        await this.spotifyPlusService.UnfollowPlaylist(this.player, this.mediaItem.id);
         this.updateActions(this.player, [Actions.PlaylistFavoriteUpdate]);
 
       } else if (action == Actions.PlaylistFavoriteAdd) {
 
-        await this.spotifyPlusService.FollowPlaylist(this.player.id, this.mediaItem.id);
+        await this.spotifyPlusService.FollowPlaylist(this.player, this.mediaItem.id);
         this.updateActions(this.player, [Actions.PlaylistFavoriteUpdate]);
 
       } else if (action == Actions.PlaylistFavoriteRemove) {
 
-        await this.spotifyPlusService.UnfollowPlaylist(this.player.id, this.mediaItem.id);
+        await this.spotifyPlusService.UnfollowPlaylist(this.player, this.mediaItem.id);
         this.updateActions(this.player, [Actions.PlaylistFavoriteUpdate]);
 
       } else {
@@ -387,7 +387,7 @@ class PlaylistActions extends FavActionsBase {
           //const fields = null; // "items(track(name,id,uri,type,duration_ms,album(name,uri),artists(name,uri)))";
 
           // call service to retrieve playlist items.
-          this.spotifyPlusService.GetPlaylistItems(player.id, this.mediaItem.id, 0, 0, market, fields, additional_types, limit_total)
+          this.spotifyPlusService.GetPlaylistItems(player, this.mediaItem.id, 0, 0, market, fields, additional_types, limit_total)
             .then(page => {
 
               // stash the result into state, and resolve the promise.
@@ -415,7 +415,7 @@ class PlaylistActions extends FavActionsBase {
         const promiseCheckPlaylistFavorites = new Promise((resolve, reject) => {
 
           // call service to retrieve favorite setting.
-          this.spotifyPlusService.CheckPlaylistFollowers(player.id, this.mediaItem.id)
+          this.spotifyPlusService.CheckPlaylistFollowers(player, this.mediaItem.id)
             .then(result => {
 
               // load results, and resolve the promise.

@@ -238,22 +238,4 @@ export interface IZeroconfGetInfo extends IZeroconfResponse {
    */
   VoiceSupport: string;
 
-
-  // non-Spotify properties.
-
-  /**
-   * Returns True if this device is the currently active device;
-   * otherwise, False.
-   */
-  IsActiveDevice: boolean;
-
-
-  /** 
-   * Returns the status of active device list verification:
-   * * None - device list verification has not been performed for this device.
-   * * True - device is a member of the active device list.
-   * * False - device is NOT a member of the active device list.
-   */
-  IsInDeviceList: boolean;
-
 }

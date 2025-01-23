@@ -64,7 +64,7 @@ class DeviceActions extends FavActionsBase {
     }
 
     // set Spotify Connect device list status indicator.
-    const deviceListClass = (this.deviceInfo?.DeviceInfo.IsInDeviceList) ? "device-list-in" : "device-list-out";
+    const deviceListClass = (this.deviceInfo?.IsInDeviceList) ? "device-list-in" : "device-list-out";
 
     // define dropdown menu actions - artist.
     const actionsDeviceHtml = html`
@@ -99,9 +99,14 @@ class DeviceActions extends FavActionsBase {
             </div>
             <div class="media-info-text-ms">${this.deviceInfo?.DeviceInfo.BrandDisplayName}</div>
             <div class="media-info-text-s">${this.deviceInfo?.DeviceInfo.ModelDisplayName}</div>
-            ${(this.deviceInfo?.DeviceInfo.IsBrandSonos) ? html`
+            ${(this.deviceInfo?.IsSonos) ? html`
               <div class="media-info-text-s padT">
-                Sonos devices will not appear in Spotify Web API device list
+                Sonos device (will not appear in Spotify Web API device list)
+              </div>
+            ` : ""}
+            ${(this.deviceInfo?.IsChromeCast) ? html`
+              <div class="media-info-text-s padT">
+                Chromecast device
               </div>
             ` : ""}
           </div>
@@ -140,7 +145,7 @@ class DeviceActions extends FavActionsBase {
             <div class="grid-action-info-text-s">${this.deviceInfo?.DiscoveryResult.IsDynamicDevice}</div>
 
             <div class="grid-action-info-hdr-s">Is in Device List?</div>
-            <div class="grid-action-info-text-s ${deviceListClass}">${this.deviceInfo?.DeviceInfo.IsInDeviceList}</div>
+            <div class="grid-action-info-text-s ${deviceListClass}">${this.deviceInfo?.IsInDeviceList}</div>
 
             <div class="grid-action-info-hdr-s">Auth Token Type</div>
             <div class="grid-action-info-text-s copy2cb" @click=${copyToClipboard}>${this.deviceInfo?.DeviceInfo.TokenType}</div>
@@ -256,11 +261,17 @@ class DeviceActions extends FavActionsBase {
           this.alertInfoSet("Dynamic devices cannot be managed.");
           this.progressHide();
 
+        } else if (this.mediaItem.IsChromeCast) {
+
+          // chromecast devices do not support Spotify Connect Connect.
+          this.alertInfoSet("Chromecast devices do not support Spotify Connect connect.");
+          this.progressHide();
+
         } else {
 
           // connect the device.
           this.alertInfoSet("Connecting to Spotify Connect device ...");
-          await this.spotifyPlusService.ZeroconfDeviceConnect(this.player.id, this.mediaItem, null, null, null, true, true, 1.0);
+          await this.spotifyPlusService.ZeroconfDeviceConnect(this.player, this.mediaItem, null, null, null, true, true, 1.0);
           this.alertInfoSet("Spotify Connect device should be connected.");
           this.updateActions(this.player, [Actions.DeviceGetInfo]);
 
@@ -274,6 +285,12 @@ class DeviceActions extends FavActionsBase {
           this.alertInfoSet("Dynamic devices cannot be managed.");
           this.progressHide();
 
+        } else if (this.mediaItem.IsChromeCast) {
+
+          // chromecast does not support Spotify Connect disconnect.
+          this.alertInfoSet("Chromecast devices do not support Spotify Connect disconnect.");
+          this.progressHide();
+
         } else if (this.mediaItem.DeviceInfo.BrandDisplayName == 'librespot') {
 
           // librespot does not support Spotify Connect disconnect.
@@ -284,7 +301,7 @@ class DeviceActions extends FavActionsBase {
 
           // disconnect the device.
           this.alertInfoSet("Disconnecting from Spotify Connect device ...");
-          await this.spotifyPlusService.ZeroconfDeviceDisconnect(this.player.id, this.mediaItem, 1.0);
+          await this.spotifyPlusService.ZeroconfDeviceDisconnect(this.player, this.mediaItem, 1.0);
           this.alertInfoSet("Spotify Connect device was disconnected.");
           this.updateActions(this.player, [Actions.DeviceGetInfo]);
 
@@ -348,7 +365,7 @@ class DeviceActions extends FavActionsBase {
           const activate_device = false;
 
           // get Spotify Connect device info.
-          this.spotifyPlusService.GetSpotifyConnectDevice(player.id, this.mediaItem.Id, null, null, refresh_device_list, activate_device)
+          this.spotifyPlusService.GetSpotifyConnectDevice(player, this.mediaItem.Id, null, null, refresh_device_list, activate_device)
             .then(device => {
 
               // clear certain info messsages if they are temporary.

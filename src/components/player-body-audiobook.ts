@@ -372,22 +372,22 @@ export class PlayerBodyAudiobook extends PlayerBodyBase {
       // call service based on requested action, and refresh affected action component.
       if (action == Actions.AudiobookFavoriteAdd) {
 
-        await this.spotifyPlusService.SaveAudiobookFavorites(this.player.id, this.chapter?.audiobook.id);
+        await this.spotifyPlusService.SaveAudiobookFavorites(this.player, this.chapter?.audiobook.id);
         this.updateActions(this.player, [Actions.AudiobookFavoriteUpdate]);
 
       } else if (action == Actions.AudiobookFavoriteRemove) {
 
-        await this.spotifyPlusService.RemoveAudiobookFavorites(this.player.id, this.chapter?.audiobook.id);
+        await this.spotifyPlusService.RemoveAudiobookFavorites(this.player, this.chapter?.audiobook.id);
         this.updateActions(this.player, [Actions.AudiobookFavoriteUpdate]);
 
       } else if (action == Actions.ChapterFavoriteAdd) {
 
-        await this.spotifyPlusService.SaveEpisodeFavorites(this.player.id, this.chapter?.id);
+        await this.spotifyPlusService.SaveEpisodeFavorites(this.player, this.chapter?.id);
         this.updateActions(this.player, [Actions.ChapterFavoriteUpdate]);
 
       } else if (action == Actions.ChapterFavoriteRemove) {
 
-        await this.spotifyPlusService.RemoveEpisodeFavorites(this.player.id, this.chapter?.id);
+        await this.spotifyPlusService.RemoveEpisodeFavorites(this.player, this.chapter?.id);
         this.updateActions(this.player, [Actions.ChapterFavoriteUpdate]);
 
       } else {
@@ -448,7 +448,7 @@ export class PlayerBodyAudiobook extends PlayerBodyBase {
           const uriIdMediaItem = getIdFromSpotifyUri(this.player.attributes.media_content_id);
 
           // call service to retrieve media item that is currently playing.
-          this.spotifyPlusService.GetChapter(player.id, uriIdMediaItem)
+          this.spotifyPlusService.GetChapter(player, uriIdMediaItem)
             .then(result => {
 
               // load results, update favorites, and resolve the promise.
@@ -481,7 +481,7 @@ export class PlayerBodyAudiobook extends PlayerBodyBase {
         const promiseCheckAudiobookFavorites = new Promise((resolve, reject) => {
 
           // call service to retrieve favorite setting.
-          this.spotifyPlusService.CheckAudiobookFavorites(player.id, this.chapter?.audiobook.id)
+          this.spotifyPlusService.CheckAudiobookFavorites(player, this.chapter?.audiobook.id)
             .then(result => {
 
               // load results, and resolve the promise.
@@ -510,7 +510,7 @@ export class PlayerBodyAudiobook extends PlayerBodyBase {
         const promiseCheckEpisodeFavorites = new Promise((resolve, reject) => {
 
           // call service to retrieve favorite setting.
-          this.spotifyPlusService.CheckEpisodeFavorites(player.id, this.chapter?.id)
+          this.spotifyPlusService.CheckEpisodeFavorites(player, this.chapter?.id)
             .then(result => {
 
               // load results, and resolve the promise.

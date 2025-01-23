@@ -228,7 +228,7 @@ export class PlayerBodyQueue extends PlayerBodyBase {
         setTimeout(() => {
 
           // play the selected track, as well as the remaining tracks.
-          this.spotifyPlusService.PlayerMediaPlayTracks(this.player.id, uris.join(","));
+          this.spotifyPlusService.PlayerMediaPlayTracks(this.player, uris.join(","));
 
           // hide progress indicator.
           this.progressHide();
@@ -294,7 +294,7 @@ export class PlayerBodyQueue extends PlayerBodyBase {
         const promiseGetPlayingItem = new Promise((resolve, reject) => {
 
           // call service to retrieve media item that is currently playing.
-          this.spotifyPlusService.GetPlayerQueueInfo(player.id)
+          this.spotifyPlusService.GetPlayerQueueInfo(player)
             .then(result => {
 
               // load results, update favorites, and resolve the promise.

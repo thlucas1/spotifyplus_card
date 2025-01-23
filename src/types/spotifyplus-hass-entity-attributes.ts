@@ -30,6 +30,16 @@ export declare type SpotifyPlusHassEntityAttributes = HassEntityAttributesMediaP
   sp_device_is_brand_sonos?: boolean;
 
   /**
+   * Denotes if the source device is a Google Chromecast device (true) or not (false).
+   */
+  sp_device_is_chromecast?: boolean;
+
+  /**
+   * Music source currently selected on the source device; brand specific value.
+   */
+  sp_device_music_source?: string;
+
+  /**
    * Denotes the type of item being played: `track`, `podcast`, or `audiobook`.
    */
   sp_item_type?: string;

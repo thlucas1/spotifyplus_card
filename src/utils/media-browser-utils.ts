@@ -228,8 +228,10 @@ export function formatPlayerInfo(
     // spotifyplus extra state attributes.
     text = text.replace("{player.sp_context_uri}", player.attributes.sp_context_uri || '');
     text = text.replace("{player.sp_device_id}", player.attributes.sp_device_id || '');
-    text = text.replace("{player.sp_device_name}", player.attributes.sp_device_name || '');
     text = text.replace("{player.sp_device_is_brand_sonos}", (player.attributes.sp_device_is_brand_sonos + "") || '');
+    text = text.replace("{player.sp_device_is_chromecast}", (player.attributes.sp_device_is_chromecast + "") || '');
+    text = text.replace("{player.sp_device_music_source}", (player.attributes.sp_device_music_source + "") || '');
+    text = text.replace("{player.sp_device_name}", player.attributes.sp_device_name || '');
     text = text.replace("{player.sp_item_type}", player.attributes.sp_item_type || '');
     text = text.replace("{player.sp_playing_type}", player.attributes.sp_playing_type || '');
     text = text.replace("{player.sp_playlist_name}", player.attributes.sp_playlist_name || '');

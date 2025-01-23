@@ -134,7 +134,7 @@ export class TrackFavBrowser extends FavBrowserBase {
       setTimeout(() => {
 
         // play the selected track, as well as the remaining tracks.
-        this.spotifyPlusService.PlayerMediaPlayTracks(this.player.id, uris.join(","));
+        this.spotifyPlusService.PlayerMediaPlayTracks(this.player, uris.join(","));
 
         // show player section.
         this.store.card.SetSection(Section.PLAYER);
@@ -183,7 +183,7 @@ export class TrackFavBrowser extends FavBrowserBase {
         const market = null;   // market code.
 
         // call the service to retrieve the media list.
-        this.spotifyPlusService.GetTrackFavorites(player.id, 0, 0, market, limitTotal, sortResult)
+        this.spotifyPlusService.GetTrackFavorites(player, 0, 0, market, limitTotal, sortResult)
           .then(result => {
 
             // load media list results.

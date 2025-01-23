@@ -119,7 +119,7 @@ export class PlaylistFavBrowser extends FavBrowserBase {
         const sortResult = this.config.playlistFavBrowserItemsSortTitle || false;
 
         // call the service to retrieve the media list.
-        this.spotifyPlusService.GetPlaylistFavorites(player.id, 0, 0, limitTotal, sortResult)
+        this.spotifyPlusService.GetPlaylistFavorites(player, 0, 0, limitTotal, sortResult)
           .then(result => {
 
             // load media list results.

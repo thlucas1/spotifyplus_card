@@ -390,12 +390,12 @@ class ArtistActions extends FavActionsBase {
       // call service based on requested action, and refresh affected action component.
       if (action == Actions.ArtistFavoriteAdd) {
 
-        await this.spotifyPlusService.FollowArtists(this.player.id, this.mediaItem.id);
+        await this.spotifyPlusService.FollowArtists(this.player, this.mediaItem.id);
         this.updateActions(this.player, [Actions.ArtistFavoriteUpdate]);
 
       } else if (action == Actions.ArtistFavoriteRemove) {
 
-        await this.spotifyPlusService.UnfollowArtists(this.player.id, this.mediaItem.id);
+        await this.spotifyPlusService.UnfollowArtists(this.player, this.mediaItem.id);
         this.updateActions(this.player, [Actions.ArtistFavoriteUpdate]);
 
       } else {
@@ -449,7 +449,7 @@ class ArtistActions extends FavActionsBase {
         const promiseGetArtistInfo = new Promise((resolve, reject) => {
 
           // call service to retrieve artist info.
-          this.spotifyPlusService.GetArtistInfo(player.id, this.mediaItem.id)
+          this.spotifyPlusService.GetArtistInfo(player, this.mediaItem.id)
             .then(info => {
 
               // stash the result into state, and resolve the promise.
@@ -486,7 +486,7 @@ class ArtistActions extends FavActionsBase {
         const promiseCheckArtistFavorites = new Promise((resolve, reject) => {
 
           // call service to retrieve favorite setting.
-          this.spotifyPlusService.CheckArtistsFollowing(player.id, this.mediaItem.id)
+          this.spotifyPlusService.CheckArtistsFollowing(player, this.mediaItem.id)
             .then(result => {
 
               // load results, and resolve the promise.

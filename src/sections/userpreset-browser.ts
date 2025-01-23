@@ -200,7 +200,7 @@ export class UserPresetBrowser extends FavBrowserBase {
 
       // get track recommendations.
       const limit = 50;
-      const result = await this.spotifyPlusService.GetTrackRecommendations(this.player.id, preset.recommendations, limit, null);
+      const result = await this.spotifyPlusService.GetTrackRecommendations(this.player, preset.recommendations, limit, null);
 
       // build track uri list from recommendation results.
       const uris = new Array<string>();
@@ -227,8 +227,7 @@ export class UserPresetBrowser extends FavBrowserBase {
       setTimeout(() => {
 
         // play recommended tracks.
-        const device_id = this.player.attributes.source || null;
-        this.spotifyPlusService.PlayerMediaPlayTracks(this.player.id, uris.join(","), null, device_id);
+        this.spotifyPlusService.PlayerMediaPlayTracks(this.player, uris.join(","));
 
         // show player section.
         this.store.card.SetSection(Section.PLAYER);
@@ -274,9 +273,8 @@ export class UserPresetBrowser extends FavBrowserBase {
       this.requestUpdate();
 
       // play favorite tracks.
-      const device_id = this.player.attributes.source || null;
       const shuffle = preset.shuffle || ((this.player.attributes.shuffle != null) ? this.player.attributes.shuffle : true);
-      await this.spotifyPlusService.PlayerMediaPlayTrackFavorites(this.player.id, device_id, shuffle, null, true, this.config.trackFavBrowserItemsLimit || 200);
+      await this.spotifyPlusService.PlayerMediaPlayTrackFavorites(this.player, null, shuffle, null, true, this.config.trackFavBrowserItemsLimit || 200);
 
       // show player section.
       this.store.card.SetSection(Section.PLAYER);

@@ -656,7 +656,7 @@ export class SearchBrowser extends FavBrowserBase {
           const includeExternal: string | null = null;   // include_exclude code.
 
           // call the service to retrieve the media list.
-          this.spotifyPlusService.Search(this.searchMediaType as SearchMediaTypes, player.id, this.filterCriteria || "", 0, 0, market, includeExternal, limitTotal)
+          this.spotifyPlusService.Search(this.searchMediaType as SearchMediaTypes, player, this.filterCriteria || "", 0, 0, market, includeExternal, limitTotal)
             .then(result => {
 
               // load media list results.
@@ -702,7 +702,7 @@ export class SearchBrowser extends FavBrowserBase {
           const market = null;
 
           // call the service to retrieve the media list.
-          this.spotifyPlusService.GetAlbumTracks(player.id, albumId, 0, 0, market, limit_total)
+          this.spotifyPlusService.GetAlbumTracks(player, albumId, 0, 0, market, limit_total)
             .then(result => {
 
               if (debuglog.enabled) {
@@ -768,7 +768,7 @@ export class SearchBrowser extends FavBrowserBase {
           const sort_result = this.config.artistFavBrowserItemsSortTitle || false;
 
           // call the service to retrieve the media list.
-          this.spotifyPlusService.GetArtistAlbums(player.id, artistId, include_groups, 0, 0, market, limit_total, sort_result)
+          this.spotifyPlusService.GetArtistAlbums(player, artistId, include_groups, 0, 0, market, limit_total, sort_result)
             .then(result => {
 
               // load media list results.
@@ -816,7 +816,7 @@ export class SearchBrowser extends FavBrowserBase {
           const sort_result = this.config.artistFavBrowserItemsSortTitle || false;
 
           // call the service to retrieve the media list.
-          this.spotifyPlusService.GetArtistAlbums(player.id, artistId, include_groups, 0, 0, market, limit_total, sort_result)
+          this.spotifyPlusService.GetArtistAlbums(player, artistId, include_groups, 0, 0, market, limit_total, sort_result)
             .then(result => {
 
               // load media list results.
@@ -864,7 +864,7 @@ export class SearchBrowser extends FavBrowserBase {
           const sort_result = this.config.artistFavBrowserItemsSortTitle || false;
 
           // call the service to retrieve the media list.
-          this.spotifyPlusService.GetArtistAlbums(player.id, artistId, include_groups, 0, 0, market, limit_total, sort_result)
+          this.spotifyPlusService.GetArtistAlbums(player, artistId, include_groups, 0, 0, market, limit_total, sort_result)
             .then(result => {
 
               // load media list results.
@@ -912,7 +912,7 @@ export class SearchBrowser extends FavBrowserBase {
           const sort_result = this.config.artistFavBrowserItemsSortTitle || false;
 
           // call the service to retrieve the media list.
-          this.spotifyPlusService.GetArtistAlbums(player.id, artistId, include_groups, 0, 0, market, limit_total, sort_result)
+          this.spotifyPlusService.GetArtistAlbums(player, artistId, include_groups, 0, 0, market, limit_total, sort_result)
             .then(result => {
 
               // load media list results.
@@ -957,7 +957,7 @@ export class SearchBrowser extends FavBrowserBase {
           const sortResult = this.config.searchMediaBrowserItemsSortTitle || false;
 
           // call the service to retrieve the media list.
-          this.spotifyPlusService.GetArtistRelatedArtists(player.id, artistId, sortResult)
+          this.spotifyPlusService.GetArtistRelatedArtists(player, artistId, sortResult)
             .then(result => {
 
               // load media list results.
@@ -1003,7 +1003,7 @@ export class SearchBrowser extends FavBrowserBase {
           const market = null;
 
           // call the service to retrieve the media list.
-          this.spotifyPlusService.GetArtistTopTracks(player.id, artistId, market, sortResult)
+          this.spotifyPlusService.GetArtistTopTracks(player, artistId, market, sortResult)
             .then(result => {
 
               // load media list results.
@@ -1049,7 +1049,7 @@ export class SearchBrowser extends FavBrowserBase {
           const limit_total = this.config.searchMediaBrowserSearchLimit || 50;
 
           // call the service to retrieve the media list.
-          this.spotifyPlusService.GetShowEpisodes(player.id, showId, 0, 0, market, limit_total)
+          this.spotifyPlusService.GetShowEpisodes(player, showId, 0, 0, market, limit_total)
             .then(result => {
 
               // load media list results.
