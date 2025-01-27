@@ -22,6 +22,13 @@ const CONFIG_SETTINGS_SCHEMA = [
     type: 'string',
   },
   {
+    name: 'deviceDefaultId',
+    label: 'Device name / id to use for all SpotifyPlus service calls',
+    help: 'e.g. Office Speaker',
+    required: false,
+    type: 'string',
+  },
+  {
     name: 'deviceBrowserItemsPerRow',
     label: '# of items to display per row',
     help: 'use 1 for list format',

@@ -8,27 +8,27 @@ import { MediaPlayer } from '../model/media-player';
 import { ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED, DOMAIN_MEDIA_PLAYER } from '../constants';
 
 // media player services.
-const SERVICE_TURN_ON = "turn_on";
-const SERVICE_TURN_OFF = "turn_off";
+export const SERVICE_TURN_ON = "turn_on";
+export const SERVICE_TURN_OFF = "turn_off";
 //const SERVICE_VOLUME_UP = "volume_up";
 //const SERVICE_VOLUME_DOWN = "volume_down";
-const SERVICE_VOLUME_MUTE = "volume_mute";
-const SERVICE_VOLUME_SET = "volume_set";
-const SERVICE_MEDIA_PLAY_PAUSE = "media_play_pause";
-const SERVICE_MEDIA_PLAY = "media_play";
-const SERVICE_MEDIA_PAUSE = "media_pause";
-const SERVICE_MEDIA_STOP = "media_stop";
-const SERVICE_MEDIA_NEXT_TRACK = "media_next_track";
-const SERVICE_MEDIA_PREVIOUS_TRACK = "media_previous_track";
-const SERVICE_MEDIA_SEEK = "media_seek";
-const SERVICE_REPEAT_SET = "repeat_set";
-const SERVICE_SHUFFLE_SET = "shuffle_set";
-const SERVICE_CLEAR_PLAYLIST = "clear_playlist";
-const SERVICE_JOIN = "join";
-const SERVICE_PLAY_MEDIA = "play_media";
-const SERVICE_SELECT_SOUND_MODE = "select_sound_mode";
-const SERVICE_SELECT_SOURCE = "select_source";
-const SERVICE_UNJOIN = "unjoin";
+export const SERVICE_VOLUME_MUTE = "volume_mute";
+export const SERVICE_VOLUME_SET = "volume_set";
+export const SERVICE_MEDIA_PLAY_PAUSE = "media_play_pause";
+export const SERVICE_MEDIA_PLAY = "media_play";
+export const SERVICE_MEDIA_PAUSE = "media_pause";
+export const SERVICE_MEDIA_STOP = "media_stop";
+export const SERVICE_MEDIA_NEXT_TRACK = "media_next_track";
+export const SERVICE_MEDIA_PREVIOUS_TRACK = "media_previous_track";
+export const SERVICE_MEDIA_SEEK = "media_seek";
+export const SERVICE_REPEAT_SET = "repeat_set";
+export const SERVICE_SHUFFLE_SET = "shuffle_set";
+export const SERVICE_CLEAR_PLAYLIST = "clear_playlist";
+export const SERVICE_JOIN = "join";
+export const SERVICE_PLAY_MEDIA = "play_media";
+export const SERVICE_SELECT_SOUND_MODE = "select_sound_mode";
+export const SERVICE_SELECT_SOURCE = "select_source";
+export const SERVICE_UNJOIN = "unjoin";
 
 
 export class MediaControlService {
@@ -452,7 +452,6 @@ export class MediaControlService {
    * if unmuted, then it will be muted;
    * 
    * @param player MediaPlayer object to control.
-   * @param muteVolume True to mute the volume; otherwise, False to unmute the volume.
    */
   public async volume_mute_toggle(player: MediaPlayer) {
 

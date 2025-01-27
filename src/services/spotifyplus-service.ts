@@ -12,9 +12,9 @@ import {
 } from '@mdi/js';
 
 // our imports.
-import { ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED, DOMAIN_SPOTIFYPLUS } from '../constants';
 import { MediaPlayer } from '../model/media-player';
 import { getMdiIconImageUrl } from '../utils/media-browser-utils';
+import { CardConfig } from '../types/card-config';
 import { SearchMediaTypes } from '../types/search-media-types';
 import { IAlbum } from '../types/spotifyplus/album';
 import { IAlbumPageSaved } from '../types/spotifyplus/album-page-saved';
@@ -50,6 +50,18 @@ import { ITrackPageSimplified } from '../types/spotifyplus/track-page-simplified
 import { ITrackRecommendations } from '../types/spotifyplus/track-recommendations';
 import { ITrackRecommendationsProperties } from '../types/spotifyplus/track-recommendations-properties';
 import { IZeroconfResponse } from '../types/spotifyplus/zeroconf-response';
+import {
+  ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED,
+  DOMAIN_SPOTIFYPLUS,
+  DOMAIN_MEDIA_PLAYER
+} from '../constants';
+import {
+  SERVICE_TURN_OFF,
+  SERVICE_TURN_ON,
+  SERVICE_SELECT_SOURCE,
+  SERVICE_VOLUME_MUTE,
+  SERVICE_VOLUME_SET
+} from '../services/media-control-service'
 
 // debug logging.
 import Debug from 'debug/src/browser.js';
@@ -66,19 +78,23 @@ export class SpotifyPlusService {
   /** Custom card instance. */
   public readonly card: Element;
 
+  /** Card configuration data. */
+  public readonly config: CardConfig;
+
 
   /**
    * Initializes a new instance of the class.
    * 
    * @param hass HomeAssistant instance.
    * @param card Parent custom card instance.
-   * @param section Currently selected section of the card.
+   * @param config Card configuration instance.
    */
-  constructor(hass: HomeAssistant, card: Element) {
+  constructor(hass: HomeAssistant, card: Element, config: CardConfig) {
 
     // initialize storage.
     this.hass = hass;
     this.card = card;
+    this.config = config;
   }
 
 
@@ -188,8 +204,19 @@ export class SpotifyPlusService {
     try {
 
       // validations.
+      if (!player.isUserProductPremium()) {
+        throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
+      }
       if (device_id == null)
         device_id = player.attributes.source || null;
+
+      // if default device configured then override the specified deviceId.
+      if (this.config.deviceDefaultId) {
+        device_id = this.config.deviceDefaultId;
+        debuglog("AddPlayerQueueItems - overriding device_id with config option deviceDefaultId: \n%s",
+          JSON.stringify(this.config.deviceDefaultId),
+        );
+      }
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
@@ -2909,10 +2936,21 @@ export class SpotifyPlusService {
     try {
 
       // validation.
+      if (!player.isUserProductPremium()) {
+        throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
+      }
       if (!context_uri)
         throw new Error("STPC0005 context_uri argument was not supplied to the PlayerMediaPlayContext service.")
       if (device_id == null)
         device_id = player.attributes.source || null;
+
+      // if default device configured then override the specified deviceId.
+      if (this.config.deviceDefaultId) {
+        device_id = this.config.deviceDefaultId;
+        debuglog("PlayerMediaPlayContext - overriding device_id with config option deviceDefaultId: \n%s",
+          JSON.stringify(this.config.deviceDefaultId),
+        );
+      }
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
@@ -2985,8 +3023,19 @@ export class SpotifyPlusService {
     try {
 
       // validations.
+      if (!player.isUserProductPremium()) {
+        throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
+      }
       if (device_id == null)
         device_id = player.attributes.source || null;
+
+      // if default device configured then override the specified deviceId.
+      if (this.config.deviceDefaultId) {
+        device_id = this.config.deviceDefaultId;
+        debuglog("PlayerMediaPlayTrackFavorites - overriding device_id with config option deviceDefaultId: \n%s",
+          JSON.stringify(this.config.deviceDefaultId),
+        );
+      }
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
@@ -3057,12 +3106,23 @@ export class SpotifyPlusService {
     try {
 
       // validation.
+      if (!player.isUserProductPremium()) {
+        throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
+      }
       if (!uris)
         throw new Error("STPC0005 uris argument was not supplied to the PlayerMediaPlayTracks service.")
       if (position_ms == null)
         position_ms = 0;
       if (device_id == null)
         device_id = player.attributes.source || null;
+
+      // if default device configured then override the specified deviceId.
+      if (this.config.deviceDefaultId) {
+        device_id = this.config.deviceDefaultId;
+        debuglog("PlayerMediaPlayTracks - overriding device_id with config option deviceDefaultId: \n%s",
+          JSON.stringify(this.config.deviceDefaultId),
+        );
+      }
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
@@ -3082,6 +3142,110 @@ export class SpotifyPlusService {
       const serviceRequest: ServiceCallRequest = {
         domain: DOMAIN_SPOTIFYPLUS,
         service: 'player_media_play_tracks',
+        serviceData: serviceData
+      };
+
+      // call the service (no response).
+      await this.CallService(serviceRequest);
+
+    }
+    finally {
+    }
+  }
+
+
+  /**
+   * Start playing one or more tracks of the specified context on a Spotify Connect device.
+   * 
+   * @param player 
+   *    MediaPlayer instance that will process the request.
+   * @param device_id 
+   *    The target player device identifier.
+   *    This could be an id, name, a default device indicator (e.g. "*"), a 
+   *    SpotifyConnectDevice object, or null to utilize the active player device.
+   *    A device is considered resolved if a SpotifyConnectDevice object is passed
+   *    for this argument.  An exception will be raised if the argument value could 
+   *    not be resolved or activated.
+   *    Examples are `0d1841b0976bae2a3a310dd74c0f3df354899bc8`, `Office`, `*`, None.  
+   * @param play
+   *    The transfer method:  
+   *    - `True`  - ensure playback happens on new device.   
+   *    - `False` - keep the current playback state.  
+   *    Default: `True`  
+   * @param delay
+   *    Time delay (in seconds) to wait AFTER issuing the command to the player.  
+   *    This delay will give the spotify web api time to process the change before 
+   *    another command is issued.  
+   *    Default is 0.50; value range is 0 - 10.
+   * @param refresh_device_list
+   *    True to refresh the Spotify Connect device list; otherwise, False to use the 
+   *    Spotify Connect device list cache.  
+   *    Default is True.  
+   * @param force_activate_device
+   *    True to issue a Spotify Connect Disconnect call prior to transfer, which will
+   *    force the device to reconnect to Spotify Connect; otherwise, False to not
+   *    disconnect.
+   *    Default is True.  
+   * @param device_id_from
+   *    The player device identifier where play is being transferred from.
+   *    This could be an id, name, a default device indicator (e.g. "*"), a 
+   *    SpotifyConnectDevice object, or null.
+   *    A device is considered resolved if a SpotifyConnectDevice object is passed
+   *    for this argument.  
+   *    Examples are `0d1841b0976bae2a3a310dd74c0f3df354899bc8`, `Office`, `*`, None.  
+  */
+  public async PlayerTransferPlayback(
+    player: MediaPlayer,
+    device_id: string | undefined | null = null,
+    play: boolean | null = true,
+    delay: number | null = null,
+    refresh_device_list: boolean | null = true,
+    force_activate_device: boolean | null = true,
+    device_id_from: string | undefined | null = null,
+  ): Promise<void> {
+
+    try {
+
+      // validation.
+      if (!player.isUserProductPremium()) {
+        throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
+      }
+      if (device_id == null)
+        device_id = player.attributes.source || null;
+      if (play == null)
+        play = true;
+
+      // if default device configured then override the specified deviceId.
+      if (this.config.deviceDefaultId) {
+        device_id = this.config.deviceDefaultId;
+        debuglog("PlayerTransferPlayback - overriding device_id with config option deviceDefaultId: \n%s",
+          JSON.stringify(this.config.deviceDefaultId),
+        );
+      }
+
+      // create service data (with required parameters).
+      const serviceData: { [key: string]: any } = {
+        entity_id: player.id,
+      };
+
+      // update service data parameters (with optional parameters).
+      if (device_id)
+        serviceData['device_id'] = device_id;
+      if (play)
+        serviceData['play'] = play;
+      if (delay)
+        serviceData['delay'] = delay;
+      if (refresh_device_list)
+        serviceData['refresh_device_list'] = refresh_device_list;
+      if (force_activate_device)
+        serviceData['force_activate_device'] = force_activate_device;
+      if (device_id_from)
+        serviceData['device_id_from'] = device_id_from;
+
+      // create service request.
+      const serviceRequest: ServiceCallRequest = {
+        domain: DOMAIN_SPOTIFYPLUS,
+        service: 'player_transfer_playback',
         serviceData: serviceData
       };
 
@@ -4326,6 +4490,186 @@ export class SpotifyPlusService {
     }
     finally {
     }
+  }
+
+
+  /** ======================================================================================
+   * The following are base MediaPlayerEntity methods.
+   * ====================================================================================== 
+  */
+
+  /**
+   * Selects the given source device.
+   * 
+   * @param player MediaPlayer instance that will process the request.
+   * @param source Source to select.
+  */
+  public async select_source(
+    player: MediaPlayer,
+    source: string | undefined | null = null,
+  ): Promise<void> {
+
+    // spotify premium required for this function.
+    if (!player.isUserProductPremium()) {
+      throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
+    }
+
+    // create service data (with required parameters).
+    const serviceData: { [key: string]: any } = {
+      entity_id: player.id,
+    };
+
+    if (source)
+      serviceData['source'] = source;
+
+    // create service request.
+    const serviceRequest: ServiceCallRequest = {
+      domain: DOMAIN_MEDIA_PLAYER,
+      service: SERVICE_SELECT_SOURCE,
+      serviceData: serviceData
+    }
+
+    // call the service (no response).
+    await this.CallService(serviceRequest);
+
+  }
+
+
+  /**
+   * Turns off the player.
+   * 
+   * @param player MediaPlayer instance that will process the request.
+  */
+  public async turn_off(
+    player: MediaPlayer,
+  ): Promise<void> {
+
+    // create service data (with required parameters).
+    const serviceData: { [key: string]: any } = {
+      entity_id: player.id,
+    };
+
+    // create service request.
+    const serviceRequest: ServiceCallRequest = {
+      domain: DOMAIN_MEDIA_PLAYER,
+      service: SERVICE_TURN_OFF,
+      serviceData: serviceData
+    }
+
+    // call the service (no response).
+    await this.CallService(serviceRequest);
+
+  }
+
+
+  /**
+   * Turns on the player.
+   * 
+   * @param player MediaPlayer instance that will process the request.
+  */
+  public async turn_on(
+    player: MediaPlayer,
+  ): Promise<void> {
+
+    // create service data (with required parameters).
+    const serviceData: { [key: string]: any } = {
+      entity_id: player.id,
+    };
+
+    // create service request.
+    const serviceRequest: ServiceCallRequest = {
+      domain: DOMAIN_MEDIA_PLAYER,
+      service: SERVICE_TURN_ON,
+      serviceData: serviceData
+    }
+
+    // call the service (no response).
+    await this.CallService(serviceRequest);
+
+    // if default device configured then issue transfer playback to the device.
+    if (this.config.deviceDefaultId) {
+
+      // spotify premium required for device default function.
+      // we still want to honor the turn_on call portion though.
+      if (player.isUserProductPremium()) {
+        await this.PlayerTransferPlayback(player, this.config.deviceDefaultId, true);
+      }
+    }
+
+  }
+
+
+  /**
+   * Mutes / unmutes the player volume.
+   * 
+   * @param player MediaPlayer instance that will process the request.
+   * @param muteVolume True to mute the volume; otherwise, False to unmute the volume.
+   */
+  public async volume_mute(player: MediaPlayer, muteVolume: boolean) {
+
+    // spotify premium required for this function.
+    if (!player.isUserProductPremium()) {
+      throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
+    }
+
+    // create service request.
+    const serviceRequest: ServiceCallRequest = {
+      domain: DOMAIN_MEDIA_PLAYER,
+      service: SERVICE_VOLUME_MUTE,
+      serviceData: {
+        entity_id: player.id,
+        is_volume_muted: muteVolume,
+      }
+    };
+
+    // call the service.
+    await this.CallService(serviceRequest);
+  }
+
+
+  /**
+   * Toggles the volume mute status of the player; 
+   * if muted, then it will be unmuted;
+   * if unmuted, then it will be muted;
+   * 
+   * @param player MediaPlayer instance that will process the request.
+   */
+  public async volume_mute_toggle(player: MediaPlayer) {
+
+    const muteVolume = !player.isMuted();
+    await this.volume_mute(player, muteVolume);
+  }
+
+
+  /**
+   * Sets the player volume.
+   * 
+   * @param player MediaPlayer instance that will process the request.
+   * @param volumePercent Volume level to set, expressed as a percentage (e.g. 1 - 100).
+   */
+  public async volume_set(player: MediaPlayer, volumePercent: number) {
+
+    // spotify premium required for this function.
+    if (!player.isUserProductPremium()) {
+      throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
+    }
+
+    // convert volume level to HA float value.
+    const volumeLevel = volumePercent / 100;
+
+    // create service request.
+    const serviceRequest: ServiceCallRequest = {
+      domain: DOMAIN_MEDIA_PLAYER,
+      service: SERVICE_VOLUME_SET,
+      serviceData: {
+        entity_id: player.id,
+        volume_level: volumeLevel,
+      }
+    };
+
+    // call the service.
+    await this.CallService(serviceRequest);
+
   }
 
 

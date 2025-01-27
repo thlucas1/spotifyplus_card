@@ -276,6 +276,16 @@ export interface CardConfig extends LovelaceCardConfig {
    */
   deviceBrowserItemsShowHiddenDevices?: boolean;
 
+  /** 
+   * Device ID to use for all SpotifyPlus service calls that require a deviceId argument.
+   * This allows you to hide the Devices section, and utilize the specific device for
+   * all service requests that require a deviceId.
+   * 
+   * A Spotify Premium account is required to use this feature, as it utilizes the transfer 
+   * playback service to transfer player control to the specified device.
+   */
+  deviceDefaultId: string;
+
   /**
    * Title displayed at the top of the Episode Favorites media browser section form.
    * Omit this parameter to hide the title display area.
@@ -465,6 +475,13 @@ export interface CardConfig extends LovelaceCardConfig {
    * Default is false.
    */
   playerVolumeControlsHideSlider?: boolean;
+
+  /**
+   * Maximum volume value allowed to be set via the card user-interface.  This value does
+   * not apply if adjusting the volume via services or other media player UI's.
+   * Default is 100.
+   */
+  playerVolumeMaxValue?: number;
 
   /**
    * Title displayed at the top of the Playlist Favorites media browser section form.

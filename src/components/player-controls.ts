@@ -23,6 +23,7 @@ import { Store } from '../model/store';
 import { MediaPlayer } from '../model/media-player';
 import { MediaPlayerEntityFeature, MediaPlayerState, RepeatMode } from '../services/media-control-service';
 import { MediaControlService } from '../services/media-control-service';
+import { SpotifyPlusService } from '../services/spotifyplus-service';
 import { ProgressEndedEvent } from '../events/progress-ended';
 import { ProgressStartedEvent } from '../events/progress-started';
 import { closestElement, isCardInEditPreview } from '../utils/utils';
@@ -57,6 +58,9 @@ class PlayerControls extends LitElement {
   /** MediaPlayer control service instance. */
   private mediaControlService!: MediaControlService;
 
+  /** SpotifyPlus services instance. */
+  protected spotifyPlusService!: SpotifyPlusService;
+
   /** True if the card is in edit preview mode (e.g. being edited); otherwise, false. */
   protected isCardInEditPreview!: boolean;
 
@@ -72,6 +76,7 @@ class PlayerControls extends LitElement {
     this.config = this.store.config;
     this.player = this.store.player;
     this.mediaControlService = this.store.mediaControlService;
+    this.spotifyPlusService = this.store.spotifyPlusService;
 
     const stopped = [MediaPlayerState.ON, MediaPlayerState.PLAYING, MediaPlayerState.PAUSED, MediaPlayerState.BUFFERING].includes(this.player.state) && nothing;
     const idle = [MediaPlayerState.IDLE].includes(this.player.state) && nothing;
@@ -465,11 +470,11 @@ class PlayerControls extends LitElement {
 
       } else if (action == TURN_OFF) {
 
-        await this.mediaControlService.turn_off(this.player);
+        await this.spotifyPlusService.turn_off(this.player);
 
       } else if (action == TURN_ON) {
 
-        await this.mediaControlService.turn_on(this.player);
+        await this.spotifyPlusService.turn_on(this.player);
 
       }
 

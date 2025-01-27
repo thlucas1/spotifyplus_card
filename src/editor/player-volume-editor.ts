@@ -17,6 +17,16 @@ const CONFIG_SETTINGS_SCHEMA = [
     default: PLAYER_CONTROLS_BACKGROUND_COLOR_DEFAULT,
   },
   {
+    name: 'playerVolumeMaxValue',
+    label: 'Maximum volume value allowed via card UI',
+    help: 'range 10 - 100',
+    required: true,
+    type: 'integer',
+    default: 100,
+    valueMin: 10,
+    valueMax: 100,
+  },
+  {
     name: 'playerVolumeControlsHideMute',
     label: 'Hide mute button in the volume controls area',
     required: false,

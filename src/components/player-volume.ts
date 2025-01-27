@@ -12,7 +12,7 @@ import { CardConfig } from '../types/card-config';
 import { Store } from '../model/store';
 import { MediaPlayer } from '../model/media-player';
 import { MediaPlayerEntityFeature, MediaPlayerState } from '../services/media-control-service';
-import { MediaControlService } from '../services/media-control-service';
+import { SpotifyPlusService } from '../services/spotifyplus-service';
 import { ProgressEndedEvent } from '../events/progress-ended';
 import { ProgressStartedEvent } from '../events/progress-started';
 import { closestElement } from '../utils/utils';
@@ -31,8 +31,8 @@ class Volume extends LitElement {
   /** Card configuration data. */
   private config!: CardConfig;
 
-  /** MediaControlService services helper instance. */
-  private mediaControlService!: MediaControlService;
+  /** SpotifyPlus services instance. */
+  protected spotifyPlusService!: SpotifyPlusService;
 
 
   /**
@@ -44,7 +44,7 @@ class Volume extends LitElement {
 
     // set common references from application common storage area.
     this.config = this.store.config;
-    this.mediaControlService = this.store.mediaControlService;
+    this.spotifyPlusService = this.store.spotifyPlusService;
 
     // get volume hide configuration setting.
     const hideMute = this.config.playerVolumeControlsHideMute || false;
@@ -57,7 +57,7 @@ class Volume extends LitElement {
 
     // get current and max volume levels.
     const volume = this.player.getVolume();
-    const maxVolume = 100; // this.getMaxVolume(volume);
+    const maxVolume = 100;
 
     // render control.
     return html`
@@ -103,9 +103,21 @@ class Volume extends LitElement {
       // show progress indicator.
       this.progressShow();
 
+      // get volume value to apply.
+      let newVolume = Number.parseInt((args?.target as HTMLInputElement)?.value);
+
+      // check for max volume allowed configuration; if larger, then limit the volume value.
+      const volumeMax: number = (this.config.playerVolumeMaxValue || 100);
+      if (newVolume > volumeMax) {
+        newVolume = volumeMax;
+        const sliderControl = (args?.target as HTMLInputElement);
+        if (sliderControl)
+          sliderControl.value = newVolume + "";
+        this.alertInfoSet("Selected volume level was greater than Max Volume limit set in card configuration; max limit value of " + volumeMax + " was applied.");
+      }
+
       // adjust the volume.
-      const newVolume = Number.parseInt((args?.target as HTMLInputElement)?.value);
-      await this.mediaControlService.volume_set(this.player, newVolume);
+      await this.spotifyPlusService.volume_set(this.player, newVolume);
       return true;
 
     }
@@ -137,7 +149,7 @@ class Volume extends LitElement {
       this.progressShow();
 
       // toggle mute.
-      await this.mediaControlService.volume_mute_toggle(this.player);
+      await this.spotifyPlusService.volume_mute_toggle(this.player);
       return true;
 
     }
@@ -186,11 +198,11 @@ class Volume extends LitElement {
       // call async service based on requested action.
       if (action == TURN_OFF) {
 
-        await this.mediaControlService.turn_off(this.player);
+        await this.spotifyPlusService.turn_off(this.player);
 
       } else if (action == TURN_ON) {
 
-        await this.mediaControlService.turn_on(this.player);
+        await this.spotifyPlusService.turn_on(this.player);
 
       }
 
@@ -287,6 +299,23 @@ class Volume extends LitElement {
     const spcPlayer = closestElement('#spcPlayer', this) as Player;
     if (spcPlayer) {
       spcPlayer.alertErrorSet(message);
+    }
+
+  }
+
+
+  /**
+   * Sets the alert info message in the parent player.
+   * 
+   * @param message alert message text.
+   */
+  private alertInfoSet(message: string): void {
+
+    // find the parent player reference, and update the message.
+    // we have to do it this way due to the shadowDOM between this element and the player element.
+    const spcPlayer = closestElement('#spcPlayer', this) as Player;
+    if (spcPlayer) {
+      spcPlayer.alertInfoSet(message);
     }
 
   }

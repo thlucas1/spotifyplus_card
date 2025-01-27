@@ -75,7 +75,7 @@ export class Store {
     this.card = card;
     this.hassService = new HassService(hass);
     this.mediaControlService = new MediaControlService(this.hassService);
-    this.spotifyPlusService = new SpotifyPlusService(hass, card);
+    this.spotifyPlusService = new SpotifyPlusService(hass, card, config);
     this.player = this.getMediaPlayerObject(playerId);
     this.section = section;
 
