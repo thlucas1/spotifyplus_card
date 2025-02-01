@@ -11,7 +11,7 @@ import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
 import { CategoryDisplayEventArgs } from '../events/category-display';
 import { formatTitleInfo } from '../utils/media-browser-utils';
-import { getUtcNowTimestamp } from '../utils/utils';
+import { getHomeAssistantErrorMessage, getUtcNowTimestamp } from '../utils/utils';
 import { ICategory } from '../types/spotifyplus/category';
 import { IPlaylistSimplified } from '../types/spotifyplus/playlist-simplified';
 
@@ -346,7 +346,7 @@ export class CategoryBrowser extends FavBrowserBase {
               this.categoryPlaylistsLastUpdatedOn = 0;
 
               // call base class method, indicating media list update failed.
-              super.updatedMediaListError("Get Category Playlist failed: " + (error as Error).message);
+              super.updatedMediaListError("Get Category Playlist failed: " + getHomeAssistantErrorMessage(error));
               reject(error);
 
             })
@@ -384,7 +384,7 @@ export class CategoryBrowser extends FavBrowserBase {
               this.mediaListLastUpdatedOn = 0;
 
               // call base class method, indicating media list update failed.
-              super.updatedMediaListError("Get Category List failed: " + (error as Error).message);
+              super.updatedMediaListError("Get Category List failed: " + getHomeAssistantErrorMessage(error));
               reject(error);
 
             })
@@ -417,7 +417,7 @@ export class CategoryBrowser extends FavBrowserBase {
       this.progressHide();
 
       // set alert error message.
-      super.updatedMediaListError("Category List refresh failed: " + (error as Error).message);
+      super.updatedMediaListError("Category List refresh failed: " + getHomeAssistantErrorMessage(error));
       return true;
 
     }

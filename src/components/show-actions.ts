@@ -22,7 +22,7 @@ import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
 import { SearchMediaTypes } from '../types/search-media-types';
 import { SearchMediaEvent } from '../events/search-media';
-import { formatDateHHMMSSFromMilliseconds, unescapeHtml } from '../utils/utils';
+import { formatDateHHMMSSFromMilliseconds, getHomeAssistantErrorMessage, unescapeHtml } from '../utils/utils';
 import { openWindowNewTab } from '../utils/media-browser-utils';
 import { ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD, ALERT_INFO_PRESET_JSON_COPIED_TO_CLIPBOARD } from '../constants';
 import { GetCopyrights } from '../types/spotifyplus/copyright';
@@ -308,7 +308,7 @@ class ShowActions extends FavActionsBase {
 
       // clear the progress indicator and set alert error message.
       this.progressHide();
-      this.alertErrorSet("Action failed: " + (error as Error).message);
+      this.alertErrorSet("Action failed: " + getHomeAssistantErrorMessage(error));
       return true;
 
     }
@@ -361,7 +361,7 @@ class ShowActions extends FavActionsBase {
 
               // clear results, and reject the promise.
               this.showEpisodes = undefined;
-              this.alertErrorSet("Get Show Episodes failed: " + (error as Error).message);
+              this.alertErrorSet("Get Show Episodes failed: " + getHomeAssistantErrorMessage(error));
               reject(error);
 
             })
@@ -390,7 +390,7 @@ class ShowActions extends FavActionsBase {
 
               // clear results, and reject the promise.
               this.isShowFavorite = undefined;
-              this.alertErrorSet("Check Show Favorites failed: " + (error as Error).message);
+              this.alertErrorSet("Check Show Favorites failed: " + getHomeAssistantErrorMessage(error));
               reject(error);
 
             })
@@ -419,7 +419,7 @@ class ShowActions extends FavActionsBase {
 
       // clear the progress indicator and set alert error message.
       this.progressHide();
-      this.alertErrorSet("Show actions refresh failed: " + (error as Error).message);
+      this.alertErrorSet("Show actions refresh failed: " + getHomeAssistantErrorMessage(error));
       return true;
 
     }

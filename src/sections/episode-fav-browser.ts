@@ -10,7 +10,7 @@ import { FavBrowserBase } from './fav-browser-base';
 import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
 import { formatTitleInfo } from '../utils/media-browser-utils';
-import { getUtcNowTimestamp } from '../utils/utils';
+import { getHomeAssistantErrorMessage, getUtcNowTimestamp } from '../utils/utils';
 import { GetEpisodes } from '../types/spotifyplus/episode-page-saved';
 import { IEpisode } from '../types/spotifyplus/episode';
 
@@ -141,7 +141,7 @@ export class EpisodeFavBrowser extends FavBrowserBase {
             this.mediaListLastUpdatedOn = 0;
 
             // call base class method, indicating media list update failed.
-            super.updatedMediaListError("Get Episode Favorites failed: " + (error as Error).message);
+            super.updatedMediaListError("Get Episode Favorites failed: " + getHomeAssistantErrorMessage(error));
 
             // reject the promise.
             reject(error);
@@ -174,7 +174,7 @@ export class EpisodeFavBrowser extends FavBrowserBase {
       this.progressHide();
 
       // set alert error message.
-      super.updatedMediaListError("Episode favorites refresh failed: " + (error as Error).message);
+      super.updatedMediaListError("Episode favorites refresh failed: " + getHomeAssistantErrorMessage(error));
       return true;
 
     }

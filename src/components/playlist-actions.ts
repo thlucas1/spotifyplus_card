@@ -20,7 +20,7 @@ import { sharedStylesFavActions } from '../styles/shared-styles-fav-actions.js';
 import { FavActionsBase } from './fav-actions-base';
 import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
-import { formatDateHHMMSSFromMilliseconds, unescapeHtml } from '../utils/utils';
+import { formatDateHHMMSSFromMilliseconds, getHomeAssistantErrorMessage, unescapeHtml } from '../utils/utils';
 import { openWindowNewTab } from '../utils/media-browser-utils';
 import { ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD, ALERT_INFO_PRESET_JSON_COPIED_TO_CLIPBOARD } from '../constants';
 import { GetPlaylistPagePlaylistTracks } from '../types/spotifyplus/playlist-page';
@@ -335,7 +335,7 @@ class PlaylistActions extends FavActionsBase {
 
       // clear the progress indicator and set alert error message.
       this.progressHide();
-      this.alertErrorSet("Action failed: " + (error as Error).message);
+      this.alertErrorSet("Action failed: " + getHomeAssistantErrorMessage(error));
       return true;
 
     }
@@ -399,7 +399,7 @@ class PlaylistActions extends FavActionsBase {
 
               // clear results, and reject the promise.
               this.playlistTracks = undefined;
-              this.alertErrorSet("Get Playlist Items failed: " + (error as Error).message);
+              this.alertErrorSet("Get Playlist Items failed: " + getHomeAssistantErrorMessage(error));
               reject(error);
 
             })
@@ -428,7 +428,7 @@ class PlaylistActions extends FavActionsBase {
 
               // clear results, and reject the promise.
               this.isPlaylistFavorite = undefined;
-              this.alertErrorSet("Check Playlist Followers failed: " + (error as Error).message);
+              this.alertErrorSet("Check Playlist Followers failed: " + getHomeAssistantErrorMessage(error));
               reject(error);
 
             })
@@ -457,7 +457,7 @@ class PlaylistActions extends FavActionsBase {
 
       // clear the progress indicator and set alert error message.
       this.progressHide();
-      this.alertErrorSet("Playlist actions refresh failed: " + (error as Error).message);
+      this.alertErrorSet("Playlist actions refresh failed: " + getHomeAssistantErrorMessage(error));
       return true;
 
     }

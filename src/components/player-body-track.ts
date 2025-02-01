@@ -25,7 +25,7 @@ import { SearchMediaTypes } from '../types/search-media-types';
 import { SearchMediaEvent } from '../events/search-media';
 import { getIdFromSpotifyUri } from '../services/spotifyplus-service';
 import { openWindowNewTab } from '../utils/media-browser-utils';
-import { formatDateHHMMSSFromMilliseconds } from '../utils/utils';
+import { formatDateHHMMSSFromMilliseconds, getHomeAssistantErrorMessage } from '../utils/utils';
 import { ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD, ALERT_INFO_PRESET_JSON_COPIED_TO_CLIPBOARD, RADIO_SEARCH_KEY } from '../constants.js';
 import { GetUserPresetConfigEntry, GetUserPresetConfigEntryJson } from '../types/spotifyplus/user-preset.js';
 import { ITrack } from '../types/spotifyplus/track';
@@ -601,7 +601,7 @@ export class PlayerBodyTrack extends PlayerBodyBase {
 
       // clear the progress indicator and set alert error message.
       this.progressHide();
-      this.alertErrorSet("Track action failed: " + (error as Error).message);
+      this.alertErrorSet("Track action failed: " + getHomeAssistantErrorMessage(error));
       return true;
 
     }
@@ -664,7 +664,7 @@ export class PlayerBodyTrack extends PlayerBodyBase {
 
               // clear results, and reject the promise.
               this.track = undefined;
-              this.alertErrorSet("Get Track call failed: " + (error as Error).message);
+              this.alertErrorSet("Get Track call failed: " + getHomeAssistantErrorMessage(error));
               reject(error);
 
             })
@@ -693,7 +693,7 @@ export class PlayerBodyTrack extends PlayerBodyBase {
 
               // clear results, and reject the promise.
               this.isAlbumFavorite = undefined;
-              this.alertErrorSet("Check Album Favorites failed: " + (error as Error).message);
+              this.alertErrorSet("Check Album Favorites failed: " + getHomeAssistantErrorMessage(error));
               reject(error);
 
             })
@@ -722,7 +722,7 @@ export class PlayerBodyTrack extends PlayerBodyBase {
 
               // clear results, and reject the promise.
               this.isArtistFavorite = undefined;
-              this.alertErrorSet("Check Artist Favorites failed: " + (error as Error).message);
+              this.alertErrorSet("Check Artist Favorites failed: " + getHomeAssistantErrorMessage(error));
               reject(error);
 
             })
@@ -751,7 +751,7 @@ export class PlayerBodyTrack extends PlayerBodyBase {
 
               // clear results, and reject the promise.
               this.isTrackFavorite = undefined;
-              this.alertErrorSet("Check Track Favorites failed: " + (error as Error).message);
+              this.alertErrorSet("Check Track Favorites failed: " + getHomeAssistantErrorMessage(error));
               reject(error);
 
             })
@@ -783,7 +783,7 @@ export class PlayerBodyTrack extends PlayerBodyBase {
 
       // clear the progress indicator and set alert error message.
       this.progressHide();
-      this.alertErrorSet("Track actions refresh failed: " + (error as Error).message);
+      this.alertErrorSet("Track actions refresh failed: " + getHomeAssistantErrorMessage(error));
       return true;
 
     }

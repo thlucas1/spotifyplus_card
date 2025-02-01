@@ -750,7 +750,6 @@ export class Card extends LitElement {
 
         // execute the filter.
         browserBase.filterSectionMedia(evArgs);
-        //super.requestUpdate();
 
       }, 50);
 

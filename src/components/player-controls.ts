@@ -26,7 +26,7 @@ import { MediaControlService } from '../services/media-control-service';
 import { SpotifyPlusService } from '../services/spotifyplus-service';
 import { ProgressEndedEvent } from '../events/progress-ended';
 import { ProgressStartedEvent } from '../events/progress-started';
-import { closestElement, isCardInEditPreview } from '../utils/utils';
+import { closestElement, getHomeAssistantErrorMessage, isCardInEditPreview } from '../utils/utils';
 import { Player } from '../sections/player';
 import { PlayerBodyQueue } from './player-body-queue';
 
@@ -485,7 +485,7 @@ class PlayerControls extends LitElement {
     catch (error) {
 
       // set alert error message.
-      this.alertErrorSet("Control action failed: " + (error as Error).message);
+      this.alertErrorSet("Control action failed: " + getHomeAssistantErrorMessage(error));
       this.progressHide();
       return true;
 

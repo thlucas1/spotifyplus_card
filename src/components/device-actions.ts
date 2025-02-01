@@ -14,7 +14,7 @@ import { sharedStylesFavActions } from '../styles/shared-styles-fav-actions';
 import { FavActionsBase } from './fav-actions-base';
 import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
-import { copyToClipboard } from '../utils/utils';
+import { copyToClipboard, getHomeAssistantErrorMessage } from '../utils/utils';
 import { ISpotifyConnectDevice } from '../types/spotifyplus/spotify-connect-device';
 
 /**
@@ -320,7 +320,7 @@ class DeviceActions extends FavActionsBase {
 
       // clear the progress indicator and set alert error message.
       this.progressHide();
-      this.alertErrorSet("Action failed: " + (error as Error).message);
+      this.alertErrorSet("Action failed: " + getHomeAssistantErrorMessage(error));
       return true;
 
     }
@@ -389,7 +389,7 @@ class DeviceActions extends FavActionsBase {
 
               // clear results, and reject the promise.
               this.deviceInfo = undefined;
-              this.alertErrorSet("Get Spotify Connect Device failed: " + (error as Error).message);
+              this.alertErrorSet("Get Spotify Connect Device failed: " + getHomeAssistantErrorMessage(error));
               reject(error);
 
             })
@@ -418,7 +418,7 @@ class DeviceActions extends FavActionsBase {
 
       // clear the progress indicator and set alert error message.
       this.progressHide();
-      this.alertErrorSet("Update device actions failed: " + (error as Error).message);
+      this.alertErrorSet("Update device actions failed: " + getHomeAssistantErrorMessage(error));
       return true;
 
     }

@@ -4,7 +4,7 @@ import { css, html, TemplateResult } from 'lit';
 // our imports.
 import { BaseEditor } from './base-editor';
 import { Section } from '../types/section';
-import { DOMAIN_MEDIA_PLAYER, DOMAIN_SPOTIFYPLUS, FOOTER_ICON_SIZE_DEFAULT } from '../constants';
+import { CARD_VERSION, DOMAIN_MEDIA_PLAYER, DOMAIN_SPOTIFYPLUS, FOOTER_ICON_SIZE_DEFAULT } from '../constants';
 
 
 const CONFIG_SETTINGS_SCHEMA = [
@@ -103,7 +103,7 @@ class GeneralEditor extends BaseEditor {
     // render html.
     return html`
       <div class="schema-title">
-        Settings that control the overall look and feel of the card
+        Settings that control overall look of card - version ${CARD_VERSION}
       </div>
       <spc-editor-form class="spc-editor-form"
         .schema=${CONFIG_SETTINGS_SCHEMA}

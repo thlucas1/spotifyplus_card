@@ -25,7 +25,7 @@ import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
 import { SearchMediaTypes } from '../types/search-media-types';
 import { SearchMediaEvent } from '../events/search-media';
-import { formatDateHHMMSSFromMilliseconds } from '../utils/utils';
+import { formatDateHHMMSSFromMilliseconds, getHomeAssistantErrorMessage } from '../utils/utils';
 import { openWindowNewTab } from '../utils/media-browser-utils';
 import { ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED, ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD, ALERT_INFO_PRESET_JSON_COPIED_TO_CLIPBOARD, RADIO_SEARCH_KEY } from '../constants.js';
 import { GetUserPresetConfigEntry, GetUserPresetConfigEntryJson } from '../types/spotifyplus/user-preset.js';
@@ -636,7 +636,7 @@ class TrackActions extends FavActionsBase {
 
       // clear the progress indicator and set alert error message.
       this.progressHide();
-      this.alertErrorSet("Action failed: " + (error as Error).message);
+      this.alertErrorSet("Action failed: " + getHomeAssistantErrorMessage(error));
       return true;
 
     }
@@ -687,7 +687,7 @@ class TrackActions extends FavActionsBase {
 
               // clear results, and reject the promise.
               this.isAlbumFavorite = undefined;
-              this.alertErrorSet("Check Album Favorite failed: " + (error as Error).message);
+              this.alertErrorSet("Check Album Favorite failed: " + getHomeAssistantErrorMessage(error));
               reject(error);
 
             })
@@ -716,7 +716,7 @@ class TrackActions extends FavActionsBase {
 
               // clear results, and reject the promise.
               this.isArtistFavorite = undefined;
-              this.alertErrorSet("Check Artist Following failed: " + (error as Error).message);
+              this.alertErrorSet("Check Artist Following failed: " + getHomeAssistantErrorMessage(error));
               reject(error);
 
             })
@@ -745,7 +745,7 @@ class TrackActions extends FavActionsBase {
 
               // clear results, and reject the promise.
               this.isTrackFavorite = undefined;
-              this.alertErrorSet("Check Track Favorites failed: " + (error as Error).message);
+              this.alertErrorSet("Check Track Favorites failed: " + getHomeAssistantErrorMessage(error));
               reject(error);
 
             })
@@ -774,7 +774,7 @@ class TrackActions extends FavActionsBase {
 
       // clear the progress indicator and set alert error message.
       this.progressHide();
-      this.alertErrorSet("Track actions refresh failed: " + (error as Error).message);
+      this.alertErrorSet("Track actions refresh failed: " + getHomeAssistantErrorMessage(error));
       return true;
 
     }

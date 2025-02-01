@@ -189,6 +189,7 @@
     <TypeScriptCompile Include="src\types\home-assistant-frontend\lovelace-card-config.ts" />
     <TypeScriptCompile Include="src\types\home-assistant-frontend\service-call-request.ts" />
     <TypeScriptCompile Include="src\types\home-assistant-frontend\service-call-response.ts" />
+    <TypeScriptCompile Include="src\types\home-assistant-frontend\service-validation-error.ts" />
     <TypeScriptCompile Include="src\types\playerAlerts.ts" />
     <TypeScriptCompile Include="src\types\search-media-types.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus-hass-entity.ts" />

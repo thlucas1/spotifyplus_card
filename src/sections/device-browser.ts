@@ -10,7 +10,7 @@ import { FavBrowserBase } from './fav-browser-base';
 import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
 import { formatTitleInfo } from '../utils/media-browser-utils';
-import { getUtcNowTimestamp } from '../utils/utils';
+import { getHomeAssistantErrorMessage, getUtcNowTimestamp } from '../utils/utils';
 import { ISpotifyConnectDevice } from '../types/spotifyplus/spotify-connect-device';
 
 // debug logging.
@@ -196,7 +196,7 @@ export class DeviceBrowser extends FavBrowserBase {
     catch (error) {
 
       // set error message and reset scroll position to zero so the message is displayed.
-      this.alertErrorSet("Could not select source.  " + (error as Error).message);
+      this.alertErrorSet("Could not select source.  " + getHomeAssistantErrorMessage(error));
       this.mediaBrowserContentElement.scrollTop = 0;
 
     }
@@ -261,7 +261,7 @@ export class DeviceBrowser extends FavBrowserBase {
             this.mediaListLastUpdatedOn = 0;
 
             // call base class method, indicating media list update failed.
-            super.updatedMediaListError("Get Spotify Connect Devices failed: " + (error as Error).message);
+            super.updatedMediaListError("Get Spotify Connect Devices failed: " + getHomeAssistantErrorMessage(error));
 
             // reject the promise.
             reject(error);
@@ -294,7 +294,7 @@ export class DeviceBrowser extends FavBrowserBase {
       this.progressHide();
 
       // set alert error message.
-      super.updatedMediaListError("Spotify Connect Device refresh failed: " + (error as Error).message);
+      super.updatedMediaListError("Spotify Connect Device refresh failed: " + getHomeAssistantErrorMessage(error));
       return true;
 
     }

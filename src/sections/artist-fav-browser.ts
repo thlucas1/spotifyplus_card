@@ -10,7 +10,7 @@ import { FavBrowserBase } from './fav-browser-base';
 import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
 import { formatTitleInfo } from '../utils/media-browser-utils';
-import { getUtcNowTimestamp } from '../utils/utils';
+import { getHomeAssistantErrorMessage, getUtcNowTimestamp } from '../utils/utils';
 import { IArtist } from '../types/spotifyplus/artist';
 
 
@@ -140,7 +140,7 @@ export class ArtistFavBrowser extends FavBrowserBase {
             this.mediaListLastUpdatedOn = 0;
 
             // call base class method, indicating media list update failed.
-            super.updatedMediaListError("Get Artist Followed failed: " + (error as Error).message);
+            super.updatedMediaListError("Get Artist Followed failed: " + getHomeAssistantErrorMessage(error));
 
             // reject the promise.
             reject(error);
@@ -173,7 +173,7 @@ export class ArtistFavBrowser extends FavBrowserBase {
       this.progressHide();
 
       // set alert error message.
-      super.updatedMediaListError("Artist followed refresh failed: " + (error as Error).message);
+      super.updatedMediaListError("Artist followed refresh failed: " + getHomeAssistantErrorMessage(error));
       return true;
 
     }

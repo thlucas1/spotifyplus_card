@@ -7,7 +7,7 @@ import { Store } from '../model/store';
 import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
 import { SpotifyPlusService } from '../services/spotifyplus-service';
-import { isCardInEditPreview } from '../utils/utils';
+import { getHomeAssistantErrorMessage, isCardInEditPreview } from '../utils/utils';
 import { ProgressStartedEvent } from '../events/progress-started';
 import { ProgressEndedEvent } from '../events/progress-ended';
 import { SearchMediaTypes } from '../types/search-media-types';
@@ -238,7 +238,7 @@ export class FavActionsBase extends LitElement {
     catch (error) {
 
       // set error status,
-      this.alertErrorSet("Could not add media item to play queue.  " + (error as Error).message);
+      this.alertErrorSet("Could not add media item to play queue.  " + getHomeAssistantErrorMessage(error));
 
     }
     finally {
@@ -273,7 +273,7 @@ export class FavActionsBase extends LitElement {
     catch (error) {
 
       // set error status,
-      this.alertErrorSet("Could not play media item.  " + (error as Error).message);
+      this.alertErrorSet("Could not play media item.  " + getHomeAssistantErrorMessage(error));
 
     }
     finally {

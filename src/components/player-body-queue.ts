@@ -15,6 +15,7 @@ import { sharedStylesGrid } from '../styles/shared-styles-grid.js';
 import { sharedStylesMediaInfo } from '../styles/shared-styles-media-info.js';
 import { sharedStylesFavActions } from '../styles/shared-styles-fav-actions.js';
 import { getMediaListTrackUrisRemaining } from '../utils/media-browser-utils.js';
+import { getHomeAssistantErrorMessage } from '../utils/utils';
 import { PlayerBodyBase } from './player-body-base';
 import { MediaPlayer } from '../model/media-player';
 import { IPlayerQueueInfo } from '../types/spotifyplus/player-queue-info';
@@ -248,7 +249,7 @@ export class PlayerBodyQueue extends PlayerBodyBase {
 
       // clear the progress indicator and set alert error message.
       this.progressHide();
-      this.alertErrorSet("Action failed: " + (error as Error).message);
+      this.alertErrorSet("Action failed: " + getHomeAssistantErrorMessage(error));
       return true;
 
     }
@@ -324,7 +325,7 @@ export class PlayerBodyQueue extends PlayerBodyBase {
 
               // clear results, and reject the promise.
               this.queueInfo = undefined;
-              this.alertErrorSet("Get Player Queue Info call failed: " + (error as Error).message);
+              this.alertErrorSet("Get Player Queue Info call failed: " + getHomeAssistantErrorMessage(error));
               reject(error);
 
             })
@@ -356,7 +357,7 @@ export class PlayerBodyQueue extends PlayerBodyBase {
 
       // clear the progress indicator and set alert error message.
       this.progressHide();
-      this.alertErrorSet("Queue info refresh failed: " + (error as Error).message);
+      this.alertErrorSet("Queue info refresh failed: " + getHomeAssistantErrorMessage(error));
       return true;
 
     }

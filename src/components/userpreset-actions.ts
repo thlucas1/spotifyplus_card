@@ -6,6 +6,7 @@ import { property } from 'lit/decorators.js';
 import { sharedStylesGrid } from '../styles/shared-styles-grid.js';
 import { sharedStylesMediaInfo } from '../styles/shared-styles-media-info.js';
 import { sharedStylesFavActions } from '../styles/shared-styles-fav-actions.js';
+import { getHomeAssistantErrorMessage } from '../utils/utils.js';
 import { FavActionsBase } from './fav-actions-base';
 import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
@@ -123,7 +124,7 @@ class UserPresetActions extends FavActionsBase {
 
       // clear the progress indicator and set alert error message.
       this.progressHide();
-      this.alertErrorSet("UserPreset actions refresh failed: " + (error as Error).message);
+      this.alertErrorSet("UserPreset actions refresh failed: " + getHomeAssistantErrorMessage(error));
       return true;
 
     }

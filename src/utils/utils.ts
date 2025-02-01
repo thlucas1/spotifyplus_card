@@ -547,3 +547,51 @@ export function copyToClipboard(ev): boolean {
   window.status = "text copied to clipboard";
   return result;
 }
+
+
+/**
+ * Checks if a returned Error message implements the HomeAssistantError interface;
+ * and returns the error message text.
+ * 
+ * @param ex Error object to return the message from.
+ * @returns Error message text.
+ */
+export function getHomeAssistantErrorMessage(ex): string {
+
+  // trace.
+  if (debuglog.enabled) {
+    debuglog("getHomeAssistantErrorMessage - error object:\n%s",
+      JSON.stringify(ex, null, 2),
+    );
+  }
+
+  // if nothing passed then just return an empty string.
+  if (ex === null)
+    return "";
+
+  // does object implement home assistant error interface?
+  if ((typeof ex === 'object') && ('code' in ex) && ('message' in ex)) {
+
+    // get error code and message values.
+    const code: string = ex['code'];
+    const message: string = ex['message'];
+
+    // for ServiceValidationError messages, drop the "Validation error: " prefix!
+    if (code == 'service_validation_error') {
+      if (message.startsWith('Validation error: ')) {
+        return message.substring(18);
+      }
+    }
+
+    // return message as-is.
+    return message;
+  }
+
+  // does object implement Error interface?
+  if ((typeof ex === 'object') && ('message' in ex)) {
+    return ex['message'];
+  }
+
+  // return message as string.
+  return ex + "";
+}

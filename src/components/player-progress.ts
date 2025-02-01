@@ -8,7 +8,7 @@ import { Store } from '../model/store';
 import { MediaPlayer } from '../model/media-player';
 import { ProgressStartedEvent } from '../events/progress-started';
 import { ProgressEndedEvent } from '../events/progress-ended';
-import { closestElement } from '../utils/utils';
+import { closestElement, getHomeAssistantErrorMessage } from '../utils/utils';
 import { Player } from '../sections/player';
 
 
@@ -120,7 +120,7 @@ class Progress extends LitElement {
     catch (error) {
 
       // set alert error message.
-      this.alertErrorSet("Seek position failed: " + (error as Error).message);
+      this.alertErrorSet("Seek position failed: " + getHomeAssistantErrorMessage(error));
       return true;
 
     }

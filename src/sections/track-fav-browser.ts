@@ -15,7 +15,7 @@ import { FavBrowserBase } from './fav-browser-base';
 import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
 import { formatTitleInfo, getMediaListTrackUrisRemaining } from '../utils/media-browser-utils';
-import { getUtcNowTimestamp } from '../utils/utils';
+import { getHomeAssistantErrorMessage, getUtcNowTimestamp } from '../utils/utils';
 import { GetTracks } from '../types/spotifyplus/track-page-saved';
 import { ITrack } from '../types/spotifyplus/track';
 
@@ -145,7 +145,7 @@ export class TrackFavBrowser extends FavBrowserBase {
     catch (error) {
 
       // set error message and reset scroll position to zero so the message is displayed.
-      this.alertErrorSet("Could not play media item.  " + (error as Error).message);
+      this.alertErrorSet("Could not play media item.  " + getHomeAssistantErrorMessage(error));
       this.mediaBrowserContentElement.scrollTop = 0;
 
     }
@@ -204,7 +204,7 @@ export class TrackFavBrowser extends FavBrowserBase {
             this.mediaListLastUpdatedOn = 0;
 
             // call base class method, indicating media list update failed.
-            super.updatedMediaListError("Get Track Favorites failed: " + (error as Error).message);
+            super.updatedMediaListError("Get Track Favorites failed: " + getHomeAssistantErrorMessage(error));
 
             // reject the promise.
             reject(error);
@@ -237,7 +237,7 @@ export class TrackFavBrowser extends FavBrowserBase {
       this.progressHide();
 
       // set alert error message.
-      super.updatedMediaListError("Track favorites refresh failed: " + (error as Error).message);
+      super.updatedMediaListError("Track favorites refresh failed: " + getHomeAssistantErrorMessage(error));
       return true;
 
     }

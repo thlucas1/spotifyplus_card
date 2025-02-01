@@ -17,7 +17,7 @@ import { MediaPlayer } from '../model/media-player';
 import { SpotifyPlusService } from '../services/spotifyplus-service';
 import { storageService } from '../decorators/storage';
 import { truncateMediaList } from '../utils/media-browser-utils';
-import { isCardInEditPreview, loadHaFormLazyControls } from '../utils/utils';
+import { getHomeAssistantErrorMessage, isCardInEditPreview, loadHaFormLazyControls } from '../utils/utils';
 import { FilterSectionMediaEventArgs } from '../events/filter-section-media';
 import { ProgressEndedEvent } from '../events/progress-ended';
 import { ProgressStartedEvent } from '../events/progress-started';
@@ -366,10 +366,9 @@ export class FavBrowserBase extends LitElement {
 
     // apply filter criteria.
     this.filterCriteria = args.filterCriteria;
-    //this.requestUpdate();
 
-    // execute the search.
-    //this.updateMediaList(this.player);
+    // update the media list, as the results are probably cached.
+    this.updateMediaList(this.player);
 
   }
 
@@ -617,7 +616,7 @@ export class FavBrowserBase extends LitElement {
     catch (error) {
 
       // set error message and reset scroll position to zero so the message is displayed.
-      this.alertErrorSet("Could not play media item.  " + (error as Error).message);
+      this.alertErrorSet("Could not play media item.  " + getHomeAssistantErrorMessage(error));
       this.mediaBrowserContentElement.scrollTop = 0;
 
     }

@@ -15,7 +15,7 @@ import { FavBrowserBase } from './fav-browser-base';
 import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
 import { formatTitleInfo } from '../utils/media-browser-utils';
-import { getUtcNowTimestamp } from '../utils/utils';
+import { getHomeAssistantErrorMessage, getUtcNowTimestamp } from '../utils/utils';
 import { IUserPreset } from '../types/spotifyplus/user-preset';
 import { CategoryDisplayEvent } from '../events/category-display';
 import { FilterSectionMediaEvent } from '../events/filter-section-media';
@@ -238,7 +238,7 @@ export class UserPresetBrowser extends FavBrowserBase {
     catch (error) {
 
       // set error message and reset scroll position to zero so the message is displayed.
-      this.alertErrorSet("Could not get track recommendations for user preset.  " + (error as Error).message);
+      this.alertErrorSet("Could not get track recommendations for user preset.  " + getHomeAssistantErrorMessage(error));
       this.mediaBrowserContentElement.scrollTop = 0;
 
     }
@@ -283,7 +283,7 @@ export class UserPresetBrowser extends FavBrowserBase {
     catch (error) {
 
       // set error message and reset scroll position to zero so the message is displayed.
-      this.alertErrorSet("Could not play track favorites for user preset.  " + (error as Error).message);
+      this.alertErrorSet("Could not play track favorites for user preset.  " + getHomeAssistantErrorMessage(error));
       this.mediaBrowserContentElement.scrollTop = 0;
 
     }
@@ -341,7 +341,7 @@ export class UserPresetBrowser extends FavBrowserBase {
         catch (error) {
 
           // reject the promise.
-          super.updatedMediaListError("Load User Presets from config failed: " + (error as Error).message);
+          super.updatedMediaListError("Load User Presets from config failed: " + getHomeAssistantErrorMessage(error));
           reject(error);
 
         }
@@ -386,7 +386,7 @@ export class UserPresetBrowser extends FavBrowserBase {
             })
             .catch(error => {
               // process error result and reject the promise.
-              super.updatedMediaListError("Could not fetch data from configuration `userPresetsFile` (" + this.config.userPresetsFile + "); " + (error as Error).message);
+              super.updatedMediaListError("Could not fetch data from configuration `userPresetsFile` (" + this.config.userPresetsFile + "); " + getHomeAssistantErrorMessage(error));
               reject(error);
             });
         });
@@ -417,7 +417,7 @@ export class UserPresetBrowser extends FavBrowserBase {
       this.progressHide();
 
       // set alert error message.
-      super.updatedMediaListError("User Presets favorites refresh failed: " + (error as Error).message);
+      super.updatedMediaListError("User Presets favorites refresh failed: " + getHomeAssistantErrorMessage(error));
       return true;
 
     }

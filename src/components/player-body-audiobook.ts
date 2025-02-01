@@ -22,7 +22,7 @@ import { MediaPlayer } from '../model/media-player';
 import { SearchMediaTypes } from '../types/search-media-types';
 import { SearchMediaEvent } from '../events/search-media';
 import { getIdFromSpotifyUri } from '../services/spotifyplus-service';
-import { formatDateHHMMSSFromMilliseconds, unescapeHtml } from '../utils/utils';
+import { formatDateHHMMSSFromMilliseconds, getHomeAssistantErrorMessage, unescapeHtml } from '../utils/utils';
 import { openWindowNewTab } from '../utils/media-browser-utils';
 import { ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD, ALERT_INFO_PRESET_JSON_COPIED_TO_CLIPBOARD } from '../constants';
 import { GetAudiobookAuthors, GetAudiobookNarrators } from '../types/spotifyplus/audiobook-simplified';
@@ -403,7 +403,7 @@ export class PlayerBodyAudiobook extends PlayerBodyBase {
 
       // clear the progress indicator and set alert error message.
       this.progressHide();
-      this.alertErrorSet("Action failed: " + (error as Error).message);
+      this.alertErrorSet("Action failed: " + getHomeAssistantErrorMessage(error));
       return true;
 
     }
@@ -465,7 +465,7 @@ export class PlayerBodyAudiobook extends PlayerBodyBase {
 
               // clear results, and reject the promise.
               this.chapter = undefined;
-              this.alertErrorSet("Get Episode call failed: " + (error as Error).message);
+              this.alertErrorSet("Get Episode call failed: " + getHomeAssistantErrorMessage(error));
               reject(error);
 
             })
@@ -494,7 +494,7 @@ export class PlayerBodyAudiobook extends PlayerBodyBase {
 
               // clear results, and reject the promise.
               this.isAudiobookFavorite = undefined;
-              this.alertErrorSet("Check Audiobook Favorites failed: " + (error as Error).message);
+              this.alertErrorSet("Check Audiobook Favorites failed: " + getHomeAssistantErrorMessage(error));
               reject(error);
 
             })
@@ -523,7 +523,7 @@ export class PlayerBodyAudiobook extends PlayerBodyBase {
 
               // clear results, and reject the promise.
               this.isChapterFavorite = undefined;
-              this.alertErrorSet("Check Episode Favorites failed: " + (error as Error).message);
+              this.alertErrorSet("Check Episode Favorites failed: " + getHomeAssistantErrorMessage(error));
               reject(error);
 
             })
@@ -555,7 +555,7 @@ export class PlayerBodyAudiobook extends PlayerBodyBase {
 
       // clear the progress indicator and set alert error message.
       this.progressHide();
-      this.alertErrorSet("Audiobook actions refresh failed: " + (error as Error).message);
+      this.alertErrorSet("Audiobook actions refresh failed: " + getHomeAssistantErrorMessage(error));
       return true;
 
     }

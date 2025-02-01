@@ -6,6 +6,13 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.35 ] - 2025/02/01
+
+  * This release requires the SpotifyPlus Integration v1.0.90+ release; please make sure you update the SpotifyPlus integration prior to updating this SpotifyPlus Card release.
+  * Added `utils.getHomeAssistantErrorMessage` function to make error messages and warnings a little more user-friendly.
+  * Added card version to General Editor form.
+  * Added refresh of media list when a userpreset filtersection event is processed, which ensures that cached values are refreshed and any newly added favorites are displayed.
+
 ###### [ 1.0.34 ] - 2025/01/26
 
   * Added card configuration option `deviceDefaultId` for specifying a Device ID to use for all SpotifyPlus service calls that require a deviceId argument.  This allows you to hide the Devices section, and utilize the specific device for all service requests that require a deviceId.

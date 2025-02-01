@@ -15,7 +15,7 @@ import { MediaPlayerEntityFeature, MediaPlayerState } from '../services/media-co
 import { SpotifyPlusService } from '../services/spotifyplus-service';
 import { ProgressEndedEvent } from '../events/progress-ended';
 import { ProgressStartedEvent } from '../events/progress-started';
-import { closestElement } from '../utils/utils';
+import { closestElement, getHomeAssistantErrorMessage } from '../utils/utils';
 import { Player } from '../sections/player';
 
 const { TURN_OFF, TURN_ON, VOLUME_MUTE, VOLUME_SET } = MediaPlayerEntityFeature;
@@ -124,7 +124,7 @@ class Volume extends LitElement {
     catch (error) {
 
       // set alert error message.
-      this.alertErrorSet("Volume set failed: " + (error as Error).message);
+      this.alertErrorSet("Volume set failed: " + getHomeAssistantErrorMessage(error));
       return true;
 
     }
@@ -156,7 +156,7 @@ class Volume extends LitElement {
     catch (error) {
 
       // set alert error message.
-      this.alertErrorSet("Volume mute failed: " + (error as Error).message);
+      this.alertErrorSet("Volume mute failed: " + getHomeAssistantErrorMessage(error));
       return true;
 
     }
@@ -212,7 +212,7 @@ class Volume extends LitElement {
     catch (error) {
 
       // set alert error message.
-      this.alertErrorSet("Volume action failed: " + (error as Error).message);
+      this.alertErrorSet("Volume action failed: " + getHomeAssistantErrorMessage(error));
       return true;
 
     }

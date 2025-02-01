@@ -27,7 +27,7 @@ import { FavBrowserBase } from './fav-browser-base';
 import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
 import { formatTitleInfo } from '../utils/media-browser-utils';
-import { getUtcNowTimestamp } from '../utils/utils';
+import { getHomeAssistantErrorMessage, getUtcNowTimestamp } from '../utils/utils';
 import { getIdFromSpotifyUri } from '../services/spotifyplus-service';
 import { storageService } from '../decorators/storage';
 import { SearchMediaTypes } from '../types/search-media-types';
@@ -680,7 +680,7 @@ export class SearchBrowser extends FavBrowserBase {
               this.mediaListLastUpdatedOn = 0;
 
               // call base class method, indicating media list update failed.
-              super.updatedMediaListError("Spotify " + this.searchMediaType + " search failed: " + (error as Error).message);
+              super.updatedMediaListError("Spotify " + this.searchMediaType + " search failed: " + getHomeAssistantErrorMessage(error));
               reject(error);
 
             })
@@ -744,7 +744,7 @@ export class SearchBrowser extends FavBrowserBase {
               this.mediaListLastUpdatedOn = 0;
 
               // call base class method, indicating media list update failed.
-              super.updatedMediaListError("Spotify " + this.searchMediaType + " search failed: " + (error as Error).message);
+              super.updatedMediaListError("Spotify " + this.searchMediaType + " search failed: " + getHomeAssistantErrorMessage(error));
               reject(error);
 
             })
@@ -792,7 +792,7 @@ export class SearchBrowser extends FavBrowserBase {
               this.mediaListLastUpdatedOn = 0;
 
               // call base class method, indicating media list update failed.
-              super.updatedMediaListError("Spotify " + this.searchMediaType + " search failed: " + (error as Error).message);
+              super.updatedMediaListError("Spotify " + this.searchMediaType + " search failed: " + getHomeAssistantErrorMessage(error));
               reject(error);
 
             })
@@ -840,7 +840,7 @@ export class SearchBrowser extends FavBrowserBase {
               this.mediaListLastUpdatedOn = 0;
 
               // call base class method, indicating media list update failed.
-              super.updatedMediaListError("Spotify " + this.searchMediaType + " search failed: " + (error as Error).message);
+              super.updatedMediaListError("Spotify " + this.searchMediaType + " search failed: " + getHomeAssistantErrorMessage(error));
               reject(error);
 
             })
@@ -888,7 +888,7 @@ export class SearchBrowser extends FavBrowserBase {
               this.mediaListLastUpdatedOn = 0;
 
               // call base class method, indicating media list update failed.
-              super.updatedMediaListError("Spotify " + this.searchMediaType + " search failed: " + (error as Error).message);
+              super.updatedMediaListError("Spotify " + this.searchMediaType + " search failed: " + getHomeAssistantErrorMessage(error));
               reject(error);
 
             })
@@ -936,7 +936,7 @@ export class SearchBrowser extends FavBrowserBase {
               this.mediaListLastUpdatedOn = 0;
 
               // call base class method, indicating media list update failed.
-              super.updatedMediaListError("Spotify " + this.searchMediaType + " search failed: " + (error as Error).message);
+              super.updatedMediaListError("Spotify " + this.searchMediaType + " search failed: " + getHomeAssistantErrorMessage(error));
               reject(error);
 
             })
@@ -981,7 +981,7 @@ export class SearchBrowser extends FavBrowserBase {
               this.mediaListLastUpdatedOn = 0;
 
               // call base class method, indicating media list update failed.
-              super.updatedMediaListError("Spotify " + this.searchMediaType + " search failed: " + (error as Error).message);
+              super.updatedMediaListError("Spotify " + this.searchMediaType + " search failed: " + getHomeAssistantErrorMessage(error));
               reject(error);
 
             })
@@ -1027,7 +1027,7 @@ export class SearchBrowser extends FavBrowserBase {
               this.mediaListLastUpdatedOn = 0;
 
               // call base class method, indicating media list update failed.
-              super.updatedMediaListError("Spotify " + this.searchMediaType + " search failed: " + (error as Error).message);
+              super.updatedMediaListError("Spotify " + this.searchMediaType + " search failed: " + getHomeAssistantErrorMessage(error));
               reject(error);
 
             })
@@ -1073,7 +1073,7 @@ export class SearchBrowser extends FavBrowserBase {
               this.mediaListLastUpdatedOn = 0;
 
               // call base class method, indicating media list update failed.
-              super.updatedMediaListError("Spotify " + this.searchMediaType + " search failed: " + (error as Error).message);
+              super.updatedMediaListError("Spotify " + this.searchMediaType + " search failed: " + getHomeAssistantErrorMessage(error));
               reject(error);
 
             })
@@ -1118,7 +1118,7 @@ export class SearchBrowser extends FavBrowserBase {
       this.progressHide();
 
       // set alert error message.
-      super.updatedMediaListError("Spotify " + this.searchMediaType + " search failed: " + (error as Error).message);
+      super.updatedMediaListError("Spotify " + this.searchMediaType + " search failed: " + getHomeAssistantErrorMessage(error));
       return true;
 
     }

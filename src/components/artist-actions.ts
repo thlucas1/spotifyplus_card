@@ -29,7 +29,7 @@ import { MediaPlayer } from '../model/media-player';
 import { SearchMediaTypes } from '../types/search-media-types';
 import { SearchMediaEvent } from '../events/search-media';
 import { openWindowNewTab } from '../utils/media-browser-utils';
-import { unescapeHtml } from '../utils/utils';
+import { getHomeAssistantErrorMessage, unescapeHtml } from '../utils/utils';
 import { GetUserPresetConfigEntry, GetUserPresetConfigEntryJson } from '../types/spotifyplus/user-preset';
 import { ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD, ALERT_INFO_PRESET_JSON_COPIED_TO_CLIPBOARD } from '../constants';
 import { IArtist, GetGenres } from '../types/spotifyplus/artist';
@@ -411,7 +411,7 @@ class ArtistActions extends FavActionsBase {
 
       // clear the progress indicator and set alert error message.
       this.progressHide();
-      this.alertErrorSet("Action failed: " + (error as Error).message);
+      this.alertErrorSet("Action failed: " + getHomeAssistantErrorMessage(error));
       return true;
 
     }
@@ -460,7 +460,7 @@ class ArtistActions extends FavActionsBase {
             .catch(error => {
 
               if (debuglog.enabled) {
-                debuglog("updateActions - Get Artist Info failed: " + (error as Error).message);
+                debuglog("updateActions - Get Artist Info failed: " + getHomeAssistantErrorMessage(error));
               }
 
               // clear results, and resolve the promise; we do this, as the GetArtistInfo is an
@@ -470,7 +470,7 @@ class ArtistActions extends FavActionsBase {
 
               // clear results, and reject the promise.
               //this.artistInfo = undefined;
-              //this.alertErrorSet("Get Artist Info failed: " + (error as Error).message);
+              //this.alertErrorSet("Get Artist Info failed: " + getHomeAssistantErrorMessage(error));
               //reject(error);
 
             })
@@ -499,7 +499,7 @@ class ArtistActions extends FavActionsBase {
 
               // clear results, and reject the promise.
               this.isArtistFavorite = undefined;
-              this.alertErrorSet("Check Artist Favorites failed: " + (error as Error).message);
+              this.alertErrorSet("Check Artist Favorites failed: " + getHomeAssistantErrorMessage(error));
               reject(error);
 
             })
@@ -528,7 +528,7 @@ class ArtistActions extends FavActionsBase {
 
       // clear the progress indicator and set alert error message.
       this.progressHide();
-      this.alertErrorSet("Artist actions refresh failed: " + (error as Error).message);
+      this.alertErrorSet("Artist actions refresh failed: " + getHomeAssistantErrorMessage(error));
       return true;
 
     }

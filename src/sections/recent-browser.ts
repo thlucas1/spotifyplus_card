@@ -15,7 +15,7 @@ import { FavBrowserBase } from './fav-browser-base';
 import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
 import { formatTitleInfo, getMediaListTrackUrisRemaining } from '../utils/media-browser-utils';
-import { getUtcNowTimestamp } from '../utils/utils';
+import { getHomeAssistantErrorMessage, getUtcNowTimestamp } from '../utils/utils';
 import { GetTracks } from '../types/spotifyplus/track-page-saved';
 import { ITrack } from '../types/spotifyplus/track';
 
@@ -147,7 +147,7 @@ export class RecentBrowser extends FavBrowserBase {
     catch (error) {
 
       // set error message and reset scroll position to zero so the message is displayed.
-      this.alertErrorSet("Could not play media item.  " + (error as Error).message);
+      this.alertErrorSet("Could not play media item.  " + getHomeAssistantErrorMessage(error));
       this.mediaBrowserContentElement.scrollTop = 0;
 
     }
@@ -204,7 +204,7 @@ export class RecentBrowser extends FavBrowserBase {
             this.mediaListLastUpdatedOn = 0;
 
             // call base class method, indicating media list update failed.
-            super.updatedMediaListError("Get Player Recent Tracks failed: " + (error as Error).message);
+            super.updatedMediaListError("Get Player Recent Tracks failed: " + getHomeAssistantErrorMessage(error));
 
             // reject the promise.
             reject(error);
@@ -237,7 +237,7 @@ export class RecentBrowser extends FavBrowserBase {
       this.progressHide();
 
       // set alert error message.
-      super.updatedMediaListError("Recently Played items refresh failed: " + (error as Error).message);
+      super.updatedMediaListError("Recently Played items refresh failed: " + getHomeAssistantErrorMessage(error));
       return true;
 
     }
