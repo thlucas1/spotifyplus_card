@@ -20,7 +20,7 @@
     "debug": "^4.3.7",
     "home-assistant-js-websocket": "^9.4.0",
     "lit": "^2.8.0",
-    "node-vibrant": "^3.2.1-alpha.1",
+    "node-vibrant": "^4.0.3",
     "url": "^0.11.4"
   },
   "devDependencies": {
