@@ -446,10 +446,28 @@ export interface CardConfig extends LovelaceCardConfig {
   playerControlsBackgroundColor?: string;
 
   /**
+   * Color of the player media control labels.
+   * Default is '#ffffff'.
+   */
+  playerControlsColor?: string;
+
+  /**
    * Size of the icons in the Player controls area.
    * Default is '2.0rem'.
    */
   playerControlsIconSize?: string;
+
+  /**
+   * Color of the icons in the Player controls area.
+   * Default is '#ffffff'.
+   */
+  playerControlsIconColor?: string;
+
+  /**
+   * Color of the toggled icons in the Player controls area.
+   * Default is '#ffffff'.
+   */
+  playerControlsIconToggleColor?: string;
 
   /**
    * Hide volume level numbers and percentages in the volume controls area of the Player 
@@ -835,6 +853,11 @@ export interface CardConfig extends LovelaceCardConfig {
    * Media list item title and sub-title text color.
    */
   mediaBrowserItemsColor?: string;
+
+  /**
+   * Media browser list item svg icon color.
+   */
+  mediaBrowserItemsSvgIconColor?: string;
 
   /**
    * Media browser items title text font-size (in 'rem' units).

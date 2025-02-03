@@ -105,7 +105,15 @@ export function getContentItemImageUrl(item: any, config: CardConfig, hasItemsWi
  */
 export function getMdiIconImageUrl(mdi_icon: string): string {
 
-  const mdiImageUrl = '\'data:image/svg+xml;utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%232196F3" d="' + mdi_icon + '"></path></svg>\'';
+  //// assign default color value, if one is not assigned.
+  //if (!mdi_icon_color) {
+  //  mdi_icon_color = "#2196F3"
+  //}
+  //mdi_icon_color = mdi_icon_color.replace("#", "%23");
+
+  // assign the icon url.
+  const mdiImageUrl = '\'data:image/svg+xml;utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="' + mdi_icon + '"></path></svg>\'';
+  //const mdiImageUrl = '\'data:image/svg+xml;utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="' + mdi_icon_color + '" d="' + mdi_icon + '"></path></svg>\'';
   return mdiImageUrl
 
 }

@@ -77,19 +77,6 @@ export class FavActionsBase extends LitElement {
   }
 
 
-  ///** 
-  // * style definitions used by this component.
-  // * */
-  //static get styles() {
-
-  //  return [
-  //    //sharedStylesFavBrowser,
-  //    css`
-  //    `
-  //  ];
-  //}
-
-
   /**
    * Invoked when the component is added to the document's DOM.
    *

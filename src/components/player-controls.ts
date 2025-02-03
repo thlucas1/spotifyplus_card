@@ -1,3 +1,8 @@
+// debug logging.
+import Debug from 'debug/src/browser.js';
+import { DEBUG_APP_NAME } from '../constants';
+const debuglog = Debug(DEBUG_APP_NAME + ":player-controls");
+
 // lovelace card imports.
 import { css, html, LitElement, PropertyValues, TemplateResult, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
@@ -29,11 +34,7 @@ import { ProgressStartedEvent } from '../events/progress-started';
 import { closestElement, getHomeAssistantErrorMessage, isCardInEditPreview } from '../utils/utils';
 import { Player } from '../sections/player';
 import { PlayerBodyQueue } from './player-body-queue';
-
-// debug logging.
-import Debug from 'debug/src/browser.js';
-import { DEBUG_APP_NAME } from '../constants';
-const debuglog = Debug(DEBUG_APP_NAME + ":player-controls");
+import { PLAYER_CONTROLS_ICON_TOGGLE_COLOR_DEFAULT } from '../constants';
 
 const { NEXT_TRACK, PAUSE, PLAY, PREVIOUS_TRACK, REPEAT_SET, SHUFFLE_SET, TURN_ON, TURN_OFF } = MediaPlayerEntityFeature;
 const ACTION_FAVES = 900000000000;
@@ -141,12 +142,12 @@ class PlayerControls extends LitElement {
         justify-content: center;
         display: inline-flex;
         align-items: center;
-        mix-blend-mode: screen;
         overflow: hidden;
-        text-shadow: 0 0 2px var(--spc-player-palette-vibrant);
-        color: white;
+        color: var(--spc-player-controls-icon-color, #ffffff);
         --mdc-icon-button-size: var(--spc-player-controls-icon-button-size, 2.75rem);
         --mdc-icon-size: var(--spc-player-controls-icon-size, 2.0rem);
+        text-shadow: 0 0 2px var(--spc-player-palette-vibrant);
+        mix-blend-mode: screen;
       }
 
       .iconsPower {
@@ -154,7 +155,7 @@ class PlayerControls extends LitElement {
         display: block;
         align-items: center;
         overflow: hidden;
-        color: white;
+        color: var(--spc-player-controls-icon-color, #ffffff);
         --mdc-icon-button-size: var(--spc-player-controls-icon-button-size, 3.25rem);
         --mdc-icon-size: var(--spc-player-controls-icon-size, 2.5rem);
       }
@@ -672,14 +673,16 @@ class PlayerControls extends LitElement {
 
   /**
    * Returns an element style for control icon coloring.
+   * 
+   * @param isToggled True if the icon is in a toggle state; otherwise false if icon is in a non-toggled state.
    */
-  private styleIcon(isColored: boolean | undefined): string | undefined {
+  private styleIcon(isToggled: boolean | undefined): string | undefined {
 
-    // color the button if desired.
-    if (isColored) {
-      return `color: var(--dark-primary-color);`;
+    // if button is toggled, then use the icon toggle color; 
+    // otherwise, default to regular icon color.
+    if (isToggled) {
+      return `color: var(--spc-player-controls-icon-toggle-color, ${PLAYER_CONTROLS_ICON_TOGGLE_COLOR_DEFAULT});`;
     }
-
     return undefined;
   }
 

@@ -75,7 +75,7 @@ export class UserPresetBrowser extends FavBrowserBase {
                 return (
                   html`<spc-media-browser-list 
                         class="media-browser-list"
-                        .items=${this.mediaList?.filter((item: IUserPreset) => item.name?.toLocaleLowerCase().indexOf(filterName) !== -1)}
+                        .items=${this.mediaList?.filter((item: IUserPreset) => (item.name?.toLocaleLowerCase().indexOf(filterName) !== -1) || (item.subtitle?.toLocaleLowerCase().indexOf(filterName) !== -1))}
                         .store=${this.store}
                         @item-selected=${this.onItemSelected}
                         @item-selected-with-hold=${this.onItemSelectedWithHold}
@@ -85,7 +85,7 @@ export class UserPresetBrowser extends FavBrowserBase {
                 return (
                   html`<spc-media-browser-icons 
                         class="media-browser-list"
-                        .items=${this.mediaList?.filter((item: IUserPreset) => item.name?.toLocaleLowerCase().indexOf(filterName) !== -1)}
+                        .items=${this.mediaList?.filter((item: IUserPreset) => (item.name?.toLocaleLowerCase().indexOf(filterName) !== -1) || (item.subtitle?.toLocaleLowerCase().indexOf(filterName) !== -1))}
                         .store=${this.store}
                         @item-selected=${this.onItemSelected}
                         @item-selected-with-hold=${this.onItemSelectedWithHold}

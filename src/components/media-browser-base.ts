@@ -197,23 +197,6 @@ export class MediaBrowserBase extends LitElement {
   }
 
 
-//  /**
-//   * Style definition used to style a media browser item title.
-//   */
-//  export const styleMediaBrowserItemTitle = css`
-//  .title {
-//    color: var(--secondary-text-color);
-//    font-weight: normal;
-//    padding: 0 0.5rem;
-//    text-overflow: ellipsis;
-//    overflow: hidden;
-//    white-space: nowrap;
-//  }
-//`;
-
-
-
-
   /**
    * Style definitions used by this card section.
    * 
@@ -239,7 +222,6 @@ export class MediaBrowserBase extends LitElement {
         .thumbnail {
           width: 100%;
           padding-bottom: 100%;
-          /* margin: 0.6%; */
           background-size: 100%;
           background-repeat: no-repeat;
           background-position: center;
@@ -284,7 +266,8 @@ export class MediaBrowserBase extends LitElement {
   protected styleMediaBrowser() {
 
     // load card configuration theme settings.
-    const mediaBrowserItemsColor = this.config.mediaBrowserItemsColor
+    const mediaBrowserItemsColor = this.config.mediaBrowserItemsColor;
+    const mediaBrowserItemsSvgIconColor = this.config.mediaBrowserItemsSvgIconColor;
     const mediaBrowserItemsTitleFontSize = this.config.mediaBrowserItemsTitleFontSize;
     const mediaBrowserItemsSubTitleFontSize = this.config.mediaBrowserItemsSubTitleFontSize;
 
@@ -293,6 +276,8 @@ export class MediaBrowserBase extends LitElement {
     styleInfo['--items-per-row'] = `${this.itemsPerRow}`;
     if (mediaBrowserItemsColor)
       styleInfo['--spc-media-browser-items-color'] = `${mediaBrowserItemsColor}`;
+    if (mediaBrowserItemsSvgIconColor)
+      styleInfo['--spc-media-browser-items-svgicon-color'] = `${mediaBrowserItemsSvgIconColor}`;
     if (mediaBrowserItemsTitleFontSize)
       styleInfo['--spc-media-browser-items-title-font-size'] = `${mediaBrowserItemsTitleFontSize}`;
     if (mediaBrowserItemsSubTitleFontSize)
@@ -565,14 +550,29 @@ export class MediaBrowserBase extends LitElement {
       bgSize = '50%';
     }
 
-    return html`
+    // if thumbnail contains an svg icon, then use a mask; otherwise, use a background-image.
+    // this allows the user to theme the svg icon color.
+    if (thumbnail.includes("svg+xml")) {
+      return html`
+      <style>
+        .button:nth-of-type(${index + 1}) .thumbnail {
+          mask-image: url(${thumbnail});
+          mask-size: ${bgSize};
+          background-color: var(--spc-media-browser-items-svgicon-color, #2196F3);
+        }
+      </style>
+    `;
+    } else {
+      return html`
       <style>
         .button:nth-of-type(${index + 1}) .thumbnail {
           background-image: url(${thumbnail});
           background-size: ${bgSize};
+          background-color: var(--spc-media-browser-items-svgicon-color, transparent);
         }
       </style>
     `;
+    }
   }
 
 

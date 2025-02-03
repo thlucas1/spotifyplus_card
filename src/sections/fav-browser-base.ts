@@ -207,6 +207,7 @@ export class FavBrowserBase extends LitElement {
     const mediaBrowserSectionTitleFontSize = this.config.mediaBrowserSectionTitleFontSize;
     const mediaBrowserSectionSubTitleColor = this.config.mediaBrowserSectionSubTitleColor;
     const mediaBrowserSectionSubTitleFontSize = this.config.mediaBrowserSectionSubTitleFontSize;
+    const mediaBrowserItemsSvgIconColor = this.config.mediaBrowserItemsSvgIconColor;
 
     // build style info object.
     const styleInfo: StyleInfo = <StyleInfo>{};
@@ -218,7 +219,10 @@ export class FavBrowserBase extends LitElement {
       styleInfo['--spc-media-browser-section-subtitle-color'] = `${mediaBrowserSectionSubTitleColor}`;
     if (mediaBrowserSectionSubTitleFontSize)
       styleInfo['--spc-media-browser-section-subtitle-font-size'] = `${mediaBrowserSectionSubTitleFontSize}`;
+    if (mediaBrowserItemsSvgIconColor)
+      styleInfo['--spc-media-browser-items-svgicon-color'] = `${mediaBrowserItemsSvgIconColor}`;
     return styleMap(styleInfo);
+
   }
 
 

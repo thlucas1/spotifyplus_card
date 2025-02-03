@@ -17,6 +17,7 @@ import { ProgressEndedEvent } from '../events/progress-ended';
 import { ProgressStartedEvent } from '../events/progress-started';
 import { closestElement, getHomeAssistantErrorMessage } from '../utils/utils';
 import { Player } from '../sections/player';
+import { PLAYER_CONTROLS_ICON_TOGGLE_COLOR_DEFAULT } from '../constants';
 
 const { TURN_OFF, TURN_ON, VOLUME_MUTE, VOLUME_SET } = MediaPlayerEntityFeature;
 
@@ -323,14 +324,16 @@ class Volume extends LitElement {
 
   /**
    * Returns an element style for control icon coloring.
+   * 
+   * @param isToggled True if the icon is in a toggle state; otherwise false if icon is in a non-toggled state.
    */
-  private styleIcon(isColored: boolean | undefined): string | undefined {
+  private styleIcon(isToggled: boolean | undefined): string | undefined {
 
-    // color the button if desired.
-    if (isColored) {
-      return `color: var(--dark-primary-color);`;
+    // if button is toggled, then use the icon toggle color; 
+    // otherwise, default to regular icon color.
+    if (isToggled) {
+      return `color: var(--spc-player-controls-icon-toggle-color, ${PLAYER_CONTROLS_ICON_TOGGLE_COLOR_DEFAULT});`;
     }
-
     return undefined;
   }
 
@@ -351,11 +354,7 @@ class Volume extends LitElement {
       }
 
       .volume-container {
-        display: flex;
         flex: 1;
-        justify-content: space-between;
-        mix-blend-mode: screen;
-        color: var(--spc-player-controls-color);
         /*border: 1px solid blue;  /*  FOR TESTING CONTROL LAYOUT CHANGES */
       }
 
@@ -363,6 +362,7 @@ class Volume extends LitElement {
         flex: 1;
         padding-right: 0.0rem;
         align-content: flex-end;
+        color: var(--spc-player-controls-color, var(--spc-player-controls-icon-color, #ffffff));
       }
 
       .volume-level {
@@ -401,7 +401,7 @@ class Volume extends LitElement {
         mix-blend-mode: screen;
         overflow: hidden;
         text-shadow: 0 0 2px var(--spc-player-palette-vibrant);
-        color: white;
+        color: var(--spc-player-controls-icon-color, #ffffff);
         width: 100%;
         --mdc-icon-button-size: var(--spc-player-controls-icon-button-size, 2.75rem);
         --mdc-icon-size: var(--spc-player-controls-icon-size, 2.0rem);

@@ -124,6 +124,8 @@ export class MediaBrowserList extends MediaBrowserBase {
           background-size: contain;
           background-repeat: no-repeat;
           background-position: left;
+          mask-repeat: no-repeat;
+          mask-position: left;
           border-radius: 0.5rem;
         }
 
@@ -131,7 +133,7 @@ export class MediaBrowserList extends MediaBrowserBase {
           font-size: var(--spc-media-browser-items-title-font-size, 1.1rem);
           align-self: center;
           flex: 1;
-          color: var(--spc-media-browser-items-color, #ffffff);
+          color: var(--spc-media-browser-items-color, var(--primary-text-color, #ffffff));
           font-weight: normal;
           padding: 0 0.5rem;
           text-overflow: ellipsis;

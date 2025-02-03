@@ -67,7 +67,7 @@ export class ArtistFavBrowser extends FavBrowserBase {
                 return (
                   html`<spc-media-browser-list 
                         class="media-browser-list"
-                        .items=${this.mediaList?.filter((item: IArtist) => item.name.toLocaleLowerCase().indexOf(filterName) !== -1)}
+                        .items=${this.mediaList?.filter((item: IArtist) => (item.name.toLocaleLowerCase().indexOf(filterName) !== -1))}
                         .store=${this.store}
                         @item-selected=${this.onItemSelected}
                         @item-selected-with-hold=${this.onItemSelectedWithHold}
@@ -77,7 +77,7 @@ export class ArtistFavBrowser extends FavBrowserBase {
                 return (
                   html`<spc-media-browser-icons 
                         class="media-browser-list"
-                        .items=${this.mediaList?.filter((item: IArtist) => item.name.toLocaleLowerCase().indexOf(filterName) !== -1)}
+                        .items=${this.mediaList?.filter((item: IArtist) => (item.name.toLocaleLowerCase().indexOf(filterName) !== -1))}
                         .store=${this.store}
                         @item-selected=${this.onItemSelected}
                         @item-selected-with-hold=${this.onItemSelectedWithHold}

@@ -1,6 +1,7 @@
 // lovelace card imports.
 import { css, html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
+import { styleMap, StyleInfo } from 'lit-html/directives/style-map.js';
 import {
   mdiDotsHorizontal,
   mdiLanConnect,
@@ -89,7 +90,7 @@ class DeviceActions extends FavActionsBase {
         ${this.alertError ? html`<ha-alert alert-type="error" dismissable @alert-dismissed-clicked=${this.alertErrorClear}>${this.alertError}</ha-alert>` : ""}
         ${this.alertInfo ? html`<ha-alert alert-type="info" dismissable @alert-dismissed-clicked=${this.alertInfoClear}>${this.alertInfo}</ha-alert>` : ""}
         <div class="media-info-content">
-          <div class="img" style="background:url(${this.deviceInfo?.image_url});"></div>
+          <div class="img" style=${this.styleMediaBrowserItemImage(this.deviceInfo?.image_url)}></div>
           <div class="media-info-details">
             <div class="media-info-text-ms-c">
               ${this.deviceInfo?.Name}
@@ -199,13 +200,14 @@ class DeviceActions extends FavActionsBase {
 
       /* reduce image size for device */
       .media-info-content .img {
-        background-size: contain !important;
+        background-size: cover !important;
         background-repeat: no-repeat !important;
         background-position: center !important;
+        mask-repeat: no-repeat !important;
+        mask-position: center !important;
         max-width: 100px;
         min-height: 100px;
         border-radius: var(--control-button-border-radius, 10px) !important;
-        background-size: cover !important;
       }
 
       .padT {
@@ -228,6 +230,27 @@ class DeviceActions extends FavActionsBase {
 
     `
     ];
+  }
+
+
+  /**
+   * Style definition used to style a media browser item background image.
+   */
+  protected styleMediaBrowserItemImage(thumbnail: string | undefined) {
+
+    // build style info object.
+    // if thumbnail contains an svg icon, then use a mask; otherwise, use a background-image.
+    // this allows the user to theme the svg icon color.
+    const styleInfo: StyleInfo = <StyleInfo>{};
+    if (thumbnail?.includes("svg+xml")) {
+      styleInfo['mask-image'] = `url(${thumbnail})`;
+      styleInfo['background-color'] = `var(--spc-media-browser-items-svgicon-color, #2196F3)`;
+    } else {
+      styleInfo['background-image'] = `url(${thumbnail})`;
+      styleInfo['background-color'] = `var(--spc-media-browser-items-svgicon-color, transparent)`;
+    }
+    return styleMap(styleInfo);
+
   }
 
 

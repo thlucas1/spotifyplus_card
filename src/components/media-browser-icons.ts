@@ -94,10 +94,11 @@ export class MediaBrowserIcons extends MediaBrowserBase {
         .thumbnail {
           width: 100%;
           padding-bottom: 100%;
-          /* margin: 0.6%; */
           background-size: 100%;
           background-repeat: no-repeat;
           background-position: center;
+          mask-repeat: no-repeat;
+          mask-position: center;
         }
 
         .title {

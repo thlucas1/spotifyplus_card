@@ -268,6 +268,9 @@ export class Player extends LitElement implements playerAlerts {
 
     // set player controls and volume controls icon size.
     const playerControlsIconSize = this.config.playerControlsIconSize || PLAYER_CONTROLS_ICON_SIZE_DEFAULT;
+    const playerControlsIconColor = this.config.playerControlsIconColor;
+    const playerControlsIconToggleColor = this.config.playerControlsIconToggleColor;
+    const playerControlsColor = this.config.playerControlsColor;
 
     // build style info object.
     const styleInfo: StyleInfo = <StyleInfo>{};
@@ -276,7 +279,12 @@ export class Player extends LitElement implements playerAlerts {
       styleInfo['--spc-player-background-size'] = `${backgroundSize}`;
     styleInfo['--spc-player-header-bg-color'] = `${headerBackgroundColor}`;
     styleInfo['--spc-player-controls-bg-color'] = `${controlsBackgroundColor} `;
-    styleInfo['--spc-player-controls-color'] = `#ffffff`;
+    if (playerControlsColor)
+      styleInfo['--spc-player-controls-color'] = `${playerControlsColor}`;
+    if (playerControlsIconToggleColor)
+      styleInfo['--spc-player-controls-icon-toggle-color'] = `${playerControlsIconToggleColor}`;
+    if (playerControlsIconColor)
+      styleInfo['--spc-player-controls-icon-color'] = `${playerControlsIconColor}`;
     styleInfo['--spc-player-controls-icon-size'] = `${playerControlsIconSize}`;
     styleInfo['--spc-player-controls-icon-button-size'] = `var(--spc-player-controls-icon-size, ${PLAYER_CONTROLS_ICON_SIZE_DEFAULT}) + 0.75rem`;
     styleInfo['--spc-player-palette-vibrant'] = `${this._colorPaletteVibrant}`;

@@ -6,6 +6,15 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.36 ] - 2025/02/02
+
+  * Updated section filter criteria to include both the name and subtitle value when filtering the list of items.  This was applied to the following sections: Albums, Audiobooks, Episodes, UserPresets, and Tracks.
+  * Added theme variable `--spc-media-browser-items-svgicon-color` and `mediaBrowserItemsSvgIconColor` card configuration option for styling media browser svg icon items color.
+  * Added theme variable `--spc-player-controls-color` and `playerControlsColor` card configuration option; Color of the player media control labels (default `#ffffff`).
+  * Added theme variable `--spc-player-controls-icon-color` and `playerControlsIconColor` card configuration option; Color of the player media control icons (default `#ffffff`).
+  * Added theme variable `--spc-player-controls-icon-toggle-color` and `playerControlsIconToggleColor` card configuration option; Color of the player media control icons when they are toggled (default `#2196F3`).
+  * Defaulted some theme variables so that card look and feel is ready to use.  Prior to this fix, some details would not show correctly out of the box (e.g. device names).
+
 ###### [ 1.0.35 ] - 2025/02/01
 
   * This release requires the SpotifyPlus Integration v1.0.90+ release; please make sure you update the SpotifyPlus integration prior to updating this SpotifyPlus Card release.
