@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.37 ] - 2025/02/05
+
+  * Updated favorite browsers to clear cached filter criteria if the filter criteria textbox was cleared.
+
 ###### [ 1.0.36 ] - 2025/02/02
 
   * Updated section filter criteria to include both the name and subtitle value when filtering the list of items.  This was applied to the following sections: Albums, Audiobooks, Episodes, UserPresets, and Tracks.

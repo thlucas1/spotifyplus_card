@@ -467,6 +467,11 @@ export class FavBrowserBase extends LitElement {
     // store search critera.
     this.filterCriteria = ev.detail.value;
 
+    // if filter cleared, then clear cache as well.
+    if (ev.detail.value == "") {
+      storageService.clearStorageValue(this.cacheKeyBase + this.mediaType + CACHE_KEY_FILTER_CRITERIA);
+    }
+
   }
 
 
@@ -495,6 +500,7 @@ export class FavBrowserBase extends LitElement {
       // clear cache if user chose to manually refresh the media list.
       storageService.clearStorageValue(this.cacheKeyBase + this.mediaType + CACHE_KEY_MEDIA_LIST_LAST_UPDATED);
       storageService.clearStorageValue(this.cacheKeyBase + this.mediaType + CACHE_KEY_MEDIA_LIST);
+      storageService.clearStorageValue(this.cacheKeyBase + this.mediaType + CACHE_KEY_FILTER_CRITERIA);
 
       // clear first time media list load for card editing logic.
       if (this.mediaType in Store.hasCardEditLoadedMediaList) {
