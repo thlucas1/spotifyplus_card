@@ -6,6 +6,16 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.38 ] - 2025/02/07
+
+  * Added card configuration option `searchMediaBrowserQueueSelection`; True to add track / episode to play queue when search result is clicked; Otherwise, false to play the track / episode immediately when track search result is clicked. Default is false.
+  * Added theme variable `--spc-card-wait-progress-slider-color` and `cardWaitProgressSliderColor` card configuration option; Color of the card area wait progress indicator (default `#2196F3`).
+  * Added theme variable `--spc-player-progress-label-color` and `playerProgressLabelColor` card configuration option; Color of the player progress text labels (default `#ffffff`).
+  * Added theme variable `--spc-player-progress-slider-color` and `playerProgressSliderColor` card configuration option; Color of the player progress slider bar (default `#2196F3`).
+  * Added theme variable `--spc-player-volume-label-color` and `playerVolumeLabelColor` card configuration option; Color of the player volume text labels (default `#ffffff`).
+  * Added theme variable `--spc-player-volume-slider-color` and `playerVolumeSliderColor` card configuration option; Color of the player volume slider bar (default `#2196F3`).
+  * Corrected a bug when displaying player queue; the queue would not render when it contained a mix of tracks, podcast episodes, and audiobook chapters.  Queue will now be displayed on the type of items in the queue, and not based on what the player is currently playing.
+
 ###### [ 1.0.37 ] - 2025/02/05
 
   * Updated favorite browsers to clear cached filter criteria if the filter criteria textbox was cleared.

@@ -331,7 +331,7 @@ export class Card extends LitElement {
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        --mdc-theme-primary: var(--dark-primary-color);
+        --mdc-theme-primary: var(--spc-card-wait-progress-slider-color, var(--dark-primary-color, #2196F3));
       }
 
       .spc-not-configured {
@@ -350,7 +350,7 @@ export class Card extends LitElement {
       }
 
       ha-circular-progress {
-        --md-sys-color-primary: var(--dark-primary-color);
+        --md-sys-color-primary: var(--spc-card-wait-progress-slider-color, var(--dark-primary-color, #2196F3));
       }
     `;
   }
@@ -1152,44 +1152,42 @@ export class Card extends LitElement {
     let cardHeight: string | undefined = undefined;
     let editTabHeight = '0px';
     let editBottomToolbarHeight = '0px';
+    const cardWaitProgressSliderColor = this.config.cardWaitProgressSliderColor;
+
+    // build style info object.
+    const styleInfo: StyleInfo = <StyleInfo>{};
+    if (cardWaitProgressSliderColor)
+      styleInfo['--spc-card-wait-progress-slider-color'] = `${cardWaitProgressSliderColor}`;
 
     // are we previewing the card in the card editor?
     // if so, then we will ignore the configuration dimensions and use constants.
     if (isCardInEditPreview(this)) {
 
       // card is in edit preview.
-      cardHeight = CARD_EDIT_PREVIEW_HEIGHT;
-      cardWidth = CARD_EDIT_PREVIEW_WIDTH;
-      return styleMap({
-        '--spc-card-edit-tab-height': `${editTabHeight}`,
-        '--spc-card-edit-bottom-toolbar-height': `${editBottomToolbarHeight}`,
-        height: `${cardHeight ? cardHeight : undefined}`,
-        width: `${cardWidth ? cardWidth : undefined}`,
-        'background-repeat': `${!this.playerId ? 'no-repeat' : undefined}`,
-        'background-position': `${!this.playerId ? 'center' : undefined}`,
-        'background-image': `${!this.playerId ? 'url(' + BRAND_LOGO_IMAGE_BASE64 + ')' : undefined}`,
-        'background-size': `${!this.playerId ? BRAND_LOGO_IMAGE_SIZE : undefined}`,
-      });
-
+      styleInfo['--spc-card-edit-tab-height'] = `${editTabHeight}`;
+      styleInfo['--spc-card-edit-bottom-toolbar-height'] = `${editBottomToolbarHeight}`;
+      styleInfo['height'] = `${CARD_EDIT_PREVIEW_HEIGHT}`;
+      styleInfo['width'] = `${CARD_EDIT_PREVIEW_WIDTH}`;
+      styleInfo['background-repeat'] = `${!this.playerId ? 'no-repeat' : undefined}`;
+      styleInfo['background-position'] = `${!this.playerId ? 'center' : undefined}`;
+      styleInfo['background-image'] = `${!this.playerId ? 'url(' + BRAND_LOGO_IMAGE_BASE64 + ')' : undefined}`;
+      styleInfo['background-size'] = `${!this.playerId ? BRAND_LOGO_IMAGE_SIZE : undefined}`;
+      return styleMap(styleInfo);
     }
 
     // set card picker options.
     if (isCardInPickerPreview(this)) {
 
       // card is in pick preview.
-      cardHeight = CARD_PICK_PREVIEW_HEIGHT;
-      cardWidth = CARD_PICK_PREVIEW_WIDTH;
-      return styleMap({
-        '--spc-card-edit-tab-height': `${editTabHeight}`,
-        '--spc-card-edit-bottom-toolbar-height': `${editBottomToolbarHeight}`,
-        height: `${cardHeight ? cardHeight : undefined}`,
-        width: `${cardWidth ? cardWidth : undefined}`,
-        'background-repeat': `no-repeat`,
-        'background-position': `center`,
-        'background-image': `url(${BRAND_LOGO_IMAGE_BASE64})`,
-        'background-size': `${BRAND_LOGO_IMAGE_SIZE}`,
-      });
-
+      styleInfo['--spc-card-edit-tab-height'] = `${editTabHeight}`;
+      styleInfo['--spc-card-edit-bottom-toolbar-height'] = `${editBottomToolbarHeight}`;
+      styleInfo['height'] = `${CARD_PICK_PREVIEW_HEIGHT}`;
+      styleInfo['width'] = `${CARD_PICK_PREVIEW_WIDTH}`;
+      styleInfo['background-repeat'] = 'no-repeat';
+      styleInfo['background-position'] = 'center';
+      styleInfo['background-image'] = `url(${BRAND_LOGO_IMAGE_BASE64})`;
+      styleInfo['background-size'] = `${BRAND_LOGO_IMAGE_SIZE}`;
+      return styleMap(styleInfo);
     }
 
     // set card editor options.
@@ -1235,7 +1233,6 @@ export class Card extends LitElement {
     //);
 
     // build style info object.
-    const styleInfo: StyleInfo = <StyleInfo>{};
     styleInfo['--spc-card-edit-tab-height'] = `${editTabHeight}`;
     styleInfo['--spc-card-edit-bottom-toolbar-height'] = `${editBottomToolbarHeight}`;
     styleInfo['height'] = `${cardHeight ? cardHeight : undefined}`;

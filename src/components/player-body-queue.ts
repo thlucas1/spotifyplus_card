@@ -25,7 +25,6 @@ import { ITrack } from '../types/spotifyplus/track';
  * Track actions.
  */
 enum Actions {
-  ChapterPlay = "ChapterPlay",
   EpisodePlay = "EpisodePlay",
   GetPlayerQueueInfo = "GetPlayerQueueInfo",
   TrackPlay = "TrackPlay",
@@ -49,67 +48,40 @@ export class PlayerBodyQueue extends PlayerBodyBase {
     super.render();
 
     // initialize common elements.
-    let queueInfoTitle = html`Unknown`;
-    let queueInfoParentTitle = html`Title Type`;
     let queueItems = html`<div class="grid-entry queue-info-grid-no-items">No items found in Queue</div>`;
 
-    // generate queue items info based on content type.
-    if (this.player.attributes.sp_item_type == 'podcast') {
-
-      // build queue info display for podcast episodes.
-      queueInfoTitle = html`Episodes`;
-      queueInfoParentTitle = html`Show`;
-      if ((this.queueInfo?.queue || []).length > 0) {
-        queueItems = html`${this.queueInfo?.queue.map((item, index) => html`
-          <ha-icon-button
-            .path=${mdiPlay}
-            .label="Play track &quot;${item.name || ""}&quot;"
-            @click=${() => this.onClickAction(Actions.TrackPlay, item)}
-            slot="icon-button"
-          >&nbsp;</ha-icon-button>
-          <div class="grid-entry">${index + 1}</div>
-          <div class="grid-entry">${item.name || ""}</div>
-          <div class="grid-entry">${item.artists[0].name || ""}</div>
-        `)}`;
-      }
-
-    } else if (this.player.attributes.sp_item_type == 'audiobook') {
-
-      // build queue info display for audiobook chapters.
-      queueInfoTitle = html`Chapters`;
-      queueInfoParentTitle = html`Audiobook`;
-      if ((this.queueInfo?.queue || []).length > 0) {
-        queueItems = html`${this.queueInfo?.queue.map((item, index) => html`
-          <ha-icon-button
-            .path=${mdiPlay}
-            .label="Play episode &quot;${item.name || ""}&quot;"
-            @click=${() => this.onClickAction(Actions.ChapterPlay, item)}
-            slot="icon-button"
-          >&nbsp;</ha-icon-button>
-          <div class="grid-entry">${index + 1}</div>
-          <div class="grid-entry">${item.name || ""}</div>
-          <div class="grid-entry">${item.show?.name || ""}</div>
-        `)}`;
-      }
-
-    } else if (this.player.attributes.sp_item_type == 'track') {
-
-      // build queue info display for tracks.
-      queueInfoTitle = html`Tracks`;
-      queueInfoParentTitle = html`Artist`;
-      if ((this.queueInfo?.queue || []).length > 0) {
-        queueItems = html`${this.queueInfo?.queue.map((item, index) => html`
-          <ha-icon-button
-            .path=${mdiPlay}
-            .label="Play track &quot;${item.name || ""}&quot;"
-            @click=${() => this.onClickAction(Actions.TrackPlay, item)}
-            slot="icon-button"
-          >&nbsp;</ha-icon-button>
-          <div class="grid-entry">${index + 1}</div>
-          <div class="grid-entry">${item.name || ""}</div>
-          <div class="grid-entry">${item.artists[0].name || ""}</div>
-        `)}`;
-      }
+    // process all queue items.
+    if ((this.queueInfo?.queue || []).length > 0) {
+      queueItems = html`${this.queueInfo?.queue.map((item, index) => html`
+          ${(() => {
+            // render based on item type (track, episode).
+            if (item.type == 'episode') {
+              return (html `
+                <ha-icon-button
+                  .path=${mdiPlay}
+                  .label="Play episode &quot;${item.name || ""}&quot;"
+                  @click=${() => this.onClickAction(Actions.EpisodePlay, item)}
+                  slot="icon-button"
+                >&nbsp;</ha-icon-button>
+                <div class="grid-entry">${index + 1}</div>
+                <div class="grid-entry">${item.name || ""}</div>
+                <div class="grid-entry">${item.show?.name || ""}</div>
+              `)
+            } else {
+              return (html `
+                <ha-icon-button
+                  .path=${mdiPlay}
+                  .label="Play track &quot;${item.name || ""}&quot;"
+                  @click=${() => this.onClickAction(Actions.TrackPlay, item)}
+                  slot="icon-button"
+                >&nbsp;</ha-icon-button>
+                <div class="grid-entry">${index + 1}</div>
+                <div class="grid-entry">${item.name || ""}</div>
+                <div class="grid-entry">${item.artists[0].name || ""}</div>
+              `)
+            }
+        })()}
+      `)}`;
     }
 
     // render html.
@@ -119,14 +91,14 @@ export class PlayerBodyQueue extends PlayerBodyBase {
           ${this.alertError ? html`<ha-alert alert-type="error" dismissable @alert-dismissed-clicked=${this.alertErrorClear}>${this.alertError}</ha-alert>` : ""}
           ${this.alertInfo ? html`<ha-alert alert-type="info" dismissable @alert-dismissed-clicked=${this.alertInfoClear}>${this.alertInfo}</ha-alert>` : ""}
           <div class="media-info-text-ms-c queue-info-grid-container">
-            Player Queue Info - ${queueInfoTitle}
+            Player Queue Items
           </div>
           <div class="queue-info-grid-container">
             <div class="grid queue-info-grid">
               <div class="grid-header">&nbsp;</div>
               <div class="grid-header">#</div>
               <div class="grid-header">Title</div>
-              <div class="grid-header">${queueInfoParentTitle}</div>
+              <div class="grid-header">Artist / Show / Book</div>
               ${queueItems}
             </div>
           </div>
@@ -204,11 +176,6 @@ export class PlayerBodyQueue extends PlayerBodyBase {
       if (action == Actions.GetPlayerQueueInfo) {
 
         this.updateActions(this.player, [Actions.GetPlayerQueueInfo]);
-
-      } else if (action == Actions.ChapterPlay) {
-
-        await this.spotifyPlusService.Card_PlayMediaBrowserItem(this.player, item);
-        this.progressHide();
 
       } else if (action == Actions.EpisodePlay) {
 

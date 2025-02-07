@@ -217,7 +217,7 @@ class Progress extends LitElement {
         width: 100%;
         font-size: x-small;
         display: flex;
-        color: var(--spc-player-controls-color, var(--spc-player-controls-icon-color, #ffffff));
+        color: var(--spc-player-progress-label-color, var(--spc-player-controls-color, #ffffff));
         padding-bottom: 0.2rem;
       }
 
@@ -237,7 +237,7 @@ class Progress extends LitElement {
 
       .progress-bar {
         align-self: center;
-        background-color: var(--dark-primary-color);
+        background-color: var(--spc-player-progress-slider-color, var(--spc-player-controls-color, var(--dark-primary-color, #2196F3)));
         margin-left: 2px;
         margin-right: 2px;
         height: 50%;

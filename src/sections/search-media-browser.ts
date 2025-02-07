@@ -396,6 +396,35 @@ export class SearchBrowser extends FavBrowserBase {
 
 
   /**
+   * Handles the `item-selected` event fired when a media browser item is clicked.
+   * 
+   * @param args Event arguments that contain the media item that was clicked on.
+   */
+  protected override onItemSelected(args: CustomEvent) {
+
+    if (debuglog.enabled) {
+      debuglog("onItemSelected - search media item selected:\n%s",
+        JSON.stringify(args.detail, null, 2),
+      );
+    }
+
+    const mediaItem = args.detail;
+
+    // if media item is a track or episode, then queue the item if configured to do so.
+    if (this.config.searchMediaBrowserQueueSelection) {
+      if ((mediaItem.type == 'track') || (mediaItem.type == 'episode')) {
+        this.QueueMediaItem(mediaItem);
+        return;
+      }
+    }
+
+    // otherwise, just play the media item.
+    this.PlayMediaItem(mediaItem);
+
+  }
+
+
+  /**
    * Returns false if the specified feature is to be SHOWN; otherwise, returns true
    * if the specified feature is to be HIDDEN (via CSS).
    * 

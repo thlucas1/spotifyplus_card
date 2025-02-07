@@ -344,7 +344,7 @@ class Volume extends LitElement {
   static get styles() {
     return css`
       ha-control-slider {
-        --control-slider-color: var(--dark-primary-color);
+        --control-slider-color: var(--spc-player-volume-slider-color, var(--spc-player-controls-color, var(--dark-primary-color, #2196F3)));
         --control-slider-thickness: 1rem;
       }
 
@@ -362,7 +362,7 @@ class Volume extends LitElement {
         flex: 1;
         padding-right: 0.0rem;
         align-content: flex-end;
-        color: var(--spc-player-controls-color, var(--spc-player-controls-icon-color, #ffffff));
+        color: var(--spc-player-volume-label-color, var(--spc-player-controls-color, #ffffff));
       }
 
       .volume-level {
@@ -376,7 +376,7 @@ class Volume extends LitElement {
         padding-right: 2px;
         font-weight: normal;
         font-size: 10px;
-        color: var(--dark-primary-color);
+        color: var(--spc-player-volume-slider-color, var(--spc-player-controls-color, var(--dark-primary-color, #2196F3)));
       }
 
       *[slim] * {

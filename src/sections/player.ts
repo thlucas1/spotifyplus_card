@@ -146,7 +146,6 @@ export class Player extends LitElement implements playerAlerts {
           'body'
           'controls';
         align-items: center;
-        /*background-color: #000000;*/
         background-position: center;
         background-repeat: no-repeat;
         background-size: var(--spc-player-background-size, 100% 100%);  /* PLAYER_BACKGROUND_IMAGE_SIZE_DEFAULT */
@@ -271,6 +270,10 @@ export class Player extends LitElement implements playerAlerts {
     const playerControlsIconColor = this.config.playerControlsIconColor;
     const playerControlsIconToggleColor = this.config.playerControlsIconToggleColor;
     const playerControlsColor = this.config.playerControlsColor;
+    const playerProgressSliderColor = this.config.playerProgressSliderColor;
+    const playerProgressLabelColor = this.config.playerProgressLabelColor;
+    const playerVolumeSliderColor = this.config.playerVolumeSliderColor;
+    const playerVolumeLabelColor = this.config.playerVolumeLabelColor;
 
     // build style info object.
     const styleInfo: StyleInfo = <StyleInfo>{};
@@ -287,6 +290,14 @@ export class Player extends LitElement implements playerAlerts {
       styleInfo['--spc-player-controls-icon-color'] = `${playerControlsIconColor}`;
     styleInfo['--spc-player-controls-icon-size'] = `${playerControlsIconSize}`;
     styleInfo['--spc-player-controls-icon-button-size'] = `var(--spc-player-controls-icon-size, ${PLAYER_CONTROLS_ICON_SIZE_DEFAULT}) + 0.75rem`;
+    if (playerProgressLabelColor)
+      styleInfo['--spc-player-progress-label-color'] = `${playerProgressLabelColor}`;
+    if (playerProgressSliderColor)
+      styleInfo['--spc-player-progress-slider-color'] = `${playerProgressSliderColor}`;
+    if (playerVolumeLabelColor)
+      styleInfo['--spc-player-volume-label-color'] = `${playerVolumeLabelColor}`;
+    if (playerVolumeSliderColor)
+      styleInfo['--spc-player-volume-slider-color'] = `${playerVolumeSliderColor}`;
     styleInfo['--spc-player-palette-vibrant'] = `${this._colorPaletteVibrant}`;
     styleInfo['--spc-player-palette-muted'] = `${this._colorPaletteMuted}`;
     styleInfo['--spc-player-palette-darkvibrant'] = `${this._colorPaletteDarkVibrant}`;

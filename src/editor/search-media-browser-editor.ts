@@ -76,12 +76,13 @@ const CONFIG_SETTINGS_SCHEMA = [
     required: false,
     selector: { boolean: {} },
   },
-  //{
-  //  name: 'searchMediaBrowserItemsSortTitle',
-  //  label: 'Sort items by Title',
-  //  required: false,
-  //  selector: { boolean: {} },
-  //},
+  {
+    name: 'searchMediaBrowserQueueSelection',
+    label: 'Queue track / episode when selected',
+    help: 'otherwise play immediately',
+    required: false,
+    selector: { boolean: {} },
+  },
 ];
 
 

@@ -1,7 +1,7 @@
 import { css } from 'lit';
 
 /** current version of the card. */
-export const CARD_VERSION = '1.0.37';
+export const CARD_VERSION = '1.0.38';
 
 /** SpotifyPlus integration domain identifier. */
 export const DOMAIN_SPOTIFYPLUS = 'spotifyplus';
@@ -49,7 +49,7 @@ export const PLAYER_CONTROLS_BACKGROUND_COLOR_DEFAULT = '#000000BB';
 /** default size of the icons in the Player controls area. */
 export const PLAYER_CONTROLS_ICON_SIZE_DEFAULT = '2.0rem';
 
-/** default size of the icons in the Player controls area. */
+/** default color of toggled icons in the Player controls area. */
 export const PLAYER_CONTROLS_ICON_TOGGLE_COLOR_DEFAULT = '#2196F3';
 
 /** default size of the player background image. */

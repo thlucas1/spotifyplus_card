@@ -640,6 +640,42 @@ export class FavBrowserBase extends LitElement {
 
 
   /**
+   * Calls the SpotifyPlusService Card_PlayMediaBrowserItem method to play media.
+   * 
+   * @param mediaItem The medialist item that was selected.
+   */
+  protected async QueueMediaItem(mediaItem: any): Promise<void> {
+
+    try {
+
+      // show progress indicator.
+      this.progressShow();
+
+      // play media item.
+      await this.spotifyPlusService.AddPlayerQueueItems(this.player, mediaItem.uri);
+
+      // set info message and reset scroll position to zero so the message is displayed.
+      this.alertInfo = "Item added to play queue: \"" + mediaItem.name + "\".";
+      this.mediaBrowserContentElement.scrollTop = 0;
+
+    }
+    catch (error) {
+
+      // set error message and reset scroll position to zero so the message is displayed.
+      this.alertErrorSet("Could not play media item.  " + getHomeAssistantErrorMessage(error));
+      this.mediaBrowserContentElement.scrollTop = 0;
+
+    }
+    finally {
+
+      // hide progress indicator.
+      this.progressHide();
+
+    }
+  }
+
+
+  /**
    * Sets the scroll position on the media list content container.
    */
   protected setScrollPosition() {

@@ -60,6 +60,12 @@ export interface CardConfig extends LovelaceCardConfig {
   touchSupportDisabled?: boolean;
 
   /**
+   * Color of the card area wait progress indicator.
+   * Default is '#2196F3'.
+   */
+  cardWaitProgressSliderColor?: string;
+
+  /**
    * Title displayed at the top of the Album Favorites media browser section form.
    * Omit this parameter to hide the title display area.
    * This value supports Title Formatter Options.
@@ -470,6 +476,18 @@ export interface CardConfig extends LovelaceCardConfig {
   playerControlsIconToggleColor?: string;
 
   /**
+   * Color of the player progress text labels.
+   * Default is '#ffffff'.
+   */
+  playerProgressLabelColor?: string;
+
+  /**
+   * Color of the player progress slider bar.
+   * Default is '#2196F3'.
+   */
+  playerProgressSliderColor?: string;
+
+  /**
    * Hide volume level numbers and percentages in the volume controls area of the Player 
    * section form.  Volume slider control is not affected by this setting.
    * Default is false.
@@ -500,6 +518,18 @@ export interface CardConfig extends LovelaceCardConfig {
    * Default is 100.
    */
   playerVolumeMaxValue?: number;
+
+  /**
+   * Color of the player volume text labels.
+   * Default is '#ffffff'.
+   */
+  playerVolumeLabelColor?: string;
+
+  /**
+   * Color of the player volume slider bar.
+   * Default is '#2196F3'.
+   */
+  playerVolumeSliderColor?: string;
 
   /**
    * Title displayed at the top of the Playlist Favorites media browser section form.
@@ -620,6 +650,13 @@ export interface CardConfig extends LovelaceCardConfig {
    * Default is false.
    */
   searchMediaBrowserItemsHideSubTitle?: boolean;
+
+  /** 
+   * True to add track / episode to play queue when search result is clicked;
+   * Otherwise, play the track / episode immediately when search result is clicked.
+   * Default is false.
+   */
+  searchMediaBrowserQueueSelection?: boolean;
 
   /**
    * Maximum number of items to be returned by the search via the Search media browser section form.
