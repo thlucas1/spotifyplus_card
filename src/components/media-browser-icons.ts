@@ -33,37 +33,35 @@ export class MediaBrowserIcons extends MediaBrowserBase {
     // render html.
     return html`
       <div class="icons" style=${this.styleMediaBrowser()}>
-        ${this.buildMediaBrowserItems().map(
-          (item, index) => html`
-            ${this.styleMediaBrowserItemBackgroundImage(item.mbi_item.image_url, index)}
-            ${(() => {
-              if (this.isTouchDevice) {
-                return (html`
-                  <ha-control-button
-                    class="button"
-                    isTouchDevice="${this.isTouchDevice}"
-                    @touchstart=${{handleEvent: () => this.onMediaBrowserItemTouchStart(customEvent(ITEM_SELECTED, item)), passive: true }}
-                    @touchend=${() => this.onMediaBrowserItemTouchEnd(customEvent(ITEM_SELECTED, item))}
-                  >
-                    ${this.renderMediaBrowserItem(item, !item.mbi_item.image_url || !this.hideTitle, !this.hideSubTitle)}
-                  </ha-control-button>
-                `);
-              } else {
-                return (html`
-                  <ha-control-button
-                    class="button"
-                    isTouchDevice="${this.isTouchDevice}"
-                    @click=${() => this.onMediaBrowserItemClick(customEvent(ITEM_SELECTED, item))}
-                    @mousedown=${() => this.onMediaBrowserItemMouseDown()}
-                    @mouseup=${() => this.onMediaBrowserItemMouseUp(customEvent(ITEM_SELECTED, item))}
-                  >
-                    ${this.renderMediaBrowserItem(item, !item.mbi_item.image_url || !this.hideTitle, !this.hideSubTitle)}
-                  </ha-control-button>
-                `);
-              }
-            })()}
-          `,
-        )}
+        ${this.buildMediaBrowserItems().map((item, index) => html`
+          ${this.styleMediaBrowserItemBackgroundImage(item.mbi_item.image_url, index)}
+          ${(() => {
+            if (this.isTouchDevice) {
+              return (html`
+                <ha-control-button
+                  class="button"
+                  isTouchDevice="${this.isTouchDevice}"
+                  @touchstart=${{handleEvent: () => this.onMediaBrowserItemTouchStart(customEvent(ITEM_SELECTED, item)), passive: true }}
+                  @touchend=${() => this.onMediaBrowserItemTouchEnd(customEvent(ITEM_SELECTED, item))}
+                >
+                  ${this.renderMediaBrowserItem(item, !item.mbi_item.image_url || !this.hideTitle, !this.hideSubTitle)}
+                </ha-control-button>
+              `);
+            } else {
+              return (html`
+                <ha-control-button
+                  class="button"
+                  isTouchDevice="${this.isTouchDevice}"
+                  @click=${() => this.onMediaBrowserItemClick(customEvent(ITEM_SELECTED, item))}
+                  @mousedown=${() => this.onMediaBrowserItemMouseDown()}
+                  @mouseup=${() => this.onMediaBrowserItemMouseUp(customEvent(ITEM_SELECTED, item))}
+                >
+                  ${this.renderMediaBrowserItem(item, !item.mbi_item.image_url || !this.hideTitle, !this.hideSubTitle)}
+                </ha-control-button>
+              `);
+            }
+          })()}
+        `)}
       </div>
     `;
   }
@@ -102,24 +100,28 @@ export class MediaBrowserIcons extends MediaBrowserBase {
         }
 
         .title {
+          color: var(--spc-media-browser-items-color, #ffffff);
           font-size: var(--spc-media-browser-items-title-font-size, 0.8rem);
+          font-weight: normal;
+          line-height: 160%;
+          padding: 0.75rem 0.5rem 0rem;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
           position: absolute;
           width: 100%;
-          line-height: 160%;
           bottom: 0;
           background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.6));
+        }
+
+        .title-active {
           color: var(--spc-media-browser-items-color, #ffffff);
-          font-weight: normal;
-          padding: 0.75rem 0.5rem 0rem;
-          text-overflow: ellipsis;
-          overflow: hidden;
-          white-space: nowrap;
         }
 
         .subtitle {
           font-size: var(--spc-media-browser-items-subtitle-font-size, 0.8rem);
-          width: 100%;
           line-height: 120%;
+          width: 100%;
           padding-bottom: 0.25rem;
         }
       `,

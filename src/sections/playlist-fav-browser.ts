@@ -47,6 +47,9 @@ export class PlaylistFavBrowser extends FavBrowserBase {
     const title = formatTitleInfo(this.config.playlistFavBrowserTitle, this.config, this.player, this.mediaListLastUpdatedOn, this.mediaList);
     const subtitle = formatTitleInfo(this.config.playlistFavBrowserSubTitle, this.config, this.player, this.mediaListLastUpdatedOn, this.mediaList);
 
+    // set auto-shuffle based on configuration option.
+    this.shuffleOnPlay = this.config.playlistFavBrowserShuffleOnPlay || false;
+
     // render html.
     return html`
       <div class="media-browser-section" style=${this.styleMediaBrowser()}>

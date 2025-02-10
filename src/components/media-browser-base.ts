@@ -4,7 +4,7 @@ import { DEBUG_APP_NAME } from '../constants';
 const debuglog = Debug(DEBUG_APP_NAME + ":media-browser-base");
 
 // lovelace card imports.
-import { css, html, LitElement, TemplateResult } from 'lit';
+import { html, LitElement, TemplateResult } from 'lit';
 import { eventOptions, property } from 'lit/decorators.js';
 import { styleMap, StyleInfo } from 'lit-html/directives/style-map.js';
 
@@ -198,75 +198,13 @@ export class MediaBrowserBase extends LitElement {
 
 
   /**
-   * Style definitions used by this card section.
-   * 
-   * --control-button-padding: 0px;   // image with rounded corners
-   */
-  static get styles() {
-    return [
-      css`
-        .icons {
-          display: flex;
-          flex-wrap: wrap;
-        }
-
-        .button {
-          --control-button-padding: 0px;
-          --margin: 0.6%;
-          --width: calc(100% / var(--items-per-row) - (var(--margin) * 2));
-          width: var(--width);
-          height: var(--width);
-          margin: var(--margin);
-        }
-
-        .thumbnail {
-          width: 100%;
-          padding-bottom: 100%;
-          background-size: 100%;
-          background-repeat: no-repeat;
-          background-position: center;
-        }
-
-        .title {
-          position: absolute;
-          font-size: var(--spc-media-browser-items-title-font-size, 0.8rem);
-          font-weight: normal;
-          line-height: 160%;
-          width: 100%;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          bottom: 0;
-          background-color: rgba(var(--rgb-card-background-color), 0.733);
-          color: var(--spc-media-browser-items-color, #ffffff);
-          padding: 0 0.5rem;
-          white-space: nowrap;
-        }
-
-        .title-active {
-          color: var(--dark-primary-color) !important;
-        }
-
-        .subtitle {
-          font-size: var(--spc-media-browser-items-subtitle-font-size, 0.8rem);
-          font-size: 0.8rem;
-          font-weight: normal;
-          line-height: 160%;
-          width: 100%;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-      `,
-    ];
-  }
-
-
-  /**
    * Returns a style map for media browser item theming.
    */
   protected styleMediaBrowser() {
 
     // load card configuration theme settings.
     const mediaBrowserItemsColor = this.config.mediaBrowserItemsColor;
+    const mediaBrowserItemsListColor = this.config.mediaBrowserItemsListColor;
     const mediaBrowserItemsSvgIconColor = this.config.mediaBrowserItemsSvgIconColor;
     const mediaBrowserItemsTitleFontSize = this.config.mediaBrowserItemsTitleFontSize;
     const mediaBrowserItemsSubTitleFontSize = this.config.mediaBrowserItemsSubTitleFontSize;
@@ -276,6 +214,8 @@ export class MediaBrowserBase extends LitElement {
     styleInfo['--items-per-row'] = `${this.itemsPerRow}`;
     if (mediaBrowserItemsColor)
       styleInfo['--spc-media-browser-items-color'] = `${mediaBrowserItemsColor}`;
+    if (mediaBrowserItemsListColor)
+      styleInfo['--spc-media-browser-items-list-color'] = `${mediaBrowserItemsListColor}`;
     if (mediaBrowserItemsSvgIconColor)
       styleInfo['--spc-media-browser-items-svgicon-color'] = `${mediaBrowserItemsSvgIconColor}`;
     if (mediaBrowserItemsTitleFontSize)

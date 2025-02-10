@@ -60,12 +60,6 @@ export interface CardConfig extends LovelaceCardConfig {
   touchSupportDisabled?: boolean;
 
   /**
-   * Color of the card area wait progress indicator.
-   * Default is '#2196F3'.
-   */
-  cardWaitProgressSliderColor?: string;
-
-  /**
    * Title displayed at the top of the Album Favorites media browser section form.
    * Omit this parameter to hide the title display area.
    * This value supports Title Formatter Options.
@@ -112,6 +106,13 @@ export interface CardConfig extends LovelaceCardConfig {
   albumFavBrowserItemsSortTitle?: boolean;
 
   /**
+   * True to enable shuffle prior to starting play of the context;
+   * Otherwise, False to start the context with the current shuffle mode.  
+   * Default is false.
+   */
+  albumFavBrowserShuffleOnPlay?: boolean;
+
+  /**
    * Title displayed at the top of the Artist Favorites media browser section form.
    * Omit this parameter to hide the title display area.
    * This value supports Title Formatter Options.
@@ -156,6 +157,13 @@ export interface CardConfig extends LovelaceCardConfig {
    * Default is false.
    */
   artistFavBrowserItemsSortTitle?: boolean;
+
+  /**
+   * True to enable shuffle prior to starting play of the context;
+   * Otherwise, False to start the context with the current shuffle mode.  
+   * Default is false.
+   */
+  artistFavBrowserShuffleOnPlay?: boolean;
 
   /**
    * Title displayed at the top of the Audiobook Favorites media browser section form.
@@ -578,6 +586,13 @@ export interface CardConfig extends LovelaceCardConfig {
   playlistFavBrowserItemsSortTitle?: boolean;
 
   /**
+   * True to enable shuffle prior to starting play of the context;
+   * Otherwise, False to start the context with the current shuffle mode.  
+   * Default is false.
+   */
+  playlistFavBrowserShuffleOnPlay?: boolean;
+
+  /**
    * Title displayed at the top of the Recently Played media browser section form.
    * Omit this parameter to hide the title display area.
    * This value supports Title Formatter Options.
@@ -860,11 +875,15 @@ export interface CardConfig extends LovelaceCardConfig {
    */
   customImageUrls?: CustomImageUrls;
 
-  //imageUrlsReplaceHttpWithHttps?: boolean;
-
   // **********************************************************************************************************************************
   // * Card theming options:
   // **********************************************************************************************************************************
+
+  /**
+   * Color of the card area wait progress indicator.
+   * Default is '#2196F3'.
+   */
+  cardWaitProgressSliderColor?: string;
 
   /**
    * Media Browser section title text color.
@@ -890,6 +909,12 @@ export interface CardConfig extends LovelaceCardConfig {
    * Media list item title and sub-title text color.
    */
   mediaBrowserItemsColor?: string;
+
+  /**
+   * Media list item title and sub-title text color when list is configured
+   * for non-icon format.
+   */
+  mediaBrowserItemsListColor?: string;
 
   /**
    * Media browser list item svg icon color.

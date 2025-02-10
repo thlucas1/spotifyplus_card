@@ -130,15 +130,29 @@ export class MediaBrowserList extends MediaBrowserBase {
         }
 
         .title {
+          color: var(--spc-media-browser-items-list-color, var(--spc-media-browser-items-color, var(--primary-text-color, #ffffff)));
           font-size: var(--spc-media-browser-items-title-font-size, 1.1rem);
-          align-self: center;
-          flex: 1;
-          color: var(--spc-media-browser-items-color, var(--primary-text-color, #ffffff));
           font-weight: normal;
           padding: 0 0.5rem;
-          text-overflow: ellipsis;
           overflow: hidden;
+          text-overflow: ellipsis;
           white-space: nowrap;
+          align-self: center;
+          flex: 1;
+        }
+
+        .title-active {
+          color: var(--spc-media-browser-items-list-color, var(--spc-media-browser-items-color, var(--primary-text-color, #ffffff)));
+        }
+
+        .subtitle {
+          font-size: var(--spc-media-browser-items-subtitle-font-size, 0.8rem);
+          font-weight: normal;
+          line-height: 120%;
+          padding-bottom: 0.25rem;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          width: 100%;
         }
 
         /* *********************************************************** */

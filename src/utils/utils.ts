@@ -1,13 +1,13 @@
+// debug logging.
+import Debug from 'debug/src/browser.js';
+import { DEBUG_APP_NAME } from '../constants';
+const debuglog = Debug(DEBUG_APP_NAME + ":utils");
+
 // our imports.
 import { CardConfig } from '../types/card-config';
 import { ConfigArea } from '../types/config-area';
 import { Section } from '../types/section';
 import copy from 'copy-text-to-clipboard';
-
-// debug logging.
-import Debug from 'debug/src/browser.js';
-import { DEBUG_APP_NAME } from '../constants';
-const debuglog = Debug(DEBUG_APP_NAME + ":utils");
 
 
 export function cardDoesNotContainAllSections(config: CardConfig) {

@@ -60,6 +60,12 @@ const CONFIG_SETTINGS_SCHEMA = [
     required: false,
     selector: { boolean: {} },
   },
+  {
+    name: 'artistFavBrowserShuffleOnPlay',
+    label: 'Enable shuffle prior to starting play',
+    required: false,
+    selector: { boolean: {} },
+  },
 ];
 
 

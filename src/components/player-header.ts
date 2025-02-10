@@ -109,6 +109,7 @@ class PlayerHeader extends LitElement {
       </div>`;
   }
 
+
   /**
    * Returns a style map for player header container.
    */

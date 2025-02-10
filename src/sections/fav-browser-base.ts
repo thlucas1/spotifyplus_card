@@ -1,3 +1,8 @@
+// debug logging.
+import Debug from 'debug/src/browser.js';
+import { DEBUG_APP_NAME } from '../constants';
+const debuglog = Debug(DEBUG_APP_NAME + ":fav-browser-base");
+
 // lovelace card imports.
 import { css, html, LitElement, PropertyValues, TemplateResult } from 'lit';
 import { property, query, state } from 'lit/decorators.js';
@@ -22,11 +27,6 @@ import { FilterSectionMediaEventArgs } from '../events/filter-section-media';
 import { ProgressEndedEvent } from '../events/progress-ended';
 import { ProgressStartedEvent } from '../events/progress-started';
 import { DOMAIN_SPOTIFYPLUS } from '../constants';
-
-// debug logging.
-import Debug from 'debug/src/browser.js';
-import { DEBUG_APP_NAME } from '../constants';
-const debuglog = Debug(DEBUG_APP_NAME + ":fav-browser-base");
 
 /** Keys used to access cached storage items. */
 const CACHE_KEY_FILTER_CRITERIA = "_filtercriteria";
@@ -80,6 +80,9 @@ export class FavBrowserBase extends LitElement {
   /** Filter criteria placeholder value. */
   protected filterCriteriaPlaceholder?: string;
 
+  /** Enable shuffle prior to play. */
+  protected shuffleOnPlay?: boolean;
+
   /** SpotifyPlus services instance. */
   protected spotifyPlusService!: SpotifyPlusService;
 
@@ -113,6 +116,7 @@ export class FavBrowserBase extends LitElement {
 
     // initialize storage.
     this.isUpdateInProgress = false;
+    this.shuffleOnPlay = false;
     this.mediaType = mediaType;
 
     // create bound event listeners for event handlers that need access to "this" object.
@@ -615,6 +619,18 @@ export class FavBrowserBase extends LitElement {
 
       // show progress indicator.
       this.progressShow();
+
+      if (debuglog.enabled) {
+        debuglog("PlayMediaItem \n- shuffleOnPlay = %s\n- player.attributes.shuffle = %s",
+          JSON.stringify(this.shuffleOnPlay),
+          JSON.stringify(this.player.attributes.shuffle),
+        );
+      }
+
+      // enable shuffle prior to play if section is configured to do so and shuffle is currently false.
+      if ((this.shuffleOnPlay) && (!this.player.attributes.shuffle)) {
+        await this.spotifyPlusService.PlayerSetShuffleMode(this.player, null, true);
+      }
 
       // play media item.
       await this.spotifyPlusService.Card_PlayMediaBrowserItem(this.player, mediaItem);

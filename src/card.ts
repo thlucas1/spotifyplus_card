@@ -1,3 +1,8 @@
+// debug logging.
+import Debug from 'debug/src/browser.js';
+import { DEBUG_APP_NAME } from './constants';
+const debuglog = Debug(DEBUG_APP_NAME + ":card");
+
 // lovelace card imports.
 import { css, html, LitElement, PropertyValues, TemplateResult } from 'lit';
 import { styleMap, StyleInfo } from 'lit-html/directives/style-map.js';
@@ -50,7 +55,11 @@ import { ShowFavBrowser } from './sections/show-fav-browser';
 import { TrackFavBrowser } from './sections/track-fav-browser';
 import { UserPresetBrowser } from './sections/userpreset-browser';
 import { formatTitleInfo, removeSpecialChars } from './utils/media-browser-utils';
-import { BRAND_LOGO_IMAGE_BASE64, BRAND_LOGO_IMAGE_SIZE, FOOTER_ICON_SIZE_DEFAULT } from './constants';
+import {
+  BRAND_LOGO_IMAGE_BASE64,
+  BRAND_LOGO_IMAGE_SIZE,
+  FOOTER_ICON_SIZE_DEFAULT
+} from './constants';
 import {
   getConfigAreaForSection,
   getSectionForConfigArea,
@@ -59,11 +68,6 @@ import {
   isCardInPickerPreview,
   isNumber,
 } from './utils/utils';
-
-// debug logging.
-import Debug from 'debug/src/browser.js';
-import { DEBUG_APP_NAME } from './constants';
-const debuglog = Debug(DEBUG_APP_NAME + ":card");
 
 const HEADER_HEIGHT = 2;
 const FOOTER_HEIGHT = 4;

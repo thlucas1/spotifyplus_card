@@ -4,7 +4,12 @@ import { css, html, TemplateResult } from 'lit';
 // our imports.
 import { BaseEditor } from './base-editor';
 import { Section } from '../types/section';
-import { CARD_VERSION, DOMAIN_MEDIA_PLAYER, DOMAIN_SPOTIFYPLUS, FOOTER_ICON_SIZE_DEFAULT } from '../constants';
+import {
+  CARD_VERSION,
+  DOMAIN_MEDIA_PLAYER,
+  DOMAIN_SPOTIFYPLUS,
+  FOOTER_ICON_SIZE_DEFAULT
+} from '../constants';
 
 
 const CONFIG_SETTINGS_SCHEMA = [

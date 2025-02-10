@@ -6,6 +6,13 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.39 ] - 2025/02/09
+
+  * Added card configuration option `albumFavBrowserShuffleOnPlay`; True to enable shuffle prior to starting play of the context; otherwise, False to start the context with the current shuffle mode.  
+  * Added card configuration option `artistFavBrowserShuffleOnPlay`; True to enable shuffle prior to starting play of the context; otherwise, False to start the context with the current shuffle mode.  
+  * Added card configuration option `playlistFavBrowserShuffleOnPlay`; True to enable shuffle prior to starting play of the context; otherwise, False to start the context with the current shuffle mode.  
+  * Added theme variable `--spc-media-browser-items-list-color` and `mediaBrowserItemsListColor` card configuration option; Media browser items title and sub-title text colors when list is configured for non-icon format (default `#2196F3`).
+
 ###### [ 1.0.38 ] - 2025/02/07
 
   * Added card configuration option `searchMediaBrowserQueueSelection`; True to add track / episode to play queue when search result is clicked; Otherwise, false to play the track / episode immediately when track search result is clicked. Default is false.

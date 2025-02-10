@@ -1,3 +1,8 @@
+// debug logging.
+import Debug from 'debug/src/browser.js';
+import { DEBUG_APP_NAME } from '../constants';
+const debuglog = Debug(DEBUG_APP_NAME + ":player");
+
 // lovelace card imports.
 import { css, html, LitElement, PropertyValues, TemplateResult } from 'lit';
 import { customElement, property, state } from "lit/decorators.js";
@@ -29,11 +34,6 @@ import {
   PLAYER_CONTROLS_BACKGROUND_COLOR_DEFAULT,
   PLAYER_CONTROLS_ICON_SIZE_DEFAULT
 } from '../constants';
-
-// debug logging.
-import Debug from 'debug/src/browser.js';
-import { DEBUG_APP_NAME } from '../constants';
-const debuglog = Debug(DEBUG_APP_NAME + ":player");
 
 
 @customElement("spc-player")

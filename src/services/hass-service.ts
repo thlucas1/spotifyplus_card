@@ -1,3 +1,8 @@
+// debug logging.
+import Debug from 'debug/src/browser.js';
+import { DEBUG_APP_NAME } from '../constants';
+const debuglog = Debug(DEBUG_APP_NAME + ":hass-service");
+
 // lovelace card imports.
 import { HassEntity } from 'home-assistant-js-websocket';
 import { HomeAssistant } from '../types/home-assistant-frontend/home-assistant';
@@ -6,11 +11,6 @@ import { ServiceCallRequest } from '../types/home-assistant-frontend/service-cal
 // our imports.
 import { MediaPlayer } from '../model/media-player';
 import { MediaPlayerItem, TemplateResult } from '../types';
-
-// debug logging.
-import Debug from 'debug/src/browser.js';
-import { DEBUG_APP_NAME } from '../constants';
-const debuglog = Debug(DEBUG_APP_NAME + ":hass-service");
 
 
 export class HassService {
@@ -23,7 +23,6 @@ export class HassService {
    * Initializes a new instance of the class.
    * 
    * @param hass Home Assistant instance.
-   * @param card Custom card instance.
    */
   constructor(hass: HomeAssistant) {
     this.hass = hass;

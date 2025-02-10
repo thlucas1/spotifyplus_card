@@ -62,12 +62,14 @@ export interface IUserPreset {
   /**
    * Filter criteria that will be applied to the specified filter section.
    * This property should only be populated for type = "filtersection".
+   * This is a UI helper property, and is not part of the Spotify Web API specification
    */
   filter_criteria?: string | null;
 
   /**
    * Section to be filtered.
    * This property should only be populated for type = "filtersection".
+   * This is a UI helper property, and is not part of the Spotify Web API specification
    */
   filter_section?: string | null;
 
