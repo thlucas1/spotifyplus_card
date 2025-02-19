@@ -142,6 +142,7 @@ export function hasMediaItemImages(items: any[]) {
  * @param player MediaPlayer instance that contains information about the player.
  * @param mediaListLastUpdatedOn Epoch date(in seconds) when the last refresh of the media list took place.  Only used for services that don't have a media player `lastupdatedon` attribute.
  * @param mediaList A media list of content items.
+ * @param filteredList A filtered media list of content items.
  * @returns The text argument with keywords replaced with the equivalent attribute values.
  */
 export function formatTitleInfo(
@@ -150,12 +151,13 @@ export function formatTitleInfo(
   player: MediaPlayer | undefined = undefined,
   mediaListLastUpdatedOn: number | undefined = undefined,
   mediaList: Array<any> | undefined = undefined,
+  filteredList: Array<any> | undefined = undefined,
 ): string | undefined {
 
   // call various formatting methods.
   let result = formatConfigInfo(text, config);
   result = formatPlayerInfo(result, player);
-  result = formatMediaListInfo(result, mediaListLastUpdatedOn, mediaList);
+  result = formatMediaListInfo(result, mediaListLastUpdatedOn, mediaList, filteredList);
   return result;
 }
 
@@ -167,12 +169,14 @@ export function formatTitleInfo(
  * @param text Text string to replace keyword values with.
  * @param mediaListLastUpdatedOn Epoch date(in seconds) when the last refresh of the media list took place.  Only used for services that don't have a media player `lastupdatedon` attribute.
  * @param mediaList A media list of content items.
+ * @param filteredList A filtered media list of content items.
  * @returns The text argument with keywords replaced with media list details.
  */
 export function formatMediaListInfo(
   text: string | undefined,
   mediaListLastUpdatedOn: number | undefined = undefined,
   mediaList: Array<any> | undefined = undefined,
+  filteredList: Array<any> | undefined = undefined,
 ): string | undefined {
 
   // if text not set then don't bother.
@@ -188,6 +192,17 @@ export function formatMediaListInfo(
   if (text.indexOf("{medialist.lastupdatedon}") > -1) {
     const localeDT = formatDateEpochSecondsToLocaleString(mediaListLastUpdatedOn || 0);
     text = text.replace("{medialist.lastupdatedon}", localeDT || '');
+  }
+
+  if (text.indexOf("{medialist.filteritemcount}") > -1) {
+    let count = "";
+    // if filterList not supplied, then use the mediaList item count.
+    if (filteredList) {
+      count = (filteredList || []).length.toString();
+    } else {
+      count = (mediaList || []).length.toString();
+    }
+    text = text.replace("{medialist.filteritemcount}", count);
   }
 
   return text;

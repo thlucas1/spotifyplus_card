@@ -67,15 +67,29 @@ export class CategoryBrowser extends FavBrowserBase {
     // invoke base class method.
     super.render();
 
+    // filter items (if actions are not visible).
+    let filteredItemsCategory: Array<IPlaylistSimplified> | undefined;
+    let filteredItems: Array<ICategory> | undefined;
+    if (!this.isActionsVisible) {
+      const filterName = (this.filterCriteria || "").toLocaleLowerCase();
+      if (this.isCategoryVisible) {
+        filteredItemsCategory = this.categoryPlaylists?.filter((item: IPlaylistSimplified) => item.name.toLocaleLowerCase().indexOf(filterName) !== -1);
+        this.filterItemCount = filteredItemsCategory?.length;
+      } else {
+        filteredItems = this.mediaList?.filter((item: ICategory) => item.name.toLocaleLowerCase().indexOf(filterName) !== -1);
+        this.filterItemCount = filteredItems?.length;
+      }
+    }
+
     // format title and sub-title details based on list that is currently displayed.
     let title: string | undefined = "";
     let subtitle: string | undefined = "";
     if (this.isCategoryVisible) {
-      title = formatTitleInfo(this.config.categoryBrowserTitle, this.config, this.player, this.categoryPlaylistsLastUpdatedOn, this.categoryPlaylists);
-      subtitle = formatTitleInfo(this.config.categoryBrowserSubTitle, this.config, this.player, this.categoryPlaylistsLastUpdatedOn, this.categoryPlaylists);
+      title = formatTitleInfo(this.config.categoryBrowserTitle, this.config, this.player, this.categoryPlaylistsLastUpdatedOn, this.categoryPlaylists, filteredItemsCategory);
+      subtitle = formatTitleInfo(this.config.categoryBrowserSubTitle, this.config, this.player, this.categoryPlaylistsLastUpdatedOn, this.categoryPlaylists, filteredItemsCategory);
     } else {
-      title = formatTitleInfo(this.config.categoryBrowserTitle, this.config, this.player, this.mediaListLastUpdatedOn, this.mediaList);
-      subtitle = formatTitleInfo(this.config.categoryBrowserSubTitle, this.config, this.player, this.mediaListLastUpdatedOn, this.mediaList);
+      title = formatTitleInfo(this.config.categoryBrowserTitle, this.config, this.player, this.mediaListLastUpdatedOn, this.mediaList, filteredItems);
+      subtitle = formatTitleInfo(this.config.categoryBrowserSubTitle, this.config, this.player, this.mediaListLastUpdatedOn, this.mediaList, filteredItems);
     }
 
     // render html.
@@ -96,12 +110,11 @@ export class CategoryBrowser extends FavBrowserBase {
               return html`<spc-playlist-actions class="media-browser-actions" .store=${this.store} .mediaItem=${this.mediaItem}></spc-playlist-actions>`;
             } else if (this.isCategoryVisible) {
               // if category is visible, then render the playlists for the category.
-              const filterName = (this.filterCriteria || "").toLocaleLowerCase();
               if (this.config.categoryBrowserItemsPerRow === 1) {
                 return (
                   html`<spc-media-browser-list 
                         class="media-browser-list"
-                        .items=${this.categoryPlaylists?.filter((item: IPlaylistSimplified) => item.name.toLocaleLowerCase().indexOf(filterName) !== -1)}
+                        .items=${filteredItemsCategory}
                         .store=${this.store}
                         @item-selected=${this.onItemSelected}
                         @item-selected-with-hold=${this.onItemSelectedWithHold}
@@ -111,7 +124,7 @@ export class CategoryBrowser extends FavBrowserBase {
                 return (
                   html`<spc-media-browser-icons 
                         class="media-browser-list"
-                        .items=${this.categoryPlaylists?.filter((item: IPlaylistSimplified) => item.name.toLocaleLowerCase().indexOf(filterName) !== -1)}
+                        .items=${filteredItemsCategory}
                         .store=${this.store}
                         @item-selected=${this.onItemSelected}
                         @item-selected-with-hold=${this.onItemSelectedWithHold}
@@ -120,12 +133,11 @@ export class CategoryBrowser extends FavBrowserBase {
               }
             } else {
               // if category is not visbile, then render the category list.
-              const filterName = (this.filterCriteria || "").toLocaleLowerCase();
               if (this.config.categoryBrowserItemsPerRow === 1) {
                 return (
                   html`<spc-media-browser-list 
                         class="media-browser-list"
-                        .items=${this.mediaList?.filter((item: ICategory) => item.name.toLocaleLowerCase().indexOf(filterName) !== -1)}
+                        .items=${filteredItems}
                         .store=${this.store}
                         @item-selected=${this.onItemSelected}
                         @item-selected-with-hold=${this.onItemSelectedWithHold}
@@ -135,7 +147,7 @@ export class CategoryBrowser extends FavBrowserBase {
                 return (
                   html`<spc-media-browser-icons 
                         class="media-browser-list"
-                        .items=${this.mediaList?.filter((item: ICategory) => item.name.toLocaleLowerCase().indexOf(filterName) !== -1)}
+                        .items=${filteredItems}
                         .store=${this.store}
                         @item-selected=${this.onItemSelected}
                         @item-selected-with-hold=${this.onItemSelectedWithHold}

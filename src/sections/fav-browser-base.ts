@@ -45,7 +45,9 @@ export class FavBrowserBase extends LitElement {
   // private state properties.
   @state() protected alertError?: string;
   @state() protected alertInfo?: string;
+  @state() protected isActionsEnabled?: boolean;
   @state() protected isActionsVisible?: boolean;
+  @state() protected isMediaListRefreshedOnSectionEntry?: boolean;
   @state() protected scrollTopSaved?: number;
   @state() protected mediaItem?: any;
   @state() protected filterCriteria?: string;
@@ -79,6 +81,9 @@ export class FavBrowserBase extends LitElement {
 
   /** Filter criteria placeholder value. */
   protected filterCriteriaPlaceholder?: string;
+
+  /** Filter item count. */
+  protected filterItemCount?: number;
 
   /** Enable shuffle prior to play. */
   protected shuffleOnPlay?: boolean;
@@ -115,9 +120,11 @@ export class FavBrowserBase extends LitElement {
     super();
 
     // initialize storage.
+    this.isActionsEnabled = true;
+    this.isMediaListRefreshedOnSectionEntry = false;
     this.isUpdateInProgress = false;
-    this.shuffleOnPlay = false;
     this.mediaType = mediaType;
+    this.shuffleOnPlay = false;
 
     // create bound event listeners for event handlers that need access to "this" object.
     this.onKeyDown_EventListenerBound = this.onKeyDown.bind(this);
@@ -133,10 +140,11 @@ export class FavBrowserBase extends LitElement {
   protected render(): TemplateResult | void {
 
     if (debuglog.enabled) {
-      debuglog("render - rendering control: %s\n- mediaListLastUpdatedOn = %s\n- scrollTopSaved = %s",
+      debuglog("render - rendering control: %s\n- mediaListLastUpdatedOn = %s\n- scrollTopSaved = %s\n- filterItemCount = %s (pre-render)",
         JSON.stringify(this.mediaType),
         JSON.stringify(this.mediaListLastUpdatedOn),
         JSON.stringify(this.scrollTopSaved),
+        JSON.stringify(this.filterItemCount),
       );
     }
 
@@ -307,9 +315,13 @@ export class FavBrowserBase extends LitElement {
     // invoke base class method.
     super.firstUpdated(changedProperties);
 
-    //console.log("firstUpdated (fav-browser-base) - changedProperties keys:\n- %s",
-    //  JSON.stringify(Array.from(changedProperties.keys())),
-    //);
+    //if (debuglog.enabled) {
+    //  debuglog("%cfirstUpdated - changedProperties keys for mediaType %s:\n- %s",
+    //    "color: yellow;",
+    //    JSON.stringify(this.mediaType),
+    //    JSON.stringify(Array.from(changedProperties.keys())),
+    //  );
+    //}
 
     // ensure "<search-input-outlined>" and "<ha-md-button-menu>" HA customElements are
     // loaded so that the controls are rendered properly.
@@ -319,6 +331,26 @@ export class FavBrowserBase extends LitElement {
     // the prefix will include our domain, the Spotify user name, and the storage key.
     // this allows us to maintain preferences for multiple Spotify accounts.
     this.cacheKeyBase = DOMAIN_SPOTIFYPLUS + "_" + (this.player.attributes.sp_user_id || "nospuserid") + "_"
+
+    // are we refreshing the media list on section entry?
+    if (this.isMediaListRefreshedOnSectionEntry) {
+
+      // ensure we are NOT editing the card configuration!
+      // this is because the `firstUpdated` method will fire every time the configuration changes!
+      // if we already updated the media list, then don't do it again.
+      if (!this.isCardInEditPreview) {
+
+        if (debuglog.enabled) {
+          debuglog("%cfirstUpdated - %s mediaList will be updated on section entry",
+            "color: yellow;",
+            JSON.stringify(this.mediaType),
+          );
+        }
+
+        // clear cached media list values (e.g. force refresh).
+        this.storageValuesClear();
+      }
+    }
 
     // loads values from persistant storage.
     this.storageValuesLoad()
@@ -331,16 +363,18 @@ export class FavBrowserBase extends LitElement {
       // if we already updated the media list, then don't do it again.
       if ((this.isCardInEditPreview) && (this.mediaType in Store.hasCardEditLoadedMediaList)) {
         if (debuglog.enabled) {
-          debuglog("%cfirstUpdated - we already called updateMediaList to retrieve media list; will not update again while editing card!",
+          debuglog("%cfirstUpdated - %s mediaList already updated; updateMediaList will not be called again while editing card configuration!",
             "color: yellow;",
+            JSON.stringify(this.mediaType),
           );
         }
         return;
       }
 
       if (debuglog.enabled) {
-        debuglog("%cfirstUpdated - updating media list on first update",
+        debuglog("%cfirstUpdated - %s mediaList will be updated on first update",
           "color: yellow;",
+          JSON.stringify(this.mediaType),
         );
       }
 
@@ -382,6 +416,30 @@ export class FavBrowserBase extends LitElement {
 
 
   /**
+   * Clears values from persistant storage.
+   */
+  protected storageValuesClear() {
+
+    // clear media list and supporting values from the cache.
+    storageService.clearStorageValue(this.cacheKeyBase + this.mediaType + CACHE_KEY_MEDIA_LIST_LAST_UPDATED);
+    storageService.clearStorageValue(this.cacheKeyBase + this.mediaType + CACHE_KEY_MEDIA_LIST);
+    storageService.clearStorageValue(this.cacheKeyBase + this.mediaType + CACHE_KEY_FILTER_CRITERIA);
+
+    // clear first time media list load for card editing logic.
+    if (this.mediaType in Store.hasCardEditLoadedMediaList) {
+      delete Store.hasCardEditLoadedMediaList[this.mediaType];
+    }
+
+    if (debuglog.enabled) {
+      debuglog("storageValuesClear - %s parameters were cleared from cache:\n mediaListLastUpdatedOn, mediaList, filterCriteria",
+        JSON.stringify(this.mediaType),
+      );
+    }
+
+  }
+
+
+  /**
    * Loads values from persistant storage.
    */
   protected storageValuesLoad() {
@@ -392,7 +450,9 @@ export class FavBrowserBase extends LitElement {
     this.filterCriteria = storageService.getStorageValue(this.cacheKeyBase + this.mediaType + CACHE_KEY_FILTER_CRITERIA, undefined);
 
     if (debuglog.enabled) {
-      debuglog("storageValuesLoad - parameters loaded from cache: mediaListLastUpdatedOn, mediaList, filterCriteria");
+      debuglog("storageValuesLoad - %s parameters were loaded from cache:\n mediaListLastUpdatedOn, mediaList, filterCriteria",
+        JSON.stringify(this.mediaType),
+      );
     }
 
   }
@@ -409,7 +469,9 @@ export class FavBrowserBase extends LitElement {
     storageService.setStorageValue(this.cacheKeyBase + this.mediaType + CACHE_KEY_FILTER_CRITERIA, this.filterCriteria);
 
     if (debuglog.enabled) {
-      debuglog("storageValuesSave - parameters saved to cache: mediaListLastUpdatedOn, mediaList, filterCriteria");
+      debuglog("storageValuesSave - %s parameters were saved to cache:\n mediaListLastUpdatedOn, mediaList, filterCriteria",
+        JSON.stringify(this.mediaType),
+      );
     }
 
   }
@@ -502,14 +564,7 @@ export class FavBrowserBase extends LitElement {
     if (action === "refresh") {
 
       // clear cache if user chose to manually refresh the media list.
-      storageService.clearStorageValue(this.cacheKeyBase + this.mediaType + CACHE_KEY_MEDIA_LIST_LAST_UPDATED);
-      storageService.clearStorageValue(this.cacheKeyBase + this.mediaType + CACHE_KEY_MEDIA_LIST);
-      storageService.clearStorageValue(this.cacheKeyBase + this.mediaType + CACHE_KEY_FILTER_CRITERIA);
-
-      // clear first time media list load for card editing logic.
-      if (this.mediaType in Store.hasCardEditLoadedMediaList) {
-        delete Store.hasCardEditLoadedMediaList[this.mediaType];
-      }
+      this.storageValuesClear();
 
       // refresh the media list.
       this.updateMediaList(this.player);
@@ -560,6 +615,12 @@ export class FavBrowserBase extends LitElement {
       debuglog("onItemSelectedWithHold - media item selected:\n%s",
         JSON.stringify(args.detail, null, 2),
       );
+    }
+
+    // are actions enabled? if not, then treat it as an `item-selected` event.
+    if (!this.isActionsEnabled) {
+      this.onItemSelected(args);
+      return;
     }
 
     // do not display actions if editing card configuration.
@@ -793,8 +854,9 @@ export class FavBrowserBase extends LitElement {
     this.alertClear();
 
     if (debuglog.enabled) {
-      debuglog("%cupdateMediaList - updating medialist",
+      debuglog("%cupdateMediaList - updating %s medialist",
         "color: yellow;",
+        JSON.stringify(this.mediaType),
       );
     }
 
@@ -851,8 +913,9 @@ export class FavBrowserBase extends LitElement {
     this.alertInfoClear();
 
     if (debuglog.enabled) {
-      debuglog("%cupdatedMediaListError - %s",
+      debuglog("%cupdatedMediaListError - error updating %s mediaList:\n %s",
         "color:red",
+        JSON.stringify(this.mediaType),
         JSON.stringify(alertErrorMessage),
       );
     }

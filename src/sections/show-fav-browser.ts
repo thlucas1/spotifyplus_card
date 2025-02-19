@@ -44,9 +44,17 @@ export class ShowFavBrowser extends FavBrowserBase {
     // invoke base class method.
     super.render();
 
+    // filter items (if actions are not visible).
+    let filteredItems: Array<IShowSimplified> | undefined;
+    if (!this.isActionsVisible) {
+      const filterName = (this.filterCriteria || "").toLocaleLowerCase();
+      filteredItems = this.mediaList?.filter((item: IShowSimplified) => (item.name.toLocaleLowerCase().indexOf(filterName) !== -1));
+      this.filterItemCount = filteredItems?.length;
+    }
+
     // format title and sub-title details.
-    const title = formatTitleInfo(this.config.showFavBrowserTitle, this.config, this.player, this.mediaListLastUpdatedOn, this.mediaList);
-    const subtitle = formatTitleInfo(this.config.showFavBrowserSubTitle, this.config, this.player, this.mediaListLastUpdatedOn, this.mediaList);
+    const title = formatTitleInfo(this.config.showFavBrowserTitle, this.config, this.player, this.mediaListLastUpdatedOn, this.mediaList, filteredItems);
+    const subtitle = formatTitleInfo(this.config.showFavBrowserSubTitle, this.config, this.player, this.mediaListLastUpdatedOn, this.mediaList, filteredItems);
 
     // render html.
     return html`
@@ -63,12 +71,11 @@ export class ShowFavBrowser extends FavBrowserBase {
           ${(() => {
             // if actions are not visbile, then render the media list.
             if (!this.isActionsVisible) {
-              const filterName = (this.filterCriteria || "").toLocaleLowerCase();
               if (this.config.showFavBrowserItemsPerRow === 1) {
                 return (
                   html`<spc-media-browser-list 
                         class="media-browser-list"
-                        .items=${this.mediaList?.filter((item: IShowSimplified) => (item.name.toLocaleLowerCase().indexOf(filterName) !== -1))}
+                        .items=${filteredItems}
                         .store=${this.store}
                         @item-selected=${this.onItemSelected}
                         @item-selected-with-hold=${this.onItemSelectedWithHold}
@@ -78,7 +85,7 @@ export class ShowFavBrowser extends FavBrowserBase {
                 return (
                   html`<spc-media-browser-icons class="media-browser-list"
                         class="media-browser-list"
-                        .items=${this.mediaList?.filter((item: IShowSimplified) => (item.name.toLocaleLowerCase().indexOf(filterName) !== -1))}
+                        .items=${filteredItems}
                         .store=${this.store}
                         @item-selected=${this.onItemSelected}
                         @item-selected-with-hold=${this.onItemSelectedWithHold}

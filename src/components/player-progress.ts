@@ -79,7 +79,7 @@ class Progress extends LitElement {
    *
    * An element may be re-connected after being disconnected.
    */
-  disconnectedCallback() {
+  public disconnectedCallback() {
 
     // are we currently tracking progress?  if so, then stop tracking and
     // indicate we are no longer tracking.

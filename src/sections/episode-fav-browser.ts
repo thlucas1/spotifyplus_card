@@ -44,9 +44,17 @@ export class EpisodeFavBrowser extends FavBrowserBase {
     // invoke base class method.
     super.render();
 
+    // filter items (if actions are not visible).
+    let filteredItems: Array<IEpisode> | undefined;
+    if (!this.isActionsVisible) {
+      const filterName = (this.filterCriteria || "").toLocaleLowerCase();
+      filteredItems = this.mediaList?.filter((item: IEpisode) => (item.name.toLocaleLowerCase().indexOf(filterName) !== -1) || (item.show.name.toLocaleLowerCase().indexOf(filterName) !== -1));
+      this.filterItemCount = filteredItems?.length;
+    }
+
     // format title and sub-title details.
-    const title = formatTitleInfo(this.config.episodeFavBrowserTitle, this.config, this.player, this.mediaListLastUpdatedOn, this.mediaList);
-    const subtitle = formatTitleInfo(this.config.episodeFavBrowserSubTitle, this.config, this.player, this.mediaListLastUpdatedOn, this.mediaList);
+    const title = formatTitleInfo(this.config.episodeFavBrowserTitle, this.config, this.player, this.mediaListLastUpdatedOn, this.mediaList, filteredItems);
+    const subtitle = formatTitleInfo(this.config.episodeFavBrowserSubTitle, this.config, this.player, this.mediaListLastUpdatedOn, this.mediaList, filteredItems);
 
     // render html.
     return html`
@@ -61,35 +69,34 @@ export class EpisodeFavBrowser extends FavBrowserBase {
           ${this.alertError ? html`<ha-alert alert-type="error" dismissable @alert-dismissed-clicked=${this.alertErrorClear}>${this.alertError}</ha-alert>` : ""}
           ${this.alertInfo ? html`<ha-alert alert-type="info" dismissable @alert-dismissed-clicked=${this.alertInfoClear}>${this.alertInfo}</ha-alert>` : ""}
           ${(() => {
-        // if actions are not visbile, then render the media list.
-        if (!this.isActionsVisible) {
-          const filterName = (this.filterCriteria || "").toLocaleLowerCase();
-          if (this.config.episodeFavBrowserItemsPerRow === 1) {
-            return (
-              html`<spc-media-browser-list 
+            // if actions are not visbile, then render the media list.
+            if (!this.isActionsVisible) {
+              if (this.config.episodeFavBrowserItemsPerRow === 1) {
+                return (
+                  html`<spc-media-browser-list 
                         class="media-browser-list"
-                        .items=${this.mediaList?.filter((item: IEpisode) => (item.name.toLocaleLowerCase().indexOf(filterName) !== -1) || (item.show.name.toLocaleLowerCase().indexOf(filterName) !== -1))}
+                        .items=${filteredItems}
                         .store=${this.store}
                         @item-selected=${this.onItemSelected}
                         @item-selected-with-hold=${this.onItemSelectedWithHold}
                        ></spc-media-browser-list>`
-            )
-          } else {
-            return (
-              html`<spc-media-browser-icons 
+                )
+              } else {
+                return (
+                  html`<spc-media-browser-icons 
                         class="media-browser-list"
-                        .items=${this.mediaList?.filter((item: IEpisode) => (item.name.toLocaleLowerCase().indexOf(filterName) !== -1) || (item.show.name.toLocaleLowerCase().indexOf(filterName) !== -1))}
+                        .items=${filteredItems}
                         .store=${this.store}
                         @item-selected=${this.onItemSelected}
                         @item-selected-with-hold=${this.onItemSelectedWithHold}
                        ></spc-media-browser-icons>`
-            )
-          }
-          // if actions are visbile, then render the actions display.
-        } else {
-          return html`<spc-episode-actions class="media-browser-actions" .store=${this.store} .mediaItem=${this.mediaItem}></spc-episode-actions>`;
-        }
-      })()}  
+                )
+              }
+              // if actions are visbile, then render the actions display.
+            } else {
+              return html`<spc-episode-actions class="media-browser-actions" .store=${this.store} .mediaItem=${this.mediaItem}></spc-episode-actions>`;
+            }
+          })()}  
         </div>
       </div>
     `;

@@ -82,8 +82,8 @@ Here's a quick overview on what the card can look like.  The card is highly cust
 - on your dashboard click on the icon at the right top corner then on Edit dashboard.
 - click again on that icon and then on Manage resources.
 - click on Add resource.
-- copy and paste this: `/local/spotifyplus_card.js?v=1`.
-- click on JavaScript Module then Create.
+- copy and paste this: `/local/spotifyplus_card.js?v=1.0.40` (change version number to match what was downloaded).
+- click on `JavaScript Module` then Create.
 - go back and refresh your page.
 - you can now click on Add card in the bottom right corner and search for "Custom: SpotifyPlus Card".
 - after any update of the file you will have to edit `/local/spotifyplus_card.js?v=1` and change the version (e.g. `v=1`) to any higher number (e.g. `v=1.2`).

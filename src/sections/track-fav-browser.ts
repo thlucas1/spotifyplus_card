@@ -49,9 +49,17 @@ export class TrackFavBrowser extends FavBrowserBase {
     // invoke base class method.
     super.render();
 
+    // filter items (if actions are not visible).
+    let filteredItems: Array<ITrack> | undefined;
+    if (!this.isActionsVisible) {
+      const filterName = (this.filterCriteria || "").toLocaleLowerCase();
+      filteredItems = this.mediaList?.filter((item: ITrack) => (item.name.toLocaleLowerCase().indexOf(filterName) !== -1) || (item.artists[0].name.toLocaleLowerCase().indexOf(filterName) !== -1));
+      this.filterItemCount = filteredItems?.length;
+    }
+
     // format title and sub-title details.
-    const title = formatTitleInfo(this.config.trackFavBrowserTitle, this.config, this.player, this.mediaListLastUpdatedOn, this.mediaList);
-    const subtitle = formatTitleInfo(this.config.trackFavBrowserSubTitle, this.config, this.player, this.mediaListLastUpdatedOn, this.mediaList);
+    const title = formatTitleInfo(this.config.trackFavBrowserTitle, this.config, this.player, this.mediaListLastUpdatedOn, this.mediaList, filteredItems);
+    const subtitle = formatTitleInfo(this.config.trackFavBrowserSubTitle, this.config, this.player, this.mediaListLastUpdatedOn, this.mediaList, filteredItems);
 
     // render html.
     return html`
@@ -68,12 +76,11 @@ export class TrackFavBrowser extends FavBrowserBase {
           ${(() => {
             // if actions are not visbile, then render the media list.
             if (!this.isActionsVisible) {
-              const filterName = (this.filterCriteria || "").toLocaleLowerCase();
               if (this.config.trackFavBrowserItemsPerRow === 1) {
                 return (
                   html`<spc-media-browser-list 
                         class="media-browser-list"
-                        .items=${this.mediaList?.filter((item: ITrack) => (item.name.toLocaleLowerCase().indexOf(filterName) !== -1) || (item.artists[0].name.toLocaleLowerCase().indexOf(filterName) !== -1))}
+                        .items=${filteredItems}
                         .store=${this.store}
                         @item-selected=${this.onItemSelected}
                         @item-selected-with-hold=${this.onItemSelectedWithHold}
@@ -83,7 +90,7 @@ export class TrackFavBrowser extends FavBrowserBase {
                 return (
                   html`<spc-media-browser-icons 
                         class="media-browser-list"
-                        .items=${this.mediaList?.filter((item: ITrack) => (item.name.toLocaleLowerCase().indexOf(filterName) !== -1) || (item.artists[0].name.toLocaleLowerCase().indexOf(filterName) !== -1))}
+                        .items=${filteredItems}
                         .store=${this.store}
                         @item-selected=${this.onItemSelected}
                         @item-selected-with-hold=${this.onItemSelectedWithHold}

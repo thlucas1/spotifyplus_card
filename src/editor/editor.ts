@@ -253,7 +253,7 @@ class CardEditor extends BaseEditor {
    * Typically, anything done in `connectedCallback()` should be undone when the
    * element is disconnected, in `disconnectedCallback()`.
    */
-  connectedCallback() {
+  public connectedCallback() {
 
     // invoke base class method.
     super.connectedCallback();
@@ -273,7 +273,7 @@ class CardEditor extends BaseEditor {
    *
    * An element may be re-connected after being disconnected.
    */
-  disconnectedCallback() {
+  public disconnectedCallback() {
 
     // remove window level event listeners.
     window.removeEventListener(SHOW_SECTION, this.onFooterShowSection);

@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.40 ] - 2025/02/11
+
+  * Added title formatter option `{medialist.filteritemcount}`; Number of filtered items in the media list.
+
 ###### [ 1.0.39 ] - 2025/02/09
 
   * Added card configuration option `albumFavBrowserShuffleOnPlay`; True to enable shuffle prior to starting play of the context; otherwise, False to start the context with the current shuffle mode.  

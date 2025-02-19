@@ -135,9 +135,13 @@ export function formatDateHHMMSSFromMilliseconds(ms: number) {
 * @param str String to convert to propercase (e.g. "hello world").
 * @returns A properly cased string value (e.g. "Hello World").
 */
-export function formatStringProperCase(str: string): string | void {
+export function formatStringProperCase(str: string): string {
+
   let upper = true;
   let newStr = "";
+  if (!str)
+    return newStr;
+
   for (let i = 0, l = str.length; i < l; i++) {
     if (str[i] == " ") {
       upper = true;
@@ -147,6 +151,7 @@ export function formatStringProperCase(str: string): string | void {
     newStr += upper ? str[i].toUpperCase() : str[i].toLowerCase();
     upper = false;
   }
+
   return newStr;
 }
 
