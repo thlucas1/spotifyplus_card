@@ -1,3 +1,8 @@
+// debug logging.
+import Debug from 'debug/src/browser.js';
+import { DEBUG_APP_NAME } from '../constants';
+const debuglog = Debug(DEBUG_APP_NAME + ":category-browser");
+
 // lovelace card imports.
 import { html, TemplateResult } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
@@ -12,14 +17,9 @@ import { MediaPlayer } from '../model/media-player';
 import { CategoryDisplayEventArgs } from '../events/category-display';
 import { formatTitleInfo } from '../utils/media-browser-utils';
 import { getHomeAssistantErrorMessage, getUtcNowTimestamp } from '../utils/utils';
+import { getIdFromSpotifyUri } from '../services/spotifyplus-service';
 import { ICategory } from '../types/spotifyplus/category';
 import { IPlaylistSimplified } from '../types/spotifyplus/playlist-simplified';
-
-// debug logging.
-import Debug from 'debug/src/browser.js';
-import { DEBUG_APP_NAME } from '../constants';
-import { getIdFromSpotifyUri } from '../services/spotifyplus-service';
-const debuglog = Debug(DEBUG_APP_NAME + ":category-browser");
 
 
 @customElement("spc-category-browser")

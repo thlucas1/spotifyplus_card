@@ -4,7 +4,7 @@ import { DEBUG_APP_NAME } from '../constants';
 const debuglog = Debug(DEBUG_APP_NAME + ":player-controls");
 
 // lovelace card imports.
-import { css, html, LitElement, PropertyValues, TemplateResult, nothing } from 'lit';
+import { css, html, PropertyValues, TemplateResult, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { styleMap } from 'lit-html/directives/style-map.js';
 import {
@@ -23,27 +23,24 @@ import {
 } from '@mdi/js';
 
 // our imports.
+import { PLAYER_CONTROLS_ICON_TOGGLE_COLOR_DEFAULT } from '../constants';
 import { CardConfig } from '../types/card-config';
-import { Store } from '../model/store';
 import { MediaPlayer } from '../model/media-player';
 import { MediaPlayerEntityFeature, MediaPlayerState, RepeatMode } from '../services/media-control-service';
 import { MediaControlService } from '../services/media-control-service';
 import { SpotifyPlusService } from '../services/spotifyplus-service';
-import { ProgressEndedEvent } from '../events/progress-ended';
-import { ProgressStartedEvent } from '../events/progress-started';
-import { closestElement, getHomeAssistantErrorMessage, isCardInEditPreview } from '../utils/utils';
+import { closestElement, getHomeAssistantErrorMessage } from '../utils/utils';
 import { Player } from '../sections/player';
 import { PlayerBodyQueue } from './player-body-queue';
-import { PLAYER_CONTROLS_ICON_TOGGLE_COLOR_DEFAULT } from '../constants';
+import { AlertUpdatesBase } from '../sections/alert-updates-base';
 
 const { NEXT_TRACK, PAUSE, PLAY, PREVIOUS_TRACK, REPEAT_SET, SHUFFLE_SET, TURN_ON, TURN_OFF } = MediaPlayerEntityFeature;
 const ACTION_FAVES = 900000000000;
 const PLAY_QUEUE = 990000000000;
 
-class PlayerControls extends LitElement {
+class PlayerControls extends AlertUpdatesBase {
 
   // public state properties.
-  @property({ attribute: false }) store!: Store;
   @property({ attribute: false }) mediaContentId!: string;
 
   // private state properties.
@@ -61,9 +58,6 @@ class PlayerControls extends LitElement {
 
   /** SpotifyPlus services instance. */
   protected spotifyPlusService!: SpotifyPlusService;
-
-  /** True if the card is in edit preview mode (e.g. being edited); otherwise, false. */
-  protected isCardInEditPreview!: boolean;
 
 
   /**
@@ -201,9 +195,6 @@ class PlayerControls extends LitElement {
 
     // add document level event listeners.
     document.addEventListener("keydown", this.onKeyDown_EventListenerBound);
-
-    // determine if card configuration is being edited.
-    this.isCardInEditPreview = isCardInEditPreview(this.store.card);
 
   }
 
@@ -584,25 +575,9 @@ class PlayerControls extends LitElement {
 
 
   /**
-   * Hide visual progress indicator.
-   */
-  private progressHide(): void {
-    this.store.card.dispatchEvent(ProgressEndedEvent());
-  }
-
-
-  /**
-   * Show visual progress indicator.
-   */
-  private progressShow(): void {
-    this.store.card.dispatchEvent(ProgressStartedEvent());
-  }
-
-
-  /**
    * Sets the alert info message in the parent player.
    */
-  private alertInfoSet(message: string): void {
+  public override alertInfoSet(message: string): void {
 
     // find the parent player reference, and update the message.
     // we have to do it this way due to the shadowDOM between this 
@@ -618,7 +593,7 @@ class PlayerControls extends LitElement {
   /**
    * Sets the alert error message in the parent player.
    */
-  private alertErrorSet(message: string): void {
+  public override alertErrorSet(message: string): void {
 
     // find the parent player reference, and update the message.
     // we have to do it this way due to the shadowDOM between this 

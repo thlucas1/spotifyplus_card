@@ -3,9 +3,12 @@ import { css, html, TemplateResult } from 'lit';
 import { when } from 'lit/directives/when.js';
 
 // our imports.
+import {
+  listStyle,
+  ITEM_SELECTED
+} from '../constants';
 import { MediaBrowserBase } from './media-browser-base';
 import { Section } from '../types/section';
-import { listStyle, ITEM_SELECTED } from '../constants';
 import { customEvent } from '../utils/utils';
 
 

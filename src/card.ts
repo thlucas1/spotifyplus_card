@@ -192,8 +192,7 @@ export class Card extends LitElement {
         </div>
         ${title ? html`<div class="spc-card-header" style=${this.styleCardHeader()}>${title}</div>` : ""}
         <div class="spc-card-content-section">
-          ${
-              this.playerId
+          ${this.store.player.id != ""
               ? choose(this.section, [
                 [Section.ALBUM_FAVORITES, () => html`<spc-album-fav-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected} id="elmAlbumFavBrowserForm"></spc-album-fav-browser>`],
                 [Section.ARTIST_FAVORITES, () => html`<spc-artist-fav-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected} id="elmArtistFavBrowserForm"></spc-artist-fav-browser>`],
@@ -210,11 +209,14 @@ export class Card extends LitElement {
                 [Section.USERPRESETS, () => html`<spc-userpreset-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected} id="elmUserPresetBrowserForm"></spc-userpresets-browser>`],
                 [Section.UNDEFINED, () => html`<div class="spc-not-configured">SpotifyPlus card configuration error.<br/>Please configure section(s) to display.</div>`],
               ])
-              : html`<div class="spc-initial-config">Welcome to the SpotifyPlus media player card.<br/>Start by configuring a media player entity.</div>`
-          //    : choose(this.section, [
-          //      [Section.INITIAL_CONFIG, () => html`<div class="spc-initial-config">Welcome to the SpotifyPlus media player card.<br/>Please start by configuring the card.</div>`],
-          //      [Section.UNDEFINED, () => html`<div class="spc-not-configured">SpotifyPlus card configuration error.<br/>Please check the card configuration.</div>`],
-          //    ])
+              : html`
+                  <div class="spc-initial-config">
+                    Welcome to the SpotifyPlus media player card.<br/>
+                    Start by editing the card configuration media player "entity" value.<br/>
+                    <div class="spc-not-configured">
+                      ${this.store.player.attributes.sp_config_state}
+                    </div>
+                  </div>`
           }
         </div>
         ${when(showFooter, () =>
@@ -340,7 +342,8 @@ export class Card extends LitElement {
 
       .spc-not-configured {
         text-align: center;
-        margin-top: 1rem;
+        margin: 1rem;
+        color: #fa2643;
       }
 
       .spc-initial-config {
@@ -369,7 +372,7 @@ export class Card extends LitElement {
   private createStore() {
 
     // create the store.
-    this.store = new Store(this.hass, this.config, this, this.section, this.config.entity);
+    this.store = new Store(this.hass, this.config, this, this.section);
 
     // have we set the player id yet?  if not, then make it so.
     if (!this.playerId) {

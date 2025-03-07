@@ -9,10 +9,13 @@ import { eventOptions, property } from 'lit/decorators.js';
 import { styleMap, StyleInfo } from 'lit-html/directives/style-map.js';
 
 // our imports.
+import {
+  ITEM_SELECTED,
+  ITEM_SELECTED_WITH_HOLD
+} from '../constants';
 import { Store } from '../model/store';
 import { CardConfig } from '../types/card-config';
 import { Section } from '../types/section';
-import { ITEM_SELECTED, ITEM_SELECTED_WITH_HOLD } from '../constants';
 import { closestElement, customEvent, formatStringProperCase, isTouchDevice } from '../utils/utils';
 import { getContentItemImageUrl, hasMediaItemImages } from '../utils/media-browser-utils';
 import { SearchMediaTypes } from '../types/search-media-types';

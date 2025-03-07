@@ -238,6 +238,16 @@ export function formatPlayerInfo(
     text = text.replace("{player.media_track}", player.attributes.media_track?.toString() || '');
     text = text.replace("{player.state}", player.state || '');
 
+    // if advertisement playing, then append "Advertisement" after state;
+    // otherwise just use state.
+    if (text.indexOf("{player.state_ad}") > -1) {
+      let value = player.state + '';
+      if (player.attributes.sp_playing_type == "ad") {
+        value = value + " Advertisement";
+      }
+      text = text.replace("{player.state_ad}", value);
+    }
+
     // drop everything after the first parenthesis.
     if (text.indexOf("{player.source_noaccount}") > -1) {
       let value = player.attributes.source || '';
@@ -268,6 +278,7 @@ export function formatPlayerInfo(
     text = text.replace("{player.sp_user_country}", player.attributes.sp_user_country || '');
     text = text.replace("{player.sp_user_display_name}", player.attributes.sp_user_display_name || '');
     text = text.replace("{player.sp_user_email}", player.attributes.sp_user_email || '');
+    text = text.replace("{player.sp_user_has_web_player_credentials}", player.attributes.sp_user_has_web_player_credentials + '');
     text = text.replace("{player.sp_user_id}", player.attributes.sp_user_id || '');
     text = text.replace("{player.sp_user_product}", player.attributes.sp_user_product || '');
     text = text.replace("{player.sp_user_uri}", player.attributes.sp_user_uri || '');
@@ -300,7 +311,7 @@ export function formatConfigInfo(
 
   // replace keyword parameters with configuration equivalents.
   if (text) {
-    // TODO - possibly remove this?
+    // no config values to override; leave here for future expansion.
     //text = text.replace("{config.xxxx}", config.xxxx || '');
   }
 

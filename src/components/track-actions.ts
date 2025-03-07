@@ -17,6 +17,12 @@ import {
 } from '@mdi/js';
 
 // our imports.
+import {
+  ALERT_ERROR_SPOTIFY_PREMIUM_OR_ELEVATED_REQUIRED,
+  ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD,
+  ALERT_INFO_PRESET_JSON_COPIED_TO_CLIPBOARD,
+  RADIO_SEARCH_KEY
+} from '../constants.js';
 import { sharedStylesGrid } from '../styles/shared-styles-grid.js';
 import { sharedStylesMediaInfo } from '../styles/shared-styles-media-info.js';
 import { sharedStylesFavActions } from '../styles/shared-styles-fav-actions.js';
@@ -27,7 +33,6 @@ import { SearchMediaTypes } from '../types/search-media-types';
 import { SearchMediaEvent } from '../events/search-media';
 import { formatDateHHMMSSFromMilliseconds, getHomeAssistantErrorMessage } from '../utils/utils';
 import { openWindowNewTab } from '../utils/media-browser-utils';
-import { ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED, ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD, ALERT_INFO_PRESET_JSON_COPIED_TO_CLIPBOARD, RADIO_SEARCH_KEY } from '../constants.js';
 import { GetUserPresetConfigEntry, GetUserPresetConfigEntryJson } from '../types/spotifyplus/user-preset.js';
 import { ITrack } from '../types/spotifyplus/track';
 
@@ -612,8 +617,9 @@ class TrackActions extends FavActionsBase {
 
       } else if (action == Actions.TrackPlayTrackFavorites) {
 
-        if (!this.player.isUserProductPremium()) {
-          throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
+        // spotify premium account (or elevated credentials) required for this function.
+        if (!this.player.isUserProductPremium() && (!this.player.attributes.sp_user_has_web_player_credentials)) {
+          throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_OR_ELEVATED_REQUIRED);
         }
 
         // have to hide the progress indicator manually since it does not call updateActions.

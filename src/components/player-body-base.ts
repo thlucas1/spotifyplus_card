@@ -1,6 +1,11 @@
+// debug logging.
+import Debug from 'debug/src/browser.js';
+import { DEBUG_APP_NAME } from '../constants';
+const debuglog = Debug(DEBUG_APP_NAME + ":player-body-base");
+
 // lovelace card imports.
-import { css, LitElement, PropertyValues, TemplateResult, nothing } from 'lit';
-import { property, state } from 'lit/decorators.js';
+import { css, PropertyValues, TemplateResult, nothing } from 'lit';
+import { property } from 'lit/decorators.js';
 
 // our imports.
 import { sharedStylesFavActions } from '../styles/shared-styles-fav-actions.js';
@@ -10,34 +15,20 @@ import { MediaPlayer } from '../model/media-player';
 import { MediaPlayerState } from '../services/media-control-service';
 import { SpotifyPlusService } from '../services/spotifyplus-service';
 import { SearchMediaTypes } from '../types/search-media-types';
-import { isCardInEditPreview, loadHaFormLazyControls } from '../utils/utils';
-import { ProgressEndedEvent } from '../events/progress-ended';
-import { ProgressStartedEvent } from '../events/progress-started';
-
-// debug logging.
-import Debug from 'debug/src/browser.js';
-import { DEBUG_APP_NAME } from '../constants';
-const debuglog = Debug(DEBUG_APP_NAME + ":player-body-base");
+import { loadHaFormLazyControls } from '../utils/utils';
+import { AlertUpdatesBase } from '../sections/alert-updates-base';
 
 
-export class PlayerBodyBase extends LitElement {
+export class PlayerBodyBase extends AlertUpdatesBase {
 
   // public state properties.
-  @property({ attribute: false }) protected store!: Store;
   @property({ attribute: false }) protected mediaContentId!: string;
-
-  // private state properties.
-  @state() protected alertError?: string;
-  @state() protected alertInfo?: string;
 
   /** MediaPlayer instance created from the configuration entity id. */
   protected player!: MediaPlayer;
 
   /** SpotifyPlus services instance. */
   protected spotifyPlusService!: SpotifyPlusService;
-
-  /** Indicates if actions are currently being updated. */
-  protected isUpdateInProgress!: boolean;
 
   /** True if the card is in edit preview mode (e.g. being edited); otherwise, false. */
   protected isCardInEditPreview!: boolean;
@@ -58,7 +49,6 @@ export class PlayerBodyBase extends LitElement {
     super();
 
     // initialize storage.
-    this.isUpdateInProgress = false;
     this.mediaType = Section.PLAYER;
 
   }
@@ -102,25 +92,6 @@ export class PlayerBodyBase extends LitElement {
         }
       `
     ];
-  }
-
-
-  /**
-   * Invoked when the component is added to the document's DOM.
-   *
-   * In `connectedCallback()` you should setup tasks that should only occur when
-   * the element is connected to the document. The most common of these is
-   * adding event listeners to nodes external to the element, like a keydown
-   * event handler added to the window.
-   */
-  public connectedCallback() {
-
-    // invoke base class method.
-    super.connectedCallback();
-
-    // determine if card configuration is being edited.
-    this.isCardInEditPreview = isCardInEditPreview(this.store.card);
-
   }
 
 
@@ -185,7 +156,7 @@ export class PlayerBodyBase extends LitElement {
         debuglog("%cupdate - player content changed:\n- NEW CONTENT ID = %s\n- isCardInEditPreview = %s",
           "color: gold;",
           JSON.stringify(this.player.attributes.media_content_id),
-          JSON.stringify(isCardInEditPreview(this.store.card)),
+          JSON.stringify(this.isCardInEditPreview),
         );
       }
 
@@ -197,66 +168,6 @@ export class PlayerBodyBase extends LitElement {
       return;
     }
 
-  }
-
-
-  /**
-   * Clears the error and informational alert text.
-   */
-  protected alertClear() {
-    this.alertError = undefined;
-    this.alertInfo = undefined;
-  }
-
-
-  /**
-   * Clears the error alert text.
-   */
-  protected alertErrorClear() {
-    this.alertError = undefined;
-  }
-
-
-  /**
-   * Sets the alert error message, and clears the informational alert message.
-   */
-  protected alertErrorSet(message: string): void {
-    this.alertError = message;
-    this.alertInfo = undefined;
-  }
-
-
-  /**
-   * Clears the info alert text.
-   */
-  protected alertInfoClear() {
-    this.alertInfo = undefined;
-  }
-
-
-  /**
-   * Sets the alert info message, and clears the informational alert message.
-   */
-  protected alertInfoSet(message: string): void {
-    this.alertInfo = message;
-    this.alertError = undefined;
-  }
-
-
-  /**
-   * Hide visual progress indicator.
-   */
-  protected progressHide(): void {
-    this.isUpdateInProgress = false;
-    this.store.card.dispatchEvent(ProgressEndedEvent());
-  }
-
-
-  /**
-   * Show visual progress indicator.
-   */
-  protected progressShow(): void {
-    this.store.card.dispatchEvent(ProgressStartedEvent());
   }
 
 
@@ -310,10 +221,9 @@ export class PlayerBodyBase extends LitElement {
   ): boolean {
 
     if (debuglog.enabled) {
-      debuglog("updateActions - updating actions: %s\n- this.isCardInEditPreview = %s\n- isCardInEditPreview(card) = %s\n- hasCardEditLoadedMediaList:\n%s",
+      debuglog("updateActions - updating actions: %s\n- isCardInEditPreview = %s\n- hasCardEditLoadedMediaList:\n%s",
         JSON.stringify(Array.from(updateActions.values())),
         JSON.stringify(this.isCardInEditPreview),
-        JSON.stringify(isCardInEditPreview(this.store.card)),
         JSON.stringify(Store.hasCardEditLoadedMediaList,null,2),
       );
     }

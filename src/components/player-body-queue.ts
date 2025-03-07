@@ -11,6 +11,9 @@ import {
 } from '@mdi/js';
 
 // our imports.
+import {
+  ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED,
+} from '../constants';
 import { sharedStylesGrid } from '../styles/shared-styles-grid.js';
 import { sharedStylesMediaInfo } from '../styles/shared-styles-media-info.js';
 import { sharedStylesFavActions } from '../styles/shared-styles-fav-actions.js';
@@ -252,10 +255,10 @@ export class PlayerBodyQueue extends PlayerBodyBase {
       // we want to manually force the refresh when the queue body is is displayed.
       if (updateActions.indexOf(Actions.GetPlayerQueueInfo) != -1) {
 
-        // if not premium account then don't allow it as it will fail anyway.
-        if (!this.player.isUserProductPremium()) {
-          this.alertErrorSet("Spotify Premium is required to display the player queue.");
-          return true;
+        // spotify premium account required for this function.
+        // not supported by elevated credentials.
+        if (!player.isUserProductPremium()) {
+          throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
         }
 
         // create promise - update currently playing media item.

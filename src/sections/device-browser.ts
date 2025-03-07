@@ -1,3 +1,8 @@
+// debug logging.
+import Debug from 'debug/src/browser.js';
+import { DEBUG_APP_NAME } from '../constants';
+const debuglog = Debug(DEBUG_APP_NAME + ":device-browser");
+
 // lovelace card imports.
 import { html, PropertyValues, TemplateResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
@@ -12,11 +17,6 @@ import { MediaPlayer } from '../model/media-player';
 import { formatTitleInfo } from '../utils/media-browser-utils';
 import { getHomeAssistantErrorMessage, getUtcNowTimestamp } from '../utils/utils';
 import { ISpotifyConnectDevice } from '../types/spotifyplus/spotify-connect-device';
-
-// debug logging.
-import Debug from 'debug/src/browser.js';
-import { DEBUG_APP_NAME } from '../constants';
-const debuglog = Debug(DEBUG_APP_NAME + ":device-browser");
 
 
 @customElement("spc-device-browser")

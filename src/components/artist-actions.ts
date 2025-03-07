@@ -1,3 +1,8 @@
+// debug logging.
+import Debug from 'debug/src/browser.js';
+import { DEBUG_APP_NAME } from '../constants';
+const debuglog = Debug(DEBUG_APP_NAME + ":artist-actions");
+
 // lovelace card imports.
 import { css, html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
@@ -20,6 +25,10 @@ import {
 } from '@mdi/js';
 
 // our imports.
+import {
+  ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD,
+  ALERT_INFO_PRESET_JSON_COPIED_TO_CLIPBOARD
+} from '../constants';
 import { sharedStylesGrid } from '../styles/shared-styles-grid';
 import { sharedStylesMediaInfo } from '../styles/shared-styles-media-info';
 import { sharedStylesFavActions } from '../styles/shared-styles-fav-actions';
@@ -31,14 +40,8 @@ import { SearchMediaEvent } from '../events/search-media';
 import { openWindowNewTab } from '../utils/media-browser-utils';
 import { getHomeAssistantErrorMessage, unescapeHtml } from '../utils/utils';
 import { GetUserPresetConfigEntry, GetUserPresetConfigEntryJson } from '../types/spotifyplus/user-preset';
-import { ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD, ALERT_INFO_PRESET_JSON_COPIED_TO_CLIPBOARD } from '../constants';
 import { IArtist, GetGenres } from '../types/spotifyplus/artist';
 import { IArtistInfo } from '../types/spotifyplus/artist-info';
-
-// debug logging.
-import Debug from 'debug/src/browser.js';
-import { DEBUG_APP_NAME } from '../constants';
-const debuglog = Debug(DEBUG_APP_NAME + ":artist-actions");
 
 /**
  * Artist actions.

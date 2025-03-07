@@ -36,7 +36,6 @@
     <Content Include=".vscode\launch.json" />
     <Content Include="CHANGELOG.md" />
     <Content Include="dist\spotifyplus_card.js" />
-    <Content Include="dist\spotifyplus_card.js.map" />
     <Content Include="images\config\cardpicker.png" />
     <Content Include="images\config\editor_general.png" />
     <Content Include="images\ui\masonry\album_favorites.png" />
@@ -80,7 +79,6 @@
     <Content Include="README.md" />
     <None Include="src\card.ts" />
     <None Include="src\constants.ts" />
-    <None Include="src\main.ts" />
     <None Include="src\types.ts" />
     <None Include="src\components\footer.ts" />
     <None Include="src\editor\base-editor.ts" />
@@ -145,6 +143,10 @@
     <TypeScriptCompile Include="src\events\category-display.ts" />
     <TypeScriptCompile Include="src\events\filter-section-media.ts" />
     <TypeScriptCompile Include="src\events\search-media.ts" />
+    <TypeScriptCompile Include="src\main.ts" />
+    <TypeScriptCompile Include="src\sections\alert-updates-base.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\sections\category-browser.ts" />
     <TypeScriptCompile Include="src\sections\episode-fav-browser.ts" />
     <TypeScriptCompile Include="src\sections\fav-browser-base.ts" />
@@ -190,7 +192,6 @@
     <TypeScriptCompile Include="src\types\home-assistant-frontend\service-call-request.ts" />
     <TypeScriptCompile Include="src\types\home-assistant-frontend\service-call-response.ts" />
     <TypeScriptCompile Include="src\types\home-assistant-frontend\service-validation-error.ts" />
-    <TypeScriptCompile Include="src\types\playerAlerts.ts" />
     <TypeScriptCompile Include="src\types\search-media-types.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus-hass-entity.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus-hass-entity-attributes.ts" />

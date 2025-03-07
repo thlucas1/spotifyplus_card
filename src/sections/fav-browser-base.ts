@@ -14,6 +14,7 @@ import {
 } from '@mdi/js';
 
 // our imports.
+import { DOMAIN_SPOTIFYPLUS } from '../constants';
 import { sharedStylesFavBrowser } from '../styles/shared-styles-fav-browser.js';
 import { CardConfig } from '../types/card-config';
 import { Section } from '../types/section';
@@ -22,11 +23,9 @@ import { MediaPlayer } from '../model/media-player';
 import { SpotifyPlusService } from '../services/spotifyplus-service';
 import { storageService } from '../decorators/storage';
 import { truncateMediaList } from '../utils/media-browser-utils';
-import { getHomeAssistantErrorMessage, isCardInEditPreview, loadHaFormLazyControls } from '../utils/utils';
+import { getHomeAssistantErrorMessage, loadHaFormLazyControls } from '../utils/utils';
 import { FilterSectionMediaEventArgs } from '../events/filter-section-media';
-import { ProgressEndedEvent } from '../events/progress-ended';
-import { ProgressStartedEvent } from '../events/progress-started';
-import { DOMAIN_SPOTIFYPLUS } from '../constants';
+import { AlertUpdatesBase } from './alert-updates-base';
 
 /** Keys used to access cached storage items. */
 const CACHE_KEY_FILTER_CRITERIA = "_filtercriteria";
@@ -36,15 +35,12 @@ const CACHE_KEY_MEDIA_LIST_LAST_UPDATED = "_medialistlastupdated";
 const ERROR_REFRESH_IN_PROGRESS = "Previous refresh is still in progress - please wait";
 
 
-export class FavBrowserBase extends LitElement {
+export class FavBrowserBase extends AlertUpdatesBase {
 
   // public state properties.
   @property({ attribute: false }) public hass!: HomeAssistant;
-  @property({ attribute: false }) protected store!: Store;
 
   // private state properties.
-  @state() protected alertError?: string;
-  @state() protected alertInfo?: string;
   @state() protected isActionsEnabled?: boolean;
   @state() protected isActionsVisible?: boolean;
   @state() protected isMediaListRefreshedOnSectionEntry?: boolean;
@@ -63,12 +59,6 @@ export class FavBrowserBase extends LitElement {
 
   /** MediaPlayer instance created from the configuration entity id. */
   protected player!: MediaPlayer;
-
-  /** True if media list is currently being updated / waiting for an update; otherwise, false. */
-  protected isUpdateInProgress!: boolean;
-
-  /** True if the card is in edit preview mode (e.g. being edited); otherwise, false. */
-  protected isCardInEditPreview!: boolean;
 
   /** Date and time (in epoch format) of when the media list was last updated. */
   protected mediaListLastUpdatedOn!: number;
@@ -122,7 +112,6 @@ export class FavBrowserBase extends LitElement {
     // initialize storage.
     this.isActionsEnabled = true;
     this.isMediaListRefreshedOnSectionEntry = false;
-    this.isUpdateInProgress = false;
     this.mediaType = mediaType;
     this.shuffleOnPlay = false;
 
@@ -272,9 +261,6 @@ export class FavBrowserBase extends LitElement {
 
     // add document level event listeners.
     document.addEventListener("keydown", this.onKeyDown_EventListenerBound);
-
-    // determine if card configuration is being edited.
-    this.isCardInEditPreview = isCardInEditPreview(this.store.card);
 
   }
 
@@ -474,57 +460,6 @@ export class FavBrowserBase extends LitElement {
       );
     }
 
-  }
-
-
-  /**
-   * Clears the error and informational alert text.
-   */
-  protected alertClear() {
-    this.alertInfo = undefined;
-    this.alertError = undefined;
-  }
-
-
-  /**
-   * Clears the error alert text.
-   */
-  protected alertErrorClear() {
-    this.alertError = undefined;
-  }
-
-
-  /**
-   * Sets the alert error message, and clears the informational alert message.
-   */
-  protected alertErrorSet(message: string): void {
-    this.alertError = message;
-    this.alertInfoClear();
-  }
-
-
-  /**
-   * Clears the informational alert text.
-   */
-  protected alertInfoClear() {
-    this.alertInfo = undefined;
-  }
-
-
-  /**
-   * Hide visual progress indicator.
-   */
-  protected progressHide(): void {
-    this.store.card.dispatchEvent(ProgressEndedEvent());
-    this.isUpdateInProgress = false;
-  }
-
-
-  /**
-   * Show visual progress indicator.
-   */
-  protected progressShow(): void {
-    this.store.card.dispatchEvent(ProgressStartedEvent());
   }
 
 

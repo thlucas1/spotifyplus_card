@@ -1,5 +1,5 @@
 // lovelace card imports.
-import { css, html, LitElement, TemplateResult, nothing } from 'lit';
+import { css, html, TemplateResult, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
 import {
   mdiPower,
@@ -8,24 +8,21 @@ import {
 } from '@mdi/js';
 
 // our imports.
+import { PLAYER_CONTROLS_ICON_TOGGLE_COLOR_DEFAULT } from '../constants';
 import { CardConfig } from '../types/card-config';
-import { Store } from '../model/store';
 import { MediaPlayer } from '../model/media-player';
 import { MediaPlayerEntityFeature, MediaPlayerState } from '../services/media-control-service';
 import { SpotifyPlusService } from '../services/spotifyplus-service';
-import { ProgressEndedEvent } from '../events/progress-ended';
-import { ProgressStartedEvent } from '../events/progress-started';
 import { closestElement, getHomeAssistantErrorMessage } from '../utils/utils';
 import { Player } from '../sections/player';
-import { PLAYER_CONTROLS_ICON_TOGGLE_COLOR_DEFAULT } from '../constants';
+import { AlertUpdatesBase } from '../sections/alert-updates-base';
 
 const { TURN_OFF, TURN_ON, VOLUME_MUTE, VOLUME_SET } = MediaPlayerEntityFeature;
 
 
-class Volume extends LitElement {
+class Volume extends AlertUpdatesBase {
 
   // public state properties.
-  @property({ attribute: false }) store!: Store;
   @property({ attribute: false }) player!: MediaPlayer;
   @property() slim: boolean = false;
 
@@ -56,9 +53,12 @@ class Volume extends LitElement {
     const colorPower = (this.player.state == MediaPlayerState.OFF);
     const colorMute = (this.player.attributes.is_volume_muted);
 
-    // get current and max volume levels.
-    const volume = this.player.getVolume();
-    const maxVolume = 100;
+    // assign volume level values.
+    const volumeStep = 1;
+    const volumeMin = 0;
+    const volumeMax = 100;
+    const volumeValue = this.player.getVolume();
+    const volumeValuePct = Math.round(Math.abs(100 * ((volumeValue - volumeMin) / (volumeMax - volumeMin))));
 
     // render control.
     return html`
@@ -73,15 +73,17 @@ class Volume extends LitElement {
         ` : html``}
         <div class="volume-slider" hide=${this.hideFeature(VOLUME_SET)} style=${this.styleVolumeSlider()}>
           <ha-control-slider
-            .value=${volume}
-            max=${maxVolume}
+            .value=${volumeValue}
+            step=${volumeStep}
+            min=${volumeMin}
+            max=${volumeMax}
             @value-changed=${this.onVolumeValueChanged}
           ></ha-control-slider>
           ${!hideLevels ? html`
             <div class="volume-level">
-              <div style="flex: ${volume};text-align: left">0%</div>
-              <div class="volume-percentage">${Math.round(volume)}%</div>
-              <div style="flex: ${maxVolume - volume};text-align: right">${maxVolume}%</div>
+              <div class="volume-level-min">${volumeMin}%</div>
+              <div class="volume-level-pct" style="flex: ${volumeValuePct}%;">${volumeValue}%</div>
+              <div class="volume-level-max">${volumeMax}%</div>
             </div>
           ` : html``}
         </div>
@@ -273,27 +275,11 @@ class Volume extends LitElement {
 
 
   /**
-   * Hide visual progress indicator.
-   */
-  protected progressHide(): void {
-    this.store.card.dispatchEvent(ProgressEndedEvent());
-  }
-
-
-  /**
-   * Show visual progress indicator.
-   */
-  protected progressShow(): void {
-    this.store.card.dispatchEvent(ProgressStartedEvent());
-  }
-
-
-  /**
    * Sets the alert error message in the parent player.
    * 
    * @param message alert message text.
    */
-  private alertErrorSet(message: string): void {
+  public override  alertErrorSet(message: string): void {
 
     // find the parent player reference, and update the message.
     // we have to do it this way due to the shadowDOM between this element and the player element.
@@ -310,7 +296,7 @@ class Volume extends LitElement {
    * 
    * @param message alert message text.
    */
-  private alertInfoSet(message: string): void {
+  public override  alertInfoSet(message: string): void {
 
     // find the parent player reference, and update the message.
     // we have to do it this way due to the shadowDOM between this element and the player element.
@@ -346,11 +332,15 @@ class Volume extends LitElement {
       ha-control-slider {
         --control-slider-color: var(--spc-player-volume-slider-color, var(--spc-player-controls-color, var(--dark-primary-color, #2196F3)));
         --control-slider-thickness: 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.10);
+        box-sizing: border-box;
       }
 
       ha-control-slider[disabled] {
         --control-slider-color: var(--disabled-text-color);
         --control-slider-thickness: 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.10);
+        box-sizing: border-box;
       }
 
       .volume-container {
@@ -370,13 +360,23 @@ class Volume extends LitElement {
         display: flex;
       }
 
-      .volume-percentage {
-        flex: 2;
-        padding-left: 2px;
-        padding-right: 2px;
+      .volume-level-min {
+        flex: 0;
+        text-align: left;
+        margin-right: 4px;
+      }
+
+      .volume-level-pct {
+        text-align: right;
         font-weight: normal;
         font-size: 10px;
         color: var(--spc-player-volume-slider-color, var(--spc-player-controls-color, var(--dark-primary-color, #2196F3)));
+      }
+
+      .volume-level-max {
+        flex: 100;
+        text-align: right;
+        margin-left: 4px;
       }
 
       *[slim] * {

@@ -39,7 +39,7 @@ export class MediaPlayer {
    */
   public getVolume() {
     if (this.attributes.volume_level) {
-      return 100 * this.attributes.volume_level;
+      return Math.round(100 * this.attributes.volume_level);
     } else {
       return 0;
     }

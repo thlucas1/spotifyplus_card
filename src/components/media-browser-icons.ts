@@ -2,8 +2,8 @@
 import { css, html, TemplateResult } from 'lit';
 
 // our imports.
-import { MediaBrowserBase } from './media-browser-base';
 import { ITEM_SELECTED } from '../constants';
+import { MediaBrowserBase } from './media-browser-base';
 import { customEvent } from '../utils/utils';
 
 

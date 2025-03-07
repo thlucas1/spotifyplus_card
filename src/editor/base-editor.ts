@@ -5,6 +5,7 @@ import { HomeAssistant } from '../types/home-assistant-frontend/home-assistant';
 import { fireEvent } from '../types/home-assistant-frontend/fire-event';
 
 // our imports.
+import { CONFIG_UPDATED } from '../constants';
 import { CardConfig } from '../types/card-config';
 import { Store } from '../model/store';
 import { ConfigArea } from '../types/config-area';
@@ -12,7 +13,6 @@ import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
 import { SpotifyPlusService } from '../services/spotifyplus-service';
 import { dispatch, getObjectDifferences, getSectionForConfigArea } from '../utils/utils';
-import { CONFIG_UPDATED } from '../constants';
 import { EditorConfigAreaSelectedEvent } from '../events/editor-config-area-selected';
 
 
@@ -225,7 +225,7 @@ export abstract class BaseEditor extends LitElement {
     }
 
     // create the store.
-    this.store = new Store(this.hass, this.config, this, configAreaSection, this.config.entity);
+    this.store = new Store(this.hass, this.config, this, configAreaSection);
 
     // set other references obtained from the store.
     this.player = this.store.player;

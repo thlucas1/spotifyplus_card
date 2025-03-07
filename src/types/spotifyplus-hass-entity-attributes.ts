@@ -86,6 +86,12 @@ export declare type SpotifyPlusHassEntityAttributes = HassEntityAttributesMediaP
   sp_user_email?: string;
 
   /**
+   * True if user has Spotify Web player Credentials configured for their Spotify user account; 
+   * otherwise, false.
+   */
+  sp_user_has_web_player_credentials?: boolean;
+
+  /**
    * User-id for the active Spotify user account (e.g. "31l77fh76whjfr7987fhebpfhqke").
    */
   sp_user_id?: string;
@@ -99,5 +105,10 @@ export declare type SpotifyPlusHassEntityAttributes = HassEntityAttributesMediaP
    * Uri for the active Spotify user account (e.g. "spotify:user:31l77fh76whjfr7987fhebpfhqke").
    */
   sp_user_uri?: string;
+
+  /**
+   * Holds card configuration state; used to display card configuration status messages.
+   */
+  sp_config_state?: string;
 
 };

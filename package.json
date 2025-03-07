@@ -1,12 +1,11 @@
 {
   "name": "spotifyplus_card",
   "version": "",
-  "description": "",
-  "main": "src/main.js",
-  "module": "src/main.js",
-  "repository": "",
+  "description": "Home Assistant UI card that supports features unique to the SpotifyPlus custom integration.",
   "author": "Todd Lucas",
   "license": "MIT",
+  "main": "dist/spotifyplus_card.js",
+  "module": "dist/spotifyplus_card.js",
   "dependencies": {
     "@mdi/js": "^7.4.47",
     "@vibrant/color": "^3.2.1-alpha.1",
@@ -69,5 +68,16 @@
     "clean": "npm run clean_delfiles && npm run clean_deldirs",
     "clean_delfiles": "del /S /Q \"node_modules\\.cache\\rollup-plugin-typescript2\\*.*\"",
     "clean_deldirs": "for /d %G in (\"node_modules\\.cache\\rollup-plugin-typescript2\\rpt2_*\") do rd /s /q \"%~G\""
-  }
+  },
+  "keywords": [
+    "lovelace"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thlucas1/spotifyplus_card"
+  },
+  "bugs": {
+    "url": "https://github.com/thlucas1/spotifyplus_card/issues"
+  },
+  "homepage": "https://github.com/thlucas1/spotifyplus_card/wiki"
 }

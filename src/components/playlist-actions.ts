@@ -14,6 +14,10 @@ import {
 } from '@mdi/js';
 
 // our imports.
+import {
+  ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD,
+  ALERT_INFO_PRESET_JSON_COPIED_TO_CLIPBOARD
+} from '../constants';
 import { sharedStylesGrid } from '../styles/shared-styles-grid.js';
 import { sharedStylesMediaInfo } from '../styles/shared-styles-media-info.js';
 import { sharedStylesFavActions } from '../styles/shared-styles-fav-actions.js';
@@ -22,7 +26,6 @@ import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
 import { formatDateHHMMSSFromMilliseconds, getHomeAssistantErrorMessage, unescapeHtml } from '../utils/utils';
 import { openWindowNewTab } from '../utils/media-browser-utils';
-import { ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD, ALERT_INFO_PRESET_JSON_COPIED_TO_CLIPBOARD } from '../constants';
 import { GetPlaylistPagePlaylistTracks } from '../types/spotifyplus/playlist-page';
 import { GetUserPresetConfigEntry, GetUserPresetConfigEntryJson } from '../types/spotifyplus/user-preset';
 import { IPlaylistSimplified } from '../types/spotifyplus/playlist-simplified';

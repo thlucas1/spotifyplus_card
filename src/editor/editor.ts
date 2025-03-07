@@ -4,6 +4,10 @@ import { state } from 'lit/decorators.js';
 import { choose } from 'lit/directives/choose.js';
 
 // our imports.
+import {
+  getConfigAreaForSection,
+  getSectionForConfigArea,
+} from '../utils/utils';
 import './editor-form';
 import './general-editor';
 import './player-editor';
@@ -25,10 +29,6 @@ import { Section } from '../types/section';
 import { Store } from '../model/store';
 import { SHOW_SECTION } from '../constants';
 import { EditorConfigAreaSelectedEvent } from '../events/editor-config-area-selected';
-import {
-  getConfigAreaForSection,
-  getSectionForConfigArea,
-} from '../utils/utils';
 
 
 class CardEditor extends BaseEditor {

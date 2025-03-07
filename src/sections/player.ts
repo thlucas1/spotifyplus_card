@@ -4,7 +4,7 @@ import { DEBUG_APP_NAME } from '../constants';
 const debuglog = Debug(DEBUG_APP_NAME + ":player");
 
 // lovelace card imports.
-import { css, html, LitElement, PropertyValues, TemplateResult } from 'lit';
+import { css, html, PropertyValues, TemplateResult } from 'lit';
 import { customElement, property, state } from "lit/decorators.js";
 import { styleMap, StyleInfo } from 'lit-html/directives/style-map.js';
 
@@ -15,6 +15,12 @@ import { styleMap, StyleInfo } from 'lit-html/directives/style-map.js';
 import Vibrant from 'node-vibrant/dist/vibrant';
 
 // our imports.
+import {
+  BRAND_LOGO_IMAGE_BASE64,
+  BRAND_LOGO_IMAGE_SIZE,
+  PLAYER_CONTROLS_BACKGROUND_COLOR_DEFAULT,
+  PLAYER_CONTROLS_ICON_SIZE_DEFAULT
+} from '../constants';
 import '../components/player-header';
 import '../components/player-body-audiobook';
 import '../components/player-body-queue';
@@ -27,25 +33,16 @@ import { Store } from '../model/store';
 import { MediaPlayer } from '../model/media-player';
 import { Palette } from '@vibrant/color';
 import { isCardInEditPreview } from '../utils/utils';
-import { playerAlerts } from '../types/playerAlerts';
-import {
-  BRAND_LOGO_IMAGE_BASE64,
-  BRAND_LOGO_IMAGE_SIZE,
-  PLAYER_CONTROLS_BACKGROUND_COLOR_DEFAULT,
-  PLAYER_CONTROLS_ICON_SIZE_DEFAULT
-} from '../constants';
+import { AlertUpdatesBase } from './alert-updates-base';
 
 
 @customElement("spc-player")
-export class Player extends LitElement implements playerAlerts {
+export class Player extends AlertUpdatesBase {
 
   // public state properties.
-  @property({ attribute: false }) store!: Store;
   @property({ attribute: false }) mediaContentId!: string;
 
   // private storage.
-  @state() private alertError?: string;
-  @state() private alertInfo?: string;
   @state() private config!: CardConfig;
   @state() private playerImage?: string;
   @state() private _colorPaletteVibrant?: string;
@@ -338,42 +335,6 @@ export class Player extends LitElement implements playerAlerts {
     return styleMap({
     });
 
-  }
-
-
-  /**
-   * Clears the error alert text.
-   */
-  public alertErrorClear(): void {
-    this.alertError = undefined;
-  }
-
-
-  /**
-   * Clears the informational alert text.
-   */
-  public alertInfoClear(): void {
-    this.alertInfo = undefined;
-  }
-
-
-  /**
-   * Sets the alert info message.
-   * 
-   * @param message alert message text.
-   */
-  public alertInfoSet(message: string): void {
-    this.alertInfo = message;
-  }
-
-
-  /**
-   * Sets the alert error message.
-   * 
-   * @param message alert message text.
-   */
-  public alertErrorSet(message: string): void {
-    this.alertError = message;
   }
 
 

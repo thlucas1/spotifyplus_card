@@ -6,6 +6,11 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.41 ] - 2025/03/07
+
+  * Added support for Spotify FREE accounts that utilize elevated credentials to control the Spotify Player.  This requires that you complete the SpotifyPlus Integration [Spotify Web Player Authentication Setup](https://github.com/thlucas1/homeassistantcomponent_spotifyplus/wiki/Device-Configuration-Options#spotify-web-player-authentication-setup) instructions.  Check out the [Limitations topic](https://github.com/thlucas1/spotifyplus_card/wiki#limitations) for complete details with what to expect for Spotify FREE accounts.
+  * Added title formatter option `{player.sp_user_has_web_player_credentials}`; True if user has Spotify Web player Credentials configured for their Spotify user account; otherwise, false.
+
 ###### [ 1.0.40 ] - 2025/02/11
 
   * Added title formatter option `{medialist.filteritemcount}`; Number of filtered items in the media list.

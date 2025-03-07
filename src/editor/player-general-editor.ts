@@ -2,9 +2,9 @@
 import { css, html, TemplateResult } from 'lit';
 
 // our imports.
+import { PLAYER_BACKGROUND_IMAGE_SIZE_DEFAULT } from '../constants';
 import { BaseEditor } from './base-editor';
 import { Section } from '../types/section';
-import { PLAYER_BACKGROUND_IMAGE_SIZE_DEFAULT } from '../constants';
 
 
 const CONFIG_SETTINGS_SCHEMA = [

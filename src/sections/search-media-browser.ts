@@ -1,3 +1,8 @@
+// debug logging.
+import Debug from 'debug/src/browser.js';
+import { DEBUG_APP_NAME } from '../constants';
+const debuglog = Debug(DEBUG_APP_NAME + ":search-media-browser");
+
 // lovelace card imports.
 import { css, html, TemplateResult } from 'lit';
 import { customElement, query, state } from 'lit/decorators.js';
@@ -33,11 +38,6 @@ import { storageService } from '../decorators/storage';
 import { SearchMediaTypes } from '../types/search-media-types';
 import { SearchMediaEventArgs } from '../events/search-media';
 import { ITrack } from '../types/spotifyplus/track';
-
-// debug logging.
-import Debug from 'debug/src/browser.js';
-import { DEBUG_APP_NAME } from '../constants';
-const debuglog = Debug(DEBUG_APP_NAME + ":search-media-browser");
 
 /** Keys used to access cached storage items. */
 const CACHE_KEY_SEARCH_MEDIA_TYPE = "_searchmediatype";

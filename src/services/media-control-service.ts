@@ -3,9 +3,13 @@ import { HassService } from './hass-service';
 import { ServiceCallRequest } from '../types/home-assistant-frontend/service-call-request';
 
 // our imports.
+import {
+  ALERT_ERROR_SPOTIFY_PREMIUM_OR_ELEVATED_REQUIRED,
+  ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED,
+  DOMAIN_MEDIA_PLAYER
+} from '../constants';
 import { MediaPlayerItem } from '../types';
 import { MediaPlayer } from '../model/media-player';
-import { ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED, DOMAIN_MEDIA_PLAYER } from '../constants';
 
 // media player services.
 export const SERVICE_TURN_ON = "turn_on";
@@ -181,6 +185,12 @@ export class MediaControlService {
    */
   public async media_previous_track(player: MediaPlayer) {
 
+    // spotify premium account required for this function.
+    // not supported by elevated credentials.
+    if (!player.isUserProductPremium()) {
+      throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
+    }
+
     // create service request.
     const serviceRequest: ServiceCallRequest = {
       domain: DOMAIN_MEDIA_PLAYER,
@@ -202,6 +212,12 @@ export class MediaControlService {
    * @param position Desired position to seek to.
    */
   public async media_seek(player: MediaPlayer, position: number) {
+
+    // spotify premium account required for this function.
+    // not supported by elevated credentials.
+    if (!player.isUserProductPremium()) {
+      throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
+    }
 
     // create service request.
     const serviceRequest: ServiceCallRequest = {
@@ -317,9 +333,9 @@ export class MediaControlService {
    */
   public async select_source(player: MediaPlayer, source: string) {
 
-    // spotify premium required for this function.
-    if (!player.isUserProductPremium()) {
-      throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
+    // spotify premium account (or elevated credentials) required for this function.
+    if (!player.isUserProductPremium() && (!player.attributes.sp_user_has_web_player_credentials)) {
+      throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_OR_ELEVATED_REQUIRED);
     }
 
     // create service request.
@@ -344,6 +360,12 @@ export class MediaControlService {
    * @param shuffle Shuffle mode enabled (true) or disabled (false).
    */
   public async shuffle_set(player: MediaPlayer, shuffle: boolean) {
+
+    // spotify premium account required for this function.
+    // not supported by elevated credentials.
+    if (!player.isUserProductPremium()) {
+      throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
+    }
 
     // create service request.
     const serviceRequest: ServiceCallRequest = {

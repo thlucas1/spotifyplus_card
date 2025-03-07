@@ -563,40 +563,66 @@ export function copyToClipboard(ev): boolean {
  */
 export function getHomeAssistantErrorMessage(ex): string {
 
+  let result = "";
+  let msgType = "";
+
+  // parse the error message based on its type.
+  do {
+
+    // if nothing passed then just return an empty string.
+    if (ex === null) {
+      msgType = "no ex argument";
+      break;
+    }
+
+    // does object implement home assistant error interface?
+    if ((typeof ex === 'object') && ('code' in ex) && ('message' in ex)) {
+
+      // get error code and message values.
+      const code: string = ex['code'];
+      const message: string = ex['message'];
+
+      // for ServiceValidationError messages, drop the "Validation error: " prefix!
+      if (code == 'service_validation_error') {
+        if (message.startsWith('Validation error: ')) {
+          result = message.substring(18);
+          msgType = "ServiceValidationError";
+          break;
+        }
+      }
+
+      // for HomeAssistantError messages, just return the message.
+      result = message;
+      msgType = "HomeAssistantError";
+      break;
+    }
+
+    // does object implement Error interface?
+    if ((typeof ex === 'object') && ('message' in ex)) {
+      result = ex['message'];
+      msgType = "Error interface";
+      break;
+    }
+
+    // return message as string.
+    if (debuglog.enabled) {
+      debuglog("%cgetHomeAssistantErrorMessage - error message (string):\n%s", "color:red", ex + "");
+    }
+    result = ex + "";
+    msgType = "string";
+    break;
+
+  } while (true);
+
   // trace.
   if (debuglog.enabled) {
-    debuglog("getHomeAssistantErrorMessage - error object:\n%s",
-      JSON.stringify(ex, null, 2),
+    debuglog("%cgetHomeAssistantErrorMessage - parsed %s message:\n- %s",
+      "color:red",
+      msgType,
+      JSON.stringify(result),
     );
   }
 
-  // if nothing passed then just return an empty string.
-  if (ex === null)
-    return "";
-
-  // does object implement home assistant error interface?
-  if ((typeof ex === 'object') && ('code' in ex) && ('message' in ex)) {
-
-    // get error code and message values.
-    const code: string = ex['code'];
-    const message: string = ex['message'];
-
-    // for ServiceValidationError messages, drop the "Validation error: " prefix!
-    if (code == 'service_validation_error') {
-      if (message.startsWith('Validation error: ')) {
-        return message.substring(18);
-      }
-    }
-
-    // return message as-is.
-    return message;
-  }
-
-  // does object implement Error interface?
-  if ((typeof ex === 'object') && ('message' in ex)) {
-    return ex['message'];
-  }
-
-  // return message as string.
-  return ex + "";
+  // return result to caller.
+  return result;
 }

@@ -1,21 +1,16 @@
 // lovelace card imports.
-import { css, html, LitElement, TemplateResult } from 'lit';
-import { property, query, state } from 'lit/decorators.js';
+import { css, html, TemplateResult } from 'lit';
+import { query, state } from 'lit/decorators.js';
 import { styleMap } from 'lit-html/directives/style-map.js';
 
 // our imports.
-import { Store } from '../model/store';
 import { MediaPlayer } from '../model/media-player';
-import { ProgressStartedEvent } from '../events/progress-started';
-import { ProgressEndedEvent } from '../events/progress-ended';
 import { closestElement, getHomeAssistantErrorMessage } from '../utils/utils';
 import { Player } from '../sections/player';
+import { AlertUpdatesBase } from '../sections/alert-updates-base';
 
 
-class Progress extends LitElement {
-
-  // public state properties.
-  @property({ attribute: false }) store!: Store;
+class Progress extends AlertUpdatesBase {
 
   // private state properties.
   @state() private playingProgress!: number;
@@ -135,27 +130,11 @@ class Progress extends LitElement {
 
 
   /**
-   * Hide visual progress indicator.
-   */
-  protected progressHide(): void {
-    this.store.card.dispatchEvent(ProgressEndedEvent());
-  }
-
-
-  /**
-   * Show visual progress indicator.
-   */
-  protected progressShow(): void {
-    this.store.card.dispatchEvent(ProgressStartedEvent());
-  }
-
-
-  /**
    * Sets the alert error message in the parent player.
    * 
    * @param message alert message text.
    */
-  private alertErrorSet(message: string): void {
+  public override alertErrorSet(message: string): void {
 
     // find the parent player reference, and update the message.
     // we have to do it this way due to the shadowDOM between this element and the player element.

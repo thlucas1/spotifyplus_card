@@ -17,6 +17,19 @@ import {
 } from '@mdi/js';
 
 // our imports.
+import {
+  ALERT_ERROR_SPOTIFY_PREMIUM_OR_ELEVATED_REQUIRED,
+  ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED,
+  DOMAIN_SPOTIFYPLUS,
+  DOMAIN_MEDIA_PLAYER
+} from '../constants';
+import {
+  SERVICE_TURN_OFF,
+  SERVICE_TURN_ON,
+  SERVICE_SELECT_SOURCE,
+  SERVICE_VOLUME_MUTE,
+  SERVICE_VOLUME_SET
+} from '../services/media-control-service'
 import { MediaPlayer } from '../model/media-player';
 import { getMdiIconImageUrl } from '../utils/media-browser-utils';
 import { CardConfig } from '../types/card-config';
@@ -55,18 +68,6 @@ import { ITrackPageSimplified } from '../types/spotifyplus/track-page-simplified
 import { ITrackRecommendations } from '../types/spotifyplus/track-recommendations';
 import { ITrackRecommendationsProperties } from '../types/spotifyplus/track-recommendations-properties';
 import { IZeroconfResponse } from '../types/spotifyplus/zeroconf-response';
-import {
-  ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED,
-  DOMAIN_SPOTIFYPLUS,
-  DOMAIN_MEDIA_PLAYER
-} from '../constants';
-import {
-  SERVICE_TURN_OFF,
-  SERVICE_TURN_ON,
-  SERVICE_SELECT_SOURCE,
-  SERVICE_VOLUME_MUTE,
-  SERVICE_VOLUME_SET
-} from '../services/media-control-service'
 
 
 /** SpotifyPlus custom services provider class. */
@@ -202,10 +203,13 @@ export class SpotifyPlusService {
 
     try {
 
-      // validations.
+      // spotify premium account required for this function.
+      // not supported by elevated credentials.
       if (!player.isUserProductPremium()) {
         throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
       }
+
+      // validations.
       if (device_id == null)
         device_id = player.attributes.source || null;
 
@@ -1864,6 +1868,12 @@ export class SpotifyPlusService {
 
     try {
 
+      // spotify premium account required for this function.
+      // not supported by elevated credentials.
+      if (!player.isUserProductPremium()) {
+        throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
+      }
+
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
         entity_id: player.id,
@@ -2934,10 +2944,12 @@ export class SpotifyPlusService {
 
     try {
 
-      // validation.
-      if (!player.isUserProductPremium()) {
-        throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
+      // spotify premium account (or elevated credentials) required for this function.
+      if (!player.isUserProductPremium() && (!player.attributes.sp_user_has_web_player_credentials)) {
+        throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_OR_ELEVATED_REQUIRED);
       }
+
+      // validations.
       if (!context_uri)
         throw new Error("STPC0005 context_uri argument was not supplied to the PlayerMediaPlayContext service.")
       if (device_id == null)
@@ -3021,10 +3033,12 @@ export class SpotifyPlusService {
 
     try {
 
-      // validations.
-      if (!player.isUserProductPremium()) {
-        throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
+      // spotify premium account (or elevated credentials) required for this function.
+      if (!player.isUserProductPremium() && (!player.attributes.sp_user_has_web_player_credentials)) {
+        throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_OR_ELEVATED_REQUIRED);
       }
+
+      // validations.
       if (device_id == null)
         device_id = player.attributes.source || null;
 
@@ -3104,10 +3118,12 @@ export class SpotifyPlusService {
 
     try {
 
-      // validation.
-      if (!player.isUserProductPremium()) {
-        throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
+      // spotify premium account (or elevated credentials) required for this function.
+      if (!player.isUserProductPremium() && (!player.attributes.sp_user_has_web_player_credentials)) {
+        throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_OR_ELEVATED_REQUIRED);
       }
+
+      // validations.
       if (!uris)
         throw new Error("STPC0005 uris argument was not supplied to the PlayerMediaPlayTracks service.")
       if (position_ms == null)
@@ -3179,10 +3195,12 @@ export class SpotifyPlusService {
 
     try {
 
-      // validations.
-      if (!player.isUserProductPremium()) {
-        throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
+      // spotify premium account (or elevated credentials) required for this function.
+      if (!player.isUserProductPremium() && (!player.attributes.sp_user_has_web_player_credentials)) {
+        throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_OR_ELEVATED_REQUIRED);
       }
+
+      // validations.
       if (device_id == null)
         device_id = player.attributes.source || null;
 
@@ -3275,10 +3293,12 @@ export class SpotifyPlusService {
 
     try {
 
-      // validation.
-      if (!player.isUserProductPremium()) {
-        throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
+      // spotify premium account (or elevated credentials) required for this function.
+      if (!player.isUserProductPremium() && (!player.attributes.sp_user_has_web_player_credentials)) {
+        throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_OR_ELEVATED_REQUIRED);
       }
+
+      // validations.
       if (device_id == null)
         device_id = player.attributes.source || null;
       if (play == null)
@@ -4578,9 +4598,9 @@ export class SpotifyPlusService {
     source: string | undefined | null = null,
   ): Promise<void> {
 
-    // spotify premium required for this function.
-    if (!player.isUserProductPremium()) {
-      throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
+    // spotify premium account (or elevated credentials) required for this function.
+    if (!player.isUserProductPremium() && (!player.attributes.sp_user_has_web_player_credentials)) {
+      throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_OR_ELEVATED_REQUIRED);
     }
 
     // create service data (with required parameters).
@@ -4658,9 +4678,9 @@ export class SpotifyPlusService {
     // if default device configured then issue transfer playback to the device.
     if (this.config.deviceDefaultId) {
 
-      // spotify premium required for device default function.
+      // spotify premium account (or elevated credentials) required for device default function.
       // we still want to honor the turn_on call portion though.
-      if (player.isUserProductPremium()) {
+      if (player.isUserProductPremium() || player.attributes.sp_user_has_web_player_credentials) {
         await this.PlayerTransferPlayback(player, this.config.deviceDefaultId, true);
       }
     }
@@ -4676,9 +4696,9 @@ export class SpotifyPlusService {
    */
   public async volume_mute(player: MediaPlayer, muteVolume: boolean) {
 
-    // spotify premium required for this function.
-    if (!player.isUserProductPremium()) {
-      throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
+    // spotify premium account (or elevated credentials) required for this function.
+    if (!player.isUserProductPremium() && (!player.attributes.sp_user_has_web_player_credentials)) {
+      throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_OR_ELEVATED_REQUIRED);
     }
 
     // create service request.
@@ -4718,9 +4738,9 @@ export class SpotifyPlusService {
    */
   public async volume_set(player: MediaPlayer, volumePercent: number) {
 
-    // spotify premium required for this function.
-    if (!player.isUserProductPremium()) {
-      throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
+    // spotify premium account (or elevated credentials) required for this function.
+    if (!player.isUserProductPremium() && (!player.attributes.sp_user_has_web_player_credentials)) {
+      throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_OR_ELEVATED_REQUIRED);
     }
 
     // convert volume level to HA float value.
@@ -4757,15 +4777,17 @@ export class SpotifyPlusService {
     mediaItem: any,
   ): Promise<void> {
 
+    // spotify premium account (or elevated credentials) required for this function.
+    if (!player.isUserProductPremium() && (!player.attributes.sp_user_has_web_player_credentials)) {
+      throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_OR_ELEVATED_REQUIRED);
+    }
+
     // validations.
     if (!player) {
       throw new Error("Media player argument was not supplied to the PlayMediaBrowserItem service.")
     }
     if (!mediaItem) {
       throw new Error("Media browser item argument was not supplied to the PlayMediaBrowserItem service.");
-    }
-    if (!player.isUserProductPremium()) {
-      throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
     }
 
     try {

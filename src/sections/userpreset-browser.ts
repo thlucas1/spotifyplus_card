@@ -8,6 +8,9 @@ import { html, TemplateResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
 
 // our imports.
+import {
+  ALERT_ERROR_SPOTIFY_PREMIUM_OR_ELEVATED_REQUIRED,
+} from '../constants';
 import '../components/media-browser-list';
 import '../components/media-browser-icons';
 import '../components/userpreset-actions';
@@ -19,7 +22,6 @@ import { getHomeAssistantErrorMessage, getUtcNowTimestamp } from '../utils/utils
 import { IUserPreset } from '../types/spotifyplus/user-preset';
 import { CategoryDisplayEvent } from '../events/category-display';
 import { FilterSectionMediaEvent } from '../events/filter-section-media';
-import { ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED } from '../constants';
 
 
 @customElement("spc-userpreset-browser")
@@ -194,8 +196,9 @@ export class UserPresetBrowser extends FavBrowserBase {
 
     try {
 
-      if (!this.player.isUserProductPremium()) {
-        throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
+      // spotify premium account (or elevated credentials) required for this function.
+      if (!this.player.isUserProductPremium() && (!this.player.attributes.sp_user_has_web_player_credentials)) {
+        throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_OR_ELEVATED_REQUIRED);
       }
 
       // show progress indicator.
@@ -268,8 +271,9 @@ export class UserPresetBrowser extends FavBrowserBase {
 
     try {
 
-      if (!this.player.isUserProductPremium()) {
-        throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
+      // spotify premium account (or elevated credentials) required for this function.
+      if (!this.player.isUserProductPremium() && (!this.player.attributes.sp_user_has_web_player_credentials)) {
+        throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_OR_ELEVATED_REQUIRED);
       }
 
       // show progress indicator.
