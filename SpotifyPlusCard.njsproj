@@ -126,6 +126,9 @@
     <TypeScriptCompile Include="src\components\media-browser-icons.ts" />
     <TypeScriptCompile Include="src\components\media-browser-list.ts" />
     <TypeScriptCompile Include="src\components\player-body-audiobook.ts" />
+    <TypeScriptCompile Include="src\components\player-body-idle.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\components\player-body-queue.ts" />
     <TypeScriptCompile Include="src\components\player-body-track.ts" />
     <TypeScriptCompile Include="src\components\player-body-show.ts" />
@@ -186,9 +189,21 @@
     <TypeScriptCompile Include="src\types\config-area.ts" />
     <TypeScriptCompile Include="src\types\custom-image-urls.ts" />
     <TypeScriptCompile Include="src\types\hass-entity-attributes-media-player.ts" />
+    <TypeScriptCompile Include="src\types\home-assistant-frontend\device-registry-entry.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\types\home-assistant-frontend\entity-registry-entry.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\types\home-assistant-frontend\fire-event.ts" />
+    <TypeScriptCompile Include="src\types\home-assistant-frontend\ha-utils.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\types\home-assistant-frontend\home-assistant.ts" />
     <TypeScriptCompile Include="src\types\home-assistant-frontend\lovelace-card-config.ts" />
+    <TypeScriptCompile Include="src\types\home-assistant-frontend\registry-entry.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\types\home-assistant-frontend\service-call-request.ts" />
     <TypeScriptCompile Include="src\types\home-assistant-frontend\service-call-response.ts" />
     <TypeScriptCompile Include="src\types\home-assistant-frontend\service-validation-error.ts" />

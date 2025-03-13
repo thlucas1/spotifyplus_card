@@ -4,7 +4,7 @@ import { DEBUG_APP_NAME } from './constants';
 const debuglog = Debug(DEBUG_APP_NAME + ":card");
 
 // lovelace card imports.
-import { css, html, LitElement, PropertyValues, TemplateResult } from 'lit';
+import { css, html, PropertyValues, TemplateResult, unsafeCSS } from 'lit';
 import { styleMap, StyleInfo } from 'lit-html/directives/style-map.js';
 import { customElement, property, query, state } from 'lit/decorators.js';
 import { choose } from 'lit/directives/choose.js';
@@ -29,6 +29,20 @@ import './components/footer';
 import './editor/editor';
 
 // our imports.
+import {
+  BRAND_LOGO_IMAGE_BASE64,
+  BRAND_LOGO_IMAGE_SIZE,
+  FOOTER_ICON_SIZE_DEFAULT,
+  PLAYER_CONTROLS_ICON_TOGGLE_COLOR_DEFAULT
+} from './constants';
+import {
+  getConfigAreaForSection,
+  getSectionForConfigArea,
+  isCardInDashboardEditor,
+  isCardInEditPreview,
+  isCardInPickerPreview,
+  isNumber,
+} from './utils/utils';
 import { SEARCH_MEDIA, SearchMediaEventArgs } from './events/search-media';
 import { FILTER_SECTION_MEDIA, FilterSectionMediaEventArgs } from './events/filter-section-media';
 import { CATEGORY_DISPLAY, CategoryDisplayEventArgs } from './events/category-display';
@@ -55,19 +69,7 @@ import { ShowFavBrowser } from './sections/show-fav-browser';
 import { TrackFavBrowser } from './sections/track-fav-browser';
 import { UserPresetBrowser } from './sections/userpreset-browser';
 import { formatTitleInfo, removeSpecialChars } from './utils/media-browser-utils';
-import {
-  BRAND_LOGO_IMAGE_BASE64,
-  BRAND_LOGO_IMAGE_SIZE,
-  FOOTER_ICON_SIZE_DEFAULT
-} from './constants';
-import {
-  getConfigAreaForSection,
-  getSectionForConfigArea,
-  isCardInEditPreview,
-  isCardInDashboardEditor,
-  isCardInPickerPreview,
-  isNumber,
-} from './utils/utils';
+import { AlertUpdatesBase } from './sections/alert-updates-base';
 
 const HEADER_HEIGHT = 2;
 const FOOTER_HEIGHT = 4;
@@ -86,7 +88,7 @@ const EDIT_BOTTOM_TOOLBAR_HEIGHT = '59px';
 
 
 @customElement("spotifyplus-card")
-export class Card extends LitElement {
+export class Card extends AlertUpdatesBase {
 
   /** 
    * Home Assistant will update the hass property of the config element on state changes, and 
@@ -108,7 +110,6 @@ export class Card extends LitElement {
 
   // private state properties.
   @state() private section!: Section;
-  @state() private store!: Store;
   @state() private showLoader!: boolean;
   @state() private loaderTimestamp!: number;
   @state() private cancelLoader!: boolean;
@@ -191,7 +192,9 @@ export class Card extends LitElement {
           <ha-circular-progress indeterminate></ha-circular-progress>
         </div>
         ${title ? html`<div class="spc-card-header" style=${this.styleCardHeader()}>${title}</div>` : ""}
-        <div class="spc-card-content-section">
+        ${this.alertError ? html`<ha-alert alert-type="error" dismissable @alert-dismissed-clicked=${this.alertErrorClear}>${this.alertError}</ha-alert>` : ""}
+        ${this.alertInfo ? html`<ha-alert alert-type="info" dismissable @alert-dismissed-clicked=${this.alertInfoClear}>${this.alertInfo}</ha-alert>` : ""}
+        <div class="spc-card-content-section" style=${this.styleCardContent()}>
           ${this.store.player.id != ""
               ? choose(this.section, [
                 [Section.ALBUM_FAVORITES, () => html`<spc-album-fav-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected} id="elmAlbumFavBrowserForm"></spc-album-fav-browser>`],
@@ -337,7 +340,7 @@ export class Card extends LitElement {
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        --mdc-theme-primary: var(--spc-card-wait-progress-slider-color, var(--dark-primary-color, #2196F3));
+        --mdc-theme-primary: var(--spc-card-wait-progress-slider-color, var(--dark-primary-color, ${unsafeCSS(PLAYER_CONTROLS_ICON_TOGGLE_COLOR_DEFAULT)}));
       }
 
       .spc-not-configured {
@@ -357,7 +360,7 @@ export class Card extends LitElement {
       }
 
       ha-circular-progress {
-        --md-sys-color-primary: var(--spc-card-wait-progress-slider-color, var(--dark-primary-color, #2196F3));
+        --md-sys-color-primary: var(--spc-card-wait-progress-slider-color, var(--dark-primary-color, ${unsafeCSS(PLAYER_CONTROLS_ICON_TOGGLE_COLOR_DEFAULT)}));
       }
     `;
   }
@@ -374,6 +377,9 @@ export class Card extends LitElement {
     // create the store.
     this.store = new Store(this.hass, this.config, this, this.section);
 
+    // set card editor indicator.
+    this.isCardInEditPreview = isCardInEditPreview(this);
+
     // have we set the player id yet?  if not, then make it so.
     if (!this.playerId) {
       this.playerId = this.config.entity;
@@ -384,8 +390,7 @@ export class Card extends LitElement {
 
       // if there are things that you only want to happen one time when the configuration
       // is initially loaded, then do them here.
-
-      //console.log("createStore (card) - isFirstTimeSetup logic invoked");
+      debuglog("createStore - isFirstTimeSetup logic invoked; creating store area");
 
       // set the initial section reference; if none defined, then default;
       if ((!this.config.sections) || (this.config.sections.length == 0)) {
@@ -453,7 +458,7 @@ export class Card extends LitElement {
     this.addEventListener(FILTER_SECTION_MEDIA, this.onFilterSectionMediaEventHandler);
 
     // only add the following events if card configuration is being edited.
-    if (isCardInEditPreview(this)) {
+    if (this.isCardInEditPreview) {
 
       // add document level event listeners.
       document.addEventListener(EDITOR_CONFIG_AREA_SELECTED, this.onEditorConfigAreaSelectedEventHandler);
@@ -504,9 +509,11 @@ export class Card extends LitElement {
     // invoke base class method.
     super.firstUpdated(changedProperties);
 
-    //console.log("firstUpdated (card) - 1st render complete - changedProperties keys:\n- %s",
-    //  JSON.stringify(Array.from(changedProperties.keys())),
-    //);
+    if (debuglog.enabled) {
+      debuglog("firstUpdated (card) - 1st render complete - changedProperties keys:\n%s",
+        JSON.stringify(Array.from(changedProperties.keys())),
+      );
+    }
 
     // if there are things that you only want to happen one time when the configuration
     // is initially loaded, then do them here.
@@ -556,7 +563,7 @@ export class Card extends LitElement {
       this.store.section = sectionNew;
       super.requestUpdate();
 
-    } else if (isCardInEditPreview(this)) {
+    } else if (this.isCardInEditPreview) {
 
       // if in edit mode, then refresh display as card size is different.
       super.requestUpdate();
@@ -707,7 +714,7 @@ export class Card extends LitElement {
     // validate section id.
     const enumValues: string[] = Object.values(Section);
     if (!enumValues.includes(evArgs.section || "")) {
-      debuglog("%onFilterSectionMediaEventHandler - Ignoring Filter request; section is not a valid Section enum value:\n%s",
+      debuglog("%conFilterSectionMediaEventHandler - Ignoring Filter request; section is not a valid Section enum value:\n%s",
         "color:red",
         JSON.stringify(evArgs, null, 2),
       );
@@ -897,7 +904,6 @@ export class Card extends LitElement {
     // remove any configuration properties that do not have a value set.
     for (const [key, value] of Object.entries(newConfig)) {
       if (Array.isArray(value) && value.length === 0) {
-        // removing empty config value.
         delete newConfig[key];
       }
     }
@@ -974,15 +980,10 @@ export class Card extends LitElement {
     // store configuration so other card sections can access them.
     this.config = newConfig;
 
-    //console.log("setConfig (card) - configuration changes applied\n- this.section=%s\n- Store.selectedConfigArea=%s",
-    //  JSON.stringify(this.section),
-    //  JSON.stringify(Store.selectedConfigArea),
-    //);
-
-    //console.log("setConfig (card) - updated configuration:\n%s",
-    //  JSON.stringify(this.config,null,2),
-    //);
-
+    debuglog("%csetConfig - Configuration changes stored\n%s",
+      "color:orange",
+      JSON.stringify(newConfig, null, 2),
+    );
   }
 
 
@@ -1142,8 +1143,9 @@ export class Card extends LitElement {
         "X_default": "/local/images/spotifyplus_card_customimages/default.png",
         "X_empty preset": "/local/images/spotifyplus_card_customimages/empty_preset.png",
         "X_Daily Mix 1": "https://brands.home-assistant.io/spotifyplus/icon.png",
-        "X_playerOffBackground": "/local/images/spotifyplus_card_customimages/playerOffBackground.png",
         "X_playerBackground": "/local/images/spotifyplus_card_customimages/playerBackground.png",
+        "X_playerIdleBackground": "/local/images/spotifyplus_card_customimages/playerIdleBackground.png",
+        "X_playerOffBackground": "/local/images/spotifyplus_card_customimages/playerOffBackground.png",
       }
     }
   }
@@ -1154,21 +1156,21 @@ export class Card extends LitElement {
   */
   private styleCard() {
 
+    // build style info object.
+    const styleInfo: StyleInfo = <StyleInfo>{};
+
     // load basic layout settings.
-    let cardWidth: string | undefined = undefined;
-    let cardHeight: string | undefined = undefined;
     let editTabHeight = '0px';
     let editBottomToolbarHeight = '0px';
     const cardWaitProgressSliderColor = this.config.cardWaitProgressSliderColor;
 
-    // build style info object.
-    const styleInfo: StyleInfo = <StyleInfo>{};
+    // set css variables that affect multiple sections of the card.
     if (cardWaitProgressSliderColor)
       styleInfo['--spc-card-wait-progress-slider-color'] = `${cardWaitProgressSliderColor}`;
 
     // are we previewing the card in the card editor?
     // if so, then we will ignore the configuration dimensions and use constants.
-    if (isCardInEditPreview(this)) {
+    if (this.isCardInEditPreview) {
 
       // card is in edit preview.
       styleInfo['--spc-card-edit-tab-height'] = `${editTabHeight}`;
@@ -1179,10 +1181,20 @@ export class Card extends LitElement {
       styleInfo['background-position'] = `${!this.playerId ? 'center' : undefined}`;
       styleInfo['background-image'] = `${!this.playerId ? 'url(' + BRAND_LOGO_IMAGE_BASE64 + ')' : undefined}`;
       styleInfo['background-size'] = `${!this.playerId ? BRAND_LOGO_IMAGE_SIZE : undefined}`;
+
+      // adjust css styling for minimized player format.
+      if (this.config.playerMinimizeOnIdle && (this.section == Section.PLAYER) && this.store.player.isPoweredOffOrIdle()) {
+        if (this.config.height != 'fill') {
+          styleInfo['height'] = `unset !important`;
+          styleInfo['min-height'] = `unset !important`;
+        }
+      }
+
       return styleMap(styleInfo);
     }
 
-    // set card picker options.
+    // are we selecting the card in the card picker?
+    // if so, then we will ignore the configuration dimensions and use constants.
     if (isCardInPickerPreview(this)) {
 
       // card is in pick preview.
@@ -1213,11 +1225,11 @@ export class Card extends LitElement {
     // - if number value specified, then use as width (in rem units).
     // - if no value specified, then use default.
     if (this.config.width == 'fill') {
-      cardWidth = '100%';
+      styleInfo['width'] = '100%';
     } else if (isNumber(String(this.config.width))) {
-      cardWidth = String(this.config.width) + 'rem';
+      styleInfo['width'] = String(this.config.width) + 'rem';
     } else {
-      cardWidth = CARD_DEFAULT_WIDTH;
+      styleInfo['width'] = CARD_DEFAULT_WIDTH;
     }
 
     // set card height based on configuration.
@@ -1225,11 +1237,19 @@ export class Card extends LitElement {
     // - if number value specified, then use as height (in rem units).
     // - if no value specified, then use default.
     if (this.config.height == 'fill') {
-      cardHeight = 'calc(100vh - var(--spc-card-footer-height) - var(--spc-card-edit-tab-height) - var(--spc-card-edit-bottom-toolbar-height))';
+      styleInfo['height'] = 'calc(100vh - var(--spc-card-footer-height) - var(--spc-card-edit-tab-height) - var(--spc-card-edit-bottom-toolbar-height))';
     } else if (isNumber(String(this.config.height))) {
-      cardHeight = String(this.config.height) + 'rem';
+      styleInfo['height'] = String(this.config.height) + 'rem';
     } else {
-      cardHeight = CARD_DEFAULT_HEIGHT;
+      styleInfo['height'] = CARD_DEFAULT_HEIGHT;
+    }
+
+    // adjust css styling for minimized player format.
+    if (this.config.playerMinimizeOnIdle && (this.section == Section.PLAYER) && this.store.player.isPoweredOffOrIdle()) {
+      if (this.config.height != 'fill') {
+        styleInfo['height'] = `unset !important`;
+        styleInfo['min-height'] = `unset !important`;
+      }
     }
 
     //console.log("styleCard (card) - calculated dimensions:\n- cardWidth=%s\n- cardHeight=%s\n- editTabHeight=%s\n- editBottomToolbarHeight=%s",
@@ -1239,11 +1259,9 @@ export class Card extends LitElement {
     //  editBottomToolbarHeight,
     //);
 
-    // build style info object.
     styleInfo['--spc-card-edit-tab-height'] = `${editTabHeight}`;
     styleInfo['--spc-card-edit-bottom-toolbar-height'] = `${editBottomToolbarHeight}`;
-    styleInfo['height'] = `${cardHeight ? cardHeight : undefined}`;
-    styleInfo['width'] = `${cardWidth ? cardWidth : undefined}`;
+
     return styleMap(styleInfo);
   }
 
@@ -1253,54 +1271,68 @@ export class Card extends LitElement {
    */
   private styleCardHeader() {
 
+    // build style info object.
+    const styleInfo: StyleInfo = <StyleInfo>{};
+
     // is player selected, and a title set?
+    // if so, then return a vibrant background style;
+    // otherwise, return an empty style to let it default to the card background.
     if ((this.section == Section.PLAYER) && (this.footerBackgroundColor)) {
-
-      // yes - return vibrant background style.
-      return styleMap({
-        '--spc-player-footer-bg-color': `${this.footerBackgroundColor || 'transparent'}`,
-        'background-color': 'var(--spc-player-footer-bg-color)',
-        'background-image': 'linear-gradient(rgba(0, 0, 0, 1.6), rgba(0, 0, 0, 0.6))',
-      });
-
-    } else {
-
-      // no - just return an empty style to let it default to the card background.
-      return styleMap({
-      });
-
+      styleInfo['--spc-player-footer-bg-color'] = `${this.footerBackgroundColor || 'transparent'}`;
+      styleInfo['background-color'] = `var(--spc-player-footer-bg-color)`;
+      styleInfo['background-image'] = `linear-gradient(rgba(0, 0, 0, 1.6), rgba(0, 0, 0, 0.6))`;
     }
+
+    return styleMap(styleInfo);
+
   }
 
 
   /**
-   * Style the <spc-card-background-container> element.
+   * Style the card content element.
+   */
+  private styleCardContent() {
+
+    // build style info object.
+    const styleInfo: StyleInfo = <StyleInfo>{};
+
+    // adjust css styling for minimized player format.
+    if (this.config.playerMinimizeOnIdle && (this.section == Section.PLAYER) && this.store.player.isPoweredOffOrIdle()) {
+      if (this.config.height != 'fill') {
+        styleInfo['height'] = `unset !important`;
+      }
+    }
+
+    return styleMap(styleInfo);
+
+  }
+
+
+  /**
+   * Style the card footer element.
    */
   private styleCardFooter() {
 
+    // build style info object.
+    const styleInfo: StyleInfo = <StyleInfo>{};
+
     // set footer icon size.
-    const footerIconSize = this.config.footerIconSize || FOOTER_ICON_SIZE_DEFAULT;
+    if (this.config.footerIconSize) {
+      styleInfo['--spc-footer-icon-size'] = `${this.config.footerIconSize}`;
+      styleInfo['--spc-footer-icon-button-size'] = `var(--spc-footer-icon-size, ${FOOTER_ICON_SIZE_DEFAULT}) + 0.75rem`;
+    }
 
     // is player selected, and a footer background color set?
+    // if so, then return vibrant background style;
+    // otherwise, let background color default to the card background color.
     if ((this.section == Section.PLAYER) && (this.footerBackgroundColor)) {
-
-      // yes - return vibrant background style.
-      return styleMap({
-        '--spc-footer-icon-size': `${footerIconSize}`,
-        '--spc-footer-icon-button-size': `var(--spc-footer-icon-size, ${FOOTER_ICON_SIZE_DEFAULT}) + 0.75rem`,
-        '--spc-player-footer-bg-color': `${this.footerBackgroundColor || 'transparent'}`,
-      });
-
+      styleInfo['--spc-player-footer-bg-color'] = `${this.footerBackgroundColor || 'transparent'}`;
     } else {
-
-      // return style map (let background color default to the card background color).
-      return styleMap({
-        '--spc-footer-icon-size': `${footerIconSize}`,
-        '--spc-footer-icon-button-size': `var(--spc-footer-icon-size, ${FOOTER_ICON_SIZE_DEFAULT}) + 0.75rem`,
-        'background': 'unset',
-      });
-
+      styleInfo['background'] = `unset`;
     }
+
+    return styleMap(styleInfo);
+
   }
 
 }

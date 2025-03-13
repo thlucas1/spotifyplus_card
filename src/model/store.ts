@@ -5,9 +5,9 @@ const debuglog = Debug(DEBUG_APP_NAME + ":store");
 
 // lovelace card imports.
 import { HomeAssistant } from '../types/home-assistant-frontend/home-assistant';
-import { HassEntity } from 'home-assistant-js-websocket';
 
 // our imports.
+import { DOMAIN_SPOTIFYPLUS } from '../constants';
 import { HassService } from '../services/hass-service';
 import { MediaControlService } from '../services/media-control-service';
 import { SpotifyPlusService } from '../services/spotifyplus-service';
@@ -17,6 +17,7 @@ import { CardConfig } from '../types/card-config';
 import { ConfigArea } from '../types/config-area';
 import { Section } from '../types/section';
 import { MediaPlayer } from './media-player';
+import { getEntityRegistryDisplayEntry_ByEntityId, getHassEntityState_ByEntityId } from '../types/home-assistant-frontend/ha-utils';
 
 
 /**
@@ -83,6 +84,10 @@ export class Store {
     this.player = this.getMediaPlayerObject();
     this.section = section;
 
+    // keep compiler happy.
+    if (debuglog.enabled) {
+    }
+
   }
 
 
@@ -94,8 +99,8 @@ export class Store {
    */
   public getMediaPlayerObject(): MediaPlayer {
 
+    const playerEntityId = this.config.entity + "";
     let player: MediaPlayer | null = null;
-    let playerEntityId = "";
     let playerState = "";
 
     do {
@@ -108,53 +113,58 @@ export class Store {
         break;
       }
 
-      // does entity id prefix exist in hass state data?
-      playerEntityId = this.config.entity;
-      const hassEntitys = Object.values(this.hass.states)
-        .filter((ent) => ent.entity_id.match(playerEntityId));
-
+      // does an ACTIVE entity id exist in hass entities data for our domain?
       // if not, then it's an error!
-      if (!hassEntitys) {
-        playerState = "Card configuration `entity` value " + JSON.stringify(playerEntityId) + " could not be matched in the HA state machine.";
+      const hassEntity = getEntityRegistryDisplayEntry_ByEntityId(this.hass, playerEntityId);
+      if (hassEntity) {
+        if (hassEntity.platform != DOMAIN_SPOTIFYPLUS) {
+          playerState = "Card configuration `entity` value " + JSON.stringify(playerEntityId) + " is not a " + JSON.stringify(DOMAIN_SPOTIFYPLUS) + " platform media player.";
+          break;
+        }
+      } else {
+        playerState = "Card configuration `entity` value " + JSON.stringify(playerEntityId) + " is not defined in HA entities table; is it disabled? is `entity` value spelled correctly (search is case-sensitive)?";
         break;
       }
 
-      // find the exact matching HA media player entity and create the media player instance.
-      hassEntitys.forEach(item => {
-        const haEntity = item as HassEntity;
-        if (haEntity.entity_id.toLowerCase() == playerEntityId.toLowerCase()) {
-          player = new MediaPlayer(haEntity);
-        }
-      })
+      // does entity id exist in hass states data?
+      const hassEntityState = getHassEntityState_ByEntityId(this.hass, this.config.entity);
+      if (hassEntityState) {
+        player = new MediaPlayer(hassEntityState);
+        //  if (debuglog.enabled) {
+        //    debuglog("%cgetMediaPlayerObject - media player was resolved:\n%s",
+        //      "color:red",
+        //      JSON.stringify(hassEntityState, null, 2),
+        //    );
+        //  }
+      } else {
+        playerState = "Card configuration `entity` value " + JSON.stringify(playerEntityId) + " could not be found in the HA state machine.";
+        break;
+      }
 
-      // did we find the player? if so, then return it if it's a media_player instance.
+      // if media player state object was resolved then return it.
       if (player) {
-        player = player as MediaPlayer;
-        if (!player.id.startsWith("media_player")) {
-          playerState = "Card configuration `entity` value " + JSON.stringify(playerEntityId) + " is not a media_player instance; please specify a media_player entity.";
-          break;
-        }
         return player;
       }
 
-      // at this point, then card configuration `entity` value could not be resolved
-      // to an HA media_player instance; we will just return a null player object.
+      // at this point, the card configuration `entity` value could not be resolved 
+      // to an active SoundTouchPlus MediaPlayerEntity instance.
       playerState = "Card configuration `entity` value " + JSON.stringify(playerEntityId) + " was not found in the HA state machine; is it disabled?";
       break;
 
     } while (true);
 
     // trace.
-    if (debuglog.enabled) {
-      debuglog("%cgetMediaPlayerObject - media player not resolved:\n%s",
-        "color:red",
-        playerState
-      );
-    }
+    //if (debuglog.enabled) {
+    //  debuglog("%cgetMediaPlayerObject - media player not resolved:\n%s",
+    //    "color:red",
+    //    playerState
+    //  );
+    //}
 
     // if player could not be resolved then create an empty one so that the
     // card still renders; the `stp_config_state` attribute value will contain
-    // the reason that the card did not render properly.
+    // the reason that the card did not render properly, and will be displayed
+    // to the user on the main card UI.
     player = new MediaPlayer({
       entity_id: "",
       state: "",

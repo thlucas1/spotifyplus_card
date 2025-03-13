@@ -15,6 +15,13 @@ const CONFIG_SETTINGS_SCHEMA = [
     required: false,
     type: 'string',
   },
+  {
+    name: 'playerMinimizeOnIdle',
+    label: "Minimize player height when state is off / idle",
+    help: 'if height not "fill"',
+    required: false,
+    selector: { boolean: {} },
+  },
 ];
 
 

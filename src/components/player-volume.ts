@@ -1,5 +1,5 @@
 // lovelace card imports.
-import { css, html, TemplateResult, nothing } from 'lit';
+import { css, html, TemplateResult, nothing, unsafeCSS } from 'lit';
 import { property } from 'lit/decorators.js';
 import {
   mdiPower,
@@ -8,7 +8,10 @@ import {
 } from '@mdi/js';
 
 // our imports.
-import { PLAYER_CONTROLS_ICON_TOGGLE_COLOR_DEFAULT } from '../constants';
+import {
+  PLAYER_CONTROLS_ICON_SIZE_DEFAULT,
+  PLAYER_CONTROLS_ICON_TOGGLE_COLOR_DEFAULT
+} from '../constants';
 import { CardConfig } from '../types/card-config';
 import { MediaPlayer } from '../model/media-player';
 import { MediaPlayerEntityFeature, MediaPlayerState } from '../services/media-control-service';
@@ -318,7 +321,7 @@ class Volume extends AlertUpdatesBase {
     // if button is toggled, then use the icon toggle color; 
     // otherwise, default to regular icon color.
     if (isToggled) {
-      return `color: var(--spc-player-controls-icon-toggle-color, ${PLAYER_CONTROLS_ICON_TOGGLE_COLOR_DEFAULT});`;
+      return `color: var(--spc-player-controls-icon-toggle-color, ${PLAYER_CONTROLS_ICON_TOGGLE_COLOR_DEFAULT})`;
     }
     return undefined;
   }
@@ -330,7 +333,7 @@ class Volume extends AlertUpdatesBase {
   static get styles() {
     return css`
       ha-control-slider {
-        --control-slider-color: var(--spc-player-volume-slider-color, var(--spc-player-controls-color, var(--dark-primary-color, #2196F3)));
+        --control-slider-color: var(--spc-player-volume-slider-color, var(--spc-player-controls-color, var(--dark-primary-color, ${unsafeCSS(PLAYER_CONTROLS_ICON_TOGGLE_COLOR_DEFAULT)})));
         --control-slider-thickness: 1rem;
         border: 1px solid rgba(255, 255, 255, 0.10);
         box-sizing: border-box;
@@ -370,7 +373,7 @@ class Volume extends AlertUpdatesBase {
         text-align: right;
         font-weight: normal;
         font-size: 10px;
-        color: var(--spc-player-volume-slider-color, var(--spc-player-controls-color, var(--dark-primary-color, #2196F3)));
+        color: var(--spc-player-volume-slider-color, var(--spc-player-controls-color, var(--dark-primary-color, ${unsafeCSS(PLAYER_CONTROLS_ICON_TOGGLE_COLOR_DEFAULT)})));
       }
 
       .volume-level-max {
@@ -404,7 +407,7 @@ class Volume extends AlertUpdatesBase {
         color: var(--spc-player-controls-icon-color, #ffffff);
         width: 100%;
         --mdc-icon-button-size: var(--spc-player-controls-icon-button-size, 2.75rem);
-        --mdc-icon-size: var(--spc-player-controls-icon-size, 2.0rem);
+        --mdc-icon-size: var(--spc-player-controls-icon-size, ${unsafeCSS(PLAYER_CONTROLS_ICON_SIZE_DEFAULT)});
       }
 
       *[hide] {

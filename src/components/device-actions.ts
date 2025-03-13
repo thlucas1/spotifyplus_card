@@ -1,5 +1,5 @@
 // lovelace card imports.
-import { css, html, TemplateResult } from 'lit';
+import { css, html, TemplateResult, unsafeCSS } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { styleMap, StyleInfo } from 'lit-html/directives/style-map.js';
 import {
@@ -9,6 +9,7 @@ import {
 } from '@mdi/js';
 
 // our imports.
+import { PLAYER_CONTROLS_ICON_TOGGLE_COLOR_DEFAULT } from '../constants';
 import { sharedStylesGrid } from '../styles/shared-styles-grid';
 import { sharedStylesMediaInfo } from '../styles/shared-styles-media-info';
 import { sharedStylesFavActions } from '../styles/shared-styles-fav-actions';
@@ -123,6 +124,9 @@ class DeviceActions extends FavActionsBase {
             
             <div class="grid-action-info-hdr-s">Device Type</div>
             <div class="grid-action-info-text-s">${this.deviceInfo?.DeviceInfo.DeviceType}</div>
+                    
+            <div class="grid-action-info-hdr-s">Group Status</div>
+            <div class="grid-action-info-text-s">${this.deviceInfo?.DeviceInfo.GroupStatus}</div>
                     
             <div class="grid-action-info-hdr-s">Product ID</div>
             <div class="grid-action-info-text-s">${this.deviceInfo?.DeviceInfo.ProductId}</div>
@@ -244,7 +248,7 @@ class DeviceActions extends FavActionsBase {
     const styleInfo: StyleInfo = <StyleInfo>{};
     if (thumbnail?.includes("svg+xml")) {
       styleInfo['mask-image'] = `url(${thumbnail})`;
-      styleInfo['background-color'] = `var(--spc-media-browser-items-svgicon-color, #2196F3)`;
+      styleInfo['background-color'] = `var(--spc-media-browser-items-svgicon-color, ${unsafeCSS(PLAYER_CONTROLS_ICON_TOGGLE_COLOR_DEFAULT)})`;
     } else {
       styleInfo['background-image'] = `url(${thumbnail})`;
       styleInfo['background-color'] = `var(--spc-media-browser-items-svgicon-color, transparent)`;

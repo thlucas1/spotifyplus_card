@@ -49,6 +49,8 @@ export interface CardConfig extends LovelaceCardConfig {
    * A value of "fill" can also be used (requires manual editing) to use 100% of 
    * the available vertical space (good for panel dashboards).
    * Default is 35.15rem.
+   * Note that card will always maintain a minimum height value of at least 15rem
+   * for header and footer areas.
    */
   height?: string | number;
 
@@ -482,6 +484,13 @@ export interface CardConfig extends LovelaceCardConfig {
    * Default is '#ffffff'.
    */
   playerControlsIconToggleColor?: string;
+
+  /**
+   * True to minimize player card height when player state goes to idle (or off) AND card height is not set to `fill`;
+   * othersie, False to use specified card `height` value.
+   * Default is false.
+   */
+  playerMinimizeOnIdle?: boolean;
 
   /**
    * Color of the player progress text labels.

@@ -1,9 +1,10 @@
 // lovelace card imports.
-import { css, html, TemplateResult } from 'lit';
+import { css, html, TemplateResult, unsafeCSS } from 'lit';
 import { query, state } from 'lit/decorators.js';
 import { styleMap } from 'lit-html/directives/style-map.js';
 
 // our imports.
+import { PLAYER_CONTROLS_ICON_TOGGLE_COLOR_DEFAULT } from '../constants';
 import { MediaPlayer } from '../model/media-player';
 import { closestElement, getHomeAssistantErrorMessage } from '../utils/utils';
 import { Player } from '../sections/player';
@@ -216,7 +217,7 @@ class Progress extends AlertUpdatesBase {
 
       .progress-bar {
         align-self: center;
-        background-color: var(--spc-player-progress-slider-color, var(--spc-player-controls-color, var(--dark-primary-color, #2196F3)));
+        background-color: var(--spc-player-progress-slider-color, var(--spc-player-controls-color, var(--dark-primary-color, ${unsafeCSS(PLAYER_CONTROLS_ICON_TOGGLE_COLOR_DEFAULT)})));
         margin-left: 2px;
         margin-right: 2px;
         height: 50%;

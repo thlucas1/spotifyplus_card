@@ -6,6 +6,11 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.42 ] - 2025/03/13
+
+  * Added `playerMinimizeOnIdle` config option to minimize player card height when player state goes to idle (or off) AND height is not set to `fill`.
+  * Added verification of the `entity` configuration value, to ensure it is a SpotifyPlus media player.
+
 ###### [ 1.0.41 ] - 2025/03/07
 
   * Added support for Spotify FREE accounts that utilize elevated credentials to control the Spotify Player.  This requires that you complete the SpotifyPlus Integration [Spotify Web Player Authentication Setup](https://github.com/thlucas1/homeassistantcomponent_spotifyplus/wiki/Device-Configuration-Options#spotify-web-player-authentication-setup) instructions.  Check out the [Limitations topic](https://github.com/thlucas1/spotifyplus_card/wiki#limitations) for complete details with what to expect for Spotify FREE accounts.

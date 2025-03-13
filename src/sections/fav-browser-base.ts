@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // debug logging.
 import Debug from 'debug/src/browser.js';
 import { DEBUG_APP_NAME } from '../constants';
@@ -23,7 +24,7 @@ import { MediaPlayer } from '../model/media-player';
 import { SpotifyPlusService } from '../services/spotifyplus-service';
 import { storageService } from '../decorators/storage';
 import { truncateMediaList } from '../utils/media-browser-utils';
-import { getHomeAssistantErrorMessage, loadHaFormLazyControls } from '../utils/utils';
+import { getHomeAssistantErrorMessage, isCardInEditPreview, loadHaFormLazyControls } from '../utils/utils';
 import { FilterSectionMediaEventArgs } from '../events/filter-section-media';
 import { AlertUpdatesBase } from './alert-updates-base';
 
@@ -142,6 +143,9 @@ export class FavBrowserBase extends AlertUpdatesBase {
     this.config = this.store.config;
     this.player = this.store.player;
     this.spotifyPlusService = this.store.spotifyPlusService;
+
+    // set card editor indicator.
+    this.isCardInEditPreview = isCardInEditPreview(this.store.card);
 
     // set scroll position (if needed).
     this.setScrollPosition();

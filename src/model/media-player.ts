@@ -47,6 +47,24 @@ export class MediaPlayer {
 
 
   /**
+   * Returns true if the player state is currently 'idle';
+   * otherwise, false.
+   */
+  public isIdle() {
+    return this.state === MediaPlayerState.IDLE;
+  }
+
+
+  /**
+   * Returns true if the player state is currently 'idle' or 'unknown'; 
+   * otherwise, false.
+   */
+  public isIdleOrUnknown() {
+    return this.state === MediaPlayerState.IDLE || this.state === MediaPlayerState.UNKNOWN;
+  }
+
+
+  /**
    * Returns true if the user is a Spotify Premium account member;
    * otherwise, false.
    */
@@ -74,7 +92,16 @@ export class MediaPlayer {
 
 
   /**
-   * Returns true if the player is currently powered off (e.g. state = 'off'); 
+   * Returns true if the player is currently powered off (e.g. state = 'off'|'idle'|'unknown'); 
+   * otherwise, false.
+   */
+  public isPoweredOffOrIdle() {
+    return this.state === MediaPlayerState.OFF || this.state === MediaPlayerState.IDLE || this.state === MediaPlayerState.UNKNOWN;
+  }
+
+
+  /**
+   * Returns true if the player is currently powered off (e.g. state = 'off'|'unknown'); 
    * otherwise, false.
    */
   public isPoweredOffOrUnknown() {

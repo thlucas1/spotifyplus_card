@@ -13,6 +13,7 @@ import {
   mdiGoogleChrome,
   mdiMicrosoftEdge,
   mdiSpeaker,
+  mdiSpeakerMultiple,
   mdiWeb,
 } from '@mdi/js';
 
@@ -2270,7 +2271,10 @@ export class SpotifyPlusService {
       if (responseObj != null) {
         // set image_url path using mdi icons for common sources.
         const sourceCompare = (responseObj.Name || "").toLocaleLowerCase();
-        if (sourceCompare.includes('web player (chrome)')) {
+        const groupStatusCompare = (responseObj.DeviceInfo.GroupStatus || "").toLocaleLowerCase();
+        if (groupStatusCompare == "group") {
+          responseObj.image_url = getMdiIconImageUrl(mdiSpeakerMultiple);
+        } else if (sourceCompare.includes('web player (chrome)')) {
           responseObj.image_url = getMdiIconImageUrl(mdiGoogleChrome);
         } else if (sourceCompare.includes('web player (microsoft edge)')) {
           responseObj.image_url = getMdiIconImageUrl(mdiMicrosoftEdge);
@@ -2357,6 +2361,8 @@ export class SpotifyPlusService {
         for (let i = responseObj.Items.length - 1; i >= 0; i--) {
           if (source_list_hide?.includes(responseObj.Items[i].Name.toLowerCase())) {
             responseObj.Items.splice(i, 1);
+          } else if (source_list_hide?.includes(responseObj.Items[i].Id.toLowerCase())) {
+            responseObj.Items.splice(i, 1);
           }
         }
 
@@ -2364,7 +2370,10 @@ export class SpotifyPlusService {
         responseObj.Items.forEach(item => {
           // set image_url path using mdi icons for common sources.
           const sourceCompare = (item.Name || "").toLocaleLowerCase();
-          if (sourceCompare.includes('web player (chrome)')) {
+          const groupStatusCompare = (item.DeviceInfo.GroupStatus || "").toLocaleLowerCase();
+          if (groupStatusCompare == "group") {
+            item.image_url = getMdiIconImageUrl(mdiSpeakerMultiple);
+          } else if (sourceCompare.includes('web player (chrome)')) {
             item.image_url = getMdiIconImageUrl(mdiGoogleChrome);
           } else if (sourceCompare.includes('web player (microsoft edge)')) {
             item.image_url = getMdiIconImageUrl(mdiMicrosoftEdge);

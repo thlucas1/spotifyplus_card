@@ -4,11 +4,10 @@ import { DEBUG_APP_NAME } from '../constants';
 const debuglog = Debug(DEBUG_APP_NAME + ":player-body-base");
 
 // lovelace card imports.
-import { css, PropertyValues, TemplateResult, nothing } from 'lit';
+import { PropertyValues, TemplateResult, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
 
 // our imports.
-import { sharedStylesFavActions } from '../styles/shared-styles-fav-actions.js';
 import { Store } from '../model/store';
 import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
@@ -67,31 +66,6 @@ export class PlayerBodyBase extends AlertUpdatesBase {
     this.isPlayerStopped = [MediaPlayerState.PLAYING, MediaPlayerState.PAUSED, MediaPlayerState.BUFFERING].includes(this.player.state) && nothing;
 
     // all html is rendered in the inheriting class.
-  }
-
-
-  /**
-   * style definitions used by this component.
-   * */
-  static get styles() {
-    return [
-      sharedStylesFavActions,
-      css`
-
-        /* extra styles not defined in shared stylesheets would go here. */
-
-        .title {
-          width: 100%;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          font-size: 1.15rem;
-          font-weight: 400;
-          text-shadow: 0 0 2px var(--spc-player-palette-vibrant);
-          color: var(--spc-player-header-title2-color, #ffffff);
-          mix-blend-mode: screen;
-        }
-      `
-    ];
   }
 
 

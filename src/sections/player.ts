@@ -14,6 +14,16 @@ import { styleMap, StyleInfo } from 'lit-html/directives/style-map.js';
 // and you will tear your hair out trying to figure out why it doesn't work!!!
 import Vibrant from 'node-vibrant/dist/vibrant';
 
+// our imports - card components.
+import '../components/player-header';
+import '../components/player-body-audiobook';
+import '../components/player-body-idle';
+import '../components/player-body-queue';
+import '../components/player-body-show';
+import '../components/player-body-track';
+import '../components/player-controls';
+import '../components/player-volume';
+
 // our imports.
 import {
   BRAND_LOGO_IMAGE_BASE64,
@@ -21,18 +31,10 @@ import {
   PLAYER_CONTROLS_BACKGROUND_COLOR_DEFAULT,
   PLAYER_CONTROLS_ICON_SIZE_DEFAULT
 } from '../constants';
-import '../components/player-header';
-import '../components/player-body-audiobook';
-import '../components/player-body-queue';
-import '../components/player-body-show';
-import '../components/player-body-track';
-import '../components/player-controls';
-import '../components/player-volume';
 import { CardConfig } from '../types/card-config';
 import { Store } from '../model/store';
 import { MediaPlayer } from '../model/media-player';
 import { Palette } from '@vibrant/color';
-import { isCardInEditPreview } from '../utils/utils';
 import { AlertUpdatesBase } from './alert-updates-base';
 
 
@@ -67,10 +69,13 @@ export class Player extends AlertUpdatesBase {
     this.config = this.store.config;
     this.player = this.store.player;
 
+    // get idle state in case we are minimizing height.
+    const isOffIdle = this.player.isPoweredOffOrIdle();
+
     // render html.
     return html`
-      <div class="player-section-container" style=${this.styleBackgroundImage()}>
-        <spc-player-header style=${this.styleHeader()}
+      <div class="player-section-container" style=${this.stylePlayerSection()}>
+        <spc-player-header style=${this.stylePlayerHeader()}
           class="player-section-header"
           .store=${this.store}
         ></spc-player-header>
@@ -80,9 +85,10 @@ export class Player extends AlertUpdatesBase {
             ${this.alertInfo ? html`<ha-alert alert-type="info" dismissable @alert-dismissed-clicked=${this.alertInfoClear}>${this.alertInfo}</ha-alert>` : ""}
           </div>
           ${(() => {
-            // if favorites disabled then we don't need to display anything in the body.
-            if ((this.config.playerControlsHideFavorites || false) == true) {
-              return (html``);
+            if (isOffIdle && this.config.playerMinimizeOnIdle && this.config.height != "fill") {
+              return (html`<spc-player-body-idle class="player-section-body-content" style="display:block" .store=${this.store}></spc-player-body-idle>`);
+            } else if ((this.config.playerControlsHideFavorites || false) == true) {
+              return (html``); // if favorites disabled then we don't need to display favorites body.
             } else if (this.player.attributes.sp_item_type == 'track') {
               return (html`<spc-player-body-track class="player-section-body-content" .store=${this.store} .mediaContentId=${this.mediaContentId}></spc-player-body-track>`);
             } else if (this.player.attributes.sp_item_type == 'podcast') {
@@ -94,9 +100,10 @@ export class Player extends AlertUpdatesBase {
             }
           })()}
           ${(() => {
-            // if play queue disabled then we don't need to display anything in the body.
-            if ((this.config.playerControlsHidePlayQueue || false) == true) {
-              return (html``);
+            if (isOffIdle && this.config.playerMinimizeOnIdle && this.config.height != "fill") {
+              return (html``); // if idle then we don't need to display queue body.
+            } else  if ((this.config.playerControlsHidePlayQueue || false) == true) {
+              return (html``); // if play queue disabled then we don't need to display queue body.
             } else if (this.player.attributes.sp_item_type == 'track') {
               return (html`<spc-player-body-queue class="player-section-body-queue" .store=${this.store} .mediaContentId=${this.mediaContentId} id="elmPlayerBodyQueue"></spc-player-body-queue>`);
             } else if (this.player.attributes.sp_item_type == 'podcast') {
@@ -164,7 +171,7 @@ export class Player extends AlertUpdatesBase {
         grid-area: body;
         height: 100%;
         overflow: hidden;
-        padding: 0.5rem;
+        padding: 0rem 0.5rem 0rem 0.5rem;
         box-sizing: border-box;
         background: transparent;
       }
@@ -209,9 +216,9 @@ export class Player extends AlertUpdatesBase {
 
 
   /**
-   * Returns a background image style.
+   * Returns an element style for the player section.
    */
-  private styleBackgroundImage() {
+  private stylePlayerSection() {
 
     // get default player background size.
     let backgroundSize: string | undefined;
@@ -228,38 +235,89 @@ export class Player extends AlertUpdatesBase {
 
     // get various image source settings.
     const configImagePlayerBg = this.config.customImageUrls?.['playerBackground'];
+    const configImagePlayerIdleBg = this.config.customImageUrls?.['playerIdleBackground'];
     const configImagePlayerOffBg = this.config.customImageUrls?.['playerOffBackground'];
     const configImageDefault = this.config.customImageUrls?.['default'];
 
-    // set header and controls section gradient background.
-    let headerBackgroundColor = this.config.playerHeaderBackgroundColor || PLAYER_CONTROLS_BACKGROUND_COLOR_DEFAULT;
-    let controlsBackgroundColor = this.config.playerControlsBackgroundColor || PLAYER_CONTROLS_BACKGROUND_COLOR_DEFAULT;
-
-    // if player is off or unknown, then reset the playerImage value so that one
+    // if player is off | idle | unknown, then reset the playerImage value so that one
     // of the default images is selected below.
-    if (this.player.isPoweredOffOrUnknown()) {
+    if (this.player.isPoweredOffOrIdle()) {
       this.playerImage = undefined;
       this.store.card.footerBackgroundColor = undefined;
     }
 
-    // set background image to display (first condition that is true):
-    // - if customImageUrls `playerOffBackground` is configured AND player is off, then use it.
-    // - if customImageUrls `playerBackground` is configured, then use it (static image).
-    // - if media player entity_picture present, then use it (changes with each song).
-    // - use static logo image (if none of the above).
-    let imageUrl: string = '';
-    if (configImagePlayerOffBg && this.player.isPoweredOffOrUnknown()) {
+    const isOff = this.player.isPoweredOffOrUnknown();
+    const isIdle = this.player.isIdle();
+
+    //console.log("%cstylePlayerSection - styling player section:\n- isOff = %s\n- isIdle = %s\n- playerImage = %s\n- playerMinimizeOnIdle = %s\n- configImagePlayerIdleBg = %s\n- configImagePlayerOffBg = %s\n- configImageDefault = %s\n- configImagePlayerBg = %s",
+    //  "color:red",
+    //  JSON.stringify(isOff),
+    //  JSON.stringify(isIdle),
+    //  JSON.stringify(this.playerImage),
+    //  JSON.stringify(this.config.playerMinimizeOnIdle),
+    //  JSON.stringify(configImagePlayerIdleBg),
+    //  JSON.stringify(configImagePlayerOffBg),
+    //  JSON.stringify(configImageDefault),
+    //  JSON.stringify(configImagePlayerBg),
+    //);
+
+    // set background image to display.
+    let imageUrl: string = "";
+    let headerBackgroundColor = 'transparent';
+    let controlsBackgroundColor = 'transparent';
+
+    if (isIdle && this.config.playerMinimizeOnIdle) {
+
+      // no background image if player is minimized.
+
+    } else if (isIdle && configImagePlayerIdleBg) {
+
+      // use configured player idle background image.
+      imageUrl = configImagePlayerIdleBg;
+      if ((imageUrl + "").toLowerCase() == "none") {
+        imageUrl = "";
+      }
+
+    } else if (isOff && this.config.playerMinimizeOnIdle) {
+
+      // no background image if player is minimized.
+
+    } else if (isOff && configImagePlayerOffBg) {
+
+      // use configured player off background image.
       imageUrl = configImagePlayerOffBg;
+      if ((imageUrl + "").toLowerCase() == "none") {
+        imageUrl = "";
+      }
+
     } else if (configImagePlayerBg) {
+
+      // use configured player background image (static image, does not change).
       imageUrl = configImagePlayerBg;
+      headerBackgroundColor = this.config.playerHeaderBackgroundColor || PLAYER_CONTROLS_BACKGROUND_COLOR_DEFAULT;
+      controlsBackgroundColor = this.config.playerControlsBackgroundColor || PLAYER_CONTROLS_BACKGROUND_COLOR_DEFAULT;
+
     } else if (this.playerImage) {
+
+      // use currently playing artwork background image; image changes with the track.
       imageUrl = this.playerImage;
-    } else {
-      imageUrl = configImageDefault || BRAND_LOGO_IMAGE_BASE64;
-      headerBackgroundColor = 'transparent';
-      controlsBackgroundColor = 'transparent';
+      headerBackgroundColor = this.config.playerHeaderBackgroundColor || PLAYER_CONTROLS_BACKGROUND_COLOR_DEFAULT;
+      controlsBackgroundColor = this.config.playerControlsBackgroundColor || PLAYER_CONTROLS_BACKGROUND_COLOR_DEFAULT;
+
+    } else if (configImageDefault) {
+
+      // use configured default background image.
+      imageUrl = configImageDefault;
       backgroundSize = BRAND_LOGO_IMAGE_SIZE;
       this.store.card.footerBackgroundColor = undefined;
+
+    } else {
+
+      // use hard-coded default background image.
+      imageUrl = BRAND_LOGO_IMAGE_BASE64;
+      backgroundSize = BRAND_LOGO_IMAGE_SIZE;
+      this.store.card.footerBackgroundColor = undefined;
+
     }
 
     // set player controls and volume controls icon size.
@@ -267,6 +325,12 @@ export class Player extends AlertUpdatesBase {
     const playerControlsIconColor = this.config.playerControlsIconColor;
     const playerControlsIconToggleColor = this.config.playerControlsIconToggleColor;
     const playerControlsColor = this.config.playerControlsColor;
+    const playerHeaderTitle1Color = this.config.playerHeaderTitle1Color;
+    const playerHeaderTitle1FontSize = this.config.playerHeaderTitle1FontSize;
+    const playerHeaderTitle2Color = this.config.playerHeaderTitle2Color;
+    const playerHeaderTitle2FontSize = this.config.playerHeaderTitle2FontSize;
+    const playerHeaderTitle3Color = this.config.playerHeaderTitle3Color;
+    const playerHeaderTitle3FontSize = this.config.playerHeaderTitle3FontSize;
     const playerProgressSliderColor = this.config.playerProgressSliderColor;
     const playerProgressLabelColor = this.config.playerProgressLabelColor;
     const playerVolumeSliderColor = this.config.playerVolumeSliderColor;
@@ -285,8 +349,21 @@ export class Player extends AlertUpdatesBase {
       styleInfo['--spc-player-controls-icon-toggle-color'] = `${playerControlsIconToggleColor}`;
     if (playerControlsIconColor)
       styleInfo['--spc-player-controls-icon-color'] = `${playerControlsIconColor}`;
-    styleInfo['--spc-player-controls-icon-size'] = `${playerControlsIconSize}`;
+    if (playerControlsIconSize)
+      styleInfo['--spc-player-controls-icon-size'] = `${playerControlsIconSize}`;
     styleInfo['--spc-player-controls-icon-button-size'] = `var(--spc-player-controls-icon-size, ${PLAYER_CONTROLS_ICON_SIZE_DEFAULT}) + 0.75rem`;
+    if (playerHeaderTitle1Color)
+      styleInfo['--spc-player-header-title1-color'] = `${playerHeaderTitle1Color}`;
+    if (playerHeaderTitle1FontSize)
+      styleInfo['--spc-player-header-title1-font-size'] = `${playerHeaderTitle1FontSize}`;
+    if (playerHeaderTitle2Color)
+      styleInfo['--spc-player-header-title2-color'] = `${playerHeaderTitle2Color}`;
+    if (playerHeaderTitle2FontSize)
+      styleInfo['--spc-player-header-title2-font-size'] = `${playerHeaderTitle2FontSize}`;
+    if (playerHeaderTitle3Color)
+      styleInfo['--spc-player-header-title3-color'] = `${playerHeaderTitle3Color}`;
+    if (playerHeaderTitle3FontSize)
+      styleInfo['--spc-player-header-title3-font-size'] = `${playerHeaderTitle3FontSize}`;
     if (playerProgressLabelColor)
       styleInfo['--spc-player-progress-label-color'] = `${playerProgressLabelColor}`;
     if (playerProgressSliderColor)
@@ -295,12 +372,14 @@ export class Player extends AlertUpdatesBase {
       styleInfo['--spc-player-volume-label-color'] = `${playerVolumeLabelColor}`;
     if (playerVolumeSliderColor)
       styleInfo['--spc-player-volume-slider-color'] = `${playerVolumeSliderColor}`;
+
     styleInfo['--spc-player-palette-vibrant'] = `${this._colorPaletteVibrant}`;
     styleInfo['--spc-player-palette-muted'] = `${this._colorPaletteMuted}`;
     styleInfo['--spc-player-palette-darkvibrant'] = `${this._colorPaletteDarkVibrant}`;
     styleInfo['--spc-player-palette-darkmuted'] = `${this._colorPaletteDarkMuted}`;
     styleInfo['--spc-player-palette-lightvibrant'] = `${this._colorPaletteLightVibrant}`;
     styleInfo['--spc-player-palette-lightmuted'] = `${this._colorPaletteLightMuted}`;
+
     return styleMap(styleInfo);
 
   }
@@ -309,14 +388,23 @@ export class Player extends AlertUpdatesBase {
   /**
    * Returns an element style for the header portion of the form.
    */
-  private styleHeader(): string | undefined {
+  private stylePlayerHeader() {
+
+    // build style info object.
+    const styleInfo: StyleInfo = <StyleInfo>{};
 
     // show / hide the header.
-    const hideHeader = this.config.playerHeaderHide || false;
-    if (hideHeader)
-      return `display: none`;
+    if (this.config.playerHeaderHide || false)
+      styleInfo['display'] = `none`;
 
-    return
+    // adjust css styling for minimized player format.
+    if (this.config.playerMinimizeOnIdle && this.store.player.isPoweredOffOrIdle()) {
+      if (this.config.height != 'fill') {
+        styleInfo['display'] = `none`;
+      }
+    }
+
+    return styleMap(styleInfo);
   }
 
 
@@ -325,16 +413,21 @@ export class Player extends AlertUpdatesBase {
    */
   private stylePlayerControls() {
 
+    // build style info object.
+    const styleInfo: StyleInfo = <StyleInfo>{};
+
     // show / hide the media controls.
-    const hideControls = this.config.playerControlsHide || false;
-    if (hideControls)
-      return styleMap({
-        'display': 'none'
-      });
+    if (this.config.playerControlsHide || false)
+      styleInfo['display'] = `none`;
 
-    return styleMap({
-    });
+    // adjust css styling for minimized player format.
+    if (this.config.playerMinimizeOnIdle && this.store.player.isPoweredOffOrIdle()) {
+      if (this.config.height != 'fill') {
+        styleInfo['justify-items'] = `flex-start`;
+      }
+    }
 
+    return styleMap(styleInfo);
   }
 
 
@@ -406,7 +499,7 @@ export class Player extends AlertUpdatesBase {
     // if we are editing the card, then we don't care about vibrant colors.
     // note that we cannot compare images here, as it's a cached value and the `cache` portion of
     // image url could change even though it's the same content that's playing!
-    if ((oldMediaContentId != newMediaContentId) && (!isCardInEditPreview(this.store.card))) {
+    if ((oldMediaContentId != newMediaContentId) && (!this.isCardInEditPreview)) {
 
       if (debuglog.enabled) {
         debuglog("willUpdate - player content changed:\n- OLD CONTENT ID = %s\n- NEW CONTENT ID = %s\n- OLD IMAGE = %s\n- NEW IMAGE = %s",
@@ -439,6 +532,10 @@ export class Player extends AlertUpdatesBase {
    * https://github.com/Vibrant-Colors/node-vibrant/issues/44
    */
   private async _extractColors(): Promise<void> {
+
+    //console.log("_extractColors (player) - extracting vibrant colors from image:\n- playerImage = %s",
+    //  JSON.stringify(this.playerImage),
+    //);
 
     //console.log("_extractColors (player) - colors before extract:\n- Vibrant      = %s\n- Muted        = %s\n- DarkVibrant  = %s\n- DarkMuted    = %s\n- LightVibrant = %s\n- LightMuted   = %s",
     //  this._colorPaletteVibrant,
