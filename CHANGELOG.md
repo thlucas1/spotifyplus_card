@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.43 ] - 2025/03/19
+
+  * Added `customImageUrls` support for device icons.
+
 ###### [ 1.0.42 ] - 2025/03/13
 
   * Added `playerMinimizeOnIdle` config option to minimize player card height when player state goes to idle (or off) AND height is not set to `fill`.

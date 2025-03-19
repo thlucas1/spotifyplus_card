@@ -531,17 +531,13 @@ export class MediaBrowserBase extends LitElement {
     // process all items in the collection.
     return (this.items || []).map((item) => {
 
-      //console.log("%c buildMediaBrowserItems - media list item:\n%s",
-      //  "color: yellow;",
-      //  JSON.stringify(item),
-      //);
-
       // build media browser info item, that will be merged with the base item.
       // get image to use as a thumbnail for the item;
       // if no image can be obtained, then use the default.
+      // note that some media items use "Name" instad of "name".
       const mbi_info: IMediaBrowserInfo = {
         image_url: getContentItemImageUrl(item, this.config, this.itemsHaveImages, DEFAULT_MEDIA_IMAGEURL),
-        title: item.name,
+        title: item.name || item.Name,
         subtitle: item.type,
         is_active: false,
       };
@@ -601,7 +597,7 @@ export class MediaBrowserBase extends LitElement {
         console.log("%cmedia-browser-utils - unknown mediaItemType = %s; mbi_info not set!", "color:red", JSON.stringify(this.mediaItemType));
       }
 
-      //console.log("%c buildMediaBrowserItems - media browser item:\n%s",
+      //console.log("%c TEST TODO buildMediaBrowserItems - media browser item:\n%s",
       //  "color: yellow;",
       //  JSON.stringify({
       //    ...item,

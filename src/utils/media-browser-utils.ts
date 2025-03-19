@@ -13,13 +13,14 @@ import { ITrack } from '../types/spotifyplus/track';
 
 /**
  * Removes all special characters from a string, so that it can be used
- * for comparison operations.
+ * for comparison operations.  The only characters remaining will be
+ * A-Z, 0-9, and space.
  * 
  * @param str String value to remove special characters from.
  * @returns The `str` value without special characters.
  */
 export function removeSpecialChars(str: string) {
-  let value = str.replace(/[^a-zA-Z ]/g, '');
+  let value = str.replace(/[^a-zA-Z0-9 ]/g, '');
   if (value)
     value = value.trim();
   return value;
@@ -40,6 +41,14 @@ export function getCustomImageUrl(collection: CustomImageUrls | undefined, title
   // note that we already removed special characters from the collection 
   // in the setConfig() method when the card configuration was loaded.
   for (const itemTitle in collection) {
+
+    //console.log("%c TEST TODO getCustomImageUrl - comparison:\n- itemTitle = %s\n- title = %s\n- title = %s (no special chars)",
+    //  "color: green;",
+    //  JSON.stringify(itemTitle),
+    //  JSON.stringify(title),
+    //  JSON.stringify(removeSpecialChars(title)),
+    //);
+
     if (itemTitle === removeSpecialChars(title)) {
       return collection[itemTitle];
     }
@@ -75,7 +84,8 @@ export function getContentItemImageUrl(item: any, config: CardConfig, hasItemsWi
   }
 
   // check for a custom imageUrl; if not found, then use the item image_url (if supplied).
-  let imageUrl = getCustomImageUrl(config.customImageUrls, item.name || '') ?? item.image_url;
+  // note that some media items use "Name" instad of "name".
+  let imageUrl = getCustomImageUrl(config.customImageUrls, item.name || item.Name || '') ?? item.image_url;
 
   // did we resolve an image_url?
   if (!imageUrl) {
