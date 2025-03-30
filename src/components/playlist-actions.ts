@@ -27,9 +27,10 @@ import { MediaPlayer } from '../model/media-player';
 import { formatDateHHMMSSFromMilliseconds, getHomeAssistantErrorMessage, unescapeHtml } from '../utils/utils';
 import { openWindowNewTab } from '../utils/media-browser-utils';
 import { GetPlaylistPagePlaylistTracks } from '../types/spotifyplus/playlist-page';
-import { GetUserPresetConfigEntry, GetUserPresetConfigEntryJson } from '../types/spotifyplus/user-preset';
+import { GetUserPresetConfigEntry, GetUserPresetConfigEntryJson, GetUserPresetObject } from '../types/spotifyplus/user-preset';
 import { IPlaylistSimplified } from '../types/spotifyplus/playlist-simplified';
 import { IPlaylistTrack } from '../types/spotifyplus/playlist-track';
+import { updateCardConfigurationStorage } from '../utils/lovelace-config-util';
 
 /**
  * Playlist actions.
@@ -44,6 +45,7 @@ enum Actions {
   PlaylistFavoriteUpdate = "PlaylistFavoriteUpdate",
   PlaylistItemsUpdate = "PlaylistItemsUpdate",
   PlaylistRecoverWebUI = "PlaylistRecoverWebUI",
+  PlaylistUserPresetAdd = "PlaylistUserPresetAdd",
 }
 
 
@@ -128,9 +130,9 @@ class PlaylistActions extends FavActionsBase {
           <div slot="headline">Delete (unfollow) Playlist</div>
         </ha-md-menu-item>
         <ha-md-divider role="separator" tabindex="-1"></ha-md-divider>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.PlaylistCopyUriToClipboard)}>
-          <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
-          <div slot="headline">Copy Playlist URI to Clipboard</div>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.PlaylistUserPresetAdd)}>
+          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          <div slot="headline">Add Playlist to User Presets</div>
         </ha-md-menu-item>
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.PlaylistCopyPresetToClipboard)}>
           <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
@@ -139,6 +141,10 @@ class PlaylistActions extends FavActionsBase {
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.PlaylistCopyPresetJsonToClipboard)}>
           <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
           <div slot="headline">Copy Playlist Preset JSON to Clipboard</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.PlaylistCopyUriToClipboard)}>
+          <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
+          <div slot="headline">Copy Playlist URI to Clipboard</div>
         </ha-md-menu-item>
       </ha-md-button-menu>
       `;
@@ -284,8 +290,8 @@ class PlaylistActions extends FavActionsBase {
       // process actions that don't require a progress indicator.
       if (action == Actions.PlaylistCopyUriToClipboard) {
 
-          copyTextToClipboard(this.mediaItem.uri);
-          return true;
+        copyTextToClipboard(this.mediaItem.uri);
+        return true;
 
       } else if (action == Actions.PlaylistRecoverWebUI) {
 
@@ -310,7 +316,13 @@ class PlaylistActions extends FavActionsBase {
       this.progressShow();
 
       // call service based on requested action, and refresh affected action component.
-      if (action == Actions.PlaylistDelete) {
+      if (action == Actions.PlaylistUserPresetAdd) {
+
+        this.store.config.userPresets?.unshift(GetUserPresetObject(this.mediaItem));
+        await updateCardConfigurationStorage(this.store.config);
+        this.progressHide();
+
+      } else if (action == Actions.PlaylistDelete) {
 
         await this.spotifyPlusService.UnfollowPlaylist(this.player, this.mediaItem.id);
         this.updateActions(this.player, [Actions.PlaylistFavoriteUpdate]);

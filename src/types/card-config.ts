@@ -13,6 +13,13 @@ import { SearchMediaTypes } from './search-media-types';
 export interface CardConfig extends LovelaceCardConfig {
 
   /** 
+   * Contains the unique ID of the card - do not edit this value!
+   * This value is used to find the specific card entry in the lovelace storage file,
+   * so that it can be updated programatically (no editor) if need be.
+   */
+  cardUniqueId?: string;
+
+  /**
    * Entity ID of the SpotifyPlus device that will process the request. 
    */
   entity: string;
@@ -969,5 +976,15 @@ export interface CardConfig extends LovelaceCardConfig {
    * Player header title 3 text font-size (in 'rem' units).
    */
   playerHeaderTitle3FontSize?: string;
+
+  /**
+   * Player minimized title text color (in #xxxxxx hex format).
+   */
+  playerMinimizedTitleColor?: string;
+
+  /**
+   * Player minimized title text font-size (in 'rem' units).
+   */
+  playerMinimizedTitleFontSize?: string;
 
 }

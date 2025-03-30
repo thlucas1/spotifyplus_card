@@ -33,9 +33,10 @@ import { getIdFromSpotifyUri } from '../services/spotifyplus-service';
 import { formatDateHHMMSSFromMilliseconds, getHomeAssistantErrorMessage } from '../utils/utils';
 import { openWindowNewTab } from '../utils/media-browser-utils';
 import { GetCopyrights } from '../types/spotifyplus/copyright';
-import { GetUserPresetConfigEntry, GetUserPresetConfigEntryJson } from '../types/spotifyplus/user-preset';
+import { GetUserPresetConfigEntry, GetUserPresetConfigEntryJson, GetUserPresetObject } from '../types/spotifyplus/user-preset';
 import { IAlbum } from '../types/spotifyplus/album';
 import { ITrackPageSimplified } from '../types/spotifyplus/track-page-simplified';
+import { updateCardConfigurationStorage } from '../utils/lovelace-config-util';
 
 /**
  * Album actions.
@@ -51,6 +52,7 @@ enum Actions {
   AlbumTracksUpdate = "AlbumTracksUpdate",
   AlbumSearchRadio = "AlbumSearchRadio",
   AlbumShowTracks = "AlbumShowTracks",
+  AlbumUserPresetAdd = "AlbumUserPresetAdd",
   ArtistCopyPresetToClipboard = "ArtistCopyPresetToClipboard",
   ArtistCopyPresetJsonToClipboard = "ArtistCopyPresetJsonToClipboard",
   ArtistCopyUriToClipboard = "ArtistCopyUriToClipboard",
@@ -66,6 +68,7 @@ enum Actions {
   ArtistShowAlbumsSingle = "ArtistShowAlbumsSingle",
   ArtistShowRelatedArtists = "ArtistShowRelatedArtists",
   ArtistShowTopTracks = "ArtistShowTopTracks",
+  ArtistUserPresetAdd = "ArtistUserPresetAdd",
 }
 
 
@@ -184,9 +187,9 @@ class AlbumActions extends FavActionsBase {
           <div slot="headline">Search for Album Radio</div>
         </ha-md-menu-item>
         <ha-md-divider role="separator" tabindex="-1"></ha-md-divider>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.AlbumCopyUriToClipboard)}>
-          <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
-          <div slot="headline">Copy Album URI to Clipboard</div>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.AlbumUserPresetAdd)}>
+          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          <div slot="headline">Add Album to User Presets</div>
         </ha-md-menu-item>
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.AlbumCopyPresetToClipboard)}>
           <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
@@ -195,6 +198,10 @@ class AlbumActions extends FavActionsBase {
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.AlbumCopyPresetJsonToClipboard)}>
           <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
           <div slot="headline">Copy Album Preset JSON to Clipboard</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.AlbumCopyUriToClipboard)}>
+          <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
+          <div slot="headline">Copy Album URI to Clipboard</div>
         </ha-md-menu-item>
       </ha-md-button-menu>
       `;
@@ -243,9 +250,9 @@ class AlbumActions extends FavActionsBase {
           <div slot="headline">Show Related Artists</div>
         </ha-md-menu-item>
         <ha-md-divider role="separator" tabindex="-1"></ha-md-divider>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistCopyUriToClipboard)}>
-          <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
-          <div slot="headline">Copy Artist URI to Clipboard</div>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistUserPresetAdd)}>
+          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          <div slot="headline">Add Artist to User Presets</div>
         </ha-md-menu-item>
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistCopyPresetToClipboard)}>
           <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
@@ -254,6 +261,10 @@ class AlbumActions extends FavActionsBase {
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistCopyPresetJsonToClipboard)}>
           <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
           <div slot="headline">Copy Artist Preset JSON to Clipboard</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistCopyUriToClipboard)}>
+          <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
+          <div slot="headline">Copy Artist URI to Clipboard</div>
         </ha-md-menu-item>
       </ha-md-button-menu>
       `;
@@ -414,12 +425,14 @@ class AlbumActions extends FavActionsBase {
 
       } else if (action == Actions.ArtistCopyPresetToClipboard) {
 
+        this.mediaItem.artists[0].image_url = this.mediaItem.image_url;
         copyTextToClipboard(GetUserPresetConfigEntry(this.mediaItem.artists[0]));
         this.alertInfoSet(ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD);
         return true;
 
       } else if (action == Actions.ArtistCopyPresetJsonToClipboard) {
 
+        this.mediaItem.artists[0].image_url = this.mediaItem.image_url;
         copyTextToClipboard(GetUserPresetConfigEntryJson(this.mediaItem.artists[0]));
         this.alertInfoSet(ALERT_INFO_PRESET_JSON_COPIED_TO_CLIPBOARD);
         return true;
@@ -483,7 +496,13 @@ class AlbumActions extends FavActionsBase {
       const uriIdArtist = getIdFromSpotifyUri(this.mediaItem.artists[0].uri);
 
       // call service based on requested action, and refresh affected action component.
-      if (action == Actions.AlbumFavoriteAdd) {
+      if (action == Actions.AlbumUserPresetAdd) {
+
+        this.store.config.userPresets?.unshift(GetUserPresetObject(this.mediaItem));
+        await updateCardConfigurationStorage(this.store.config);
+        this.progressHide();
+
+      } else if (action == Actions.AlbumFavoriteAdd) {
 
         await this.spotifyPlusService.SaveAlbumFavorites(this.player, this.mediaItem.id);
         this.updateActions(this.player, [Actions.AlbumFavoriteUpdate]);
@@ -492,6 +511,13 @@ class AlbumActions extends FavActionsBase {
 
         await this.spotifyPlusService.RemoveAlbumFavorites(this.player, this.mediaItem.id);
         this.updateActions(this.player, [Actions.AlbumFavoriteUpdate]);
+
+      } else if (action == Actions.ArtistUserPresetAdd) {
+
+        this.mediaItem.artists[0].image_url = this.mediaItem.image_url;
+        this.store.config.userPresets?.unshift(GetUserPresetObject(this.mediaItem.artists[0]));
+        await updateCardConfigurationStorage(this.store.config);
+        this.progressHide();
 
       } else if (action == Actions.ArtistFavoriteAdd) {
 

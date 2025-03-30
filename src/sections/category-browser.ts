@@ -110,7 +110,7 @@ export class CategoryBrowser extends FavBrowserBase {
               return html`<spc-playlist-actions class="media-browser-actions" .store=${this.store} .mediaItem=${this.mediaItem}></spc-playlist-actions>`;
             } else if (this.isCategoryVisible) {
               // if category is visible, then render the playlists for the category.
-              if (this.config.categoryBrowserItemsPerRow === 1) {
+              if ((this.config.categoryBrowserItemsPerRow || 4) === 1) {
                 return (
                   html`<spc-media-browser-list 
                         class="media-browser-list"
@@ -133,7 +133,7 @@ export class CategoryBrowser extends FavBrowserBase {
               }
             } else {
               // if category is not visbile, then render the category list.
-              if (this.config.categoryBrowserItemsPerRow === 1) {
+              if ((this.config.categoryBrowserItemsPerRow || 4) === 1) {
                 return (
                   html`<spc-media-browser-list 
                         class="media-browser-list"

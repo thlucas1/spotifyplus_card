@@ -1,7 +1,7 @@
 import { css } from 'lit';
 
 /** current version of the card. */
-export const CARD_VERSION = '1.0.43';
+export const CARD_VERSION = '1.0.44';
 
 /** SpotifyPlus integration domain identifier. */
 export const DOMAIN_SPOTIFYPLUS = 'spotifyplus';
@@ -57,6 +57,9 @@ export const PLAYER_CONTROLS_ICON_TOGGLE_COLOR_DEFAULT = '#2196F3';
 
 /** default size of the player background image. */
 export const PLAYER_BACKGROUND_IMAGE_SIZE_DEFAULT = "100% 100%";
+
+/** default editor value for media browser items per row settings. */
+export const EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW = 4;
 
 
 export const listStyle = css`

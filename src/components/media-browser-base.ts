@@ -10,6 +10,7 @@ import { styleMap, StyleInfo } from 'lit-html/directives/style-map.js';
 
 // our imports.
 import {
+  EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW,
   ITEM_SELECTED,
   ITEM_SELECTED_WITH_HOLD,
   PLAYER_CONTROLS_ICON_TOGGLE_COLOR_DEFAULT
@@ -86,7 +87,7 @@ export class MediaBrowserBase extends LitElement {
     // set title / source visibility based on selected section.
     this.hideTitle = true;
     this.hideSubTitle = true;
-    this.itemsPerRow = 2;
+    this.itemsPerRow = 4;
     this.listItemClass = 'button';
 
     // do ANY of the items have images?  returns true if so, otherwise false.
@@ -136,19 +137,19 @@ export class MediaBrowserBase extends LitElement {
 
     // set item control properties from configuration settings.
     if (this.mediaItemType == Section.ALBUM_FAVORITES) {
-      this.itemsPerRow = this.config.albumFavBrowserItemsPerRow || 4;
+      this.itemsPerRow = this.config.albumFavBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
       this.hideTitle = this.config.albumFavBrowserItemsHideTitle || false;
       this.hideSubTitle = this.config.albumFavBrowserItemsHideSubTitle || false;
     } else if (this.mediaItemType == Section.ARTIST_FAVORITES) {
-      this.itemsPerRow = this.config.artistFavBrowserItemsPerRow || 4;
+      this.itemsPerRow = this.config.artistFavBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
       this.hideTitle = this.config.artistFavBrowserItemsHideTitle || false;
       this.hideSubTitle = this.config.artistFavBrowserItemsHideSubTitle || false;
     } else if (this.mediaItemType == Section.AUDIOBOOK_FAVORITES) {
-      this.itemsPerRow = this.config.audiobookFavBrowserItemsPerRow || 4;
+      this.itemsPerRow = this.config.audiobookFavBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
       this.hideTitle = this.config.audiobookFavBrowserItemsHideTitle || false;
       this.hideSubTitle = this.config.audiobookFavBrowserItemsHideSubTitle || false;
     } else if (this.mediaItemType == Section.CATEGORYS) {
-      this.itemsPerRow = this.config.categoryBrowserItemsPerRow || 1;
+      this.itemsPerRow = this.config.categoryBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
       this.hideTitle = this.config.categoryBrowserItemsHideTitle || false;
       this.hideSubTitle = this.config.categoryBrowserItemsHideSubTitle || false;
     } else if (this.mediaItemType == Section.DEVICES) {
@@ -158,27 +159,27 @@ export class MediaBrowserBase extends LitElement {
       // for devices, make the source icons half the size of regular list buttons.
       this.listItemClass += ' button-device';
     } else if (this.mediaItemType == Section.EPISODE_FAVORITES) {
-      this.itemsPerRow = this.config.episodeFavBrowserItemsPerRow || 4;
+      this.itemsPerRow = this.config.episodeFavBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
       this.hideTitle = this.config.episodeFavBrowserItemsHideTitle || false;
       this.hideSubTitle = this.config.episodeFavBrowserItemsHideSubTitle || false;
     } else if (this.mediaItemType == Section.PLAYLIST_FAVORITES) {
-      this.itemsPerRow = this.config.playlistFavBrowserItemsPerRow || 4;
+      this.itemsPerRow = this.config.playlistFavBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
       this.hideTitle = this.config.playlistFavBrowserItemsHideTitle || false;
       this.hideSubTitle = this.config.playlistFavBrowserItemsHideSubTitle || false;
     } else if (this.mediaItemType == Section.RECENTS) {
-      this.itemsPerRow = this.config.recentBrowserItemsPerRow || 4;
+      this.itemsPerRow = this.config.recentBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
       this.hideTitle = this.config.recentBrowserItemsHideTitle || false;
       this.hideSubTitle = this.config.recentBrowserItemsHideSubTitle || false;
     } else if (this.mediaItemType == Section.SHOW_FAVORITES) {
-      this.itemsPerRow = this.config.showFavBrowserItemsPerRow || 4;
+      this.itemsPerRow = this.config.showFavBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
       this.hideTitle = this.config.showFavBrowserItemsHideTitle || false;
       this.hideSubTitle = this.config.showFavBrowserItemsHideSubTitle || false;
     } else if (this.mediaItemType == Section.TRACK_FAVORITES) {
-      this.itemsPerRow = this.config.trackFavBrowserItemsPerRow || 4;
+      this.itemsPerRow = this.config.trackFavBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
       this.hideTitle = this.config.trackFavBrowserItemsHideTitle || false;
       this.hideSubTitle = this.config.trackFavBrowserItemsHideSubTitle || false;
     } else if (this.mediaItemType == Section.USERPRESETS) {
-      this.itemsPerRow = this.config.userPresetBrowserItemsPerRow || 4;
+      this.itemsPerRow = this.config.userPresetBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
       this.hideTitle = this.config.userPresetBrowserItemsHideTitle || false;
       this.hideSubTitle = this.config.userPresetBrowserItemsHideSubTitle || false;
     } else {
@@ -190,7 +191,7 @@ export class MediaBrowserBase extends LitElement {
     if (this.section == Section.SEARCH_MEDIA) {
 
       if (this.config.searchMediaBrowserUseDisplaySettings || false) {
-        this.itemsPerRow = this.config.searchMediaBrowserItemsPerRow || 4;
+        this.itemsPerRow = this.config.searchMediaBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
         this.hideTitle = this.config.searchMediaBrowserItemsHideTitle || false;
         this.hideSubTitle = this.config.searchMediaBrowserItemsHideSubTitle || false;
       }
@@ -597,7 +598,7 @@ export class MediaBrowserBase extends LitElement {
         console.log("%cmedia-browser-utils - unknown mediaItemType = %s; mbi_info not set!", "color:red", JSON.stringify(this.mediaItemType));
       }
 
-      //console.log("%c TEST TODO buildMediaBrowserItems - media browser item:\n%s",
+      //console.log("%c buildMediaBrowserItems - media browser item:\n%s",
       //  "color: yellow;",
       //  JSON.stringify({
       //    ...item,

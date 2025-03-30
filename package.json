@@ -17,10 +17,12 @@
     "@vibrant/quantizer-mmcq": "^3.2.1-alpha.1",
     "copy-text-to-clipboard": "^3.2.0",
     "debug": "^4.3.7",
+    "deep-clone-simple": "^1.1.1",
     "home-assistant-js-websocket": "^9.4.0",
     "lit": "^2.8.0",
     "node-vibrant": "^3.2.1-alpha.1",
-    "url": "^0.11.4"
+    "url": "^0.11.4",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.24.4",

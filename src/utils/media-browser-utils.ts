@@ -42,7 +42,7 @@ export function getCustomImageUrl(collection: CustomImageUrls | undefined, title
   // in the setConfig() method when the card configuration was loaded.
   for (const itemTitle in collection) {
 
-    //console.log("%c TEST TODO getCustomImageUrl - comparison:\n- itemTitle = %s\n- title = %s\n- title = %s (no special chars)",
+    //console.log("%c getCustomImageUrl - comparison:\n- itemTitle = %s\n- title = %s\n- title = %s (no special chars)",
     //  "color: green;",
     //  JSON.stringify(itemTitle),
     //  JSON.stringify(title),

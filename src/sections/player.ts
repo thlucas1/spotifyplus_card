@@ -47,6 +47,7 @@ export class Player extends AlertUpdatesBase {
   // private storage.
   @state() private config!: CardConfig;
   @state() private playerImage?: string;
+  @state() private _colorPaletteImage?: string;
   @state() private _colorPaletteVibrant?: string;
   @state() private _colorPaletteMuted?: string;
   @state() private _colorPaletteDarkVibrant?: string;
@@ -220,6 +221,9 @@ export class Player extends AlertUpdatesBase {
    */
   private stylePlayerSection() {
 
+    // build style info object.
+    const styleInfo: StyleInfo = <StyleInfo>{};
+
     // get default player background size.
     let backgroundSize: string | undefined;
 
@@ -243,7 +247,9 @@ export class Player extends AlertUpdatesBase {
     // of the default images is selected below.
     if (this.player.isPoweredOffOrIdle()) {
       this.playerImage = undefined;
-      this.store.card.footerBackgroundColor = undefined;
+      if (!this.config.playerMinimizeOnIdle) {
+        this.store.card.footerBackgroundColor = undefined;
+      }
     }
 
     const isOff = this.player.isPoweredOffOrUnknown();
@@ -266,21 +272,16 @@ export class Player extends AlertUpdatesBase {
     let headerBackgroundColor = 'transparent';
     let controlsBackgroundColor = 'transparent';
 
-    if (isIdle && this.config.playerMinimizeOnIdle) {
-
-      // no background image if player is minimized.
-
-    } else if (isIdle && configImagePlayerIdleBg) {
+    if (isIdle && configImagePlayerIdleBg) {
 
       // use configured player idle background image.
       imageUrl = configImagePlayerIdleBg;
       if ((imageUrl + "").toLowerCase() == "none") {
         imageUrl = "";
       }
-
-    } else if (isOff && this.config.playerMinimizeOnIdle) {
-
-      // no background image if player is minimized.
+      if (this.config.playerMinimizeOnIdle) {
+        backgroundSize = "cover";
+      }
 
     } else if (isOff && configImagePlayerOffBg) {
 
@@ -288,6 +289,9 @@ export class Player extends AlertUpdatesBase {
       imageUrl = configImagePlayerOffBg;
       if ((imageUrl + "").toLowerCase() == "none") {
         imageUrl = "";
+      }
+      if (this.config.playerMinimizeOnIdle) {
+        backgroundSize = "cover";
       }
 
     } else if (configImagePlayerBg) {
@@ -331,13 +335,14 @@ export class Player extends AlertUpdatesBase {
     const playerHeaderTitle2FontSize = this.config.playerHeaderTitle2FontSize;
     const playerHeaderTitle3Color = this.config.playerHeaderTitle3Color;
     const playerHeaderTitle3FontSize = this.config.playerHeaderTitle3FontSize;
+    const playerMinimizedTitleColor = this.config.playerMinimizedTitleColor;
+    const playerMinimizedTitleFontSize = this.config.playerMinimizedTitleFontSize;
     const playerProgressSliderColor = this.config.playerProgressSliderColor;
     const playerProgressLabelColor = this.config.playerProgressLabelColor;
     const playerVolumeSliderColor = this.config.playerVolumeSliderColor;
     const playerVolumeLabelColor = this.config.playerVolumeLabelColor;
 
     // build style info object.
-    const styleInfo: StyleInfo = <StyleInfo>{};
     styleInfo['background-image'] = `url(${imageUrl})`;
     if (backgroundSize)
       styleInfo['--spc-player-background-size'] = `${backgroundSize}`;
@@ -364,6 +369,10 @@ export class Player extends AlertUpdatesBase {
       styleInfo['--spc-player-header-title3-color'] = `${playerHeaderTitle3Color}`;
     if (playerHeaderTitle3FontSize)
       styleInfo['--spc-player-header-title3-font-size'] = `${playerHeaderTitle3FontSize}`;
+    if (playerMinimizedTitleColor)
+      styleInfo['--spc-player-minimized-title-color'] = `${playerMinimizedTitleColor}`;
+    if (playerMinimizedTitleFontSize)
+      styleInfo['--spc-player-minimized-title-font-size'] = `${playerMinimizedTitleFontSize}`;
     if (playerProgressLabelColor)
       styleInfo['--spc-player-progress-label-color'] = `${playerProgressLabelColor}`;
     if (playerProgressSliderColor)
@@ -448,8 +457,9 @@ export class Player extends AlertUpdatesBase {
     const changedPropKeys = Array.from(changedProperties.keys())
 
     //if (debuglog.enabled) {
-    //  debuglog("willUpdate - changed property keys:\n",
+    //  debuglog("willUpdate - changed property keys:\n%s\n- PlayerImage = %s",
     //    JSON.stringify(changedPropKeys),
+    //    JSON.stringify(this.playerImage),
     //  );
     //}
 
@@ -494,29 +504,44 @@ export class Player extends AlertUpdatesBase {
         return;
       }
     }
-    
-    // did the content change?  if so, then extract the color differences from the associated image.
-    // if we are editing the card, then we don't care about vibrant colors.
-    // note that we cannot compare images here, as it's a cached value and the `cache` portion of
-    // image url could change even though it's the same content that's playing!
-    if ((oldMediaContentId != newMediaContentId) && (!this.isCardInEditPreview)) {
 
-      if (debuglog.enabled) {
-        debuglog("willUpdate - player content changed:\n- OLD CONTENT ID = %s\n- NEW CONTENT ID = %s\n- OLD IMAGE = %s\n- NEW IMAGE = %s",
-          JSON.stringify(oldMediaContentId),
-          JSON.stringify(newMediaContentId),
-          JSON.stringify(oldImage),
-          JSON.stringify(newImage),
-        );
+    //console.log("willUpdate - player content values:\n- OLD CONTENT ID = %s\n- NEW CONTENT ID = %s\n- mediaContentId = %s\n- OLD IMAGE = %s\n- NEW IMAGE = %s\n- PlayerImage = %s\n- footerBackgroundColor = %s",
+    //  JSON.stringify(oldMediaContentId),
+    //  JSON.stringify(newMediaContentId),
+    //  JSON.stringify(this.mediaContentId),
+    //  JSON.stringify(oldImage),
+    //  JSON.stringify(newImage),
+    //  JSON.stringify(this.playerImage),
+    //  JSON.stringify(this.store.card.footerBackgroundColor),
+    //);
+
+    // only need to update vibrant colors if we are not editing the card.
+    if (!this.isCardInEditPreview) {
+
+      // did the content change? 
+      // if so, then extract the color differences from the associated image.
+      // note that we cannot compare images here, as it's a cached value and the `cache` portion of
+      // image url could change even though it's the same content that's playing!
+      if (oldMediaContentId != newMediaContentId) {
+
+        if (debuglog.enabled) {
+          debuglog("willUpdate - player content changed:\n- OLD CONTENT ID = %s\n- NEW CONTENT ID = %s\n- mediaContentId = %s\n- OLD IMAGE = %s\n- NEW IMAGE = %s",
+            JSON.stringify(oldMediaContentId),
+            JSON.stringify(newMediaContentId),
+            JSON.stringify(this.mediaContentId),
+            JSON.stringify(oldImage),
+            JSON.stringify(newImage),
+          );
+        }
+
+        // extract the color differences from the new image and set the player colors.
+        this._extractColors();
+
+        // store the new media id in the exposed property so that other forms
+        // are informed of the change.
+        this.mediaContentId = newMediaContentId || "";
+
       }
-
-      // extract the color differences from the new image and set the player colors.
-      this._extractColors();
-
-      // store the new media id in the exposed property so that other forms
-      // are informed of the change.
-      this.mediaContentId = newMediaContentId || "";
-
     }
   }
 
@@ -559,6 +584,8 @@ export class Player extends AlertUpdatesBase {
 
       // create vibrant instance with our desired options.
       const vibrant: Vibrant = new Vibrant(this.playerImage || '', vibrantOptions);
+      this._colorPaletteImage = this.playerImage || '';
+      if (this._colorPaletteImage) { }  // keep the compiler happy!
 
       // get the color palettes for the player background image.
       await vibrant.getPalette().then(

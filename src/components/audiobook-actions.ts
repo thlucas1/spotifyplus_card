@@ -30,9 +30,10 @@ import { formatDateHHMMSSFromMilliseconds, getHomeAssistantErrorMessage, unescap
 import { openWindowNewTab } from '../utils/media-browser-utils';
 import { GetCopyrights } from '../types/spotifyplus/copyright';
 import { GetResumeInfo } from '../types/spotifyplus/resume-point';
-import { GetUserPresetConfigEntry, GetUserPresetConfigEntryJson } from '../types/spotifyplus/user-preset';
+import { GetUserPresetConfigEntry, GetUserPresetConfigEntryJson, GetUserPresetObject } from '../types/spotifyplus/user-preset';
 import { IAudiobookSimplified, GetAudiobookNarrators, GetAudiobookAuthors } from '../types/spotifyplus/audiobook-simplified';
 import { IChapterPageSimplified } from '../types/spotifyplus/chapter-page-simplified';
+import { updateCardConfigurationStorage } from '../utils/lovelace-config-util';
 
 /**
  * Audiobook actions.
@@ -47,6 +48,7 @@ enum Actions {
   AudiobookChaptersUpdate = "AudiobookChaptersUpdate",
   AudiobookSearchAuthor = "AudiobookSearchAuthor",
   AudiobookSearchNarrator = "AudiobookSearchNarrator",
+  AudiobookUserPresetAdd = "AudiobookUserPresetAdd",
 }
 
 
@@ -131,9 +133,9 @@ class AudiobookActions extends FavActionsBase {
           <div slot="headline">Other Audiobooks by same Narrator</div>
         </ha-md-menu-item>
         <ha-md-divider role="separator" tabindex="-1"></ha-md-divider>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.AudiobookCopyUriToClipboard)}>
-          <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
-          <div slot="headline">Copy Audiobook URI to Clipboard</div>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.AudiobookUserPresetAdd)}>
+          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          <div slot="headline">Add Audiobook to User Presets</div>
         </ha-md-menu-item>
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.AudiobookCopyPresetToClipboard)}>
           <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
@@ -142,6 +144,10 @@ class AudiobookActions extends FavActionsBase {
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.AudiobookCopyPresetJsonToClipboard)}>
           <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
           <div slot="headline">Copy Audiobook Preset JSON to Clipboard</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.AudiobookCopyUriToClipboard)}>
+          <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
+          <div slot="headline">Copy Audiobook URI to Clipboard</div>
         </ha-md-menu-item>
       </ha-md-button-menu>
       `;
@@ -304,7 +310,13 @@ class AudiobookActions extends FavActionsBase {
       this.progressShow();
 
       // call service based on requested action, and refresh affected action component.
-      if (action == Actions.AudiobookFavoriteAdd) {
+      if (action == Actions.AudiobookUserPresetAdd) {
+
+        this.store.config.userPresets?.unshift(GetUserPresetObject(this.mediaItem));
+        await updateCardConfigurationStorage(this.store.config);
+        this.progressHide();
+
+      } else if (action == Actions.AudiobookFavoriteAdd) {
 
         await this.spotifyPlusService.SaveAudiobookFavorites(this.player, this.mediaItem.id);
         this.updateActions(this.player, [Actions.AudiobookFavoriteUpdate]);

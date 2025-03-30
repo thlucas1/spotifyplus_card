@@ -1,6 +1,10 @@
 // lovelace card imports.
 import { css, html, TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
+import {
+  mdiDotsHorizontal,
+  mdiTrashCan,
+} from '@mdi/js';
 
 // our imports.
 import { sharedStylesGrid } from '../styles/shared-styles-grid.js';
@@ -11,6 +15,16 @@ import { FavActionsBase } from './fav-actions-base';
 import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
 import { IUserPreset } from '../types/spotifyplus/user-preset';
+import { updateCardConfigurationStorage } from '../utils/lovelace-config-util.js';
+import { Store } from '../model/store.js';
+import { ConfigArea } from '../types/config-area.js';
+
+/**
+ * UserPreset actions.
+ */
+enum Actions {
+  UserPresetRemove = "UserPresetRemove",
+}
 
 
 class UserPresetActions extends FavActionsBase {
@@ -40,6 +54,19 @@ class UserPresetActions extends FavActionsBase {
     // invoke base class method.
     super.render();
 
+    // define dropdown menu actions - userpreset.
+    const actionsUserPresetHtml = html`
+      <ha-md-button-menu slot="selection-bar" positioning="popover">
+        <ha-assist-chip slot="trigger">
+          <ha-svg-icon slot="icon" .path=${mdiDotsHorizontal}></ha-svg-icon>
+        </ha-assist-chip>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.UserPresetRemove)}>
+          <ha-svg-icon slot="start" .path=${mdiTrashCan}></ha-svg-icon>
+          <div slot="headline">Remove User Preset Item</div>
+        </ha-md-menu-item>
+      </ha-md-button-menu>
+      `;
+
     // render html.
     return html` 
       <div class="userpreset-actions-container">
@@ -64,6 +91,11 @@ class UserPresetActions extends FavActionsBase {
               <div class="grid-action-info-hdr-s">Origin</div>
               <div class="grid-action-info-text-s">${this.mediaItem.origin}</div>
 
+            </div>
+            <div class="media-info-text-ms-c pad-top">
+              <span class="actions-dropdown-menu">
+                ${actionsUserPresetHtml}
+              </span>
             </div>
           </div>
         </div>
@@ -92,8 +124,83 @@ class UserPresetActions extends FavActionsBase {
         flex-direction: column;
         height: 100%;  
       }
+
+      .pad-top {
+        padding-top: 0.50rem;
+      }
     `
     ];
+  }
+
+
+  /**
+   * Handles the `click` event fired when a control icon is clicked.
+   * 
+   * @param action Action to execute.
+   * @param args Action arguments.
+   */
+  protected override async onClickAction(action: Actions): Promise<boolean> {
+
+    // if card is being edited, then don't bother.
+    if (this.isCardInEditPreview) {
+      return true;
+    }
+
+    try {
+
+      // process actions that don't require a progress indicator.
+      // n/a
+
+      // show progress indicator.
+      this.progressShow();
+
+      // call service based on requested action, and refresh affected action component.
+      if (action == Actions.UserPresetRemove) {
+
+        // if preset is not in the card config, then we can't do it.
+        if (this.mediaItem.origin != "card config") {
+          this.progressHide();
+          this.alertInfoSet("JSON File preset items must be removed via a file editor, since they may affect other card configurations.");
+          return true;
+        }
+
+        // remove user preset from card configuration.
+        const presets = this.store.config.userPresets || [];
+        for (let i = presets.length - 1; i >= 0; i--) {
+          if ((presets[i].name == this.mediaItem.name) && (presets[i].subtitle == this.mediaItem.subtitle) && ((presets[i].image_url || "") == (this.mediaItem.image_url || ""))) {
+            presets.splice(i, 1);
+            break;
+          }
+        }
+
+        // update configuration with changes.
+        this.store.config.userPresets = presets;
+        await updateCardConfigurationStorage(this.store.config);
+        this.progressHide();
+
+        // re-select the userpreset browser for display; otherwise, the player section 
+        // is automatically selected when the configuration is reloaded.
+        Store.selectedConfigArea = ConfigArea.USERPRESET_BROWSER;
+
+        this.alertInfoSet("User Preset was removed: \"" + this.mediaItem.name + "\".");
+
+      } else {
+
+        // no action selected - hide progress indicator.
+        this.progressHide();
+
+      }
+
+      return true;
+    }
+    catch (error) {
+
+      // clear the progress indicator and set alert error message.
+      this.progressHide();
+      this.alertErrorSet("Action failed: " + getHomeAssistantErrorMessage(error));
+      return true;
+
+    }
   }
 
 

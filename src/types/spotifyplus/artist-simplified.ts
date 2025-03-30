@@ -24,7 +24,16 @@ export interface IArtistSimplified {
   id: string;
 
 
-  /** 
+  /**
+   * Image to use for media browser displays.
+   * 
+   * By default this property is undefined since Spotify does not include images for artists
+   * in the returned api data.  
+   */
+  image_url?: string | undefined;
+
+
+  /**
    * The name of the artist.
    */
   name: string;

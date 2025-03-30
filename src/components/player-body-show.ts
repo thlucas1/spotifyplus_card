@@ -27,8 +27,9 @@ import { SearchMediaEvent } from '../events/search-media';
 import { getIdFromSpotifyUri } from '../services/spotifyplus-service';
 import { formatDateHHMMSSFromMilliseconds, getHomeAssistantErrorMessage, unescapeHtml } from '../utils/utils';
 import { openWindowNewTab } from '../utils/media-browser-utils';
-import { GetUserPresetConfigEntry, GetUserPresetConfigEntryJson } from '../types/spotifyplus/user-preset';
+import { GetUserPresetConfigEntry, GetUserPresetConfigEntryJson, GetUserPresetObject } from '../types/spotifyplus/user-preset';
 import { IEpisode } from '../types/spotifyplus/episode';
+import { updateCardConfigurationStorage } from '../utils/lovelace-config-util';
 
 /**
  * Show actions.
@@ -40,6 +41,7 @@ enum Actions {
   EpisodeFavoriteAdd = "EpisodeFavoriteAdd",
   EpisodeFavoriteRemove = "EpisodeFavoriteRemove",
   EpisodeFavoriteUpdate = "EpisodeFavoriteUpdate",
+  EpisodeUserPresetAdd = "EpisodeUserPresetAdd",
   GetPlayingItem = "GetPlayingItem",
   ShowCopyPresetToClipboard = "ShowCopyPresetToClipboard",
   ShowCopyPresetJsonToClipboard = "ShowCopyPresetJsonToClipboard",
@@ -48,6 +50,7 @@ enum Actions {
   ShowFavoriteRemove = "ShowFavoriteRemove",
   ShowFavoriteUpdate = "ShowFavoriteUpdate",
   ShowSearchEpisodes = "ShowSearchEpisodes",
+  ShowUserPresetAdd = "ShowUserPresetAdd",
 }
 
 
@@ -152,9 +155,9 @@ export class PlayerBodyShow extends PlayerBodyBase {
           <div slot="headline">Search for Show Episodes</div>
         </ha-md-menu-item>
         <ha-md-divider role="separator" tabindex="-1"></ha-md-divider>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ShowCopyUriToClipboard)}>
-          <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
-          <div slot="headline">Copy Show URI to Clipboard</div>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ShowUserPresetAdd)}>
+          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          <div slot="headline">Add Show to User Presets</div>
         </ha-md-menu-item>
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.ShowCopyPresetToClipboard)}>
           <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
@@ -163,6 +166,10 @@ export class PlayerBodyShow extends PlayerBodyBase {
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.ShowCopyPresetJsonToClipboard)}>
           <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
           <div slot="headline">Copy Show Preset JSON to Clipboard</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ShowCopyUriToClipboard)}>
+          <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
+          <div slot="headline">Copy Show URI to Clipboard</div>
         </ha-md-menu-item>
       </ha-md-button-menu>
       `;
@@ -173,9 +180,9 @@ export class PlayerBodyShow extends PlayerBodyBase {
         <ha-assist-chip slot="trigger">
           <ha-svg-icon slot="icon" .path=${mdiDotsHorizontal}></ha-svg-icon>
         </ha-assist-chip>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.EpisodeCopyUriToClipboard)}>
-          <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
-          <div slot="headline">Copy Episode URI to Clipboard</div>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.EpisodeUserPresetAdd)}>
+          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          <div slot="headline">Add Episode to User Presets</div>
         </ha-md-menu-item>
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.EpisodeCopyPresetToClipboard)}>
           <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
@@ -184,6 +191,10 @@ export class PlayerBodyShow extends PlayerBodyBase {
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.EpisodeCopyPresetJsonToClipboard)}>
           <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
           <div slot="headline">Copy Episode Preset JSON to Clipboard</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.EpisodeCopyUriToClipboard)}>
+          <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
+          <div slot="headline">Copy Episode URI to Clipboard</div>
         </ha-md-menu-item>
       </ha-md-button-menu>
       `;
@@ -335,7 +346,13 @@ export class PlayerBodyShow extends PlayerBodyBase {
       this.progressShow();
 
       // call service based on requested action, and refresh affected action component.
-      if (action == Actions.ShowFavoriteAdd) {
+      if (action == Actions.ShowUserPresetAdd) {
+
+        this.store.config.userPresets?.unshift(GetUserPresetObject(this.episode?.show));
+        await updateCardConfigurationStorage(this.store.config);
+        this.progressHide();
+
+      } else if (action == Actions.ShowFavoriteAdd) {
 
         await this.spotifyPlusService.SaveShowFavorites(this.player, this.episode?.show.id);
         this.updateActions(this.player, [Actions.ShowFavoriteUpdate]);
@@ -344,6 +361,12 @@ export class PlayerBodyShow extends PlayerBodyBase {
 
         await this.spotifyPlusService.RemoveShowFavorites(this.player, this.episode?.show.id);
         this.updateActions(this.player, [Actions.ShowFavoriteUpdate]);
+
+      } else if (action == Actions.EpisodeUserPresetAdd) {
+
+        this.store.config.userPresets?.unshift(GetUserPresetObject(this.episode));
+        await updateCardConfigurationStorage(this.store.config);
+        this.progressHide();
 
       } else if (action == Actions.EpisodeFavoriteAdd) {
 

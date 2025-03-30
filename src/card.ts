@@ -10,6 +10,7 @@ import { customElement, property, query, state } from 'lit/decorators.js';
 import { choose } from 'lit/directives/choose.js';
 import { when } from 'lit/directives/when.js';
 import { HomeAssistant } from './types/home-assistant-frontend/home-assistant';
+import { v4 as uuidv4 } from 'uuid';
 
 // our imports - card sections and editor.
 import './sections/album-fav-browser';          // SECTION.ALBUM_FAVORITES
@@ -171,7 +172,7 @@ export class Card extends AlertUpdatesBase {
       Store.selectedConfigArea = ConfigArea.GENERAL;
     }
 
-    //console.log("render (card) - rendering card\n- this.store.section=%s\n- this.section=%s\n- Store.selectedConfigArea=%s\n- playerId=%s\n- config.sections=%s",
+    //console.log("render (card) - rendering card\n- store.section=%s\n- section=%s\n- Store.selectedConfigArea=%s\n- playerId=%s\n- config.sections=%s",
     //  JSON.stringify(this.store.section),
     //  JSON.stringify(this.section),
     //  JSON.stringify(Store.selectedConfigArea),
@@ -395,6 +396,7 @@ export class Card extends AlertUpdatesBase {
       // set the initial section reference; if none defined, then default;
       if ((!this.config.sections) || (this.config.sections.length == 0)) {
 
+        debuglog("createStore - isFirstTimeSetup defaulting section to PLAYER");
         this.config.sections = [Section.PLAYER];
         this.section = Section.PLAYER;
         this.store.section = this.section;
@@ -404,6 +406,7 @@ export class Card extends AlertUpdatesBase {
       } else if (!this.section) {
 
         // section was not set; set section selected based on selected ConfigArea.
+        debuglog("createStore - isFirstTimeSetup defaulting section to Store.selectedConfigArea (%s)", JSON.stringify(Store.selectedConfigArea));
         this.section = getSectionForConfigArea(Store.selectedConfigArea);
         this.store.section = this.section;
         super.requestUpdate();
@@ -908,56 +911,9 @@ export class Card extends AlertUpdatesBase {
       }
     }
 
-    // default configration values if not set.
-    newConfig.albumFavBrowserItemsPerRow = newConfig.albumFavBrowserItemsPerRow || 4;
-    newConfig.albumFavBrowserItemsHideTitle = newConfig.albumFavBrowserItemsHideTitle || false;
-    newConfig.albumFavBrowserItemsSortTitle = newConfig.albumFavBrowserItemsSortTitle || false;
-
-    newConfig.artistFavBrowserItemsPerRow = newConfig.artistFavBrowserItemsPerRow || 4;
-    newConfig.artistFavBrowserItemsHideTitle = newConfig.artistFavBrowserItemsHideTitle || false;
-    newConfig.artistFavBrowserItemsSortTitle = newConfig.artistFavBrowserItemsSortTitle || false;
-
-    newConfig.audiobookFavBrowserItemsPerRow = newConfig.audiobookFavBrowserItemsPerRow || 4;
-    newConfig.audiobookFavBrowserItemsHideTitle = newConfig.audiobookFavBrowserItemsHideTitle || false;
-    newConfig.audiobookFavBrowserItemsSortTitle = newConfig.audiobookFavBrowserItemsSortTitle || false;
-
-    newConfig.categoryBrowserItemsPerRow = newConfig.categoryBrowserItemsPerRow || 4;
-    newConfig.categoryBrowserItemsHideTitle = newConfig.categoryBrowserItemsHideTitle || false;
-    newConfig.categoryBrowserItemsSortTitle = newConfig.categoryBrowserItemsSortTitle || false;
-
-    newConfig.deviceBrowserItemsPerRow = newConfig.deviceBrowserItemsPerRow || 1;
-    newConfig.deviceBrowserItemsHideSubTitle = newConfig.deviceBrowserItemsHideSubTitle || false;
-    newConfig.deviceBrowserItemsHideTitle = newConfig.deviceBrowserItemsHideTitle || false;
-
-    newConfig.playerHeaderHide = newConfig.playerHeaderHide || false;
-    newConfig.playerHeaderHideProgressBar = newConfig.playerHeaderHideProgressBar || false;
-    newConfig.playerControlsHideFavorites = newConfig.playerControlsHideFavorites || false;
-    newConfig.playerControlsHidePlayQueue = newConfig.playerControlsHidePlayQueue || false;
-    newConfig.playerControlsHidePlayPause = newConfig.playerControlsHidePlayPause || false;
-    newConfig.playerControlsHideRepeat = newConfig.playerControlsHideRepeat || false;
-    newConfig.playerControlsHideShuffle = newConfig.playerControlsHideShuffle || false;
-    newConfig.playerControlsHideTrackNext = newConfig.playerControlsHideTrackNext || false;
-    newConfig.playerControlsHideTrackPrev = newConfig.playerControlsHideTrackPrev || false;
-
-    newConfig.playlistFavBrowserItemsPerRow = newConfig.playlistFavBrowserItemsPerRow || 4;
-    newConfig.playlistFavBrowserItemsHideTitle = newConfig.playlistFavBrowserItemsHideTitle || false;
-    newConfig.playlistFavBrowserItemsSortTitle = newConfig.playlistFavBrowserItemsSortTitle || false;
-
-    newConfig.recentBrowserItemsPerRow = newConfig.recentBrowserItemsPerRow || 4;
-    newConfig.recentBrowserItemsHideSubTitle = newConfig.recentBrowserItemsHideSubTitle || false;
-    newConfig.recentBrowserItemsHideTitle = newConfig.recentBrowserItemsHideTitle || false;
-
-    newConfig.showFavBrowserItemsPerRow = newConfig.showFavBrowserItemsPerRow || 4;
-    newConfig.showFavBrowserItemsHideTitle = newConfig.showFavBrowserItemsHideTitle || false;
-    newConfig.showFavBrowserItemsSortTitle = newConfig.showFavBrowserItemsSortTitle || false;
-
-    newConfig.trackFavBrowserItemsPerRow = newConfig.trackFavBrowserItemsPerRow || 4;
-    newConfig.trackFavBrowserItemsHideTitle = newConfig.trackFavBrowserItemsHideTitle || false;
-    newConfig.trackFavBrowserItemsSortTitle = newConfig.trackFavBrowserItemsSortTitle || false;
-
-    newConfig.userPresetBrowserItemsPerRow = newConfig.userPresetBrowserItemsPerRow || 4;
-    newConfig.userPresetBrowserItemsHideSubTitle = newConfig.userPresetBrowserItemsHideSubTitle || false;
-    newConfig.userPresetBrowserItemsHideTitle = newConfig.userPresetBrowserItemsHideTitle || false;
+    // default configration values if required.
+    // note that we generally do not want to default any values - if we did, then the values will
+    // get stored with the configuration if it is updated programatically (outside of the UI editor).
 
     // if custom imageUrl's are supplied, then remove special characters from each title
     // to speed up comparison when imageUrl's are loaded later on.  we will also
@@ -977,10 +933,10 @@ export class Card extends AlertUpdatesBase {
       Store.selectedConfigArea = ConfigArea.GENERAL;
     }
 
-    // store configuration so other card sections can access them.
+    // set configuration reference so other card sections can access it.
     this.config = newConfig;
 
-    debuglog("%csetConfig - Configuration changes stored\n%s",
+    debuglog("%csetConfig - Configuration reference set\n%s",
       "color:orange",
       JSON.stringify(newConfig, null, 2),
     );
@@ -1027,6 +983,8 @@ export class Card extends AlertUpdatesBase {
   public static getStubConfig(): Record<string, unknown> {
 
     return {
+      cardUniqueId: uuidv4(),
+
       sections: [Section.PLAYER, Section.ALBUM_FAVORITES, Section.ARTIST_FAVORITES, Section.PLAYLIST_FAVORITES,
         Section.RECENTS, Section.DEVICES, Section.TRACK_FAVORITES, Section.USERPRESETS, Section.AUDIOBOOK_FAVORITES, 
         Section.SHOW_FAVORITES, Section.EPISODE_FAVORITES, Section.SEARCH_MEDIA],
@@ -1315,6 +1273,17 @@ export class Card extends AlertUpdatesBase {
 
     // build style info object.
     const styleInfo: StyleInfo = <StyleInfo>{};
+
+    // if player is idle or off and minimize is enabled, then hide the footer if
+    // the Player section is enabled.
+    if (this.config.playerMinimizeOnIdle) {
+      if (this.store.player.isPoweredOffOrIdle()) {
+        if ((this.config.sections || []).indexOf(Section.PLAYER) > -1) {
+          styleInfo['display'] = `none`;
+          this.section = Section.PLAYER
+        }
+      }
+    }
 
     // set footer icon size.
     if (this.config.footerIconSize) {

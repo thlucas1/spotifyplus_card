@@ -280,7 +280,7 @@
     <TypeScriptCompile Include="src\types\spotifyplus\zeroconf-property.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus\zeroconf-response.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus\user-preset.ts" />
-    <TypeScriptCompile Include="src\utils\config-util.ts" />
+    <TypeScriptCompile Include="src\utils\lovelace-config-util.ts" />
     <TypeScriptCompile Include="src\utils\media-browser-utils.ts" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
