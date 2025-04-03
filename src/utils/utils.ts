@@ -268,6 +268,12 @@ export function isCardInDashboardEditor() {
   * Returns true if the card is currently being previewed in the card editor; 
   * otherwise, false.
   * 
+  * 2025/03/31 - changed to use the `closestElement` function, which looks for the 
+  * the "<HUI-CARD>", with a parent of "<DIV CLASS='element-preview'>"; the older
+  * method did not detect the card in edit mode when it was a child card (e.g. part 
+  * of a vertical-stack or horizontal-stack card type).
+  * 
+  * Pre 2025/03/31 detection method:
   * The parentElement structure will look like the following when the MAIN card
   * is in edit preview mode (in the card configuration editor preview pane):
   * 
@@ -286,12 +292,39 @@ export function isCardInDashboardEditor() {
   */
 export function isCardInEditPreview(cardElement: Element) {
 
-  let parent1Cls: string | undefined = undefined;
-  let parent2Cls: string | undefined = undefined;
-
   // get parent element data.
   if (cardElement) {
 
+    // check for "<hui-card>" tag reference;
+    const cardHuiObj = closestElement("hui-card", cardElement) as Element;
+    if (cardHuiObj) {
+      //console.log("isCardInEditPreview - closestElement found \"<hui-card>\" tag; checking for \".element-preview\" class parent");
+
+      // check for "element-preview" class reference;
+      // if found, then the card is being edited.
+      const cardPreviewObj = closestElement(".element-preview", cardHuiObj) as Element;
+      if (cardPreviewObj) {
+        //console.log("isCardInEditPreview - closestElement found \".element-preview\" class; card is in edit mode");
+        return true;
+      } else {
+        //console.log("isCardInEditPreview - closestElement did NOT find \".element-preview\" class; card is NOT in edit mode");
+        return false;
+      }
+    } else {
+      return false;
+    }
+
+  } else {
+
+    //console.log("isCardInEditPreview - cardElement object not supplied; card is NOT in edit mode");
+    return false;
+
+  }
+
+  //let parent1Cls: string | undefined = undefined;
+  //let parent2Cls: string | undefined = undefined;
+
+    // get parent element data.
     //console.log("isCardInEditPreview - ParentElement tagName info:\n parentElement1: %s = %s\n parentElement2: %s = %s\n parentElement3: %s = %s\n parentElement4: %s = %s\n parentElement5: %s = %s\n parentElement6: %s = %s\n parentElement7: %s = %s",
     //  cardElement.parentElement?.tagName, cardElement.parentElement?.className,
     //  cardElement.parentElement?.parentElement?.tagName, cardElement.parentElement?.parentElement?.className,
@@ -302,29 +335,29 @@ export function isCardInEditPreview(cardElement: Element) {
     //  cardElement.parentElement?.parentElement?.parentElement?.parentElement?.parentElement?.parentElement?.parentElement?.tagName, cardElement.parentElement?.parentElement?.parentElement?.parentElement?.parentElement?.parentElement?.parentElement?.className,
     //);
 
-    const parent1Elm = cardElement.parentElement;
-    if (parent1Elm) {
-      parent1Cls = (parent1Elm.className || '').trim();
-      const parent2Elm = parent1Elm.parentElement;
-      if (parent2Elm) {
-        parent2Cls = (parent2Elm.className || '').trim();
-      }
-    }
-  } else {
-    // cardElement was undefined.
-  }
+//    const parent1Elm = cardElement.parentElement;
+//    if (parent1Elm) {
+//      parent1Cls = (parent1Elm.className || '').trim();
+//      const parent2Elm = parent1Elm.parentElement;
+//      if (parent2Elm) {
+//        parent2Cls = (parent2Elm.className || '').trim();
+//      }
+//    }
+//  } else {
+//    // cardElement was undefined.
+//  }
 
-  // check if the main or editor cards are in the configuration editor preview pane.
-  let result = false;
-  if (parent2Cls === 'element-preview') {
-    // MAIN card is in the configuration editor preview pane.
-    result = true;
-  } else if (parent1Cls === 'gui-editor') {
-    // EDITOR card is in the configuration editor preview pane.
-    result = true;
-  }
+//  // check if the main or editor cards are in the configuration editor preview pane.
+//  let result = false;
+//  if (parent2Cls === 'element-preview') {
+//    // MAIN card is in the configuration editor preview pane.
+//    result = true;
+//  } else if (parent1Cls === 'gui-editor') {
+//    // EDITOR card is in the configuration editor preview pane.
+//    result = true;
+//  }
 
-  return result;
+//  return result;
 }
 
 

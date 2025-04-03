@@ -12,6 +12,13 @@ import { when } from 'lit/directives/when.js';
 import { HomeAssistant } from './types/home-assistant-frontend/home-assistant';
 import { v4 as uuidv4 } from 'uuid';
 
+// ** IMPORTANT - Vibrant notes:
+// ensure that you have "compilerOptions"."lib": [ ... , "WebWorker" ] specified
+// in your tsconfig.json!  If not, the Vibrant module will not initialize correctly
+// and you will tear your hair out trying to figure out why it doesn't work!!!
+import Vibrant from 'node-vibrant/dist/vibrant';
+import { Palette } from '@vibrant/color';
+
 // our imports - card sections and editor.
 import './sections/album-fav-browser';          // SECTION.ALBUM_FAVORITES
 import './sections/artist-fav-browser';         // SECTION.ARTIST_FAVORITES
@@ -38,6 +45,7 @@ import {
 } from './constants';
 import {
   getConfigAreaForSection,
+  getHomeAssistantErrorMessage,
   getSectionForConfigArea,
   isCardInDashboardEditor,
   isCardInEditPreview,
@@ -116,6 +124,18 @@ export class Card extends AlertUpdatesBase {
   @state() private cancelLoader!: boolean;
   @state() private playerId!: string;
 
+  // vibrant processing state properties.
+  @state() public playerImage?: string;
+  @state() public playerMediaContentId?: string;
+  @state() public vibrantImage?: string;
+  @state() public vibrantMediaContentId?: string;
+  @state() private vibrantColorVibrant?: string;
+  @state() private vibrantColorMuted?: string;
+  @state() private vibrantColorDarkVibrant?: string;
+  @state() private vibrantColorDarkMuted?: string;
+  @state() private vibrantColorLightVibrant?: string;
+  @state() private vibrantColorLightMuted?: string;
+
   // card section references.
   @query("#elmSearchMediaBrowserForm", false) private elmSearchMediaBrowserForm!: SearchBrowser;
   @query("#elmCategoryBrowserForm", false) private elmCategoryBrowserForm!: CategoryBrowser;
@@ -132,6 +152,9 @@ export class Card extends AlertUpdatesBase {
 
   /** Indicates if createStore method is executing for the first time (true) or not (false). */
   private isFirstTimeSetup: boolean = true;
+
+  /** Indicates if an async update is in progress (true) or not (false). */
+  protected isUpdateInProgressAsync!: boolean;
 
 
   /**
@@ -185,6 +208,9 @@ export class Card extends AlertUpdatesBase {
     const sections = this.config.sections;
     const showFooter = !sections || sections.length > 1;
     const title = formatTitleInfo(this.config.title, this.config, this.store.player);
+
+    // check for background image changes.
+    this.checkForBackgroundImageChange();
 
     // render html for the card.
     return html`
@@ -1219,6 +1245,12 @@ export class Card extends AlertUpdatesBase {
 
     styleInfo['--spc-card-edit-tab-height'] = `${editTabHeight}`;
     styleInfo['--spc-card-edit-bottom-toolbar-height'] = `${editBottomToolbarHeight}`;
+    styleInfo['--spc-player-palette-vibrant'] = `${this.vibrantColorVibrant}`;
+    styleInfo['--spc-player-palette-muted'] = `${this.vibrantColorMuted}`;
+    styleInfo['--spc-player-palette-darkvibrant'] = `${this.vibrantColorDarkVibrant}`;
+    styleInfo['--spc-player-palette-darkmuted'] = `${this.vibrantColorDarkMuted}`;
+    styleInfo['--spc-player-palette-lightvibrant'] = `${this.vibrantColorLightVibrant}`;
+    styleInfo['--spc-player-palette-lightmuted'] = `${this.vibrantColorLightMuted}`;
 
     return styleMap(styleInfo);
   }
@@ -1275,12 +1307,16 @@ export class Card extends AlertUpdatesBase {
     const styleInfo: StyleInfo = <StyleInfo>{};
 
     // if player is idle or off and minimize is enabled, then hide the footer if
-    // the Player section is enabled.
+    // the Player section is enabled and there are no alerts.
     if (this.config.playerMinimizeOnIdle) {
-      if (this.store.player.isPoweredOffOrIdle()) {
-        if ((this.config.sections || []).indexOf(Section.PLAYER) > -1) {
-          styleInfo['display'] = `none`;
-          this.section = Section.PLAYER
+      if (!this.alertError) {
+        if (this.store.player.isPoweredOffOrIdle()) {
+          if ((this.config.sections || []).indexOf(Section.PLAYER) > -1) {
+            styleInfo['display'] = `none`;
+            // make player section the default.
+            this.section = Section.PLAYER;
+            Store.selectedConfigArea = ConfigArea.PLAYER;
+          }
         }
       }
     }
@@ -1301,6 +1337,247 @@ export class Card extends AlertUpdatesBase {
     }
 
     return styleMap(styleInfo);
+
+  }
+
+
+  /**
+   * We will check for changes in the media player background image.  If a
+   * change is being made, then we will analyze the new image for the vibrant
+   * color palette.  We will then set some css variables with those values for
+   * use by the different player sections (header, progress, volume, etc). 
+   * 
+   * Extracts color compositions from the background image, which will be used for 
+   * rendering controls that are displayed on top of the background image.
+   * 
+   * Good resource on the Vibrant package parameters, examples, and other info:
+   * https://github.com/Vibrant-Colors/node-vibrant
+   * https://kiko.io/post/Get-and-use-a-dominant-color-that-matches-the-header-image/
+   * https://jariz.github.io/vibrant.js/
+   * https://github.com/Vibrant-Colors/node-vibrant/issues/44
+   */
+  private checkForBackgroundImageChange(): void {
+
+    try {
+
+      // check if vibrant color processing is already in progress;
+      // if so, then exit as we need to wait for it to finish.
+      if (!this.isUpdateInProgressAsync) {
+        this.isUpdateInProgressAsync = true;
+      } else {
+        return;
+      }
+
+      // save variables in case player render changes them while we are processing them;
+      // we will reference the saved variables for the remainder of this method!
+      const playerImageSaved: string | undefined = this.playerImage;
+      const playerMediaContentIdSaved: string | undefined = this.playerMediaContentId;
+
+      // if card is being edited then don't bother, as every keystroke will initiate a
+      // complete reload of the card!
+      if (this.isCardInEditPreview) {
+        this.isUpdateInProgressAsync = false;
+        this.footerBackgroundColor = undefined;
+        return;
+      }
+
+      //console.log("%ccheckForBackgroundImageChange - TEST TODO REMOVEME starting;\n- OLD vibrantMediaContentId = %s\n- NEW playerMediaContentId = %s\n- OLD vibrantImage = %s\n- NEW playerImage = %s\n- isCardInEditPreview = %s\n- footerBackgroundColor = %s",
+      //  "color:gold",
+      //  JSON.stringify(this.vibrantMediaContentId),
+      //  JSON.stringify(playerMediaContentIdSaved),
+      //  JSON.stringify(this.vibrantImage),
+      //  JSON.stringify(playerImageSaved),
+      //  JSON.stringify(this.isCardInEditPreview),
+      //  JSON.stringify(this.store.card.footerBackgroundColor),
+      //);
+
+      // did the content change? if not, then we are done.
+      // note that we cannot compare images here, as it's a cached value and the `cache` portion of
+      // image url could change even though it's the same content that's playing!
+      if (this.vibrantMediaContentId === playerMediaContentIdSaved) {
+        this.isUpdateInProgressAsync = false;
+        return;
+      }
+
+      // if no player image, or the brand logo image is displayed, then we will
+      // reset the vibrant color and exit; this will default the footer and header
+      // backgrounds to the card background color.
+      if ((playerImageSaved == "") || (playerMediaContentIdSaved == "BRAND_LOGO_IMAGE_BASE64")) {
+        this.vibrantImage = playerImageSaved;
+        this.vibrantMediaContentId = playerMediaContentIdSaved;
+        this.vibrantColorVibrant = undefined;
+        this.footerBackgroundColor = this.vibrantColorVibrant;
+        this.isUpdateInProgressAsync = false;
+        return;
+      }
+
+      if (debuglog.enabled) {
+        debuglog("checkForBackgroundImageChange - player content changed:\n- OLD vibrantMediaContentId = %s\n- NEW playerMediaContentId = %s\n- OLD vibrantImage = %s\n- NEW playerImage = %s\n- isCardInEditPreview = %s\n- footerBackgroundColor = %s",
+          JSON.stringify(this.vibrantMediaContentId),
+          JSON.stringify(playerMediaContentIdSaved),
+          JSON.stringify(this.vibrantImage),
+          JSON.stringify(playerImageSaved),
+          JSON.stringify(this.isCardInEditPreview),
+          JSON.stringify(this.footerBackgroundColor),
+        );
+      }
+
+      //console.log("%ccheckForBackgroundImageChange - colors before extract:\n- Vibrant      = %s\n- Muted        = %s\n- DarkVibrant  = %s\n- DarkMuted    = %s\n- LightVibrant = %s\n- LightMuted   = %s",
+      //  "color:gold",
+      //  this.vibrantColorVibrant,
+      //  this.vibrantColorMuted,
+      //  this.vibrantColorDarkVibrant,
+      //  this.vibrantColorDarkMuted,
+      //  this.vibrantColorLightVibrant,
+      //  this.vibrantColorLightMuted,
+      //);
+
+      // we use the `Promise.allSettled` approach here, so that we can
+      // easily add promises if more data gathering is needed in the future.
+      const promiseRequests = new Array<Promise<unknown>>();
+
+      // create promise - extract vibrant colors.
+      const promiseVibrant = new Promise((resolve, reject) => {
+
+        // set options for vibrant call.
+        const vibrantOptions = {
+          "colorCount": 64, // amount of colors in initial palette from which the swatches will be generated.
+          "quality": 3,     // quality. 0 is highest, but takes way more processing.
+          //  "quantizer": 'mmcq',
+          //  "generators": ['default'],
+          //  "filters": ['default'],
+        }
+
+        // create vibrant instance with our desired options.
+        const vibrant: Vibrant = new Vibrant(playerImageSaved || '', vibrantOptions);
+
+        // get the color palettes for the player background image.
+        vibrant.getPalette()
+          .then((palette: Palette) => {
+
+            if (debuglog.enabled) {
+              debuglog("%ccheckForBackgroundImageChange - colors found by getPalette:\n- Vibrant      = %s\n- Muted        = %s\n- DarkVibrant  = %s\n- DarkMuted    = %s\n- LightVibrant = %s\n- LightMuted   = %s",
+                "color:orange",
+                (palette['Vibrant']?.hex) || 'undefined',
+                (palette['Muted']?.hex) || 'undefined',
+                (palette['DarkVibrant']?.hex) || 'undefined',
+                (palette['DarkMuted']?.hex) || 'undefined',
+                (palette['LightVibrant']?.hex) || 'undefined',
+                (palette['LightMuted']?.hex) || 'undefined',
+              );
+            }
+
+            // set player color palette values.
+            this.vibrantColorVibrant = (palette['Vibrant']?.hex) || undefined;
+            this.vibrantColorMuted = (palette['Muted']?.hex) || undefined;
+            this.vibrantColorDarkVibrant = (palette['DarkVibrant']?.hex) || undefined;
+            this.vibrantColorDarkMuted = (palette['DarkMuted']?.hex) || undefined;
+            this.vibrantColorLightVibrant = (palette['LightVibrant']?.hex) || undefined;
+            this.vibrantColorLightMuted = (palette['LightMuted']?.hex) || undefined;
+
+            // update vibrant processing control state so we don't do this again until
+            // something changes.
+            this.vibrantImage = playerImageSaved;
+            this.vibrantMediaContentId = playerMediaContentIdSaved;
+
+            // set card footer background color.
+            this.footerBackgroundColor = this.vibrantColorVibrant;
+
+            // indicate vibrant processing is compete.
+            this.isUpdateInProgressAsync = false;
+
+            // resolve the promise.
+            resolve(true);
+
+          })
+          .catch(error => {
+
+            if (debuglog.enabled) {
+              debuglog("%ccheckForBackgroundImageChange - Could not retrieve color palette info for player background image\nreason = %s",
+                JSON.stringify(getHomeAssistantErrorMessage(error)),
+              );
+            }
+
+            // reset player color palette values.
+            this.vibrantColorVibrant = undefined;
+            this.vibrantColorMuted = undefined;
+            this.vibrantColorDarkVibrant = undefined;
+            this.vibrantColorDarkMuted = undefined;
+            this.vibrantColorLightVibrant = undefined;
+            this.vibrantColorLightMuted = undefined;
+
+            // update vibrant processing control state so we don't do this again until
+            // something changes.
+            this.vibrantImage = playerImageSaved;
+            this.vibrantMediaContentId = playerMediaContentIdSaved;
+
+            // set card footer background color.
+            this.footerBackgroundColor = this.vibrantColorVibrant;
+
+            // indicate vibrant processing is compete.
+            this.isUpdateInProgressAsync = false;
+
+            // call base class method, indicating media list update failed.
+            this.checkForBackgroundImageChangeError("Vibrant getPalette method failed: " + getHomeAssistantErrorMessage(error));
+
+            // reject the promise.
+            reject(error);
+
+          })
+      });
+
+      promiseRequests.push(promiseVibrant);
+
+      // show visual progress indicator.
+      //this.progressShow();
+
+      // execute all promises, and wait for all of them to settle.
+      // we use `finally` logic so we can clear the progress indicator.
+      // any exceptions raised should have already been handled in the 
+      // individual promise definitions; nothing else to do at this point.
+      Promise.allSettled(promiseRequests).finally(() => {
+
+        // clear the progress indicator.
+        this.progressHide();
+
+      });
+
+      return;
+
+    }
+    catch (error) {
+
+      // clear the progress indicator.
+      //this.progressHide();
+
+      // set alert error message.
+      this.checkForBackgroundImageChangeError("Background Image processing error: " + getHomeAssistantErrorMessage(error));
+      return;
+
+    }
+
+  }
+
+
+  /**
+   * Should be called if an error occured while trying to extract Vibrant colors.
+   */
+  private checkForBackgroundImageChangeError(
+    alertErrorMessage: string | null = null,
+  ): void {
+
+    // clear informational alerts.
+    this.alertInfoClear();
+
+    if (debuglog.enabled) {
+      debuglog("%ccheckForBackgroundImageChangeError - error processing background image:\n %s",
+        "color:red",
+        JSON.stringify(alertErrorMessage),
+      );
+    }
+
+    // set alert status text.
+    this.alertErrorSet(alertErrorMessage || "Unknown Error");
 
   }
 

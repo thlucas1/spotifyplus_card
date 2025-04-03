@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.45 ] - 2025/04/03
+
+  * Cleaned up the minimized player card, as well as added vibrant color processing for customimageurl images.
+
 ###### [ 1.0.44 ] - 2025/03/30
 
   * Added `cardUniqueId` config option to uniquely identify card configurations (required for new editor-less configuration updates).  Check out the [`cardUniqueId` Configuration Option](https://github.com/thlucas1/spotifyplus_card/wiki/Configuration-Options#carduniqueid) wiki topic for more information.

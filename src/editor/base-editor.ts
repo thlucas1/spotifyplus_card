@@ -1,6 +1,6 @@
 // lovelace card imports.
 import { css, LitElement } from 'lit';
-import { property } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
 import { HomeAssistant } from '../types/home-assistant-frontend/home-assistant';
 import { fireEvent } from '../types/home-assistant-frontend/fire-event';
 
@@ -23,6 +23,11 @@ export abstract class BaseEditor extends LitElement {
   @property({ attribute: false }) store!: Store;
   @property({ attribute: true }) section!: Section;
   @property({ attribute: false }) footerBackgroundColor?: string;
+
+  @state() public playerImage?: string;
+  @state() public playerMediaContentId?: string;
+  @state() public vibrantImage?: string;
+  @state() public vibrantMediaContentId?: string;
 
   /** MediaPlayer instance created from the configuration entity id. */
   public player!: MediaPlayer;
