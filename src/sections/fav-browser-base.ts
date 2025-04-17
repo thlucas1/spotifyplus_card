@@ -678,7 +678,7 @@ export class FavBrowserBase extends AlertUpdatesBase {
     catch (error) {
 
       // set error message and reset scroll position to zero so the message is displayed.
-      this.alertErrorSet("Could not play media item.  " + getHomeAssistantErrorMessage(error));
+      this.alertErrorSet("Could not queue media item.  " + getHomeAssistantErrorMessage(error));
       this.mediaBrowserContentElement.scrollTop = 0;
 
     }

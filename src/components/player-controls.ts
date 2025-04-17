@@ -147,7 +147,6 @@ class PlayerControls extends AlertUpdatesBase {
         color: var(--spc-player-controls-icon-color, #ffffff);
         --mdc-icon-button-size: var(--spc-player-controls-icon-button-size, 2.75rem);
         --mdc-icon-size: var(--spc-player-controls-icon-size, ${unsafeCSS(PLAYER_CONTROLS_ICON_SIZE_DEFAULT)});
-        text-shadow: 0 0 2px var(--spc-player-palette-vibrant);
         mix-blend-mode: screen;
       }
 

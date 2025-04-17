@@ -6,6 +6,17 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.46 ] - 2025/04/17
+
+  * Added theme variable `--spc-footer-background-color` and `footerBackgroundColor` card configuration option for styling footer background color.
+  * Added theme variable `--spc-footer-background-image` and `footerBackgroundImage` card configuration option for styling footer background gradient.
+  * Added theme variable `--spc-footer-icon-color` and `footerIconColor` card configuration option for styling footer icons color.
+  * Added theme variable `--spc-footer-icon-color-selected` and `footerIconColorSelected` card configuration option for styling footer selected icon color.
+  * Added theme variable `--spc-footer-icon-size` for styling footer icon size; note that the configuration option (`footerIconSize`) for this theme variable already exists.
+  * Removed theme variable `--spc-card-footer-color`; use `--spc-footer-icon-color` instead.
+  * Removed theme variable `--spc-card-footer-background-color`; use `--spc-footer-background-color` instead.
+  * Removed theme variable `--spc-card-footer-background-image`; use `--spc-footer-background-image` instead.
+
 ###### [ 1.0.45 ] - 2025/04/03
 
   * Cleaned up the minimized player card, as well as added vibrant color processing for customimageurl images.

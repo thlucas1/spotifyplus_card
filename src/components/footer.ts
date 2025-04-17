@@ -138,8 +138,12 @@ export class Footer extends LitElement {
    */
   static get styles() {
     return css`
+      :host > * {
+        color: var(--spc-footer-icon-color, inherit);
+      }
+
       :host > *[selected] {
-        color: var(--dark-primary-color);
+        color: var(--spc-footer-icon-color-selected, var(--dark-primary-color));
       }
 
       :host > *[hide] {

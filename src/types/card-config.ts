@@ -38,12 +38,6 @@ export interface CardConfig extends LovelaceCardConfig {
   title?: string;
 
   /**
-   * Size of the icons in the Footer controls area.
-   * Default is '2rem'.
-   */
-  footerIconSize?: string;
-
-  /**
    * Width of the card (in 'rem' units).
    * A value of "fill" can also be used (requires manual editing) to use 100% of 
    * the available horizontal space (good for panel dashboards).
@@ -900,6 +894,32 @@ export interface CardConfig extends LovelaceCardConfig {
    * Default is '#2196F3'.
    */
   cardWaitProgressSliderColor?: string;
+
+  /**
+   * Card footer background color.
+   */
+  footerBackgroundColor?: string;
+
+  /**
+   * Card footer background image / gradient.
+   */
+  footerBackgroundImage?: string;
+
+  /**
+   * Card footer icon color.
+   */
+  footerIconColor?: string;
+
+  /**
+   * Card footer selected icon color.
+   */
+  footerIconColorSelected?: string;
+
+  /**
+   * Size of the icons in the Footer controls area.
+   * Default is '2rem'.
+   */
+  footerIconSize?: string;
 
   /**
    * Media Browser section title text color.
