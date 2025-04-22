@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.47 ] - 2025/04/22
+
+  * Added support to hide device names that contain unprintable characters in the device name.
+
 ###### [ 1.0.46 ] - 2025/04/17
 
   * Added theme variable `--spc-footer-background-color` and `footerBackgroundColor` card configuration option for styling footer background color.

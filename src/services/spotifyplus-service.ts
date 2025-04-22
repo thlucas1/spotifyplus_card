@@ -2359,7 +2359,12 @@ export class SpotifyPlusService {
         // remove source items that are hidden (based on SpotifyPlus config options);
         // we have to do this in reverse order, due to iteration of the array.
         for (let i = responseObj.Items.length - 1; i >= 0; i--) {
-          if (source_list_hide?.includes(responseObj.Items[i].Name.toLowerCase())) {
+
+          // sometimes device names have unprintable characters in them (CRLF, etc).
+          const deviceName = responseObj.Items[i].Name.toLowerCase();
+          const deviceNameNoSpecialChars = deviceName.replace(/[^ -~]+/g, "");
+
+          if (source_list_hide?.includes(deviceNameNoSpecialChars)) {
             responseObj.Items.splice(i, 1);
           } else if (source_list_hide?.includes(responseObj.Items[i].Id.toLowerCase())) {
             responseObj.Items.splice(i, 1);
