@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.48 ] - 2025/04/23
+
+  * Added support to hide device names that contain carriage-return or linefeed characters in the device name.
+
 ###### [ 1.0.47 ] - 2025/04/22
 
   * Added support to hide device names that contain unprintable characters in the device name.

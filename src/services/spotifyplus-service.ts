@@ -2361,8 +2361,9 @@ export class SpotifyPlusService {
         for (let i = responseObj.Items.length - 1; i >= 0; i--) {
 
           // sometimes device names have unprintable characters in them (CRLF, etc).
-          const deviceName = responseObj.Items[i].Name.toLowerCase();
-          const deviceNameNoSpecialChars = deviceName.replace(/[^ -~]+/g, "");
+          let deviceNameNoSpecialChars = responseObj.Items[i].Name.toLowerCase();
+          deviceNameNoSpecialChars = deviceNameNoSpecialChars.replaceAll("\n", "");
+          deviceNameNoSpecialChars = deviceNameNoSpecialChars.replaceAll("\r", "");
 
           if (source_list_hide?.includes(deviceNameNoSpecialChars)) {
             responseObj.Items.splice(i, 1);
