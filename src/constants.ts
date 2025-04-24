@@ -1,7 +1,7 @@
 import { css } from 'lit';
 
 /** current version of the card. */
-export const CARD_VERSION = '1.0.48';
+export const CARD_VERSION = '1.0.49';
 
 /** SpotifyPlus integration domain identifier. */
 export const DOMAIN_SPOTIFYPLUS = 'spotifyplus';

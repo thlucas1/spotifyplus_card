@@ -569,7 +569,15 @@ export class MediaBrowserBase extends LitElement {
         const device = (item as ISpotifyConnectDevice);
         mbi_info.title = device.Name;
         mbi_info.subtitle = (device.DeviceInfo.BrandDisplayName || "unknown") + ", " + (device.DeviceInfo.ModelDisplayName || "unknown");
-        mbi_info.is_active = (item.Name == this.store.player.attributes.source);
+        // set is_active flag based on the device id selected;
+        // if no device_id, then use the device name.
+        if (device.Id == this.store.player.attributes.sp_device_id) {
+          mbi_info.is_active = true;
+        } else if (device.Name == this.store.player.attributes.source) {
+          mbi_info.is_active = true;
+        } else {
+          mbi_info.is_active = false;
+        }
       } else if (this.mediaItemType == Section.EPISODE_FAVORITES) {
         // spotify search episode returns an IEpisodeSimplified, so show property will be null.
         // for search results, use release date for subtitle.

@@ -212,7 +212,7 @@ export class SpotifyPlusService {
 
       // validations.
       if (device_id == null)
-        device_id = player.attributes.source || null;
+        device_id = player.attributes.sp_device_id || player.attributes.source || null;
 
       // if default device configured then override the specified deviceId.
       if (this.config.deviceDefaultId) {
@@ -2968,7 +2968,7 @@ export class SpotifyPlusService {
       if (!context_uri)
         throw new Error("STPC0005 context_uri argument was not supplied to the PlayerMediaPlayContext service.")
       if (device_id == null)
-        device_id = player.attributes.source || null;
+        device_id = player.attributes.sp_device_id || player.attributes.source || null;
 
       // if default device configured then override the specified deviceId.
       if (this.config.deviceDefaultId) {
@@ -3055,7 +3055,7 @@ export class SpotifyPlusService {
 
       // validations.
       if (device_id == null)
-        device_id = player.attributes.source || null;
+        device_id = player.attributes.sp_device_id || player.attributes.source || null;
 
       // if default device configured then override the specified deviceId.
       if (this.config.deviceDefaultId) {
@@ -3144,7 +3144,7 @@ export class SpotifyPlusService {
       if (position_ms == null)
         position_ms = 0;
       if (device_id == null)
-        device_id = player.attributes.source || null;
+        device_id = player.attributes.sp_device_id || player.attributes.source || null;
 
       // if default device configured then override the specified deviceId.
       if (this.config.deviceDefaultId) {
@@ -3217,7 +3217,7 @@ export class SpotifyPlusService {
 
       // validations.
       if (device_id == null)
-        device_id = player.attributes.source || null;
+        device_id = player.attributes.sp_device_id || player.attributes.source || null;
 
       // if default device configured then override the specified deviceId.
       if (this.config.deviceDefaultId) {
@@ -3315,7 +3315,7 @@ export class SpotifyPlusService {
 
       // validations.
       if (device_id == null)
-        device_id = player.attributes.source || null;
+        device_id = player.attributes.sp_device_id || player.attributes.source || null;
       if (play == null)
         play = true;
 

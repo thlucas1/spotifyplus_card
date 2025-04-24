@@ -6,6 +6,11 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.49 ] - 2025/04/24
+
+  * Updated device section "NowPlaying" animated indicator to be shown based on the device id instead of the device name.
+  * Updated `SpotifyPlusService` to use the device Id value instead of Name for player functions that use a default `device_id` value.
+
 ###### [ 1.0.48 ] - 2025/04/23
 
   * Added support to hide device names that contain carriage-return or linefeed characters in the device name.
