@@ -194,7 +194,7 @@ export class DeviceBrowser extends FavBrowserBase {
       this.alertInfo = "Transferring playback to device \"" + mediaItem.Name + "\" ...";
 
       // select the source.
-      await this.store.mediaControlService.select_source(this.player, mediaItem.Name || '');
+      await this.store.mediaControlService.select_source(this.player, mediaItem.Id || mediaItem.Name || '');
 
       // show player section.
       this.store.card.SetSection(Section.PLAYER);

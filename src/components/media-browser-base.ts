@@ -571,8 +571,12 @@ export class MediaBrowserBase extends LitElement {
         mbi_info.subtitle = (device.DeviceInfo.BrandDisplayName || "unknown") + ", " + (device.DeviceInfo.ModelDisplayName || "unknown");
         // set is_active flag based on the device id selected;
         // if no device_id, then use the device name.
-        if (device.Id == this.store.player.attributes.sp_device_id) {
-          mbi_info.is_active = true;
+        if ((device.Id || "") != "") {
+          if (device.Id == this.store.player.attributes.sp_device_id) {
+            mbi_info.is_active = true;
+          } else {
+            mbi_info.is_active = false;
+          }
         } else if (device.Name == this.store.player.attributes.source) {
           mbi_info.is_active = true;
         } else {

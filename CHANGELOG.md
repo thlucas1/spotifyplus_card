@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.50 ] - 2025/04/27
+
+  * Fixed device section "NowPlaying" animated indicator to be shown based on the device id instead of the device name.
+
 ###### [ 1.0.49 ] - 2025/04/24
 
   * Updated device section "NowPlaying" animated indicator to be shown based on the device id instead of the device name.
