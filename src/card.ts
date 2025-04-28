@@ -454,9 +454,25 @@ export class Card extends AlertUpdatesBase {
     // is the session configured for display?
     if (!this.config.sections || this.config.sections.indexOf(section) > -1) {
 
+      if (debuglog.enabled) {
+        debuglog("SetSection - set section reference and display the section\n- OLD section=%s\n- NEW section=%s",
+          JSON.stringify(this.section),
+          JSON.stringify(section)
+        );
+      }
+
+      // set the active section.
       this.section = section;
       this.store.section = this.section;
       super.requestUpdate();
+
+    } else {
+
+      if (debuglog.enabled) {
+        debuglog("SetSection - section is not active: %s",
+          JSON.stringify(section)
+        );
+      }
 
     }
   }
@@ -1311,10 +1327,12 @@ export class Card extends AlertUpdatesBase {
       if (!this.alertError) {
         if (this.store.player.isPoweredOffOrIdle()) {
           if ((this.config.sections || []).indexOf(Section.PLAYER) > -1) {
-            styleInfo['display'] = `none`;
-            // make player section the default.
-            this.section = Section.PLAYER;
-            Store.selectedConfigArea = ConfigArea.PLAYER;
+            if (this.section == Section.PLAYER) {
+              styleInfo['display'] = `none`;
+              // make player section the default.
+              this.section = Section.PLAYER;
+              Store.selectedConfigArea = ConfigArea.PLAYER;
+            }
           }
         }
       }

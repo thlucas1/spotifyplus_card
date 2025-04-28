@@ -78,7 +78,7 @@ export class DeviceBrowser extends FavBrowserBase {
           ${(() => {
             // if actions are not visbile, then render the media list.
             if (!this.isActionsVisible) {
-              if (this.config.deviceBrowserItemsPerRow === 1) {
+              if ((this.config.deviceBrowserItemsPerRow || 1) === 1) {
                 return (
                   html`<spc-media-browser-list
                         class="media-browser-list"
@@ -193,8 +193,13 @@ export class DeviceBrowser extends FavBrowserBase {
       // update status.
       this.alertInfo = "Transferring playback to device \"" + mediaItem.Name + "\" ...";
 
+      // transfer by device id by default; for Sonos, always use device name (restricted device).
+      let deviceId = mediaItem.Id || mediaItem.Name || '';
+      if (mediaItem.IsSonos)
+        deviceId = mediaItem.Name;
+
       // select the source.
-      await this.store.mediaControlService.select_source(this.player, mediaItem.Id || mediaItem.Name || '');
+      await this.store.mediaControlService.select_source(this.player, deviceId);
 
       // show player section.
       this.store.card.SetSection(Section.PLAYER);

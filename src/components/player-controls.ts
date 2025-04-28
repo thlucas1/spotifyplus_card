@@ -21,6 +21,7 @@ import {
   mdiShuffleDisabled,
   mdiSkipNext,
   mdiSkipPrevious,
+  mdiSpeaker,
 } from '@mdi/js';
 
 // our imports.
@@ -37,10 +38,12 @@ import { closestElement, getHomeAssistantErrorMessage } from '../utils/utils';
 import { Player } from '../sections/player';
 import { PlayerBodyQueue } from './player-body-queue';
 import { AlertUpdatesBase } from '../sections/alert-updates-base';
+import { Section } from '../types/section';
 
 const { NEXT_TRACK, PAUSE, PLAY, PREVIOUS_TRACK, REPEAT_SET, SHUFFLE_SET, TURN_ON, TURN_OFF } = MediaPlayerEntityFeature;
 const ACTION_FAVES = 900000000000;
 const PLAY_QUEUE = 990000000000;
+const DEVICES = 999000000000;
 
 class PlayerControls extends AlertUpdatesBase {
 
@@ -109,10 +112,12 @@ class PlayerControls extends AlertUpdatesBase {
           </div>
           <div class="iconsPower" hide=${isOff}>
               <ha-icon-button @click=${() => this.onClickAction(TURN_ON)}        hide=${this.hideFeature(TURN_ON)}        .path=${mdiPower} label="Turn On" style=${this.styleIcon(colorPower)}></ha-icon-button>
+              <ha-icon-button @click=${() => this.onClickAction(DEVICES)}        hide=${this.hideFeature(DEVICES)}        .path=${mdiSpeaker} label="Devices"></ha-icon-button>
           </div>
           <div class="iconsPower" hide=${idle}>
               <ha-icon-button @click=${() => this.onClickAction(TURN_OFF)}       hide=${this.hideFeature(TURN_OFF)}       .path=${mdiPower} label="Turn Off"></ha-icon-button>
               <ha-icon-button @click=${() => this.onClickAction(PLAY)}           hide=${this.hideFeature(PLAY)}           .path=${mdiPlay} label="Play" style=${this.styleIcon(true)}></ha-icon-button>
+              <ha-icon-button @click=${() => this.onClickAction(DEVICES)}        hide=${this.hideFeature(DEVICES)}        .path=${mdiSpeaker} label="Devices"></ha-icon-button>
           </div>
           <spc-player-volume hide=${stopped} .store=${this.store} .player=${this.player} class="player-volume-container"></spc-player-volume>
       </div>
@@ -366,6 +371,11 @@ class PlayerControls extends AlertUpdatesBase {
         }
         return true;
 
+      } else if (action == DEVICES) {
+
+        // show devices section.
+        this.store.card.SetSection(Section.DEVICES);
+
       } else if (action == PLAY_QUEUE) {
 
         // if we are editing the card configuration, then we don't want to allow this.
@@ -559,6 +569,15 @@ class PlayerControls extends AlertUpdatesBase {
           return (this.config.playerVolumeControlsHidePower) ? true : nothing;
         }
         return true; // hide icon
+      }
+
+    } else if (feature == DEVICES) {
+
+      // show button if player is minimized and devices section enabled.
+      if (this.config.playerMinimizeOnIdle) {
+        if (this.config.sections?.includes(Section.DEVICES)) {
+          return nothing;
+        }
       }
 
     }

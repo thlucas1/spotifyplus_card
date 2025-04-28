@@ -6,6 +6,11 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.51 ] - 2025/04/28
+
+  * This release requires the SpotifyPlus Integration v1.0.119+ release; please make sure you update the SpotifyPlus integration prior to updating this SpotifyPlus Card release.
+  * Added device button to minimized player so that a device can be selected prior to power on / resuming play.
+
 ###### [ 1.0.50 ] - 2025/04/27
 
   * Fixed device section "NowPlaying" animated indicator to be shown based on the device id instead of the device name.

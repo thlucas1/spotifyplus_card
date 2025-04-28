@@ -35,6 +35,11 @@ export declare type SpotifyPlusHassEntityAttributes = HassEntityAttributesMediaP
   sp_device_is_chromecast?: boolean;
 
   /**
+   * Denotes if the source device is considered a restricted device (true) or not (false) by the Spotify Web API.
+   */
+  sp_device_is_restricted?: boolean;
+
+  /**
    * Music source currently selected on the source device; brand specific value.
    */
   sp_device_music_source?: string;
