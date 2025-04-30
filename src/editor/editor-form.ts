@@ -52,6 +52,11 @@ class Form extends BaseEditor {
   //      border: 1px solid gold !important;
   //    }
 
+      //ha-md-menu-item[type="option"] {
+      //  border: 1px solid red;
+      //  height: 2.5rem !important;
+      //}
+
     `;
   }
 
@@ -172,6 +177,9 @@ class Form extends BaseEditor {
 
         } else if (child.tagName == "HA-FORM-MULTI_SELECT") {
           child.setAttribute("style", "margin-bottom: var(--ha-form-style-multiselect-margin-bottom, 24px);");
+
+        } else if (child.tagName == "HA-FORM-SELECT") {
+          child.setAttribute("style", "margin-bottom: var(--ha-form-style-multiselect-margin-bottom, 24px); --mdc-menu-item-height: 2.5rem;");
 
         } else if (child.tagName == "HA-FORM-INTEGER") {
           child.setAttribute("style", "margin-bottom: var(--ha-form-style-integer-margin-bottom, 24px);");

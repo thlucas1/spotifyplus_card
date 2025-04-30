@@ -31,6 +31,15 @@ export interface CardConfig extends LovelaceCardConfig {
    */
   sections?: Section[];
 
+  /** 
+   * Section of the card to display by default; the specified section value must
+   * be a valid section identifier name, and the section must be enabled via the
+   * `sections` list.
+   * 
+   * Valid value must match a defined name in `secion.ts`.
+   */
+  sectionDefault?: Section;
+
   /**
    * Title that is displayed at the top of the card, above the section area.
    * This value supports Title Formatter Options.

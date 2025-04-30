@@ -418,23 +418,26 @@ export class Card extends AlertUpdatesBase {
       // is initially loaded, then do them here.
       debuglog("createStore - isFirstTimeSetup logic invoked; creating store area");
 
-      // set the initial section reference; if none defined, then default;
+      // set the initial section reference;
       if ((!this.config.sections) || (this.config.sections.length == 0)) {
 
+        // no sections are defined, or none were selected.
         debuglog("createStore - isFirstTimeSetup defaulting section to PLAYER");
         this.config.sections = [Section.PLAYER];
-        this.section = Section.PLAYER;
-        this.store.section = this.section;
         Store.selectedConfigArea = ConfigArea.GENERAL;
-        super.requestUpdate();
+        this.SetSection(Section.PLAYER);
+
+      } else if (this.config.sectionDefault) {
+
+        // default section was specified; set section selected based on config option.
+        debuglog("createStore - isFirstTimeSetup defaulting section to config.sectionDefault (%s)", JSON.stringify(this.config.sectionDefault));
+        this.SetSection(this.config.sectionDefault);
 
       } else if (!this.section) {
 
         // section was not set; set section selected based on selected ConfigArea.
         debuglog("createStore - isFirstTimeSetup defaulting section to Store.selectedConfigArea (%s)", JSON.stringify(Store.selectedConfigArea));
-        this.section = getSectionForConfigArea(Store.selectedConfigArea);
-        this.store.section = this.section;
-        super.requestUpdate();
+        this.SetSection(getSectionForConfigArea(Store.selectedConfigArea));
 
       }
 
@@ -501,14 +504,8 @@ export class Card extends AlertUpdatesBase {
     this.addEventListener(CATEGORY_DISPLAY, this.onCategoryDisplayEventHandler);
     this.addEventListener(FILTER_SECTION_MEDIA, this.onFilterSectionMediaEventHandler);
 
-    // only add the following events if card configuration is being edited.
-    if (this.isCardInEditPreview) {
-
-      // add document level event listeners.
-      document.addEventListener(EDITOR_CONFIG_AREA_SELECTED, this.onEditorConfigAreaSelectedEventHandler);
-
-    }
-
+    // add document level event listeners.
+    document.addEventListener(EDITOR_CONFIG_AREA_SELECTED, this.onEditorConfigAreaSelectedEventHandler);
   }
 
 
@@ -530,10 +527,6 @@ export class Card extends AlertUpdatesBase {
     this.removeEventListener(SEARCH_MEDIA, this.onSearchMediaEventHandler);
     this.removeEventListener(CATEGORY_DISPLAY, this.onCategoryDisplayEventHandler);
     this.removeEventListener(FILTER_SECTION_MEDIA, this.onFilterSectionMediaEventHandler);
-
-    // the following event is only added when the card configuration editor is created.
-    // always remove the following events, as isCardInEditPreview() can sometimes
-    // return a different value than when the event was added in connectedCallback!
 
     // remove document level event listeners.
     document.removeEventListener(EDITOR_CONFIG_AREA_SELECTED, this.onEditorConfigAreaSelectedEventHandler);
@@ -632,12 +625,24 @@ export class Card extends AlertUpdatesBase {
     // is section activated?  if so, then select it.
     if (this.config.sections?.includes(evArgs.section)) {
 
-      this.section = evArgs.section;
-      this.store.section = this.section;
+      if (debuglog.enabled) {
+        debuglog("onEditorConfigAreaSelectedEventHandler - set section reference for selected ConfigArea and display the section\n- OLD section=%s\n- NEW section=%s",
+          JSON.stringify(this.section),
+          JSON.stringify(evArgs.section)
+        );
+      }
+
+      // set section selected based on ConfigArea.
+      this.SetSection(evArgs.section);
 
     } else {
 
       // section is not activated.
+      if (debuglog.enabled) {
+        debuglog("onEditorConfigAreaSelectedEventHandler - section is not active: %s",
+          JSON.stringify(evArgs.section)
+        );
+      }
 
     }
   }

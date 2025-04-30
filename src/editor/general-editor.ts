@@ -6,7 +6,6 @@ import {
   CARD_VERSION,
   DOMAIN_MEDIA_PLAYER,
   DOMAIN_SPOTIFYPLUS,
-  FOOTER_ICON_SIZE_DEFAULT
 } from '../constants';
 import { BaseEditor } from './base-editor';
 import { Section } from '../types/section';
@@ -59,14 +58,6 @@ const CONFIG_SETTINGS_SCHEMA = [
     type: 'string',
   },
   {
-    name: 'footerIconSize',
-    label: 'Size of the icons in the Footer area.',
-    help: 'default is "' + FOOTER_ICON_SIZE_DEFAULT + '"',
-    required: false,
-    type: 'string',
-    default: FOOTER_ICON_SIZE_DEFAULT,
-  },
-  {
     name: 'width',
     label: 'Width of the card',
     help: 'in rem units; or "fill" for 100% width',
@@ -81,6 +72,28 @@ const CONFIG_SETTINGS_SCHEMA = [
     required: false,
     type: 'string',
     default: 35.15,
+  },
+  {
+    name: 'sectionDefault',
+    label: 'Default card section to display',
+    required: false,
+    type: 'select',
+    options: [
+      /* the following must match defined names in `secion.ts` */
+      ['player', 'Player'],                           /* Section.PLAYER */
+      ['albumfavorites', 'Album Favorites'],          /* Section.ALBUM_FAVORITES */
+      ['artistfavorites', 'Artist Favorites'],        /* Section.ARTIST_FAVORITES */
+      ['audiobookfavorites', 'Audiobook Favorites'],  /* Section.AUDIOBOOK_FAVORITES */
+      ['categorys', 'Categorys'],                     /* Section.CATEGORYS */
+      ['devices', 'Devices'],                         /* Section.DEVICES */
+      ['episodefavorites', 'Episode Favorites'],      /* Section.EPISODE_FAVORITES */
+      ['playlistfavorites', 'Playlist Favorites'],    /* Section.PLAYLIST_FAVORITES */
+      ['recents', 'Recently Played'],                 /* Section.RECENTS */
+      ['searchmedia', 'Search Media'],                /* Section.SEARCH_MEDIA */
+      ['showfavorites', 'Show Favorites'],            /* Section.SHOW_FAVORITES */
+      ['trackfavorites', 'Track Favorites'],          /* Section.TRACK_FAVORITES */
+      ['userpresets', 'User Presets'],                /* Section.USERPRESETS */
+    ],
   },
   {
     name: 'touchSupportDisabled',

@@ -6,9 +6,14 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.53 ] - 2025/04/30
+
+  * Added `sectionDefault` config option to display the specified section of the card by default.  Check out the [Configuration Options wiki document](https://github.com/thlucas1/spotifyplus_card/wiki/Configuration-Options#sectiondefault) for more information.
+  * Removed `footerIconSize` from UI Editor screen.  The option is still supported, just not via the UI Editor; value must be edited via the Code Editor.  Check out the [Theming Options wiki document](https://github.com/thlucas1/spotifyplus_card/wiki/Themes#card-configuration-options) for more information.
+  
 ###### [ 1.0.52 ] - 2025/04/29
 
-  * Added Spotify URI value to all favorites section actions action details, as well as NowPlaying body actions.
+  * Added Spotify URI value to all favorites section action details, as well as NowPlaying body action details.
 
 ###### [ 1.0.51 ] - 2025/04/28
 
