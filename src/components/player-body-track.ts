@@ -25,7 +25,7 @@ import { SearchMediaTypes } from '../types/search-media-types';
 import { SearchMediaEvent } from '../events/search-media';
 import { getIdFromSpotifyUri } from '../services/spotifyplus-service';
 import { openWindowNewTab } from '../utils/media-browser-utils';
-import { formatDateHHMMSSFromMilliseconds, getHomeAssistantErrorMessage } from '../utils/utils';
+import { copyToClipboard, formatDateHHMMSSFromMilliseconds, getHomeAssistantErrorMessage } from '../utils/utils';
 import { ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD, ALERT_INFO_PRESET_JSON_COPIED_TO_CLIPBOARD, RADIO_SEARCH_KEY } from '../constants.js';
 import { GetUserPresetConfigEntry, GetUserPresetConfigEntryJson, GetUserPresetObject } from '../types/spotifyplus/user-preset.js';
 import { ITrack } from '../types/spotifyplus/track';
@@ -393,6 +393,9 @@ export class PlayerBodyTrack extends PlayerBodyBase {
               ></ha-icon-button>
             </div>
 
+            <div class="grid-action-info-hdr-s">URI</div>
+            <div class="grid-action-info-text-s colspan-r3-c2 copy2cb" @click=${copyToClipboard}>${this.track?.uri}</div>
+
           </div>
         </div>
       </div>
@@ -429,6 +432,11 @@ export class PlayerBodyTrack extends PlayerBodyBase {
       .track-info-grid {
         grid-template-columns: auto auto 30px auto auto 30px auto auto;
         justify-content: left;
+      }
+
+      .colspan-r3-c2 {
+        grid-row: 3 / 3;    /* grid row 3 */
+        grid-column: 2 / 9; /* grid columns 2 thru 8 */
       }
     `
     ];

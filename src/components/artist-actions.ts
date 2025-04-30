@@ -38,7 +38,7 @@ import { MediaPlayer } from '../model/media-player';
 import { SearchMediaTypes } from '../types/search-media-types';
 import { SearchMediaEvent } from '../events/search-media';
 import { openWindowNewTab } from '../utils/media-browser-utils';
-import { getHomeAssistantErrorMessage, unescapeHtml } from '../utils/utils';
+import { copyToClipboard, getHomeAssistantErrorMessage, unescapeHtml } from '../utils/utils';
 import { GetUserPresetConfigEntry, GetUserPresetConfigEntryJson, GetUserPresetObject } from '../types/spotifyplus/user-preset';
 import { IArtist, GetGenres } from '../types/spotifyplus/artist';
 import { IArtistInfo } from '../types/spotifyplus/artist-info';
@@ -219,11 +219,16 @@ class ArtistActions extends FavActionsBase {
                 <div class="grid-action-info-hdr-s"># Followers</div>
                 <div class="grid-action-info-text-s">${this.mediaItem.followers.total || 0}</div>
               ` : html`<div></div><div></div>`}
+
               <div class="grid-action-info-text-s"></div>
               ${this.mediaItem.genres.length > 0 ? html`
                 <div class="grid-action-info-hdr-s">Genres</div>
                 <div class="grid-action-info-text-s">${GetGenres(this.mediaItem)}</div>
               ` : html`<div></div><div></div>`}
+
+              <div class="grid-action-info-text-s"></div>
+              <div class="grid-action-info-hdr-s">URI</div>
+              <div class="grid-action-info-text-s copy2cb" @click=${copyToClipboard}>${this.mediaItem.uri}</div>
             </div>
           </div>
         </div>

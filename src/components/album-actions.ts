@@ -30,7 +30,7 @@ import { MediaPlayer } from '../model/media-player';
 import { SearchMediaTypes } from '../types/search-media-types';
 import { SearchMediaEvent } from '../events/search-media';
 import { getIdFromSpotifyUri } from '../services/spotifyplus-service';
-import { formatDateHHMMSSFromMilliseconds, getHomeAssistantErrorMessage } from '../utils/utils';
+import { copyToClipboard, formatDateHHMMSSFromMilliseconds, getHomeAssistantErrorMessage } from '../utils/utils';
 import { openWindowNewTab } from '../utils/media-browser-utils';
 import { GetCopyrights } from '../types/spotifyplus/copyright';
 import { GetUserPresetConfigEntry, GetUserPresetConfigEntryJson, GetUserPresetObject } from '../types/spotifyplus/user-preset';
@@ -312,6 +312,9 @@ class AlbumActions extends FavActionsBase {
                 <div class="grid-action-info-hdr-s">Copyright</div>
                 <div class="grid-action-info-text-s">${GetCopyrights(this.mediaItem, "; ")}</div>
                 ` : ""}
+
+              <div class="grid-action-info-hdr-s">URI</div>
+              <div class="grid-action-info-text-s copy2cb" @click=${copyToClipboard}>${this.mediaItem.uri}</div>
             </div>
           </div>
         </div>

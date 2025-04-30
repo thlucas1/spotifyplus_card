@@ -25,7 +25,7 @@ import { MediaPlayer } from '../model/media-player';
 import { SearchMediaTypes } from '../types/search-media-types';
 import { SearchMediaEvent } from '../events/search-media';
 import { getIdFromSpotifyUri } from '../services/spotifyplus-service';
-import { formatDateHHMMSSFromMilliseconds, getHomeAssistantErrorMessage, unescapeHtml } from '../utils/utils';
+import { copyToClipboard, formatDateHHMMSSFromMilliseconds, getHomeAssistantErrorMessage, unescapeHtml } from '../utils/utils';
 import { openWindowNewTab } from '../utils/media-browser-utils';
 import { GetUserPresetConfigEntry, GetUserPresetConfigEntryJson, GetUserPresetObject } from '../types/spotifyplus/user-preset';
 import { IEpisode } from '../types/spotifyplus/episode';
@@ -240,6 +240,10 @@ export class PlayerBodyShow extends PlayerBodyBase {
                 slot="media-info-icon-link-s"
               ></ha-icon-button>
             </div>
+            <div class="grid-action-info-hdr-s">Show URI</div>
+            <div class="grid-action-info-text-s colspan-r2-c2 copy2cb" @click=${copyToClipboard}>${this.episode?.show.uri}</div>
+            <div class="grid-action-info-hdr-s">Episode URI</div>
+            <div class="grid-action-info-text-s colspan-r3-c2 copy2cb" @click=${copyToClipboard}>${this.episode?.uri}</div>
           </div>
           <div style="padding-top: 10px;">
             <div class="media-info-text-s" .innerHTML="${unescapeHtml(this.episode?.html_description || "")}"></div>
@@ -283,6 +287,16 @@ export class PlayerBodyShow extends PlayerBodyBase {
       .show-info-grid {
         grid-template-columns: auto auto 30px auto auto 30px auto auto;
         justify-content: left;
+      }
+
+      .colspan-r2-c2 {
+        grid-row: 2 / 2;    /* grid row 2 */
+        grid-column: 2 / 9; /* grid columns 2 thru 8 */
+      }
+
+      .colspan-r3-c2 {
+        grid-row: 3 / 3;    /* grid row 3 */
+        grid-column: 2 / 9; /* grid columns 2 thru 8 */
       }
 
     `

@@ -26,7 +26,7 @@ import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
 import { SearchMediaTypes } from '../types/search-media-types';
 import { SearchMediaEvent } from '../events/search-media';
-import { formatDateHHMMSSFromMilliseconds, getHomeAssistantErrorMessage, unescapeHtml } from '../utils/utils';
+import { copyToClipboard, formatDateHHMMSSFromMilliseconds, getHomeAssistantErrorMessage, unescapeHtml } from '../utils/utils';
 import { openWindowNewTab } from '../utils/media-browser-utils';
 import { GetCopyrights } from '../types/spotifyplus/copyright';
 import { GetResumeInfo } from '../types/spotifyplus/resume-point';
@@ -192,6 +192,9 @@ class AudiobookActions extends FavActionsBase {
 
               <div class="grid-action-info-hdr-s">Released</div>
               <div class="grid-action-info-text-s">${this.audiobookChapters?.items[0].release_date || "unknown"}</div>
+
+              <div class="grid-action-info-hdr-s">URI</div>
+              <div class="grid-action-info-text-s copy2cb" @click=${copyToClipboard}>${this.mediaItem.uri}</div>
 
             </div>
           </div>

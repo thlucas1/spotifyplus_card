@@ -24,7 +24,7 @@ import { sharedStylesFavActions } from '../styles/shared-styles-fav-actions.js';
 import { FavActionsBase } from './fav-actions-base';
 import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
-import { formatDateHHMMSSFromMilliseconds, getHomeAssistantErrorMessage, unescapeHtml } from '../utils/utils';
+import { copyToClipboard, formatDateHHMMSSFromMilliseconds, getHomeAssistantErrorMessage, unescapeHtml } from '../utils/utils';
 import { openWindowNewTab } from '../utils/media-browser-utils';
 import { GetPlaylistPagePlaylistTracks } from '../types/spotifyplus/playlist-page';
 import { GetUserPresetConfigEntry, GetUserPresetConfigEntryJson, GetUserPresetObject } from '../types/spotifyplus/user-preset';
@@ -188,6 +188,9 @@ class PlaylistActions extends FavActionsBase {
                 <div class="grid-action-info-text-s colspan-r4-c2"><a href="${this.mediaItem.owner.external_urls.spotify}" target="_blank">${this.mediaItem.owner.display_name}</a></div>
               ` : html`<div class="colspan-r4-c2">unknown</div>`}
 
+              <div class="grid-action-info-hdr-s">URI</div>
+              <div class="grid-action-info-text-s colspan-r5-c2 copy2cb" @click=${copyToClipboard}>${this.mediaItem.uri}</div>
+
             </div>
           </div>
         </div>
@@ -250,6 +253,11 @@ class PlaylistActions extends FavActionsBase {
 
       .colspan-r4-c2 {
         grid-row: 4 / 4;    /* grid row 4 */
+        grid-column: 2 / 6; /* grid columns 2 thru 5 */
+      }
+
+      .colspan-r5-c2 {
+        grid-row: 5 / 5;    /* grid row 5 */
         grid-column: 2 / 6; /* grid columns 2 thru 5 */
       }
 

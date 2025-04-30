@@ -25,7 +25,7 @@ import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
 import { SearchMediaTypes } from '../types/search-media-types';
 import { SearchMediaEvent } from '../events/search-media';
-import { formatDateHHMMSSFromMilliseconds, getHomeAssistantErrorMessage, unescapeHtml } from '../utils/utils';
+import { copyToClipboard, formatDateHHMMSSFromMilliseconds, getHomeAssistantErrorMessage, unescapeHtml } from '../utils/utils';
 import { openWindowNewTab } from '../utils/media-browser-utils';
 import { GetUserPresetConfigEntry, GetUserPresetConfigEntryJson, GetUserPresetObject } from '../types/spotifyplus/user-preset';
 import { IEpisode, isEpisodeObject } from '../types/spotifyplus/episode';
@@ -261,6 +261,9 @@ class EpisodeActions extends FavActionsBase {
                 ></ha-icon-button>
               </div>
 
+              <div class="grid-action-info-hdr-s">URI</div>
+              <div class="grid-action-info-text-s colspan-r3-c2 copy2cb" @click=${copyToClipboard}>${this.mediaItem.uri}</div>
+
             </div>
           </div>
         </div>
@@ -292,6 +295,11 @@ class EpisodeActions extends FavActionsBase {
         display: flex;
         flex-direction: column;
         height: 100%;  
+      }
+
+      .colspan-r3-c2 {
+        grid-row: 3 / 3;    /* grid row 3 */
+        grid-column: 2 / 6; /* grid columns 2 thru 5 */
       }
     `
     ];

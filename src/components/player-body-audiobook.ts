@@ -26,7 +26,7 @@ import { MediaPlayer } from '../model/media-player';
 import { SearchMediaTypes } from '../types/search-media-types';
 import { SearchMediaEvent } from '../events/search-media';
 import { getIdFromSpotifyUri } from '../services/spotifyplus-service';
-import { formatDateHHMMSSFromMilliseconds, getHomeAssistantErrorMessage, unescapeHtml } from '../utils/utils';
+import { copyToClipboard, formatDateHHMMSSFromMilliseconds, getHomeAssistantErrorMessage, unescapeHtml } from '../utils/utils';
 import { openWindowNewTab } from '../utils/media-browser-utils';
 import { GetAudiobookAuthors, GetAudiobookNarrators } from '../types/spotifyplus/audiobook-simplified';
 import { GetUserPresetConfigEntry, GetUserPresetConfigEntryJson, GetUserPresetObject } from '../types/spotifyplus/user-preset';
@@ -256,6 +256,12 @@ export class PlayerBodyAudiobook extends PlayerBodyBase {
             <div class="grid-action-info-hdr-s">Narrators</div>
             <div class="grid-action-info-text-s colspan-r4-c2">${GetAudiobookNarrators(this.chapter?.audiobook, "; ")}</div>
 
+            <div class="grid-action-info-hdr-s">Audiobook URI</div>
+            <div class="grid-action-info-text-s colspan-r5-c2 copy2cb" @click=${copyToClipboard}>${this.chapter?.audiobook.uri}</div>
+
+            <div class="grid-action-info-hdr-s">Episode URI</div>
+            <div class="grid-action-info-text-s colspan-r6-c2 copy2cb" @click=${copyToClipboard}>${this.chapter?.uri}</div>
+
           </div>
 
           <div style="padding-top: 10px;">
@@ -311,6 +317,16 @@ export class PlayerBodyAudiobook extends PlayerBodyBase {
 
       .colspan-r4-c2 {
         grid-row: 4 / 4;    /* grid row 4 */
+        grid-column: 2 / 9; /* grid columns 2 thru 8 */
+      }
+
+      .colspan-r5-c2 {
+        grid-row: 5 / 5;    /* grid row 5 */
+        grid-column: 2 / 9; /* grid columns 2 thru 8 */
+      }
+
+      .colspan-r6-c2 {
+        grid-row: 6 / 6;    /* grid row 6 */
         grid-column: 2 / 9; /* grid columns 2 thru 8 */
       }
 

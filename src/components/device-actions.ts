@@ -222,10 +222,6 @@ class DeviceActions extends FavActionsBase {
         padding-left: 0.2rem;
       }
 
-      .copy2cb:hover {
-        cursor: copy;
-      }
-
       /* style ha-alert controls */
       ha-alert {
         display: block;

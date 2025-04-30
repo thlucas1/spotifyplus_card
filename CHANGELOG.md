@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.52 ] - 2025/04/29
+
+  * Added Spotify URI value to all favorites section actions action details, as well as NowPlaying body actions.
+
 ###### [ 1.0.51 ] - 2025/04/28
 
   * This release requires the SpotifyPlus Integration v1.0.119+ release; please make sure you update the SpotifyPlus integration prior to updating this SpotifyPlus Card release.

@@ -31,7 +31,7 @@ import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
 import { SearchMediaTypes } from '../types/search-media-types';
 import { SearchMediaEvent } from '../events/search-media';
-import { formatDateHHMMSSFromMilliseconds, getHomeAssistantErrorMessage } from '../utils/utils';
+import { copyToClipboard, formatDateHHMMSSFromMilliseconds, getHomeAssistantErrorMessage } from '../utils/utils';
 import { openWindowNewTab } from '../utils/media-browser-utils';
 import { GetUserPresetConfigEntry, GetUserPresetConfigEntryJson, GetUserPresetObject } from '../types/spotifyplus/user-preset.js';
 import { ITrack } from '../types/spotifyplus/track';
@@ -424,6 +424,9 @@ class TrackActions extends FavActionsBase {
                 ></ha-icon-button>
               </div>
 
+              <div class="grid-action-info-hdr-s">URI</div>
+              <div class="grid-action-info-text-s colspan-r3-c2 copy2cb" @click=${copyToClipboard}>${this.mediaItem.uri}</div>
+
             </div>
           </div>
         </div>
@@ -451,6 +454,11 @@ class TrackActions extends FavActionsBase {
         display: flex;
         flex-direction: column;
         height: 100%;  
+      }
+
+      .colspan-r3-c2 {
+        grid-row: 3 / 3;    /* grid row 3 */
+        grid-column: 2 / 9; /* grid columns 2 thru 8 */
       }
     `
     ];

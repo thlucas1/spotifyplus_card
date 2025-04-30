@@ -104,4 +104,8 @@ export const sharedStylesGrid = css`
     justify-self: left;
   }
 
+  .copy2cb:hover {
+    cursor: copy;
+  }
+
 `;
