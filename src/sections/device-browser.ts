@@ -194,9 +194,14 @@ export class DeviceBrowser extends FavBrowserBase {
       this.alertInfo = "Transferring playback to device \"" + mediaItem.Name + "\" ...";
 
       // transfer by device id by default; for Sonos, always use device name (restricted device).
-      let deviceId = mediaItem.Id || mediaItem.Name || '';
-      if (mediaItem.IsSonos)
+      let deviceId = '';
+      if (mediaItem.IsSonos) {
         deviceId = mediaItem.Name;
+      } else if (this.config.deviceControlByName) {
+        deviceId = mediaItem.Name || mediaItem.Id || '';
+      } else {
+        deviceId = mediaItem.Id || mediaItem.Name || '';
+      }
 
       // select the source.
       await this.store.mediaControlService.select_source(this.player, deviceId);

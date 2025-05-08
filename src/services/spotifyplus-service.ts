@@ -101,6 +101,44 @@ export class SpotifyPlusService {
 
 
   /**
+   * Resolve a device_id value, if one was not specified.
+   * 
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
+   * @param device_id The id or name of the Spotify Connect Player device this command is targeting.
+   * @returns A device_id value.
+  */
+  public getDeviceId(
+    player: MediaPlayer,
+    device_id: string | undefined | null = null,
+  ): string | undefined | null {
+
+    // if a specific device id was not passed, then default it.
+    // Sonos devices always use the name, since they are restricted and do not have ID's initially;
+    // if controlling by device name, then default to the device name;
+    // otherwise, default to the device ID.
+    if (device_id == null) {
+      if (player.attributes.sp_device_is_brand_sonos) {
+        device_id = player.attributes.source || null;
+      } else if (this.config.deviceControlByName) {
+        device_id = player.attributes.source || player.attributes.sp_device_id || null;
+      } else {
+        device_id = player.attributes.sp_device_id || player.attributes.source || null;
+      }
+    }
+
+    // if default device configured then override the specified deviceId.
+    if (this.config.deviceDefaultId) {
+      device_id = this.config.deviceDefaultId;
+      debuglog("getDeviceId - overriding device_id with config option deviceDefaultId: \n%s",
+        JSON.stringify(this.config.deviceDefaultId),
+      );
+    }
+
+    return device_id;
+  }
+
+
+  /**
    * Calls the specified SpotifyPlus service, passing it the specified parameters.
    * 
    * @param serviceRequest Service request instance that contains the service to call and its parameters.
@@ -210,21 +248,8 @@ export class SpotifyPlusService {
         throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
       }
 
-      // validations.
-      if (device_id == null) {
-        if (player.attributes.sp_device_is_brand_sonos)
-          device_id = player.attributes.source || null;
-        else
-          device_id = player.attributes.sp_device_id || player.attributes.source || null;
-      }
-
-      // if default device configured then override the specified deviceId.
-      if (this.config.deviceDefaultId) {
-        device_id = this.config.deviceDefaultId;
-        debuglog("AddPlayerQueueItems - overriding device_id with config option deviceDefaultId: \n%s",
-          JSON.stringify(this.config.deviceDefaultId),
-        );
-      }
+      // resolve a device_id value, if one was not specified.
+      device_id = this.getDeviceId(player, device_id);
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
@@ -2971,20 +2996,9 @@ export class SpotifyPlusService {
       // validations.
       if (!context_uri)
         throw new Error("STPC0005 context_uri argument was not supplied to the PlayerMediaPlayContext service.")
-      if (device_id == null) {
-        if (player.attributes.sp_device_is_brand_sonos)
-          device_id = player.attributes.source || null;
-        else
-          device_id = player.attributes.sp_device_id || player.attributes.source || null;
-      }
 
-      // if default device configured then override the specified deviceId.
-      if (this.config.deviceDefaultId) {
-        device_id = this.config.deviceDefaultId;
-        debuglog("PlayerMediaPlayContext - overriding device_id with config option deviceDefaultId: \n%s",
-          JSON.stringify(this.config.deviceDefaultId),
-        );
-      }
+      // resolve a device_id value, if one was not specified.
+      device_id = this.getDeviceId(player, device_id);
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
@@ -3061,21 +3075,8 @@ export class SpotifyPlusService {
         throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_OR_ELEVATED_REQUIRED);
       }
 
-      // validations.
-      if (device_id == null) {
-        if (player.attributes.sp_device_is_brand_sonos)
-          device_id = player.attributes.source || null;
-        else
-          device_id = player.attributes.sp_device_id || player.attributes.source || null;
-      }
-
-      // if default device configured then override the specified deviceId.
-      if (this.config.deviceDefaultId) {
-        device_id = this.config.deviceDefaultId;
-        debuglog("PlayerMediaPlayTrackFavorites - overriding device_id with config option deviceDefaultId: \n%s",
-          JSON.stringify(this.config.deviceDefaultId),
-        );
-      }
+      // resolve a device_id value, if one was not specified.
+      device_id = this.getDeviceId(player, device_id);
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
@@ -3155,20 +3156,9 @@ export class SpotifyPlusService {
         throw new Error("STPC0005 uris argument was not supplied to the PlayerMediaPlayTracks service.")
       if (position_ms == null)
         position_ms = 0;
-      if (device_id == null) {
-        if (player.attributes.sp_device_is_brand_sonos)
-          device_id = player.attributes.source || null;
-        else
-          device_id = player.attributes.sp_device_id || player.attributes.source || null;
-      }
 
-      // if default device configured then override the specified deviceId.
-      if (this.config.deviceDefaultId) {
-        device_id = this.config.deviceDefaultId;
-        debuglog("PlayerMediaPlayTracks - overriding device_id with config option deviceDefaultId: \n%s",
-          JSON.stringify(this.config.deviceDefaultId),
-        );
-      }
+      // resolve a device_id value, if one was not specified.
+      device_id = this.getDeviceId(player, device_id);
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
@@ -3231,21 +3221,8 @@ export class SpotifyPlusService {
         throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_OR_ELEVATED_REQUIRED);
       }
 
-      // validations.
-      if (device_id == null) {
-        if (player.attributes.sp_device_is_brand_sonos)
-          device_id = player.attributes.source || null;
-        else
-          device_id = player.attributes.sp_device_id || player.attributes.source || null;
-      }
-
-      // if default device configured then override the specified deviceId.
-      if (this.config.deviceDefaultId) {
-        device_id = this.config.deviceDefaultId;
-        debuglog("PlayerMediaPlayTrackFavorites - overriding device_id with config option deviceDefaultId: \n%s",
-          JSON.stringify(this.config.deviceDefaultId),
-        );
-      }
+      // resolve a device_id value, if one was not specified.
+      device_id = this.getDeviceId(player, device_id);
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
@@ -3334,22 +3311,11 @@ export class SpotifyPlusService {
       }
 
       // validations.
-      if (device_id == null) {
-        if (player.attributes.sp_device_is_brand_sonos)
-          device_id = player.attributes.source || null;
-        else
-          device_id = player.attributes.sp_device_id || player.attributes.source || null;
-      }
       if (play == null)
         play = true;
 
-      // if default device configured then override the specified deviceId.
-      if (this.config.deviceDefaultId) {
-        device_id = this.config.deviceDefaultId;
-        debuglog("PlayerTransferPlayback - overriding device_id with config option deviceDefaultId: \n%s",
-          JSON.stringify(this.config.deviceDefaultId),
-        );
-      }
+      // resolve a device_id value, if one was not specified.
+      device_id = this.getDeviceId(player, device_id);
 
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {

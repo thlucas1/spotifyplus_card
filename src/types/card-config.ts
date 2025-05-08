@@ -302,7 +302,7 @@ export interface CardConfig extends LovelaceCardConfig {
    */
   deviceBrowserItemsShowHiddenDevices?: boolean;
 
-  /** 
+  /**
    * Device ID to use for all SpotifyPlus service calls that require a deviceId argument.
    * This allows you to hide the Devices section, and utilize the specific device for
    * all service requests that require a deviceId.
@@ -311,6 +311,17 @@ export interface CardConfig extends LovelaceCardConfig {
    * playback service to transfer player control to the specified device.
    */
   deviceDefaultId: string;
+
+  /** 
+   * 
+   * Determines how devices will be resolved by the underlying SpotifyPlus service.
+   * If False (default), the device id will be passed to the service;
+   * If True, the device name will be passed to the service;
+   * 
+   * Set this option to true if one or more of your devices register a different device id
+   * when awakening from sleep / idle state.
+   */
+  deviceControlByName: boolean;
 
   /**
    * Title displayed at the top of the Episode Favorites media browser section form.

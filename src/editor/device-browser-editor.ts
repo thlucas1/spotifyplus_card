@@ -58,6 +58,12 @@ const CONFIG_SETTINGS_SCHEMA = [
     required: false,
     selector: { boolean: {} },
   },
+  {
+    name: 'deviceControlByName',
+    label: 'Control the device by its name instead of ID',
+    required: false,
+    selector: { boolean: {} },
+  },
 ];
 
 

@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.54 ] - 2025/05/08
+
+  * Added `deviceControlByName` config option that determines how devices will be resolved by the underlying SpotifyPlus service. If False (default), the device id will be passed to the service; If True, the device name will be passed to the service. Set this option to true if one or more of your devices register a different device id when awakening from sleep / idle state.  Check out the [Configuration Options wiki document](https://github.com/thlucas1/spotifyplus_card/wiki/Configuration-Options#devicecontrolbyname) for more information.
+  
 ###### [ 1.0.53 ] - 2025/04/30
 
   * Added `sectionDefault` config option to display the specified section of the card by default.  Check out the [Configuration Options wiki document](https://github.com/thlucas1/spotifyplus_card/wiki/Configuration-Options#sectiondefault) for more information.
