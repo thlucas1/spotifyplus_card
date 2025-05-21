@@ -132,7 +132,7 @@ export class Player extends AlertUpdatesBase {
         align-items: center;
         background-position: center;
         background-repeat: no-repeat;
-        background-size: var(--spc-player-background-size, 100% 100%);  /* PLAYER_BACKGROUND_IMAGE_SIZE_DEFAULT */
+        background-size: var(--spc-player-background-size, var(--spc-player-background-size-default, 100% 100%));  /* PLAYER_BACKGROUND_IMAGE_SIZE_DEFAULT */
         text-align: -webkit-center;
         height: 100%;
         width: 100%;
@@ -203,24 +203,20 @@ export class Player extends AlertUpdatesBase {
     // build style info object.
     const styleInfo: StyleInfo = <StyleInfo>{};
 
+    // get player states.
+    const isOff = this.player.isPoweredOffOrUnknown();
+    const isIdle = this.player.isIdle();
+
     // get default player background size.
-    let backgroundSize: string | undefined;
-
-    // allow user configuration to override background size.
-    if (this.config.playerBackgroundImageSize) {
-      backgroundSize = this.config.playerBackgroundImageSize;
-    }
-
-    // if not configured AND in fill mode, then do not stretch the background image.
-    if ((!backgroundSize) && (this.config.width == 'fill')) {
-      backgroundSize = 'contain';
-    }
+    let backgroundImageUrl: string | undefined;
+    let headerBackgroundColor = 'transparent';
+    let controlsBackgroundColor = 'transparent';
 
     // get various image source settings.
-    const configImagePlayerBg = this.config.customImageUrls?.['playerBackground'];
-    const configImagePlayerIdleBg = this.config.customImageUrls?.['playerIdleBackground'];
-    const configImagePlayerOffBg = this.config.customImageUrls?.['playerOffBackground'];
     const configImageDefault = this.config.customImageUrls?.['default'];
+    const configImagePlayerBg = this.config.customImageUrls?.['playerBackground'];
+    const configImagePlayerBgIdle = this.config.customImageUrls?.['playerIdleBackground'];
+    const configImagePlayerBgOff = this.config.customImageUrls?.['playerOffBackground'];
 
     // get current media player image and media content id values.
     let playerMediaContentId:string | undefined = undefined;
@@ -233,85 +229,123 @@ export class Player extends AlertUpdatesBase {
       }
     }
 
-    const isOff = this.player.isPoweredOffOrUnknown();
-    const isIdle = this.player.isIdle();
-
-    //console.log("%cstylePlayerSection - styling player section:\n- isOff = %s\n- isIdle = %s\n- playerImage = %s\n- playerMinimizeOnIdle = %s\n- configImagePlayerIdleBg = %s\n- configImagePlayerOffBg = %s\n- configImageDefault = %s\n- configImagePlayerBg = %s",
+    //console.log("%cstylePlayerSection - styling player section:\n- isOff = %s\n- isIdle = %s\n- playerImage = %s\n- playerMinimizeOnIdle = %s\n- configImageDefault = %s\n- configImagePlayerBg = %s",
     //  "color:red",
     //  JSON.stringify(isOff),
     //  JSON.stringify(isIdle),
     //  JSON.stringify(playerImage),
     //  JSON.stringify(this.config.playerMinimizeOnIdle),
-    //  JSON.stringify(configImagePlayerIdleBg),
-    //  JSON.stringify(configImagePlayerOffBg),
     //  JSON.stringify(configImageDefault),
     //  JSON.stringify(configImagePlayerBg),
     //);
 
-    // set background image to display.
-    let imageUrl: string = "";
-    let headerBackgroundColor = 'transparent';
-    let controlsBackgroundColor = 'transparent';
+    // is specific background size specified in config? if so, then use it.
+    // otherwise, do not stretch the background image if in fill mode.
+    if (this.config.playerBackgroundImageSize) {
+      styleInfo['--spc-player-background-size'] = `${this.config.playerBackgroundImageSize}`;
+    } else if (this.config.width == 'fill') {
+      styleInfo['--spc-player-background-size-default'] = 'contain';
+    }
 
-    if (isIdle && configImagePlayerIdleBg) {
+    // set player background image to display.
+    if (isOff) {
 
-      // use configured player idle background image.
-      this.store.card.playerMediaContentId = "configImagePlayerIdleBg"
-      imageUrl = configImagePlayerIdleBg;
-      if ((imageUrl + "").toLowerCase() == "none") {
-        imageUrl = "";
+      // set image to display for OFF state.
+      this.store.card.playerMediaContentId = "configImagePlayerBgOff"
+      if ((configImagePlayerBgOff || "").toLowerCase() == "none") {
+        // force no image.
+        styleInfo['background-image'] = undefined;
+      } else if (configImagePlayerBgOff) {
+        // image specified in card config.
+        styleInfo['background-image'] = `url(${configImagePlayerBgOff})`;
+        backgroundImageUrl = configImagePlayerBgOff;
+      } else if (this.config.playerMinimizeOnIdle) {
+        // player is minimized, so use theme file image if defined (do not display brand logo).
+        styleInfo['background-image'] = `var(--spc-player-background-image-off)`;
+      } else {
+        // player is not minimized, so use theme file image if defined; otherwise, use brand logo.
+        styleInfo['background-image'] = `var(--spc-player-background-image-off, url(${BRAND_LOGO_IMAGE_BASE64}))`;
+        styleInfo['--spc-player-background-size-default'] = `${BRAND_LOGO_IMAGE_SIZE}`;
       }
-      if (this.config.playerMinimizeOnIdle) {
-        backgroundSize = "cover";
+
+      // set image size.
+      if (this.config.playerBackgroundImageSize) {
+        styleInfo['--spc-player-background-size'] = `${this.config.playerBackgroundImageSize}`;
       }
 
-    } else if (isOff && configImagePlayerOffBg) {
+    } else if (isIdle) {
 
-      // use configured player off background image.
-      this.store.card.playerMediaContentId = "configImagePlayerOffBg"
-      imageUrl = configImagePlayerOffBg;
-      if ((imageUrl + "").toLowerCase() == "none") {
-        imageUrl = "";
+      // set image to display for IDLE state.
+      this.store.card.playerMediaContentId = "configImagePlayerBgIdle"
+      if ((configImagePlayerBgIdle || "").toLowerCase() == "none") {
+        // force no image.
+        styleInfo['background-image'] = undefined;
+      } else if (configImagePlayerBgIdle) {
+        // image specified in card config.
+        styleInfo['background-image'] = `url(${configImagePlayerBgIdle})`;
+        backgroundImageUrl = configImagePlayerBgIdle;
+      } else if (this.config.playerMinimizeOnIdle) {
+        // player is minimized, so use theme file image if defined (do not display brand logo).
+        styleInfo['background-image'] = `var(--spc-player-background-image-off)`;
+      } else {
+        // player is not minimized, so use theme file image if defined; otherwise, use brand logo.
+        styleInfo['background-image'] = `var(--spc-player-background-image-off, url(${BRAND_LOGO_IMAGE_BASE64}))`;
+        styleInfo['--spc-player-background-size-default'] = `${BRAND_LOGO_IMAGE_SIZE}`;
       }
-      if (this.config.playerMinimizeOnIdle) {
-        backgroundSize = "cover";
+
+      // set image size.
+      if (this.config.playerBackgroundImageSize) {
+        styleInfo['--spc-player-background-size'] = `${this.config.playerBackgroundImageSize}`;
       }
 
     } else if (configImagePlayerBg) {
 
       // use configured player background image (static image, does not change).
       this.store.card.playerMediaContentId = "configImagePlayerBg"
-      imageUrl = configImagePlayerBg;
+      if ((configImagePlayerBg || "").toLowerCase() == "none") {
+        // force no image.
+        styleInfo['background-image'] = undefined;
+      } else if (configImagePlayerBg) {
+        // image specified in card config.
+        styleInfo['background-image'] = `url(${configImagePlayerBg})`;
+        backgroundImageUrl = configImagePlayerBg;
+      }
       headerBackgroundColor = this.config.playerHeaderBackgroundColor || PLAYER_CONTROLS_BACKGROUND_COLOR_DEFAULT;
       controlsBackgroundColor = this.config.playerControlsBackgroundColor || PLAYER_CONTROLS_BACKGROUND_COLOR_DEFAULT;
 
     } else if (playerImage) {
 
       // use currently playing artwork background image; image changes with the track.
+      // note that theming variable will override this value if specified.
       this.store.card.playerMediaContentId = playerMediaContentId;
-      imageUrl = playerImage || "";
       headerBackgroundColor = this.config.playerHeaderBackgroundColor || PLAYER_CONTROLS_BACKGROUND_COLOR_DEFAULT;
       controlsBackgroundColor = this.config.playerControlsBackgroundColor || PLAYER_CONTROLS_BACKGROUND_COLOR_DEFAULT;
+      backgroundImageUrl = playerImage;
+      styleInfo['background-image'] = `var(--spc-player-background-image, url(${playerImage}))`;
 
     } else if (configImageDefault) {
 
       // use configured default background image.
       this.store.card.playerMediaContentId = "configImageDefault"
-      imageUrl = configImageDefault;
-      backgroundSize = BRAND_LOGO_IMAGE_SIZE;
+      backgroundImageUrl = configImageDefault;
+      styleInfo['background-image'] = `url(${configImageDefault}`;
 
     } else {
 
+      // set image to display for all other possibilities.
       this.store.card.playerMediaContentId = "BRAND_LOGO_IMAGE_BASE64"
-
-      // if minimized and we are idle | off then do not use the brand logo.
-      if (this.config.playerMinimizeOnIdle && (isIdle || isOff)) {
-        imageUrl = "";
-        backgroundSize = undefined;
+      if (this.config.playerMinimizeOnIdle) {
+        // player is minimized, so use theme file image if defined (do not display brand logo).
+        styleInfo['background-image'] = `var(--spc-player-background-image-off)`;
       } else {
-        // use hard-coded default background image.
-        imageUrl = BRAND_LOGO_IMAGE_BASE64;
-        backgroundSize = BRAND_LOGO_IMAGE_SIZE;
+        // player is not minimized, so use theme file image if defined; otherwise, use brand logo.
+        styleInfo['background-image'] = `var(--spc-player-background-image-off, url(${BRAND_LOGO_IMAGE_BASE64}))`;
+        styleInfo['--spc-player-background-size-default'] = `${BRAND_LOGO_IMAGE_SIZE}`;
+      }
+
+      // set image size.
+      if (this.config.playerBackgroundImageSize) {
+        styleInfo['--spc-player-background-size'] = `${this.config.playerBackgroundImageSize}`;
       }
 
     }
@@ -335,10 +369,7 @@ export class Player extends AlertUpdatesBase {
     const playerVolumeLabelColor = this.config.playerVolumeLabelColor;
 
     // build style info object.
-    styleInfo['background-image'] = `url(${imageUrl})`;
-    this.store.card.playerImage = imageUrl;
-    if (backgroundSize)
-      styleInfo['--spc-player-background-size'] = `${backgroundSize}`;
+    this.store.card.playerImage = backgroundImageUrl;
     styleInfo['--spc-player-header-bg-color'] = `${headerBackgroundColor}`;
     styleInfo['--spc-player-controls-bg-color'] = `${controlsBackgroundColor} `;
     if (playerControlsColor)

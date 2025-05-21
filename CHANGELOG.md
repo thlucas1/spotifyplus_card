@@ -6,6 +6,13 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.55 ] - 2025/05/20
+
+  * Added theme variable `spc-player-background-image-off`; Background image to use for the player section when the player state is off; default value is none.
+  * Added theme variable `spc-player-background-image-idle`; Background image to use for the player section when the player state is idle; default value is none.
+  * Added theme variable `spc-player-background-image`; Background image to use for the player section when the player state is playing; default value is to use currently playing content cover art.
+  * Removed card `min-height` value, which allows you to resize the card to any minimum height you wish.
+
 ###### [ 1.0.54 ] - 2025/05/08
 
   * Added `deviceControlByName` config option that determines how devices will be resolved by the underlying SpotifyPlus service. If False (default), the device id will be passed to the service; If True, the device name will be passed to the service. Set this option to true if one or more of your devices register a different device id when awakening from sleep / idle state.  Check out the [Configuration Options wiki document](https://github.com/thlucas1/spotifyplus_card/wiki/Configuration-Options#devicecontrolbyname) for more information.

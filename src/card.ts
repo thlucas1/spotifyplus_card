@@ -308,7 +308,6 @@ export class Card extends AlertUpdatesBase {
         display: flex;
         flex-direction: column;
         overflow: hidden;
-        min-height: 20rem;
         height: calc(100vh - var(--spc-card-footer-height) - var(--spc-card-edit-tab-height) - var(--spc-card-edit-bottom-toolbar-height));
         min-width: 20rem;
         width: calc(100vw - var(--mdc-drawer-width));
@@ -1172,6 +1171,14 @@ export class Card extends AlertUpdatesBase {
     if (cardWaitProgressSliderColor)
       styleInfo['--spc-card-wait-progress-slider-color'] = `${cardWaitProgressSliderColor}`;
 
+    // if config entity not set, then display the brand logo neatly in the card.
+    if ((this.playerId || "") == "") {
+      styleInfo['background-repeat'] = 'no-repeat';
+      styleInfo['background-position'] = 'center';
+      styleInfo['background-image'] = `url(${BRAND_LOGO_IMAGE_BASE64})`;
+      styleInfo['background-size'] = `${BRAND_LOGO_IMAGE_SIZE}`;
+    }
+
     // are we previewing the card in the card editor?
     // if so, then we will ignore the configuration dimensions and use constants.
     if (this.isCardInEditPreview) {
@@ -1181,10 +1188,6 @@ export class Card extends AlertUpdatesBase {
       styleInfo['--spc-card-edit-bottom-toolbar-height'] = `${editBottomToolbarHeight}`;
       styleInfo['height'] = `${CARD_EDIT_PREVIEW_HEIGHT}`;
       styleInfo['width'] = `${CARD_EDIT_PREVIEW_WIDTH}`;
-      styleInfo['background-repeat'] = `${!this.playerId ? 'no-repeat' : undefined}`;
-      styleInfo['background-position'] = `${!this.playerId ? 'center' : undefined}`;
-      styleInfo['background-image'] = `${!this.playerId ? 'url(' + BRAND_LOGO_IMAGE_BASE64 + ')' : undefined}`;
-      styleInfo['background-size'] = `${!this.playerId ? BRAND_LOGO_IMAGE_SIZE : undefined}`;
 
       // adjust css styling for minimized player format.
       if (this.config.playerMinimizeOnIdle && (this.section == Section.PLAYER) && this.store.player.isPoweredOffOrIdle()) {
@@ -1206,10 +1209,8 @@ export class Card extends AlertUpdatesBase {
       styleInfo['--spc-card-edit-bottom-toolbar-height'] = `${editBottomToolbarHeight}`;
       styleInfo['height'] = `${CARD_PICK_PREVIEW_HEIGHT}`;
       styleInfo['width'] = `${CARD_PICK_PREVIEW_WIDTH}`;
-      styleInfo['background-repeat'] = 'no-repeat';
-      styleInfo['background-position'] = 'center';
-      styleInfo['background-image'] = `url(${BRAND_LOGO_IMAGE_BASE64})`;
-      styleInfo['background-size'] = `${BRAND_LOGO_IMAGE_SIZE}`;
+      styleInfo['min-height'] = '22rem';
+      styleInfo['min-width'] = `${CARD_PICK_PREVIEW_WIDTH}`;
       return styleMap(styleInfo);
     }
 
@@ -1440,7 +1441,7 @@ export class Card extends AlertUpdatesBase {
       // if no player image, or the brand logo image is displayed, then we will
       // reset the vibrant color and exit; this will default the footer and header
       // backgrounds to the card background color.
-      if ((playerImageSaved == "") || (playerMediaContentIdSaved == "BRAND_LOGO_IMAGE_BASE64")) {
+      if ((playerImageSaved == undefined) || (playerImageSaved == "") || (playerMediaContentIdSaved == "BRAND_LOGO_IMAGE_BASE64")) {
         this.vibrantImage = playerImageSaved;
         this.vibrantMediaContentId = playerMediaContentIdSaved;
         this.vibrantColorVibrant = undefined;
