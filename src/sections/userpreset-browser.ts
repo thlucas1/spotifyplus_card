@@ -9,7 +9,7 @@ import { customElement } from 'lit/decorators.js';
 
 // our imports.
 import {
-  ALERT_ERROR_SPOTIFY_PREMIUM_OR_ELEVATED_REQUIRED,
+  ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED,
 } from '../constants';
 import '../components/media-browser-list';
 import '../components/media-browser-icons';
@@ -198,7 +198,7 @@ export class UserPresetBrowser extends FavBrowserBase {
 
       // spotify premium account (or elevated credentials) required for this function.
       if (!this.player.isUserProductPremium() && (!this.player.attributes.sp_user_has_web_player_credentials)) {
-        throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_OR_ELEVATED_REQUIRED);
+        throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
       }
 
       // show progress indicator.
@@ -273,7 +273,7 @@ export class UserPresetBrowser extends FavBrowserBase {
 
       // spotify premium account (or elevated credentials) required for this function.
       if (!this.player.isUserProductPremium() && (!this.player.attributes.sp_user_has_web_player_credentials)) {
-        throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_OR_ELEVATED_REQUIRED);
+        throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
       }
 
       // show progress indicator.

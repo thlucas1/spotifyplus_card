@@ -8,6 +8,9 @@ import { html, TemplateResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
 
 // our imports.
+import {
+  ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED,
+} from '../constants';
 import '../components/media-browser-list';
 import '../components/media-browser-icons';
 import '../components/track-actions';
@@ -125,6 +128,11 @@ export class TrackFavBrowser extends FavBrowserBase {
 
       // show progress indicator.
       this.progressShow();
+
+      // spotify premium account (or elevated credentials) required for this function.
+      if (!this.player.isUserProductPremium() && (!this.player.attributes.sp_user_has_web_player_credentials)) {
+        throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
+      }
 
       // set media item reference.
       const mediaItem = evArgs.detail as ITrack;

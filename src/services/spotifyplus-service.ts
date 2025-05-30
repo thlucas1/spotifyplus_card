@@ -19,7 +19,6 @@ import {
 
 // our imports.
 import {
-  ALERT_ERROR_SPOTIFY_PREMIUM_OR_ELEVATED_REQUIRED,
   ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED,
   DOMAIN_SPOTIFYPLUS,
   DOMAIN_MEDIA_PLAYER
@@ -2990,7 +2989,7 @@ export class SpotifyPlusService {
 
       // spotify premium account (or elevated credentials) required for this function.
       if (!player.isUserProductPremium() && (!player.attributes.sp_user_has_web_player_credentials)) {
-        throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_OR_ELEVATED_REQUIRED);
+        throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
       }
 
       // validations.
@@ -3072,7 +3071,7 @@ export class SpotifyPlusService {
 
       // spotify premium account (or elevated credentials) required for this function.
       if (!player.isUserProductPremium() && (!player.attributes.sp_user_has_web_player_credentials)) {
-        throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_OR_ELEVATED_REQUIRED);
+        throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
       }
 
       // resolve a device_id value, if one was not specified.
@@ -3148,7 +3147,7 @@ export class SpotifyPlusService {
 
       // spotify premium account (or elevated credentials) required for this function.
       if (!player.isUserProductPremium() && (!player.attributes.sp_user_has_web_player_credentials)) {
-        throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_OR_ELEVATED_REQUIRED);
+        throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
       }
 
       // validations.
@@ -3218,7 +3217,7 @@ export class SpotifyPlusService {
 
       // spotify premium account (or elevated credentials) required for this function.
       if (!player.isUserProductPremium() && (!player.attributes.sp_user_has_web_player_credentials)) {
-        throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_OR_ELEVATED_REQUIRED);
+        throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
       }
 
       // resolve a device_id value, if one was not specified.
@@ -3307,7 +3306,7 @@ export class SpotifyPlusService {
 
       // spotify premium account (or elevated credentials) required for this function.
       if (!player.isUserProductPremium() && (!player.attributes.sp_user_has_web_player_credentials)) {
-        throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_OR_ELEVATED_REQUIRED);
+        throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
       }
 
       // validations.
@@ -4605,7 +4604,7 @@ export class SpotifyPlusService {
 
     // spotify premium account (or elevated credentials) required for this function.
     if (!player.isUserProductPremium() && (!player.attributes.sp_user_has_web_player_credentials)) {
-      throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_OR_ELEVATED_REQUIRED);
+      throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
     }
 
     // create service data (with required parameters).
@@ -4703,7 +4702,7 @@ export class SpotifyPlusService {
 
     // spotify premium account (or elevated credentials) required for this function.
     if (!player.isUserProductPremium() && (!player.attributes.sp_user_has_web_player_credentials)) {
-      throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_OR_ELEVATED_REQUIRED);
+      throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
     }
 
     // create service request.
@@ -4745,7 +4744,7 @@ export class SpotifyPlusService {
 
     // spotify premium account (or elevated credentials) required for this function.
     if (!player.isUserProductPremium() && (!player.attributes.sp_user_has_web_player_credentials)) {
-      throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_OR_ELEVATED_REQUIRED);
+      throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
     }
 
     // convert volume level to HA float value.
@@ -4784,7 +4783,7 @@ export class SpotifyPlusService {
 
     // spotify premium account (or elevated credentials) required for this function.
     if (!player.isUserProductPremium() && (!player.attributes.sp_user_has_web_player_credentials)) {
-      throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_OR_ELEVATED_REQUIRED);
+      throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
     }
 
     // validations.

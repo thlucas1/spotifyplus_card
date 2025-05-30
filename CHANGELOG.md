@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.56 ] - 2025/05/30
+
+  * Due to unannounced Spotify authorization changes for FREE accounts, the "Function requires Spotify Premium, or Spotify Web Player credentials must be configured for non-premium accounts." verbiage was changed to "Function requires Spotify Premium.".
+
 ###### [ 1.0.55 ] - 2025/05/20
 
   * Added theme variable `spc-player-background-image-off`; Background image to use for the player section when the player state is off; default value is none.

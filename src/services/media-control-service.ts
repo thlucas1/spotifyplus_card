@@ -4,7 +4,6 @@ import { ServiceCallRequest } from '../types/home-assistant-frontend/service-cal
 
 // our imports.
 import {
-  ALERT_ERROR_SPOTIFY_PREMIUM_OR_ELEVATED_REQUIRED,
   ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED,
   DOMAIN_MEDIA_PLAYER
 } from '../constants';
@@ -335,7 +334,7 @@ export class MediaControlService {
 
     // spotify premium account (or elevated credentials) required for this function.
     if (!player.isUserProductPremium() && (!player.attributes.sp_user_has_web_player_credentials)) {
-      throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_OR_ELEVATED_REQUIRED);
+      throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
     }
 
     // create service request.
