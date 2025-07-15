@@ -27,6 +27,16 @@ const CONFIG_SETTINGS_SCHEMA = [
     valueMax: 100,
   },
   {
+    name: 'playerVolumeStepValue',
+    label: 'Amount used to adjust volume when step buttons are used',
+    help: 'range 1 - 30',
+    required: true,
+    type: 'integer',
+    default: 10,
+    valueMin: 1,
+    valueMax: 30,
+  },
+  {
     name: 'playerVolumeControlsHideMute',
     label: 'Hide mute button in the volume controls area',
     required: false,
@@ -41,6 +51,12 @@ const CONFIG_SETTINGS_SCHEMA = [
   {
     name: 'playerVolumeControlsHideSlider',
     label: 'Hide volume slider and levels in the volume controls area',
+    required: false,
+    selector: { boolean: {} },
+  },
+  {
+    name: 'playerVolumeControlsShowPlusMinus',
+    label: 'Show plus / minus buttons in the volume controls area',
     required: false,
     selector: { boolean: {} },
   },

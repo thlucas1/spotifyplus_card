@@ -6,6 +6,13 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.57 ] - 2025/07/15
+
+  * Added `playerVolumeStepValue` config option that controls the amount used to adjust volume when step buttons are used.  This value does not apply if adjusting the volume via the slider. Range is 1 - 30, Default is 10.
+  * Added `playerVolumeControlsShowPlusMinus` config option that will show plus / minus buttons in the volume controls area of the Player section form. Default is false, as volume slider is displayed by default.
+  * Updated `spotifyplus-service.PlayerMediaPlayContext` method to support the `shuffle` parameter.
+  * Updated `spotifyplus-service.PlayerMediaPlayTracks` method to support the `shuffle` parameter.
+
 ###### [ 1.0.56 ] - 2025/05/30
 
   * Due to unannounced Spotify authorization changes for FREE accounts, the "Function requires Spotify Premium, or Spotify Web Player credentials must be configured for non-premium accounts." verbiage was changed to "Function requires Spotify Premium.".

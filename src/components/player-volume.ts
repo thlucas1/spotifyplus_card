@@ -4,7 +4,9 @@ import { property } from 'lit/decorators.js';
 import {
   mdiPower,
   mdiVolumeHigh,
-  mdiVolumeMute
+  mdiVolumeMinus,
+  mdiVolumeMute,
+  mdiVolumePlus
 } from '@mdi/js';
 
 // our imports.
@@ -20,7 +22,9 @@ import { closestElement, getHomeAssistantErrorMessage } from '../utils/utils';
 import { Player } from '../sections/player';
 import { AlertUpdatesBase } from '../sections/alert-updates-base';
 
-const { TURN_OFF, TURN_ON, VOLUME_MUTE, VOLUME_SET } = MediaPlayerEntityFeature;
+const { TURN_OFF, TURN_ON, VOLUME_MUTE, VOLUME_SET, VOLUME_STEP } = MediaPlayerEntityFeature;
+const VOLUME_DOWN = 900000000000;
+const VOLUME_UP = 900000000001;
 
 
 class Volume extends AlertUpdatesBase {
@@ -51,6 +55,7 @@ class Volume extends AlertUpdatesBase {
     const hideMute = this.config.playerVolumeControlsHideMute || false;
     const hideLevels = this.config.playerVolumeControlsHideLevels || false;
     const muteIcon = this.player.isMuted() ? mdiVolumeMute : mdiVolumeHigh;
+    const showPlusMinus = this.config.playerVolumeControlsShowPlusMinus && true;
 
     // set button color based on selected option.
     const colorPower = (this.player.state == MediaPlayerState.OFF);
@@ -73,7 +78,10 @@ class Volume extends AlertUpdatesBase {
             .path=${muteIcon} 
             label="Mute Toggle"
             style=${this.styleIcon(colorMute)}></ha-icon-button>
-        ` : html``}
+          ` : html``}
+        ${showPlusMinus ? html`
+          <ha-icon-button .path=${mdiVolumeMinus} @click=${() => this.onClickAction(VOLUME_DOWN)} hide=${this.hideFeature(VOLUME_STEP)} label="Decrease"></ha-icon-button>
+          ` : html``}
         <div class="volume-slider" hide=${this.hideFeature(VOLUME_SET)} style=${this.styleVolumeSlider()}>
           <ha-control-slider
             .value=${volumeValue}
@@ -90,6 +98,9 @@ class Volume extends AlertUpdatesBase {
             </div>
           ` : html``}
         </div>
+        ${showPlusMinus ? html`
+          <ha-icon-button .path=${mdiVolumePlus} @click=${() => this.onClickAction(VOLUME_UP)} hide=${this.hideFeature(VOLUME_STEP)} label="Increase"></ha-icon-button>
+          ` : html``}
         <ha-icon-button .path=${mdiPower} @click=${() => this.onClickAction(TURN_ON)}  hide=${this.hideFeature(TURN_ON)}  label="Turn On"  style=${this.styleIcon(colorPower)}></ha-icon-button>
         <ha-icon-button .path=${mdiPower} @click=${() => this.onClickAction(TURN_OFF)} hide=${this.hideFeature(TURN_OFF)} label="Turn Off"></ha-icon-button>
       </div>
@@ -194,7 +205,7 @@ class Volume extends AlertUpdatesBase {
    * 
    * @param action Action to execute.
    */
-  private async onClickAction(action: MediaPlayerEntityFeature): Promise<boolean> {
+  private async onClickAction(action: MediaPlayerEntityFeature | number): Promise<boolean> {
 
     try {
 
@@ -209,6 +220,14 @@ class Volume extends AlertUpdatesBase {
       } else if (action == TURN_ON) {
 
         await this.spotifyPlusService.turn_on(this.player);
+
+      } else if (action == VOLUME_DOWN) {
+
+        await this.spotifyPlusService.volume_down(this.player);
+
+      } else if (action == VOLUME_UP) {
+
+        await this.spotifyPlusService.volume_up(this.player);
 
       }
 
@@ -268,6 +287,11 @@ class Volume extends AlertUpdatesBase {
 
         if (this.player.supportsFeature(VOLUME_SET))
           return nothing;
+
+    } else if (feature == VOLUME_STEP) {
+
+      if (this.player.supportsFeature(VOLUME_STEP))
+        return nothing;
 
     }
 

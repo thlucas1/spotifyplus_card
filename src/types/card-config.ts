@@ -538,7 +538,7 @@ export interface CardConfig extends LovelaceCardConfig {
    */
   playerVolumeControlsHideMute?: boolean;
 
-  /** 
+  /**
    * Hide power button in the volume controls area of the Player section form.
    * Default is false.
    */
@@ -551,11 +551,25 @@ export interface CardConfig extends LovelaceCardConfig {
   playerVolumeControlsHideSlider?: boolean;
 
   /**
+   * Show plus / minus buttons in the volume controls area of the Player section form.
+   * Default is false.
+   */
+  playerVolumeControlsShowPlusMinus?: boolean;
+
+  /**
    * Maximum volume value allowed to be set via the card user-interface.  This value does
    * not apply if adjusting the volume via services or other media player UI's.
    * Default is 100.
    */
   playerVolumeMaxValue?: number;
+
+  /**
+   * Amount used to adjust volume when step buttons are used.  This value does
+   * not apply if adjusting the volume via the slider.
+   * Range is 1 - 30.
+   * Default is 10.
+   */
+  playerVolumeStepValue?: number;
 
   /**
    * Color of the player volume text labels.

@@ -92,6 +92,12 @@ export class PlayerBodyBase extends AlertUpdatesBase {
     // refresh body actions, using default actions (e.g. []).
     this.updateActions(this.store.player, []);
 
+    // set volume step amount (if configured).
+    const volStepLevel = this.store.config.playerVolumeStepValue || 0;
+    if (volStepLevel > 0) {
+      this.spotifyPlusService.VolumeSetStepLevel(this.player, volStepLevel);
+    }
+
   }
 
 

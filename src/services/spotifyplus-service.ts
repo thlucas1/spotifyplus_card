@@ -28,7 +28,9 @@ import {
   SERVICE_TURN_ON,
   SERVICE_SELECT_SOURCE,
   SERVICE_VOLUME_MUTE,
-  SERVICE_VOLUME_SET
+  SERVICE_VOLUME_SET,
+  SERVICE_VOLUME_DOWN,
+  SERVICE_VOLUME_UP
 } from '../services/media-control-service'
 import { MediaPlayer } from '../model/media-player';
 import { getMdiIconImageUrl } from '../utils/media-browser-utils';
@@ -2974,6 +2976,11 @@ export class SpotifyPlusService {
    *    This delay will give the spotify web api time to process the change before 
    *    another command is issued.  
    *    Default is 0.50; value range is 0 - 10.
+   * @param shuffle
+   *    True to enable player shuffle mode;  
+   *    False to disable player shuffle mode; 
+   *    None to use current player shuffle mode. 
+   *    Default is None.
   */
   public async PlayerMediaPlayContext(
     player: MediaPlayer,
@@ -2983,6 +2990,7 @@ export class SpotifyPlusService {
     position_ms: number | null = null,
     device_id: string | undefined | null = null,
     delay: number | null = null,
+    shuffle: boolean | null = null,
   ): Promise<void> {
 
     try {
@@ -3016,6 +3024,8 @@ export class SpotifyPlusService {
         serviceData['device_id'] = device_id;
       if (delay)
         serviceData['delay'] = delay;
+      if (shuffle)
+        serviceData['shuffle'] = shuffle;
 
       // create service request.
       const serviceRequest: ServiceCallRequest = {
@@ -3134,6 +3144,11 @@ export class SpotifyPlusService {
    *    This delay will give the spotify web api time to process the change before 
    *    another command is issued.  
    *    Default is 0.50; value range is 0 - 10.
+   * @param shuffle
+   *    True to enable player shuffle mode;  
+   *    False to disable player shuffle mode; 
+   *    None to use current player shuffle mode. 
+   *    Default is None.
   */
   public async PlayerMediaPlayTracks(
     player: MediaPlayer,
@@ -3141,6 +3156,7 @@ export class SpotifyPlusService {
     position_ms: number | null = null,
     device_id: string | undefined | null = null,
     delay: number | null = null,
+    shuffle: boolean | null = null,
   ): Promise<void> {
 
     try {
@@ -3172,6 +3188,8 @@ export class SpotifyPlusService {
         serviceData['device_id'] = device_id;
       if (delay)
         serviceData['delay'] = delay;
+      if (shuffle)
+        serviceData['shuffle'] = shuffle;
 
       // create service request.
       const serviceRequest: ServiceCallRequest = {
@@ -4458,6 +4476,33 @@ export class SpotifyPlusService {
 
 
   /**
+   * Set level used for volume step services.
+   * 
+   * @param player MediaPlayer instance that will process the request.
+   * @param level Volume level to set, expressed as a percentage (e.g. 1 - 100).
+   */
+  public async VolumeSetStepLevel(player: MediaPlayer, level: number) {
+
+    // convert volume level to HA float value.
+    const level_pct = level / 100;
+
+    // create service request.
+    const serviceRequest: ServiceCallRequest = {
+      domain: DOMAIN_SPOTIFYPLUS,
+      service: 'volume_set_step',
+      serviceData: {
+        entity_id: player.id,
+        level: level_pct,
+      }
+    };
+
+    // call the service.
+    await this.CallService(serviceRequest);
+
+  }
+
+
+  /**
    * Calls the `addUser` Spotify Zeroconf API endpoint to issue a call to SpConnectionLoginBlob.  If successful,
    * the associated device id is added to the Spotify Connect active device list for the specified user account.
    * 
@@ -4763,6 +4808,48 @@ export class SpotifyPlusService {
     // call the service.
     await this.CallService(serviceRequest);
 
+  }
+
+
+  /**
+   * Turn volume down for media player.
+   * 
+   * @param player MediaPlayer object to control.
+   */
+  public async volume_down(player: MediaPlayer) {
+
+    // create service request.
+    const serviceRequest: ServiceCallRequest = {
+      domain: DOMAIN_MEDIA_PLAYER,
+      service: SERVICE_VOLUME_DOWN,
+      serviceData: {
+        entity_id: player.id,
+      }
+    };
+
+    // call the service.
+    await this.CallService(serviceRequest);
+  }
+
+
+  /**
+   * Turn volume up for media player.
+   * 
+   * @param player MediaPlayer object to control.
+   */
+  public async volume_up(player: MediaPlayer) {
+
+    // create service request.
+    const serviceRequest: ServiceCallRequest = {
+      domain: DOMAIN_MEDIA_PLAYER,
+      service: SERVICE_VOLUME_UP,
+      serviceData: {
+        entity_id: player.id,
+      }
+    };
+
+    // call the service.
+    await this.CallService(serviceRequest);
   }
 
 
