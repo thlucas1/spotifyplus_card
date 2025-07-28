@@ -1,17 +1,22 @@
 ---
 name: "Bug report"
 description: "Report a bug with the card"
-labels: ["bug"]
+labels: 
+- "bug"
+
 body:
+
 - type: markdown
   attributes:
     value: Before you open a new issue, search through the existing issues to see if others have had the same problem; also make sure you are running the latest version of Home Assistant.
+
 - type: textarea
   attributes:
     label: "System Health details"
     description: "Paste the data from the System Health card in Home Assistant (https://www.home-assistant.io/more-info/system-health#github-issues)"
   validations:
     required: true
+
 - type: checkboxes
   attributes:
     label: Checklist
@@ -26,12 +31,14 @@ body:
         required: true
       - label: This issue is not a duplicate issue of any [previous issues](https://github.com/thlucas1/spotifyplus_card/issues?q=is%3Aissue+label%3A%22Bug%22+).
         required: true
+
 - type: textarea
   attributes:
     label: "Describe the issue"
     description: "A clear and concise description of what the issue is."
   validations:
     required: true
+
 - type: textarea
   attributes:
     label: Reproduction Steps
@@ -43,15 +50,16 @@ body:
       ...
   validations:
     required: true
+
 - type: textarea
   attributes:
-    label: "Debug / Console Logs"
-    description: "To enable debug logs check this https://www.home-assistant.io/integrations/logger/, this **needs** to include _everything_ from startup of Home Assistant to the point where you encounter the issue.  You can also include browser console / developer tool logs here as well."
+    label: "Debug logs"
+    description: "If enabled, add the contents of the Home Assistant [Debug Logger File](https://www.home-assistant.io/integrations/logger/) here; this **needs** to include _everything_ from startup of Home Assistant to the point where you encounter the issue."
     render: text
   validations:
     required: true
 
 - type: textarea
   attributes:
-    label: "Diagnostics Dump (optional)"
-    description: "Drag the diagnostics dump file here. (see https://www.home-assistant.io/integrations/diagnostics/ for info)"
+    label: "Diagnostics dump"
+    description: "If enabled, add the contents of the Home Assistant [Diagnostics File](https://www.home-assistant.io/integrations/diagnostics/) here."

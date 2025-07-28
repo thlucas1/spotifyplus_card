@@ -66,6 +66,8 @@ class PlayerHeader extends LitElement {
 
         const tagName = elmBody.tagName.toLowerCase();
 
+        // if currently playing track info changed then gather various favorite details
+        // and update the player mediaContentId value so overlay content is updated on next render.
         // retrieve favorite details based on the player body type (audiobook chapter, show episode, track).
         if (tagName == ("spc-player-body-track")) {
           const elmPlayerBodyTrack = elmBody as PlayerBodyTrack
@@ -73,18 +75,21 @@ class PlayerHeader extends LitElement {
           actionFavoriteAdd = elmPlayerBodyTrack.actionTrackFavoriteAdd;
           actionFavoriteRemove = elmPlayerBodyTrack.actionTrackFavoriteRemove;
           isFavoriteReady = true;
+          elmPlayerBodyTrack.mediaContentId = this.player.attributes.media_content_id;
         } else if (tagName == ("spc-player-body-show")) {
           const elmPlayerBodyShow = elmBody as PlayerBodyShow
           isFavorite = elmPlayerBodyShow.isEpisodeFavorite;
           actionFavoriteAdd = elmPlayerBodyShow.actionEpisodeFavoriteAdd;
           actionFavoriteRemove = elmPlayerBodyShow.actionEpisodeFavoriteRemove;
           isFavoriteReady = true;
+          elmPlayerBodyShow.mediaContentId = this.player.attributes.media_content_id;
         } else if (tagName == ("spc-player-body-audiobook")) {
           const elmPlayerBodyAudiobook = elmBody as PlayerBodyAudiobook
           isFavorite = elmPlayerBodyAudiobook.isAudiobookFavorite;
           actionFavoriteAdd = elmPlayerBodyAudiobook.actionAudiobookFavoriteAdd;
           actionFavoriteRemove = elmPlayerBodyAudiobook.actionAudiobookFavoriteRemove
           isFavoriteReady = true;
+          elmPlayerBodyAudiobook.mediaContentId = this.player.attributes.media_content_id;
         }
       }
     }

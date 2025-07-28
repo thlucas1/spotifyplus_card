@@ -5,7 +5,7 @@ const debuglog = Debug(DEBUG_APP_NAME + ":player-body-base");
 
 // lovelace card imports.
 import { PropertyValues, TemplateResult, nothing } from 'lit';
-import { property } from 'lit/decorators.js';
+import { state } from 'lit/decorators.js';
 
 // our imports.
 import { Store } from '../model/store';
@@ -21,7 +21,7 @@ import { AlertUpdatesBase } from '../sections/alert-updates-base';
 export class PlayerBodyBase extends AlertUpdatesBase {
 
   // public state properties.
-  @property({ attribute: false }) protected mediaContentId!: string;
+  @state() public mediaContentId?: string | typeof nothing;
 
   /** MediaPlayer instance created from the configuration entity id. */
   protected player!: MediaPlayer;
@@ -118,6 +118,13 @@ export class PlayerBodyBase extends AlertUpdatesBase {
     // get list of changed property keys.
     const changedPropKeys = Array.from(changedProperties.keys())
 
+    //if (debuglog.enabled) {
+    //  debuglog("%cupdate - changed properties: %s",
+    //    "color: gold;",
+    //    JSON.stringify(changedPropKeys),
+    //  );
+    //}
+
     // if first render has not happened yet then we will wait for it first.
     if (!this.hasUpdated) {
       return;
@@ -130,7 +137,7 @@ export class PlayerBodyBase extends AlertUpdatesBase {
     }
 
     // if media content id changed, then update actions.
-    if (changedPropKeys.includes('mediaContentId')) {
+    if (changedPropKeys.includes("mediaContentId")) {
 
       if (debuglog.enabled) {
         debuglog("%cupdate - player content changed:\n- NEW CONTENT ID = %s\n- isCardInEditPreview = %s",

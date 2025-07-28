@@ -1,11 +1,15 @@
 ---
 name: "Feature request"
 description: "Suggest an idea for this project"
-labels: ["Feature+Request"]
+labels: 
+- "enhancement"
+
 body:
+
 - type: markdown
   attributes:
     value: Before you open a new feature request, search through the existing feature requests to see if others have had the same idea.
+
 - type: checkboxes
   attributes:
     label: Checklist

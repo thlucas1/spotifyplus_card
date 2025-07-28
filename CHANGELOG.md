@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.58 ] - 2025/07/28
+
+  * Fixed a bug in the player section that was causing overlay information details to not update when a media content id change occured.
+
 ###### [ 1.0.57 ] - 2025/07/15
 
   * Added `playerVolumeStepValue` config option that controls the amount used to adjust volume when step buttons are used.  This value does not apply if adjusting the volume via the slider. Range is 1 - 30, Default is 10.
