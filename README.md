@@ -102,11 +102,11 @@ Check out the following links for more information:
 
 ## Reporting a Problem
 
-Submit a [Bug Report](https://github.com/thlucas1/spotifyplus_card/issues/new?assignees=&labels=bug&projects=&template=bug.yml) to bring the issue to my attention. I receive a notification when a new issue is opened, and will do my best to address it in a prompt and professional manner.
+Submit a [Bug Report](https://github.com/thlucas1/spotifyplus_card/issues/new?labels=bug&template=bug.yml) to bring the issue to my attention. I receive a notification when a new issue is opened, and will do my best to address it in a prompt and professional manner.
 
 ## Request a New Feature
 
-Do you have an idea for a new feature that could be added to the integration?  Submit a [Feature Request](https://github.com/thlucas1/spotifyplus_card/issues/new?assignees=&labels=enhancement&projects=&template=feature_request.yml) to get your idea into the queue. I receive a notification when a new request is opened, and will do my best to turn your idea into the latest and greatest feature.
+Do you have an idea for a new feature that could be added to the integration?  Submit a [Enhancement Request](https://github.com/thlucas1/spotifyplus_card/issues/new?labels=enhancement&template=enhancement.yml) to get your idea into the queue. I receive a notification when a new request is opened, and will do my best to turn your idea into the latest and greatest feature.
 
 ***
 
