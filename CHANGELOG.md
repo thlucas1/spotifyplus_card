@@ -8,7 +8,7 @@ Change are listed in reverse chronological order (newest to oldest).
 
 ###### [ 1.0.58 ] - 2025/07/28
 
-  * Fixed a bug in the player section that was causing overlay information details to not update when a media content id change occured.
+  * Fixed a bug in the player section that was causing overlay information details to not update when a media content id change occurred.
 
 ###### [ 1.0.57 ] - 2025/07/15
 
