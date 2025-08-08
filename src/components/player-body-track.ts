@@ -396,6 +396,11 @@ export class PlayerBodyTrack extends PlayerBodyBase {
             <div class="grid-action-info-hdr-s">URI</div>
             <div class="grid-action-info-text-s colspan-r3-c2 copy2cb" @click=${copyToClipboard}>${this.track?.uri}</div>
 
+            ${this.track?.is_linked_from ? html`
+              <div class="grid-action-info-hdr-s">Origin URI</div>
+              <div class="grid-action-info-text-s colspan-r4-c2 copy2cb" @click=${copyToClipboard}>${this.track?.uri_origin}</div>
+            ` : ""}
+
           </div>
         </div>
       </div>
@@ -436,6 +441,11 @@ export class PlayerBodyTrack extends PlayerBodyBase {
 
       .colspan-r3-c2 {
         grid-row: 3 / 3;    /* grid row 3 */
+        grid-column: 2 / 9; /* grid columns 2 thru 8 */
+      }
+
+      .colspan-r4-c2 {
+        grid-row: 4 / 4;    /* grid row 4 */
         grid-column: 2 / 9; /* grid columns 2 thru 8 */
       }
     `

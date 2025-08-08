@@ -190,21 +190,12 @@ export class PlayerBodyQueue extends PlayerBodyBase {
         // build track uri list from media list.
         const { uris } = getMediaListTrackUrisRemaining(this.queueInfo?.queue as ITrack[], item);
 
-        // if shuffle enabled then disable it, as we want to play the selected track first.
-        if (this.player.attributes.shuffle == true) {
-          await this.store.mediaControlService.shuffle_set(this.player, false);
-        }
+        // play the selected track, as well as the remaining tracks.
+        // also disable shuffle, as we want to play the selected track first.
+        this.spotifyPlusService.PlayerMediaPlayTracks(this.player, uris.join(","), null, null, null, false);
 
-        // give the shuffle disable time to process.
-        setTimeout(() => {
-
-          // play the selected track, as well as the remaining tracks.
-          this.spotifyPlusService.PlayerMediaPlayTracks(this.player, uris.join(","));
-
-          // hide progress indicator.
-          this.progressHide();
-
-        }, 250);
+        // hide progress indicator.
+        this.progressHide();
 
       } else {
 

@@ -7,6 +7,12 @@ export interface IRestrictions {
 
 
   /** 
+   * The market for the restriction.
+   */
+  market: string;
+
+
+  /**
    * The reason for the restriction. Supported values:  
    * - market: The content item is not available in the given market.
    * - product: The content item is not available for the user's subscription type.

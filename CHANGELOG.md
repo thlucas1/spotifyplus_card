@@ -6,6 +6,11 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.59 ] - 2025/08/07
+
+  * Fixed progress indicator not showing; HA dropped support for `ha-circular-progress` and replaced it with shoelace `ha-spinner` control.
+  * Updated types with Spotify track re-linking fields.
+
 ###### [ 1.0.58 ] - 2025/07/28
 
   * Fixed a bug in the player section that was causing overlay information details to not update when a media content id change occurred.

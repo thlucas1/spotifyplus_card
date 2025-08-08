@@ -249,6 +249,7 @@
     <TypeScriptCompile Include="src\types\spotifyplus\playlist-track.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus\playlist.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus\recommendation-seed.ts" />
+    <TypeScriptCompile Include="src\types\spotifyplus\linked-from.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus\restrictions.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus\resume-point.ts" />
     <TypeScriptCompile Include="src\types\spotifyplus\show.ts" />

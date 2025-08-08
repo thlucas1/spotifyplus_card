@@ -1,5 +1,6 @@
 import { IArtistSimplified } from './artist-simplified';
 import { IExternalUrls } from './external-urls';
+import { ILinkedFrom } from './linked-from';
 import { IRestrictions } from './restrictions';
 
 /**
@@ -56,6 +57,18 @@ export interface ITrackSimplified {
   id: string;
 
 
+  /** 
+   * The origin Spotify ID for the track.
+   * The `LinkedFrom.Id` value is returned if present; 
+   * otherwise, the `Id` value is returned.
+   * 
+   * This is a helper property, and is not part of the Spotify Web API specification.
+   * 
+   * Example: `spotify:track:1301WleyT98MSxVHPZCA6M`
+   */
+  id_origin: string;
+
+
   /**
    * Always returns null, as tracks currently do not support images.
    * 
@@ -65,6 +78,17 @@ export interface ITrackSimplified {
 
 
   /** 
+   * Whether or not the track is linked from another track.
+   * 
+   * If True, the `LinkedFrom` property contains track origin data;
+   * If False, the `LinkedFrom` property is an empty dictionary.
+   * 
+   * This is a helper property, and is not part of the Spotify Web API specification.
+   */
+  is_linked_from: boolean;
+
+
+  /**
    * Whether or not the track is from a local file.
    */
   is_local: boolean;
@@ -82,7 +106,7 @@ export interface ITrackSimplified {
    * with different track.  The track in the LinkedFrom object contains information about the originally
    * requested track.
    */
-  linked_from: object;
+  linked_from: ILinkedFrom;
 
 
   /**
@@ -126,5 +150,17 @@ export interface ITrackSimplified {
    * Example: `spotify:track:1301WleyT98MSxVHPZCA6M`
    */
   uri: string;
+
+
+  /** 
+   * The origin Spotify URI for the track.
+   * The `LinkedFrom.Uri` value is returned if present; 
+   * otherwise, the `Uri` value is returned.
+   * 
+   * This is a helper property, and is not part of the Spotify Web API specification.
+   * 
+   * Example: `spotify:track:1301WleyT98MSxVHPZCA6M`
+   */
+  uri_origin: string;
 
 }

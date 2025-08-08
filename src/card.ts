@@ -216,7 +216,7 @@ export class Card extends AlertUpdatesBase {
     return html`
       <ha-card class="spc-card" style=${this.styleCard()}>
         <div class="spc-loader" ?hidden=${!this.showLoader}>
-          <ha-circular-progress indeterminate></ha-circular-progress>
+          <ha-spinner size="large"></ha-spinner>
         </div>
         ${title ? html`<div class="spc-card-header" style=${this.styleCardHeader()}>${title}</div>` : ""}
         ${this.alertError ? html`<ha-alert alert-type="error" dismissable @alert-dismissed-clicked=${this.alertErrorClear}>${this.alertError}</ha-alert>` : ""}
@@ -365,7 +365,7 @@ export class Card extends AlertUpdatesBase {
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        --mdc-theme-primary: var(--spc-card-wait-progress-slider-color, var(--dark-primary-color, ${unsafeCSS(PLAYER_CONTROLS_ICON_TOGGLE_COLOR_DEFAULT)}));
+        --ha-spinner-indicator-color: var(--spc-card-wait-progress-slider-color, var(--dark-primary-color, ${unsafeCSS(PLAYER_CONTROLS_ICON_TOGGLE_COLOR_DEFAULT)}));
       }
 
       .spc-not-configured {
@@ -382,10 +382,6 @@ export class Card extends AlertUpdatesBase {
       ha-icon-button {
         padding-left: 1rem;
         padding-right: 1rem;
-      }
-
-      ha-circular-progress {
-        --md-sys-color-primary: var(--spc-card-wait-progress-slider-color, var(--dark-primary-color, ${unsafeCSS(PLAYER_CONTROLS_ICON_TOGGLE_COLOR_DEFAULT)}));
       }
     `;
   }
@@ -550,6 +546,10 @@ export class Card extends AlertUpdatesBase {
         JSON.stringify(Array.from(changedProperties.keys())),
       );
     }
+
+    // ensure "<search-input-outlined>" and "<ha-md-button-menu>" HA customElements are
+    // loaded so that the controls are rendered properly.
+    //(async () => await loadHaFormLazyControls())();
 
     // if there are things that you only want to happen one time when the configuration
     // is initially loaded, then do them here.

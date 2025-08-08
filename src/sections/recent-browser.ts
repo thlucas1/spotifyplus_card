@@ -142,21 +142,12 @@ export class RecentBrowser extends FavBrowserBase {
       // build track uri list from media list.
       const { uris } = getMediaListTrackUrisRemaining(this.mediaList || [], mediaItem);
 
-      // if shuffle enabled then disable it, as we want to play the selected track first.
-      if (this.player.attributes.shuffle == true) {
-        this.store.mediaControlService.shuffle_set(this.player, false);
-      }
+      // play the selected track, as well as the remaining tracks.
+      // also disable shuffle, as we want to play the selected track first.
+      this.spotifyPlusService.PlayerMediaPlayTracks(this.player, uris.join(","), null, null, null, false);
 
-      // give the shuffle disable time to process.
-      setTimeout(() => {
-
-        // play the selected track, as well as the remaining tracks.
-        this.spotifyPlusService.PlayerMediaPlayTracks(this.player, uris.join(","));
-
-        // show player section.
-        this.store.card.SetSection(Section.PLAYER);
-
-      }, 250);
+      // show player section.
+      this.store.card.SetSection(Section.PLAYER);
 
     }
     catch (error) {

@@ -259,11 +259,11 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (device_id)
+      if (device_id != null)
         serviceData['device_id'] = device_id;
       if (verify_device_id != null)
         serviceData['verify_device_id'] = verify_device_id;
-      if (delay)
+      if (delay != null)
         serviceData['delay'] = delay;
 
       // create service request.
@@ -303,7 +303,7 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (ids)
+      if (ids != null)
         serviceData['ids'] = ids;
 
       // create service request.
@@ -344,7 +344,7 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (ids)
+      if (ids != null)
         serviceData['ids'] = ids;
 
       // create service request.
@@ -385,7 +385,7 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (ids)
+      if (ids != null)
         serviceData['ids'] = ids;
 
       // create service request.
@@ -426,7 +426,7 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (ids)
+      if (ids != null)
         serviceData['ids'] = ids;
 
       // create service request.
@@ -468,7 +468,7 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (user_ids)
+      if (user_ids != null)
         serviceData['user_ids'] = user_ids;
 
       // create service request.
@@ -509,7 +509,7 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (ids)
+      if (ids != null)
         serviceData['ids'] = ids;
 
       // create service request.
@@ -550,7 +550,7 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (ids)
+      if (ids != null)
         serviceData['ids'] = ids;
 
       // create service request.
@@ -589,7 +589,7 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (ids)
+      if (ids != null)
         serviceData['ids'] = ids;
 
       // create service request.
@@ -629,7 +629,7 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (playlist_id)
+      if (playlist_id != null)
         serviceData['playlist_id'] = playlist_id;
       if (is_public != null)
         serviceData['public'] = is_public;
@@ -674,9 +674,9 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (album_id)
+      if (album_id != null)
         serviceData['album_id'] = album_id;
-      if (market)
+      if (market != null)
         serviceData['market'] = market;
 
       // create service request.
@@ -751,13 +751,13 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (limit)
+      if (limit != null)
         serviceData['limit'] = limit;
-      if (offset)
+      if (offset != null)
         serviceData['offset'] = offset;
-      if (market)
+      if (market != null)
         serviceData['market'] = market;
-      if (limit_total)
+      if (limit_total != null)
         serviceData['limit_total'] = limit_total;
       if (sort_result != null)
         serviceData['sort_result'] = sort_result;
@@ -836,15 +836,15 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (album_id)
+      if (album_id != null)
         serviceData['album_id'] = album_id;
-      if (limit)
+      if (limit != null)
         serviceData['limit'] = limit;
-      if (offset)
+      if (offset != null)
         serviceData['offset'] = offset;
-      if (market)
+      if (market != null)
         serviceData['market'] = market;
-      if (limit_total)
+      if (limit_total != null)
         serviceData['limit_total'] = limit_total;
 
       // create service request.
@@ -921,17 +921,17 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (artist_id)
+      if (artist_id != null)
         serviceData['artist_id'] = artist_id;
-      if (include_groups)
+      if (include_groups != null)
         serviceData['include_groups'] = include_groups;
-      if (limit)
+      if (limit != null)
         serviceData['limit'] = limit;
-      if (offset)
+      if (offset != null)
         serviceData['offset'] = offset;
-      if (market)
+      if (market != null)
         serviceData['market'] = market;
-      if (limit_total)
+      if (limit_total != null)
         serviceData['limit_total'] = limit_total;
       if (sort_result != null)
         serviceData['sort_result'] = sort_result;
@@ -999,7 +999,7 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (artist_id)
+      if (artist_id != null)
         serviceData['artist_id'] = artist_id;
 
       // create service request.
@@ -1065,7 +1065,7 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (artist_id)
+      if (artist_id != null)
         serviceData['artist_id'] = artist_id;
       if (sort_result != null)
         serviceData['sort_result'] = sort_result;
@@ -1136,9 +1136,9 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (artist_id)
+      if (artist_id != null)
         serviceData['artist_id'] = artist_id;
-      if (market)
+      if (market != null)
         serviceData['market'] = market;
       if (sort_result != null)
         serviceData['sort_result'] = sort_result;
@@ -1213,11 +1213,11 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (after)
+      if (after != null)
         serviceData['after'] = after;
-      if (limit)
+      if (limit != null)
         serviceData['limit'] = limit;
-      if (limit_total)
+      if (limit_total != null)
         serviceData['limit_total'] = limit_total;
       if (sort_result != null)
         serviceData['sort_result'] = sort_result;
@@ -1287,9 +1287,9 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (audiobook_id)
+      if (audiobook_id != null)
         serviceData['audiobook_id'] = audiobook_id;
-      if (market)
+      if (market != null)
         serviceData['market'] = market;
 
       // create service request.
@@ -1368,15 +1368,15 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (audiobook_id)
+      if (audiobook_id != null)
         serviceData['audiobook_id'] = audiobook_id;
-      if (limit)
+      if (limit != null)
         serviceData['limit'] = limit;
-      if (offset)
+      if (offset != null)
         serviceData['offset'] = offset;
-      if (market)
+      if (market != null)
         serviceData['market'] = market;
-      if (limit_total)
+      if (limit_total != null)
         serviceData['limit_total'] = limit_total;
 
       // create service request.
@@ -1449,11 +1449,11 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (limit)
+      if (limit != null)
         serviceData['limit'] = limit;
-      if (offset)
+      if (offset != null)
         serviceData['offset'] = offset;
-      if (limit_total)
+      if (limit_total != null)
         serviceData['limit_total'] = limit_total;
       if (sort_result != null)
         serviceData['sort_result'] = sort_result;
@@ -1526,9 +1526,9 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (country)
+      if (country != null)
         serviceData['country'] = country;
-      if (locale)
+      if (locale != null)
         serviceData['locale'] = locale;
       if (refresh != null)
         serviceData['refresh'] = refresh;
@@ -1606,13 +1606,13 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (limit)
+      if (limit != null)
         serviceData['limit'] = limit;
-      if (offset)
+      if (offset != null)
         serviceData['offset'] = offset;
-      if (country)
+      if (country != null)
         serviceData['country'] = country;
-      if (limit_total)
+      if (limit_total != null)
         serviceData['limit_total'] = limit_total;
       if (sort_result != null)
         serviceData['sort_result'] = sort_result;
@@ -1681,9 +1681,9 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (chapter_id)
+      if (chapter_id != null)
         serviceData['chapter_id'] = chapter_id;
-      if (market)
+      if (market != null)
         serviceData['market'] = market;
 
       // create service request.
@@ -1755,9 +1755,9 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (episode_id)
+      if (episode_id != null)
         serviceData['episode_id'] = episode_id;
-      if (market)
+      if (market != null)
         serviceData['market'] = market;
 
       // create service request.
@@ -1833,11 +1833,11 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (limit)
+      if (limit != null)
         serviceData['limit'] = limit;
-      if (offset)
+      if (offset != null)
         serviceData['offset'] = offset;
-      if (limit_total)
+      if (limit_total != null)
         serviceData['limit_total'] = limit_total;
       if (sort_result != null)
         serviceData['sort_result'] = sort_result;
@@ -2015,13 +2015,13 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (limit)
+      if (limit != null)
         serviceData['limit'] = limit;
-      if (after)
+      if (after != null)
         serviceData['after'] = after;
-      if (before)
+      if (before != null)
         serviceData['before'] = before;
-      if (limit_total)
+      if (limit_total != null)
         serviceData['limit_total'] = limit_total;
 
       // create service request.
@@ -2094,11 +2094,11 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (limit)
+      if (limit != null)
         serviceData['limit'] = limit;
-      if (offset)
+      if (offset != null)
         serviceData['offset'] = offset;
-      if (limit_total)
+      if (limit_total != null)
         serviceData['limit_total'] = limit_total;
       if (sort_result != null)
         serviceData['sort_result'] = sort_result;
@@ -2178,19 +2178,19 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (playlist_id)
+      if (playlist_id != null)
         serviceData['playlist_id'] = playlist_id;
-      if (limit)
+      if (limit != null)
         serviceData['limit'] = limit;
-      if (offset)
+      if (offset != null)
         serviceData['offset'] = offset;
-      if (market)
+      if (market != null)
         serviceData['market'] = market;
-      if (fields)
+      if (fields != null)
         serviceData['fields'] = fields;
-      if (additional_types)
+      if (additional_types != null)
         serviceData['additional_types'] = additional_types;
-      if (limit_total)
+      if (limit_total != null)
         serviceData['limit_total'] = limit_total;
 
       // create service request.
@@ -2281,7 +2281,7 @@ export class SpotifyPlusService {
         serviceData['refresh_device_list'] = refresh_device_list;
       if (activate_device != null)
         serviceData['activate_device'] = activate_device;
-      if (delay)
+      if (delay != null)
         serviceData['delay'] = delay;
 
       // create service request.
@@ -2471,15 +2471,15 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (show_id)
+      if (show_id != null)
         serviceData['show_id'] = show_id;
-      if (limit)
+      if (limit != null)
         serviceData['limit'] = limit;
-      if (offset)
+      if (offset != null)
         serviceData['offset'] = offset;
-      if (market)
+      if (market != null)
         serviceData['market'] = market;
-      if (limit_total)
+      if (limit_total != null)
         serviceData['limit_total'] = limit_total;
 
       // create service request.
@@ -2553,11 +2553,11 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (limit)
+      if (limit != null)
         serviceData['limit'] = limit;
-      if (offset)
+      if (offset != null)
         serviceData['offset'] = offset;
-      if (limit_total)
+      if (limit_total != null)
         serviceData['limit_total'] = limit_total;
       if (sort_result != null)
         serviceData['sort_result'] = sort_result;
@@ -2628,7 +2628,7 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (track_id)
+      if (track_id != null)
         serviceData['track_id'] = track_id;
 
       // create service request.
@@ -2701,13 +2701,13 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (limit)
+      if (limit != null)
         serviceData['limit'] = limit;
-      if (offset)
+      if (offset != null)
         serviceData['offset'] = offset;
-      if (market)
+      if (market != null)
         serviceData['market'] = market;
-      if (limit_total)
+      if (limit_total != null)
         serviceData['limit_total'] = limit_total;
       if (sort_result != null)
         serviceData['sort_result'] = sort_result;
@@ -2783,9 +2783,9 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (limit)
+      if (limit != null)
         serviceData['limit'] = limit;
-      if (market)
+      if (market != null)
         serviceData['market'] = market;
 
       if (recommendations) {
@@ -3014,17 +3014,17 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (offset_uri)
+      if (offset_uri != null)
         serviceData['offset_uri'] = offset_uri;
-      if (offset_position)
+      if (offset_position != null)
         serviceData['offset_position'] = offset_position;
-      if (position_ms)
+      if (position_ms != null)
         serviceData['position_ms'] = position_ms;
-      if (device_id)
+      if (device_id != null)
         serviceData['device_id'] = device_id;
-      if (delay)
+      if (delay != null)
         serviceData['delay'] = delay;
-      if (shuffle)
+      if (shuffle != null)
         serviceData['shuffle'] = shuffle;
 
       // create service request.
@@ -3093,15 +3093,15 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (device_id)
+      if (device_id != null)
         serviceData['device_id'] = device_id;
       if (shuffle != null)
         serviceData['shuffle'] = shuffle;
-      if (delay)
+      if (delay != null)
         serviceData['delay'] = delay;
       if (resolve_device_id != null)
         serviceData['resolve_device_id'] = resolve_device_id;
-      if (limit_total)
+      if (limit_total != null)
         serviceData['limit_total'] = limit_total;
 
       // create service request.
@@ -3182,13 +3182,13 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (position_ms)
+      if (position_ms != null)
         serviceData['position_ms'] = position_ms;
-      if (device_id)
+      if (device_id != null)
         serviceData['device_id'] = device_id;
-      if (delay)
+      if (delay != null)
         serviceData['delay'] = delay;
-      if (shuffle)
+      if (shuffle != null)
         serviceData['shuffle'] = shuffle;
 
       // create service request.
@@ -3249,9 +3249,9 @@ export class SpotifyPlusService {
       // update service data parameters (with optional parameters).
       if (shuffle != null)
         serviceData['state'] = shuffle;
-      if (device_id)
+      if (device_id != null)
         serviceData['device_id'] = device_id;
-      if (delay)
+      if (delay != null)
         serviceData['delay'] = delay;
 
       // create service request.
@@ -3340,17 +3340,17 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (device_id)
+      if (device_id != null)
         serviceData['device_id'] = device_id;
-      if (play)
+      if (play != null)
         serviceData['play'] = play;
-      if (delay)
+      if (delay != null)
         serviceData['delay'] = delay;
-      if (refresh_device_list)
+      if (refresh_device_list != null)
         serviceData['refresh_device_list'] = refresh_device_list;
-      if (force_activate_device)
+      if (force_activate_device != null)
         serviceData['force_activate_device'] = force_activate_device;
-      if (device_id_from)
+      if (device_id_from != null)
         serviceData['device_id_from'] = device_id_from;
 
       // create service request.
@@ -3388,7 +3388,7 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (ids)
+      if (ids != null)
         serviceData['ids'] = ids;
 
       // create service request.
@@ -3426,7 +3426,7 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (ids)
+      if (ids != null)
         serviceData['ids'] = ids;
 
       // create service request.
@@ -3464,7 +3464,7 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (ids)
+      if (ids != null)
         serviceData['ids'] = ids;
 
       // create service request.
@@ -3502,7 +3502,7 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (ids)
+      if (ids != null)
         serviceData['ids'] = ids;
 
       // create service request.
@@ -3540,7 +3540,7 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (ids)
+      if (ids != null)
         serviceData['ids'] = ids;
 
       // create service request.
@@ -3578,7 +3578,7 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (ids)
+      if (ids != null)
         serviceData['ids'] = ids;
 
       // create service request.
@@ -3616,7 +3616,7 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (ids)
+      if (ids != null)
         serviceData['ids'] = ids;
 
       // create service request.
@@ -3654,7 +3654,7 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (ids)
+      if (ids != null)
         serviceData['ids'] = ids;
 
       // create service request.
@@ -3692,7 +3692,7 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (ids)
+      if (ids != null)
         serviceData['ids'] = ids;
 
       // create service request.
@@ -3730,7 +3730,7 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (ids)
+      if (ids != null)
         serviceData['ids'] = ids;
 
       // create service request.
@@ -3834,15 +3834,15 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (limit)
+      if (limit != null)
         serviceData['limit'] = limit;
-      if (offset)
+      if (offset != null)
         serviceData['offset'] = offset;
-      if (market)
+      if (market != null)
         serviceData['market'] = market;
-      if (include_external)
+      if (include_external != null)
         serviceData['include_external'] = include_external;
-      if (limit_total)
+      if (limit_total != null)
         serviceData['limit_total'] = limit_total;
 
       // create service request.
@@ -3919,15 +3919,15 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (limit)
+      if (limit != null)
         serviceData['limit'] = limit;
-      if (offset)
+      if (offset != null)
         serviceData['offset'] = offset;
-      if (market)
+      if (market != null)
         serviceData['market'] = market;
-      if (include_external)
+      if (include_external != null)
         serviceData['include_external'] = include_external;
-      if (limit_total)
+      if (limit_total != null)
         serviceData['limit_total'] = limit_total;
 
       // create service request.
@@ -4003,15 +4003,15 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (limit)
+      if (limit != null)
         serviceData['limit'] = limit;
-      if (offset)
+      if (offset != null)
         serviceData['offset'] = offset;
-      if (market)
+      if (market != null)
         serviceData['market'] = market;
-      if (include_external)
+      if (include_external != null)
         serviceData['include_external'] = include_external;
-      if (limit_total)
+      if (limit_total != null)
         serviceData['limit_total'] = limit_total;
 
       // create service request.
@@ -4089,15 +4089,15 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (limit)
+      if (limit != null)
         serviceData['limit'] = limit;
-      if (offset)
+      if (offset != null)
         serviceData['offset'] = offset;
-      if (market)
+      if (market != null)
         serviceData['market'] = market;
-      if (include_external)
+      if (include_external != null)
         serviceData['include_external'] = include_external;
-      if (limit_total)
+      if (limit_total != null)
         serviceData['limit_total'] = limit_total;
 
       // create service request.
@@ -4174,15 +4174,15 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (limit)
+      if (limit != null)
         serviceData['limit'] = limit;
-      if (offset)
+      if (offset != null)
         serviceData['offset'] = offset;
-      if (market)
+      if (market != null)
         serviceData['market'] = market;
-      if (include_external)
+      if (include_external != null)
         serviceData['include_external'] = include_external;
-      if (limit_total)
+      if (limit_total != null)
         serviceData['limit_total'] = limit_total;
 
       // create service request.
@@ -4258,15 +4258,15 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (limit)
+      if (limit != null)
         serviceData['limit'] = limit;
-      if (offset)
+      if (offset != null)
         serviceData['offset'] = offset;
-      if (market)
+      if (market != null)
         serviceData['market'] = market;
-      if (include_external)
+      if (include_external != null)
         serviceData['include_external'] = include_external;
-      if (limit_total)
+      if (limit_total != null)
         serviceData['limit_total'] = limit_total;
 
       // create service request.
@@ -4344,15 +4344,15 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (limit)
+      if (limit != null)
         serviceData['limit'] = limit;
-      if (offset)
+      if (offset != null)
         serviceData['offset'] = offset;
-      if (market)
+      if (market != null)
         serviceData['market'] = market;
-      if (include_external)
+      if (include_external != null)
         serviceData['include_external'] = include_external;
-      if (limit_total)
+      if (limit_total != null)
         serviceData['limit_total'] = limit_total;
 
       // create service request.
@@ -4418,7 +4418,7 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (ids)
+      if (ids != null)
         serviceData['ids'] = ids;
 
       // create service request.
@@ -4456,7 +4456,7 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (playlist_id)
+      if (playlist_id != null)
         serviceData['playlist_id'] = playlist_id;
 
       // create service request.
@@ -4481,7 +4481,10 @@ export class SpotifyPlusService {
    * @param player MediaPlayer instance that will process the request.
    * @param level Volume level to set, expressed as a percentage (e.g. 1 - 100).
    */
-  public async VolumeSetStepLevel(player: MediaPlayer, level: number) {
+  public async VolumeSetStepLevel(
+    player: MediaPlayer,
+    level: number
+  ) {
 
     // convert volume level to HA float value.
     const level_pct = level / 100;
@@ -4546,17 +4549,17 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (username)
+      if (username != null)
         serviceData['username'] = username;
-      if (password)
+      if (password != null)
         serviceData['password'] = password;
-      if (loginid)
+      if (loginid != null)
         serviceData['loginid'] = loginid;
       if (pre_disconnect != null)
         serviceData['pre_disconnect'] = pre_disconnect;
       if (verify_device_list_entry != null)
         serviceData['verify_device_list_entry'] = verify_device_list_entry;
-      if (delay)
+      if (delay != null)
         serviceData['delay'] = delay;
 
       // create service request.
@@ -4611,7 +4614,7 @@ export class SpotifyPlusService {
       };
 
       // update service data parameters (with optional parameters).
-      if (delay)
+      if (delay != null)
         serviceData['delay'] = delay;
 
       // create service request.
