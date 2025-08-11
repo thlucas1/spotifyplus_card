@@ -275,8 +275,8 @@ export class UserPresetBrowser extends FavBrowserBase {
       this.requestUpdate();
 
       // play favorite tracks.
-      const shuffle = preset.shuffle || ((this.player.attributes.shuffle != null) ? this.player.attributes.shuffle : true);
-      await this.spotifyPlusService.PlayerMediaPlayTrackFavorites(this.player, null, shuffle, null, true, this.config.trackFavBrowserItemsLimit || 200);
+      // if shuffle specified then use the value; if not (e.g. null), then use current spotify player setting.
+      await this.spotifyPlusService.PlayerMediaPlayTrackFavorites(this.player, null, preset.shuffle, null, true, this.config.trackFavBrowserItemsLimit || 200);
 
       // show player section.
       this.store.card.SetSection(Section.PLAYER);

@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.60 ] - 2025/08/10
+
+  * Fixed shuffle attribute not being passed to `PlayerPlayTrackFavorites` method.
+
 ###### [ 1.0.59 ] - 2025/08/07
 
   * Fixed progress indicator not showing; HA dropped support for `ha-circular-progress` and replaced it with shoelace `ha-spinner` control.
