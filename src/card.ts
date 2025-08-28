@@ -866,6 +866,8 @@ export class Card extends AlertUpdatesBase {
         JSON.stringify(evArgs, null, 2),
       );
 
+      // show warning dialog.
+      this.alertInfoSet("Search section is not enabled; ignoring search request.");
     }
   }
 

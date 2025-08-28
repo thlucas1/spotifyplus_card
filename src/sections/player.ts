@@ -365,6 +365,7 @@ export class Player extends AlertUpdatesBase {
     const playerMinimizedTitleFontSize = this.config.playerMinimizedTitleFontSize;
     const playerProgressSliderColor = this.config.playerProgressSliderColor;
     const playerProgressLabelColor = this.config.playerProgressLabelColor;
+    const playerProgressLabelPaddingLR = this.config.playerProgressLabelPaddingLR;
     const playerVolumeSliderColor = this.config.playerVolumeSliderColor;
     const playerVolumeLabelColor = this.config.playerVolumeLabelColor;
 
@@ -399,6 +400,8 @@ export class Player extends AlertUpdatesBase {
       styleInfo['--spc-player-minimized-title-font-size'] = `${playerMinimizedTitleFontSize}`;
     if (playerProgressLabelColor)
       styleInfo['--spc-player-progress-label-color'] = `${playerProgressLabelColor}`;
+    if (playerProgressLabelPaddingLR)
+      styleInfo['--spc-player-progress-label-padding-lr'] = `${playerProgressLabelPaddingLR}`;
     if (playerProgressSliderColor)
       styleInfo['--spc-player-progress-slider-color'] = `${playerProgressSliderColor}`;
     if (playerVolumeLabelColor)

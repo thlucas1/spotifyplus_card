@@ -520,6 +520,12 @@ export interface CardConfig extends LovelaceCardConfig {
   playerProgressLabelColor?: string;
 
   /**
+   * Horizontal padding value for the player progress text labels.
+   * Default is '0px'.
+   */
+  playerProgressLabelPaddingLR?: string;
+
+  /**
    * Color of the player progress slider bar.
    * Default is '#2196F3'.
    */

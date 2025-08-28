@@ -52,11 +52,11 @@ class Progress extends AlertUpdatesBase {
       // render control.
       return html`
         <div class="progress">
-          <span class="progress-time">${convertProgress(this.playingProgress)}</span>
+          <span class="progress-time progress-pad-left">${convertProgress(this.playingProgress)}</span>
           <div class="bar" @click=${this.onSeekBarClick}>
             <div class="progress-bar" style=${this.styleProgressBar(this.mediaDuration)}></div>
           </div>
-          <span class="progress-time"> -${convertProgress(this.mediaDuration - this.playingProgress)}</span>
+          <span class="progress-time progress-pad-right"> -${convertProgress(this.mediaDuration - this.playingProgress)}</span>
         </div>
       `;
     } else {
@@ -199,6 +199,14 @@ class Progress extends AlertUpdatesBase {
         display: flex;
         color: var(--spc-player-progress-label-color, var(--spc-player-controls-color, #ffffff));
         padding-bottom: 0.2rem;
+      }
+
+      .progress-pad-left {
+        padding-left: var(--spc-player-progress-label-padding-lr, 0px);
+      }
+
+      .progress-pad-right {
+        padding-right: var(--spc-player-progress-label-padding-lr, 0px);
       }
 
       .bar {

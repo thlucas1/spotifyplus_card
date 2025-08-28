@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.61 ] - 2025/08/28
+
+  * Added theme variable `--spc-player-progress-label-padding-lr` and `playerProgressLabelPaddingLR` card configuration option; Horizontal padding value of the player progress text labels (default is '0px').
+
 ###### [ 1.0.60 ] - 2025/08/10
 
   * Fixed shuffle attribute not being passed to `PlayerPlayTrackFavorites` method.
