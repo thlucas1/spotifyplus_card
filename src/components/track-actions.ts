@@ -18,7 +18,6 @@ import {
 
 // our imports.
 import {
-  ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED,
   ALERT_INFO_PRESET_COPIED_TO_CLIPBOARD,
   ALERT_INFO_PRESET_JSON_COPIED_TO_CLIPBOARD,
   RADIO_SEARCH_KEY
@@ -47,6 +46,7 @@ enum Actions {
   AlbumFavoriteAdd = "AlbumFavoriteAdd",
   AlbumFavoriteRemove = "AlbumFavoriteRemove",
   AlbumFavoriteUpdate = "AlbumFavoriteUpdate",
+  AlbumPlayTrackFavorites = "AlbumPlayTrackFavorites",
   AlbumSearchRadio = "AlbumSearchRadio",
   AlbumShowTracks = "AlbumShowTracks",
   AlbumUserPresetAdd = "AlbumUserPresetAdd",
@@ -56,6 +56,7 @@ enum Actions {
   ArtistFavoriteAdd = "ArtistFavoriteAdd",
   ArtistFavoriteRemove = "ArtistFavoriteRemove",
   ArtistFavoriteUpdate = "ArtistFavoriteUpdate",
+  ArtistPlayTrackFavorites = "ArtistPlayTrackFavorites",
   ArtistSearchPlaylists = "ArtistSearchPlaylists",
   ArtistSearchRadio = "ArtistSearchRadio",
   ArtistSearchTracks = "ArtistSearchTracks",
@@ -74,7 +75,6 @@ enum Actions {
   TrackFavoriteUpdate = "TrackFavoriteUpdate",
   TrackPlayQueueAdd = "TrackPlayQueueAdd",
   TrackPlayTrackFavorites = "TrackPlayTrackFavorites",
-  TrackPlayTrackFavoritesArtist = "TrackPlayTrackFavoritesArtist",
   TrackSearchPlaylists = "TrackSearchPlaylists",
   TrackSearchRadio = "TrackSearchRadio",
   TrackUserPresetAdd = "TrackUserPresetAdd",
@@ -237,10 +237,6 @@ class TrackActions extends FavActionsBase {
           <ha-svg-icon slot="start" .path=${mdiPlaylistPlay}></ha-svg-icon>
           <div slot="headline">Play All Track Favorites</div>
         </ha-md-menu-item>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.TrackPlayTrackFavoritesArtist)}>
-          <ha-svg-icon slot="start" .path=${mdiPlaylistPlay}></ha-svg-icon>
-          <div slot="headline">Play Track Favorites for Artist &quot;${this.mediaItem.artists[0].name}&quot;</div>
-        </ha-md-menu-item>
         <ha-md-divider role="separator" tabindex="-1"></ha-md-divider>
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.TrackUserPresetAdd)}>
           <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
@@ -267,6 +263,11 @@ class TrackActions extends FavActionsBase {
         <ha-assist-chip slot="trigger">
           <ha-svg-icon slot="icon" .path=${mdiDotsHorizontal}></ha-svg-icon>
         </ha-assist-chip>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.AlbumPlayTrackFavorites)}>
+          <ha-svg-icon slot="start" .path=${mdiPlaylistPlay}></ha-svg-icon>
+          <div slot="headline">Play Favorite Tracks from this Album</div>
+        </ha-md-menu-item>
+        <ha-md-divider role="separator" tabindex="-1"></ha-md-divider>
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.AlbumShowTracks)} hide=${this.hideSearchType(SearchMediaTypes.TRACKS)}>
           <ha-svg-icon slot="start" .path=${mdiMusic}></ha-svg-icon>
           <div slot="headline">Show Album Tracks</div>
@@ -301,6 +302,11 @@ class TrackActions extends FavActionsBase {
         <ha-assist-chip slot="trigger">
           <ha-svg-icon slot="icon" .path=${mdiDotsHorizontal}></ha-svg-icon>
         </ha-assist-chip>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistPlayTrackFavorites)}>
+          <ha-svg-icon slot="start" .path=${mdiPlaylistPlay}></ha-svg-icon>
+          <div slot="headline">Play Favorite Tracks from this Artist</div>
+        </ha-md-menu-item>
+        <ha-md-divider role="separator" tabindex="-1"></ha-md-divider>
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistSearchPlaylists)} hide=${this.hideSearchType(SearchMediaTypes.PLAYLISTS)}>
           <ha-svg-icon slot="start" .path=${mdiPlaylistPlay}></ha-svg-icon>
           <div slot="headline">Search Playlists for Artist</div>
@@ -619,17 +625,19 @@ class TrackActions extends FavActionsBase {
         await this.spotifyPlusService.SaveAlbumFavorites(this.player, this.mediaItem.album.id);
         this.updateActions(this.player, [Actions.AlbumFavoriteUpdate]);
 
-      } else if (action == Actions.ArtistUserPresetAdd) {
-
-        this.mediaItem.artists[0].image_url = this.mediaItem.album.image_url;
-        this.store.config.userPresets?.unshift(GetUserPresetObject(this.mediaItem.artists[0]));
-        await updateCardConfigurationStorage(this.store.config);
-        this.progressHide();
-
       } else if (action == Actions.AlbumFavoriteRemove) {
 
         await this.spotifyPlusService.RemoveAlbumFavorites(this.player, this.mediaItem.album.id);
         this.updateActions(this.player, [Actions.AlbumFavoriteUpdate]);
+
+      } else if (action == Actions.AlbumPlayTrackFavorites) {
+
+        // have to hide the progress indicator manually since it does not call updateActions.
+        await this.spotifyPlusService.PlayerMediaPlayTrackFavorites(this.player, null, true, null, false, 999, null, this.mediaItem.album.uri);
+        this.progressHide();
+
+        // show player section.
+        this.store.card.SetSection(Section.PLAYER);
 
       } else if (action == Actions.ArtistFavoriteAdd) {
 
@@ -640,6 +648,22 @@ class TrackActions extends FavActionsBase {
 
         await this.spotifyPlusService.UnfollowArtists(this.player, this.mediaItem.artists[0].id);
         this.updateActions(this.player, [Actions.ArtistFavoriteUpdate]);
+
+      } else if (action == Actions.ArtistPlayTrackFavorites) {
+
+        // have to hide the progress indicator manually since it does not call updateActions.
+        await this.spotifyPlusService.PlayerMediaPlayTrackFavorites(this.player, null, true, null, false, 999, this.mediaItem.artists[0].uri, null);
+        this.progressHide();
+
+        // show player section.
+        this.store.card.SetSection(Section.PLAYER);
+
+      } else if (action == Actions.ArtistUserPresetAdd) {
+
+        this.mediaItem.artists[0].image_url = this.mediaItem.album.image_url;
+        this.store.config.userPresets?.unshift(GetUserPresetObject(this.mediaItem.artists[0]));
+        await updateCardConfigurationStorage(this.store.config);
+        this.progressHide();
 
       } else if (action == Actions.TrackUserPresetAdd) {
 
@@ -665,27 +689,8 @@ class TrackActions extends FavActionsBase {
 
       } else if (action == Actions.TrackPlayTrackFavorites) {
 
-        // spotify premium account (or elevated credentials) required for this function.
-        if (!this.player.isUserProductPremium() && (!this.player.attributes.sp_user_has_web_player_credentials)) {
-          throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
-        }
-
         // have to hide the progress indicator manually since it does not call updateActions.
-        await this.spotifyPlusService.PlayerMediaPlayTrackFavorites(this.player, null, true, null, false, this.store.config.trackFavBrowserItemsLimit);
-        this.progressHide();
-
-        // show player section.
-        this.store.card.SetSection(Section.PLAYER);
-
-      } else if (action == Actions.TrackPlayTrackFavoritesArtist) {
-
-        // spotify premium account (or elevated credentials) required for this function.
-        if (!this.player.isUserProductPremium() && (!this.player.attributes.sp_user_has_web_player_credentials)) {
-          throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
-        }
-
-        // have to hide the progress indicator manually since it does not call updateActions.
-        await this.spotifyPlusService.PlayerMediaPlayTrackFavorites(this.player, null, true, null, false, 999, this.mediaItem.artists[0].name);
+        await this.spotifyPlusService.PlayerMediaPlayTrackFavorites(this.player, null, true, null, false, this.store.config.trackFavBrowserItemsLimit || 200);
         this.progressHide();
 
         // show player section.

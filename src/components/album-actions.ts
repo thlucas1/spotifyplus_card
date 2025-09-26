@@ -48,6 +48,7 @@ enum Actions {
   AlbumFavoriteAdd = "AlbumFavoriteAdd",
   AlbumFavoriteRemove = "AlbumFavoriteRemove",
   AlbumFavoriteUpdate = "AlbumFavoriteUpdate",
+  AlbumPlayTrackFavorites = "AlbumPlayTrackFavorites",
   AlbumTrackQueueAdd = "AlbumTrackQueueAdd",
   AlbumTracksUpdate = "AlbumTracksUpdate",
   AlbumSearchRadio = "AlbumSearchRadio",
@@ -59,6 +60,7 @@ enum Actions {
   ArtistFavoriteAdd = "ArtistFavoriteAdd",
   ArtistFavoriteRemove = "ArtistFavoriteRemove",
   ArtistFavoriteUpdate = "ArtistFavoriteUpdate",
+  ArtistPlayTrackFavorites = "ArtistPlayTrackFavorites",
   ArtistSearchPlaylists = "ArtistSearchPlaylists",
   ArtistSearchRadio = "ArtistSearchRadio",
   ArtistSearchTracks = "ArtistSearchTracks",
@@ -178,6 +180,11 @@ class AlbumActions extends FavActionsBase {
         <ha-assist-chip slot="trigger">
           <ha-svg-icon slot="icon" .path=${mdiDotsHorizontal}></ha-svg-icon>
         </ha-assist-chip>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.AlbumPlayTrackFavorites)}>
+          <ha-svg-icon slot="start" .path=${mdiPlaylistPlay}></ha-svg-icon>
+          <div slot="headline">Play Favorite Tracks from this Album</div>
+        </ha-md-menu-item>
+        <ha-md-divider role="separator" tabindex="-1"></ha-md-divider>
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.AlbumShowTracks)} hide=${this.hideSearchType(SearchMediaTypes.TRACKS)}>
           <ha-svg-icon slot="start" .path=${mdiMusic}></ha-svg-icon>
           <div slot="headline">Show Album Tracks</div>
@@ -212,6 +219,11 @@ class AlbumActions extends FavActionsBase {
         <ha-assist-chip slot="trigger">
           <ha-svg-icon slot="icon" .path=${mdiDotsHorizontal}></ha-svg-icon>
         </ha-assist-chip>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistPlayTrackFavorites)}>
+          <ha-svg-icon slot="start" .path=${mdiPlaylistPlay}></ha-svg-icon>
+          <div slot="headline">Play Favorite Tracks from this Artist</div>
+        </ha-md-menu-item>
+        <ha-md-divider role="separator" tabindex="-1"></ha-md-divider>
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistSearchPlaylists)} hide=${this.hideSearchType(SearchMediaTypes.PLAYLISTS)}>
           <ha-svg-icon slot="start" .path=${mdiPlaylistPlay}></ha-svg-icon>
           <div slot="headline">Search Playlists for Artist</div>
@@ -515,6 +527,15 @@ class AlbumActions extends FavActionsBase {
         await this.spotifyPlusService.RemoveAlbumFavorites(this.player, this.mediaItem.id);
         this.updateActions(this.player, [Actions.AlbumFavoriteUpdate]);
 
+      } else if (action == Actions.AlbumPlayTrackFavorites) {
+
+        // have to hide the progress indicator manually since it does not call updateActions.
+        await this.spotifyPlusService.PlayerMediaPlayTrackFavorites(this.player, null, true, null, false, 999, null, this.mediaItem.uri);
+        this.progressHide();
+
+        // show player section.
+        this.store.card.SetSection(Section.PLAYER);
+
       } else if (action == Actions.ArtistUserPresetAdd) {
 
         this.mediaItem.artists[0].image_url = this.mediaItem.image_url;
@@ -531,6 +552,15 @@ class AlbumActions extends FavActionsBase {
 
         await this.spotifyPlusService.UnfollowArtists(this.player, uriIdArtist);
         this.updateActions(this.player, [Actions.ArtistFavoriteUpdate]);
+
+      } else if (action == Actions.ArtistPlayTrackFavorites) {
+
+        // have to hide the progress indicator manually since it does not call updateActions.
+        await this.spotifyPlusService.PlayerMediaPlayTrackFavorites(this.player, null, true, null, false, 999, this.mediaItem.artists[0].uri, null);
+        this.progressHide();
+
+        // show player section.
+        this.store.card.SetSection(Section.PLAYER);
 
       } else {
 

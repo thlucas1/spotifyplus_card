@@ -56,6 +56,7 @@ enum Actions {
   ArtistFavoriteAdd = "ArtistFavoriteAdd",
   ArtistFavoriteRemove = "ArtistFavoriteRemove",
   ArtistFavoriteUpdate = "ArtistFavoriteUpdate",
+  ArtistPlayTrackFavorites = "ArtistPlayTrackFavorites",
   ArtistSearchPlaylists = "ArtistSearchPlaylists",
   ArtistSearchRadio = "ArtistSearchRadio",
   ArtistSearchTracks = "ArtistSearchTracks",
@@ -141,6 +142,11 @@ class ArtistActions extends FavActionsBase {
         <ha-assist-chip slot="trigger">
           <ha-svg-icon slot="icon" .path=${mdiDotsHorizontal}></ha-svg-icon>
         </ha-assist-chip>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistPlayTrackFavorites)}>
+          <ha-svg-icon slot="start" .path=${mdiPlaylistPlay}></ha-svg-icon>
+          <div slot="headline">Play Favorite Tracks from this Artist</div>
+        </ha-md-menu-item>
+        <ha-md-divider role="separator" tabindex="-1"></ha-md-divider>
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistSearchPlaylists)} hide=${this.hideSearchType(SearchMediaTypes.PLAYLISTS)}>
           <ha-svg-icon slot="start" .path=${mdiPlaylistPlay}></ha-svg-icon>
           <div slot="headline">Search Playlists for Artist</div>
@@ -407,16 +413,25 @@ class ArtistActions extends FavActionsBase {
         await this.spotifyPlusService.FollowArtists(this.player, this.mediaItem.id);
         this.updateActions(this.player, [Actions.ArtistFavoriteUpdate]);
 
+      } else if (action == Actions.ArtistFavoriteRemove) {
+
+        await this.spotifyPlusService.UnfollowArtists(this.player, this.mediaItem.id);
+        this.updateActions(this.player, [Actions.ArtistFavoriteUpdate]);
+
+      } else if (action == Actions.ArtistPlayTrackFavorites) {
+
+        // have to hide the progress indicator manually since it does not call updateActions.
+        await this.spotifyPlusService.PlayerMediaPlayTrackFavorites(this.player, null, true, null, false, 999, this.mediaItem.uri, null);
+        this.progressHide();
+
+        // show player section.
+        this.store.card.SetSection(Section.PLAYER);
+
       } else if (action == Actions.ArtistUserPresetAdd) {
 
         this.store.config.userPresets?.unshift(GetUserPresetObject(this.mediaItem));
         await updateCardConfigurationStorage(this.store.config);
         this.progressHide();
-
-      } else if (action == Actions.ArtistFavoriteRemove) {
-
-        await this.spotifyPlusService.UnfollowArtists(this.player, this.mediaItem.id);
-        this.updateActions(this.player, [Actions.ArtistFavoriteUpdate]);
 
       } else {
 

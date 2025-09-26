@@ -6,6 +6,18 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+
+###### [ 1.0.63 ] - 2025/09/26
+
+  * Added "Play Favorite Tracks from this Artist" context menu item to artist actions.
+  * Added "Play Favorite Tracks from this Album" context menu item to album actions.
+  * Added "Play Favorite Tracks from this Artist" context menu item to album actions.
+  * Added "Play Favorite Tracks from this Album" context menu item to track actions.
+  * Added "Play Favorite Tracks from this Artist" context menu item to track actions.
+  * Added "Play Favorite Tracks from this Album" context menu item to player body track actions.
+  * Added "Play Favorite Tracks from this Artist" context menu item to player body track actions.
+  * Removed "Play Track Favorites for Artist x" context menu item from track actions.
+
 ###### [ 1.0.62 ] - 2025/09/26
 
   * Added "Play Album" context menu item to track actions.
