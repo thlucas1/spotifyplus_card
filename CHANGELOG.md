@@ -6,9 +6,14 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.62 ] - 2025/09/26
+
+  * Added "Play Album" context menu item to track actions.
+  * Added "Play Track Favorites for Artist x" context menu item to track actions.
+
 ###### [ 1.0.61 ] - 2025/08/28
 
-  * Added theme variable `--spc-player-progress-label-padding-lr` and `playerProgressLabelPaddingLR` card configuration option; Horizontal padding value of the player progress text labels (default is '0px').
+  * Added theme variable `--spc-player-progress-label-padding-lr` and `playerProgressLabelPaddingLR` card configuration option; Horizontal padding value of the player progress text labels (default is `0rem`).
 
 ###### [ 1.0.60 ] - 2025/08/10
 

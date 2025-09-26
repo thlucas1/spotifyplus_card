@@ -2680,6 +2680,8 @@ export class SpotifyPlusService {
    * @param market An ISO 3166-1 alpha-2 country code. If a country code is specified, only content that is available in that market will be returned.  If a valid user access token is specified in the request header, the country associated with the user account will take priority over this parameter.  Example = 'ES'.
    * @param limit_total If specified, this argument overrides the limit and offset argument values and paging is automatically used to retrieve all available items up to the maximum count specified.  Default: None(disabled)
    * @param sort_result True to sort the items by name; otherwise, False to leave the items in the same order they were returned in by the Spotify Web API.  Default is true.
+   * @param filter_artist Filter returned entries by an artist name. Value can be the full name of the artist (e.g. "Jeremy Camp"), or a partial name (e.g. "Camp").
+   * @param filter_album Filter returned entries by an album name. Value can be the full name of the album (e.g. "Carried Me"), or a partial name (e.g. "Carried").
    * @param trimResults True to trim certain fields of the output results that are not required and to conserve memory; otherwise, False to return all fields that were returned in by the Spotify Web API.
    * @returns A TrackPageSaved object.
   */
@@ -2690,6 +2692,8 @@ export class SpotifyPlusService {
     market: string | undefined | null = null,
     limit_total: number | null = null,
     sort_result: boolean | null = null,
+    filter_artist: string | undefined | null = null,
+    filter_album: string | undefined | null = null,
     trimResults: boolean = true,
   ): Promise<ITrackPageSaved> {
 
@@ -2711,6 +2715,10 @@ export class SpotifyPlusService {
         serviceData['limit_total'] = limit_total;
       if (sort_result != null)
         serviceData['sort_result'] = sort_result;
+      if (filter_artist != null)
+        serviceData['filter_artist'] = filter_artist;
+      if (filter_album != null)
+        serviceData['filter_album'] = filter_album;
 
       // create service request.
       const serviceRequest: ServiceCallRequest = {
@@ -2984,7 +2992,7 @@ export class SpotifyPlusService {
   */
   public async PlayerMediaPlayContext(
     player: MediaPlayer,
-    context_uri: string,
+    context_uri: string | undefined | null,
     offset_uri: string | undefined | null = null,
     offset_position: number | null = null,
     position_ms: number | null = null,
@@ -3067,6 +3075,12 @@ export class SpotifyPlusService {
    * @param limit_total
    *    The maximum number of items to retrieve from favorites.  
    *    Default: 200.
+   * @param filter_artist
+   *    Filter returned entries by an artist name.  
+   *    Value can be the full name of the artist (e.g. "Jeremy Camp"), or a partial name (e.g. "Camp").
+   * @param filter_album
+   *    Filter returned entries by an album name.
+   *    Value can be the full name of the album (e.g. "Carried Me"), or a partial name (e.g. "Carried").
   */
   public async PlayerMediaPlayTrackFavorites(
     player: MediaPlayer,
@@ -3075,6 +3089,8 @@ export class SpotifyPlusService {
     delay: number | null = null,
     resolve_device_id: boolean | undefined | null = null,
     limit_total: number | null = null,
+    filter_artist: string | undefined | null = null,
+    filter_album: string | undefined | null = null,
   ): Promise<void> {
 
     try {
@@ -3103,6 +3119,10 @@ export class SpotifyPlusService {
         serviceData['resolve_device_id'] = resolve_device_id;
       if (limit_total != null)
         serviceData['limit_total'] = limit_total;
+      if (filter_artist != null)
+        serviceData['filter_artist'] = filter_artist;
+      if (filter_album != null)
+        serviceData['filter_album'] = filter_album;
 
       // create service request.
       const serviceRequest: ServiceCallRequest = {

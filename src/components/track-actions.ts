@@ -74,6 +74,7 @@ enum Actions {
   TrackFavoriteUpdate = "TrackFavoriteUpdate",
   TrackPlayQueueAdd = "TrackPlayQueueAdd",
   TrackPlayTrackFavorites = "TrackPlayTrackFavorites",
+  TrackPlayTrackFavoritesArtist = "TrackPlayTrackFavoritesArtist",
   TrackSearchPlaylists = "TrackSearchPlaylists",
   TrackSearchRadio = "TrackSearchRadio",
   TrackUserPresetAdd = "TrackUserPresetAdd",
@@ -235,6 +236,10 @@ class TrackActions extends FavActionsBase {
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.TrackPlayTrackFavorites)}>
           <ha-svg-icon slot="start" .path=${mdiPlaylistPlay}></ha-svg-icon>
           <div slot="headline">Play All Track Favorites</div>
+        </ha-md-menu-item>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.TrackPlayTrackFavoritesArtist)}>
+          <ha-svg-icon slot="start" .path=${mdiPlaylistPlay}></ha-svg-icon>
+          <div slot="headline">Play Track Favorites for Artist &quot;${this.mediaItem.artists[0].name}&quot;</div>
         </ha-md-menu-item>
         <ha-md-divider role="separator" tabindex="-1"></ha-md-divider>
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.TrackUserPresetAdd)}>
@@ -667,6 +672,20 @@ class TrackActions extends FavActionsBase {
 
         // have to hide the progress indicator manually since it does not call updateActions.
         await this.spotifyPlusService.PlayerMediaPlayTrackFavorites(this.player, null, true, null, false, this.store.config.trackFavBrowserItemsLimit);
+        this.progressHide();
+
+        // show player section.
+        this.store.card.SetSection(Section.PLAYER);
+
+      } else if (action == Actions.TrackPlayTrackFavoritesArtist) {
+
+        // spotify premium account (or elevated credentials) required for this function.
+        if (!this.player.isUserProductPremium() && (!this.player.attributes.sp_user_has_web_player_credentials)) {
+          throw new Error(ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED);
+        }
+
+        // have to hide the progress indicator manually since it does not call updateActions.
+        await this.spotifyPlusService.PlayerMediaPlayTrackFavorites(this.player, null, true, null, false, 999, this.mediaItem.artists[0].name);
         this.progressHide();
 
         // show player section.

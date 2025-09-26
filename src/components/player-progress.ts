@@ -202,11 +202,11 @@ class Progress extends AlertUpdatesBase {
       }
 
       .progress-pad-left {
-        padding-left: var(--spc-player-progress-label-padding-lr, 0px);
+        padding-left: var(--spc-player-progress-label-padding-lr, 0rem);
       }
 
       .progress-pad-right {
-        padding-right: var(--spc-player-progress-label-padding-lr, 0px);
+        padding-right: var(--spc-player-progress-label-padding-lr, 0rem);
       }
 
       .bar {

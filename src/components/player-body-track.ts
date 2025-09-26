@@ -11,6 +11,7 @@ import {
   mdiHeart,
   mdiHeartOutline,
   mdiMusic,
+  mdiPlay,
   mdiPlaylistPlay,
   mdiRadio,
 } from '@mdi/js';
@@ -42,6 +43,7 @@ enum Actions {
   AlbumFavoriteAdd = "AlbumFavoriteAdd",
   AlbumFavoriteRemove = "AlbumFavoriteRemove",
   AlbumFavoriteUpdate = "AlbumFavoriteUpdate",
+  AlbumPlay = "AlbumPlay",
   AlbumSearchRadio = "AlbumSearchRadio",
   AlbumShowTracks = "AlbumShowTracks",
   AlbumUserPresetAdd = "AlbumUserPresetAdd",
@@ -237,6 +239,11 @@ export class PlayerBodyTrack extends PlayerBodyBase {
         <ha-assist-chip slot="trigger">
           <ha-svg-icon slot="icon" .path=${mdiDotsHorizontal}></ha-svg-icon>
         </ha-assist-chip>
+        <ha-md-menu-item @click=${() => this.onClickAction(Actions.AlbumPlay)}>
+          <ha-svg-icon slot="start" .path=${mdiPlay}></ha-svg-icon>
+          <div slot="headline">Play Album</div>
+        </ha-md-menu-item>
+        <ha-md-divider role="separator" tabindex="-1"></ha-md-divider>
         <ha-md-menu-item @click=${() => this.onClickAction(Actions.AlbumShowTracks)} hide=${this.hideSearchType(SearchMediaTypes.TRACKS)}>
           <ha-svg-icon slot="start" .path=${mdiMusic}></ha-svg-icon>
           <div slot="headline">Show Album Tracks</div>
@@ -485,6 +492,12 @@ export class PlayerBodyTrack extends PlayerBodyBase {
       } else if (action == Actions.AlbumCopyUriToClipboard) {
 
         copyTextToClipboard(this.track?.album.uri || "");
+        return true;
+
+      } else if (action == Actions.AlbumPlay) {
+
+        //const isShuffled = this.store.config.albumFavBrowserShuffleOnPlay;
+        await this.spotifyPlusService.Card_PlayMediaBrowserItem(this.player, this.track?.album);
         return true;
 
       } else if (action == Actions.AlbumSearchRadio) {
