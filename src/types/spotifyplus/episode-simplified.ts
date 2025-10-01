@@ -68,6 +68,18 @@ export interface IEpisodeSimplified {
 
 
   /** 
+   * The origin Spotify ID for the episode.
+   * 
+   * The `Id` value is always returned, as linkfrom details do not exist for episodes.
+   * 
+   * This is a helper property, and is not part of the Spotify Web API specification.
+   * 
+   * Example: `5Xt5DXGzch68nYYamXrNxZ`
+   */
+  id_origin: string;
+
+
+  /**
    * The cover art for the episode in various sizes, widest first.
    */
   images: Array<IImageObject>;
@@ -84,6 +96,16 @@ export interface IEpisodeSimplified {
    * True if the episode is hosted outside of Spotify's CDN.
    */
   is_externally_hosted: boolean;
+
+
+  /** 
+   * Whether or not the episode is linked from another episode.
+   * 
+   * False is always returned, as linkfrom details do not exist for episodes.
+   * 
+   * This is a helper property, and is not part of the Spotify Web API specification.
+   */
+  is_linked_from: boolean;
 
 
   /**
@@ -148,5 +170,17 @@ export interface IEpisodeSimplified {
    * Example: `spotify:episode:5Xt5DXGzch68nYYamXrNxZ`
    */
   uri: string;
+
+
+  /** 
+   * The origin Spotify URI for the episode.
+   * 
+   * The `Uri` value is always returned, as linkfrom details do not exist for episodes.
+   * 
+   * This is a helper property, and is not part of the Spotify Web API specification.
+   * 
+   * Example: `spotify:episode:5Xt5DXGzch68nYYamXrNxZ`
+   */
+  uri_origin: string;
 
 }

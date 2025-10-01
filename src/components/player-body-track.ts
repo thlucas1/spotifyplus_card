@@ -838,13 +838,27 @@ export class PlayerBodyTrack extends PlayerBodyBase {
         // create promise - check favorite status.
         const promiseCheckTrackFavorites = new Promise((resolve, reject) => {
 
+          // we will check both the canonical id and the linked from id for favorite status,
+          // as this appears to be what the Spotify Apps do.
+          // this only happens track relinking is in effect.
+          let id_values = this.track?.id;
+          if (this.track?.is_linked_from) {
+            id_values = this.track?.id + "," + this.track?.id_origin;
+          }
+
           // call service to retrieve favorite setting.
-          this.spotifyPlusService.CheckTrackFavorites(player, this.track?.id)
+          this.spotifyPlusService.CheckTrackFavorites(player, id_values)
             .then(result => {
 
               // load results, and resolve the promise.
-              // only 1 result is returned, so just take the first key value.
-              this.isTrackFavorite = result[Object.keys(result)[0]];
+              // if only 1 result is returned, then just use first key value as favorite status.
+              // if 2 results are returned, then it denotes track relinking is in
+              // effect and it should be considered a favorite if either track is favorited.
+              const result_keys = Object.keys(result);
+              this.isTrackFavorite = result[result_keys[0]];
+              if (result_keys.length > 1) {
+                this.isTrackFavorite = result[result_keys[0]] || result[result_keys[1]];
+              }
               resolve(true);
 
             })

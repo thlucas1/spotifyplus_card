@@ -413,6 +413,18 @@ export class Card extends AlertUpdatesBase {
       // is initially loaded, then do them here.
       debuglog("createStore - isFirstTimeSetup logic invoked; creating store area");
 
+      // set volume step amount (if configured, and not the default of 10).
+      // NOTE - this setting really should be moved to the integration configuration options,
+      // as ANY change to the card config (or even a page refresh) will cause it to be reset 
+      // to the specified value!
+      const volStepLevel = this.store.config.playerVolumeStepValue || 0;
+      if (volStepLevel > 0) {
+        if (volStepLevel != 10) {
+          debuglog("createStore - isFirstTimeSetup is setting media player volume step level");
+          this.store.spotifyPlusService.VolumeSetStepLevel(this.store.player, volStepLevel);
+        }
+      }
+
       // set the initial section reference;
       if ((!this.config.sections) || (this.config.sections.length == 0)) {
 

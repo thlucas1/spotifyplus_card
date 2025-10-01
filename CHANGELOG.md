@@ -7,6 +7,12 @@ Change are listed in reverse chronological order (newest to oldest).
 <span class="changelog">
 
 
+###### [ 1.0.64 ] - 2025/09/30
+
+  * Added logic to calls made to `CheckTrackFavorites` to account for track relinking; we will check both the canonical id and the linked from id for favorite status, as this appears to be what the Spotify Apps do.  Track is considered a favorite if either id value appears in the favorites list.
+  * Added origin fields to the `EpisodeSimplified` object, to match those of `TrackSimplified`.  Note that linkfrom details do not exist for episodes; These are helper properties, and are not part of the Spotify Web API specification.
+  * Moved call of `VolumeSetStepLevel` method from player body base to the card first-time logic; any custom volume step values were getting reset when the player body refreshed.
+
 ###### [ 1.0.63 ] - 2025/09/26
 
   * Added "Play Favorite Tracks from this Artist" context menu item to artist actions.
