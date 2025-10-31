@@ -1,3 +1,8 @@
+// debug logging.
+import Debug from 'debug/src/browser.js';
+import { DEBUG_APP_NAME } from '../constants';
+const debuglog = Debug(DEBUG_APP_NAME + ":editor");
+
 // lovelace card imports.
 import { css, html, nothing, PropertyValues, TemplateResult } from 'lit';
 import { state } from 'lit/decorators.js';
@@ -293,9 +298,11 @@ class CardEditor extends BaseEditor {
     // invoke base class method.
     super.firstUpdated(changedProperties);
 
-    //console.log("firstUpdated (editor) - 1st render complete - changedProperties keys:\n- %s",
-    //  JSON.stringify(Array.from(changedProperties.keys())),
-    //);
+    if (debuglog.enabled) {
+      debuglog("firstUpdated (editor) - 1st render complete - changedProperties keys:\n%s",
+        JSON.stringify(Array.from(changedProperties.keys())),
+      );
+    }
 
     // if there are things that you only want to happen one time when the configuration
     // is initially loaded, then do them here.

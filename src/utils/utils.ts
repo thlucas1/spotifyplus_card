@@ -444,8 +444,8 @@ export function getObjectDifferences(obj1: any, obj2: any): any {
   const differences: any = {};
 
   for (const key of uniqueKeys) {
-    const value1 = obj1[key];
-    const value2 = obj2[key];
+    const value1 = obj1[key] || '';
+    const value2 = obj2[key] || '';
 
     if (typeof value1 === 'object' && typeof value2 === 'object') {
       const nestedDifferences = getObjectDifferences(value1, value2);

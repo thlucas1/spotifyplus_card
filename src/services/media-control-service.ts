@@ -547,7 +547,6 @@ export class MediaControlService {
     await this.hassService.CallService(serviceRequest);
   }
 
-
 }
 
 

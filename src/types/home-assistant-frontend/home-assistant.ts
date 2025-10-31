@@ -1,4 +1,6 @@
 import { HassEntities, HassConfig, Auth, Connection, MessageBase, HassServices } from "home-assistant-js-websocket";
+import { DeviceRegistryEntry } from "./device-registry-entry";
+import { EntityRegistryDisplayEntry } from "./entity-registry-entry";
 import { ServiceCallRequest } from './service-call-request';
 import { ServiceCallResponse } from './service-call-response';
 
@@ -7,8 +9,8 @@ export interface HomeAssistant {
   connection: Connection;
   connected: boolean;
   states: HassEntities;
-  entities: { [id: string]: any }; // EntityRegistryDisplayEntry };
-  devices: { [id: string]: any }; // DeviceRegistryEntry };
+  entities: Record<string, EntityRegistryDisplayEntry>;
+  devices: Record<string, DeviceRegistryEntry>;
   areas: { [id: string]: any }; // AreaRegistryEntry };
   floors: { [id: string]: any }; // FloorRegistryEntry };
   services: HassServices;

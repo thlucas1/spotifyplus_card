@@ -2,9 +2,9 @@
 import { css, html, TemplateResult } from 'lit';
 
 // our imports.
+import { EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW } from '../constants';
 import { BaseEditor } from './base-editor';
 import { Section } from '../types/section';
-import { EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW } from '../constants';
 
 const CONFIG_SETTINGS_SCHEMA = [
   {

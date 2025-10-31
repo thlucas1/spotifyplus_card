@@ -225,6 +225,7 @@ export class Player extends AlertUpdatesBase {
       playerMediaContentId = this.store.player.attributes.media_content_id;
       playerImage = (this.store.player.attributes.entity_picture || this.store.player.attributes.entity_picture_local);
       if (playerImage) {
+        // get fully-qualified url of the player image since we are using entity_picture attribute.
         playerImage = this.store.hass.hassUrl(playerImage);
       }
     }

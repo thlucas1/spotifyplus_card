@@ -47,16 +47,6 @@ class Form extends BaseEditor {
    */
   static get styles() {
     return css`
-
-  //    #elmHaForm::part(root) {
-  //      border: 1px solid gold !important;
-  //    }
-
-      //ha-md-menu-item[type="option"] {
-      //  border: 1px solid red;
-      //  height: 2.5rem !important;
-      //}
-
     `;
   }
 

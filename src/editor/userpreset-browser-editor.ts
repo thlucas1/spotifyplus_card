@@ -2,6 +2,7 @@
 import { css, html, TemplateResult } from 'lit';
 
 // our imports.
+import { EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW } from '../constants';
 import { BaseEditor } from './base-editor';
 import { Section } from '../types/section';
 
@@ -34,7 +35,7 @@ const CONFIG_SETTINGS_SCHEMA = [
     help: 'use 1 for list format',
     required: true,
     type: 'integer',
-    default: 4,
+    default: EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW,
     valueMin: 1,
     valueMax: 12,
   },

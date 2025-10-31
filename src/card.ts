@@ -52,12 +52,12 @@ import {
   isCardInPickerPreview,
   isNumber,
 } from './utils/utils';
-import { SEARCH_MEDIA, SearchMediaEventArgs } from './events/search-media';
-import { FILTER_SECTION_MEDIA, FilterSectionMediaEventArgs } from './events/filter-section-media';
-import { CATEGORY_DISPLAY, CategoryDisplayEventArgs } from './events/category-display';
 import { EDITOR_CONFIG_AREA_SELECTED, EditorConfigAreaSelectedEventArgs } from './events/editor-config-area-selected';
+import { FILTER_SECTION_MEDIA, FilterSectionMediaEventArgs } from './events/filter-section-media';
 import { PROGRESS_STARTED } from './events/progress-started';
 import { PROGRESS_ENDED } from './events/progress-ended';
+import { CATEGORY_DISPLAY, CategoryDisplayEventArgs } from './events/category-display';
+import { SEARCH_MEDIA, SearchMediaEventArgs } from './events/search-media';
 import { Store } from './model/store';
 import { Section } from './types/section';
 import { ConfigArea } from './types/config-area';
@@ -65,7 +65,10 @@ import { CardConfig } from './types/card-config';
 import { CustomImageUrls } from './types/custom-image-urls';
 import { SearchMediaTypes } from './types/search-media-types';
 import { SearchBrowser } from './sections/search-media-browser';
+import { AlertUpdatesBase } from './sections/alert-updates-base';
 import { FavBrowserBase } from './sections/fav-browser-base';
+import { RecentBrowser } from './sections/recent-browser';
+import { UserPresetBrowser } from './sections/userpreset-browser';
 import { AlbumFavBrowser } from './sections/album-fav-browser';
 import { ArtistFavBrowser } from './sections/artist-fav-browser';
 import { AudiobookFavBrowser } from './sections/audiobook-fav-browser';
@@ -73,12 +76,9 @@ import { CategoryBrowser } from './sections/category-browser';
 import { DeviceBrowser } from './sections/device-browser';
 import { EpisodeFavBrowser } from './sections/episode-fav-browser';
 import { PlaylistFavBrowser } from './sections/playlist-fav-browser';
-import { RecentBrowser } from './sections/recent-browser';
 import { ShowFavBrowser } from './sections/show-fav-browser';
 import { TrackFavBrowser } from './sections/track-fav-browser';
-import { UserPresetBrowser } from './sections/userpreset-browser';
 import { formatTitleInfo, removeSpecialChars } from './utils/media-browser-utils';
-import { AlertUpdatesBase } from './sections/alert-updates-base';
 
 const HEADER_HEIGHT = 2;
 const FOOTER_HEIGHT = 4;
@@ -195,13 +195,15 @@ export class Card extends AlertUpdatesBase {
       Store.selectedConfigArea = ConfigArea.GENERAL;
     }
 
-    //console.log("render (card) - rendering card\n- store.section=%s\n- section=%s\n- Store.selectedConfigArea=%s\n- playerId=%s\n- config.sections=%s",
-    //  JSON.stringify(this.store.section),
-    //  JSON.stringify(this.section),
-    //  JSON.stringify(Store.selectedConfigArea),
-    //  JSON.stringify(this.playerId),
-    //  JSON.stringify(this.config.sections),
-    //);
+    //if (debuglog.enabled) {
+    //  debuglog("render (card) - rendering card\n- store.section=%s\n- section=%s\n- Store.selectedConfigArea=%s\n- playerId=%s\n- config.sections=%s",
+    //    JSON.stringify(this.store.section),
+    //    JSON.stringify(this.section),
+    //    JSON.stringify(Store.selectedConfigArea),
+    //    JSON.stringify(this.playerId),
+    //    JSON.stringify(this.config.sections),
+    //  );
+    //}
 
     // calculate height of the card, accounting for any extra
     // titles that are shown, footer, etc.
@@ -1501,8 +1503,13 @@ export class Card extends AlertUpdatesBase {
           //  "filters": ['default'],
         }
 
+        // create image object, and allow cross-origin to avoid CORS errors.
+        const img = new Image();
+        img.crossOrigin = 'Anonymous';
+        img.src = playerImageSaved + '?not-from-cache-please';
+
         // create vibrant instance with our desired options.
-        const vibrant: Vibrant = new Vibrant(playerImageSaved || '', vibrantOptions);
+        const vibrant: Vibrant = new Vibrant(img, vibrantOptions);
 
         // get the color palettes for the player background image.
         vibrant.getPalette()
