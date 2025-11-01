@@ -1,5 +1,5 @@
 // lovelace card imports.
-import { css, html, TemplateResult } from 'lit';
+import { css, html, TemplateResult, unsafeCSS } from 'lit';
 import { customElement, property, state } from "lit/decorators.js";
 import { styleMap, StyleInfo } from 'lit-html/directives/style-map.js';
 
@@ -141,7 +141,7 @@ export class Player extends AlertUpdatesBase {
       .player-section-header {
         /* border: 1px solid red;      /* FOR TESTING CONTROL LAYOUT CHANGES */
         grid-area: header;
-        background: linear-gradient(180deg, var(--spc-player-header-bg-color) 30%, transparent 100%);
+        background: linear-gradient(180deg, var(--spc-player-header-bg-color, ${unsafeCSS(PLAYER_CONTROLS_BACKGROUND_COLOR_DEFAULT)}) 30%, transparent 100%);
         background-repeat: no-repeat;
         padding: 0.2rem;
       }
@@ -182,7 +182,7 @@ export class Player extends AlertUpdatesBase {
         /* border: 1px solid blue;     /* FOR TESTING CONTROL LAYOUT CHANGES */
         grid-area: controls;
         overflow-y: auto;
-        background: linear-gradient(0deg, var(--spc-player-controls-bg-color) 30%, transparent 100%);
+        background: linear-gradient(0deg, var(--spc-player-controls-bg-color, ${unsafeCSS(PLAYER_CONTROLS_BACKGROUND_COLOR_DEFAULT)}) 30%, transparent 100%);
         background-repeat: no-repeat;
       }
 
@@ -207,10 +207,9 @@ export class Player extends AlertUpdatesBase {
     const isOff = this.player.isPoweredOffOrUnknown();
     const isIdle = this.player.isIdle();
 
-    // get default player background size.
+    // initialize default player background image and colors.
     let backgroundImageUrl: string | undefined;
-    let headerBackgroundColor = 'transparent';
-    let controlsBackgroundColor = 'transparent';
+    let isBackgroundImageBrandLogo: boolean = false;
 
     // get various image source settings.
     const configImageDefault = this.config.customImageUrls?.['default'];
@@ -267,6 +266,7 @@ export class Player extends AlertUpdatesBase {
         // player is not minimized, so use theme file image if defined; otherwise, use brand logo.
         styleInfo['background-image'] = `var(--spc-player-background-image-off, url(${BRAND_LOGO_IMAGE_BASE64}))`;
         styleInfo['--spc-player-background-size-default'] = `${BRAND_LOGO_IMAGE_SIZE}`;
+        isBackgroundImageBrandLogo = true;
       }
 
       // set image size.
@@ -292,6 +292,7 @@ export class Player extends AlertUpdatesBase {
         // player is not minimized, so use theme file image if defined; otherwise, use brand logo.
         styleInfo['background-image'] = `var(--spc-player-background-image-off, url(${BRAND_LOGO_IMAGE_BASE64}))`;
         styleInfo['--spc-player-background-size-default'] = `${BRAND_LOGO_IMAGE_SIZE}`;
+        isBackgroundImageBrandLogo = true;
       }
 
       // set image size.
@@ -311,16 +312,12 @@ export class Player extends AlertUpdatesBase {
         styleInfo['background-image'] = `url(${configImagePlayerBg})`;
         backgroundImageUrl = configImagePlayerBg;
       }
-      headerBackgroundColor = this.config.playerHeaderBackgroundColor || PLAYER_CONTROLS_BACKGROUND_COLOR_DEFAULT;
-      controlsBackgroundColor = this.config.playerControlsBackgroundColor || PLAYER_CONTROLS_BACKGROUND_COLOR_DEFAULT;
 
     } else if (playerImage) {
 
       // use currently playing artwork background image; image changes with the track.
       // note that theming variable will override this value if specified.
       this.store.card.playerMediaContentId = playerMediaContentId;
-      headerBackgroundColor = this.config.playerHeaderBackgroundColor || PLAYER_CONTROLS_BACKGROUND_COLOR_DEFAULT;
-      controlsBackgroundColor = this.config.playerControlsBackgroundColor || PLAYER_CONTROLS_BACKGROUND_COLOR_DEFAULT;
       backgroundImageUrl = playerImage;
       styleInfo['background-image'] = `var(--spc-player-background-image, url(${playerImage}))`;
 
@@ -342,6 +339,7 @@ export class Player extends AlertUpdatesBase {
         // player is not minimized, so use theme file image if defined; otherwise, use brand logo.
         styleInfo['background-image'] = `var(--spc-player-background-image-off, url(${BRAND_LOGO_IMAGE_BASE64}))`;
         styleInfo['--spc-player-background-size-default'] = `${BRAND_LOGO_IMAGE_SIZE}`;
+        isBackgroundImageBrandLogo = true;
       }
 
       // set image size.
@@ -352,15 +350,17 @@ export class Player extends AlertUpdatesBase {
     }
 
     // set player controls and volume controls icon size.
-    const playerControlsIconSize = this.config.playerControlsIconSize || PLAYER_CONTROLS_ICON_SIZE_DEFAULT;
-    const playerControlsIconColor = this.config.playerControlsIconColor;
-    const playerControlsIconToggleColor = this.config.playerControlsIconToggleColor;
+    let playerControlsBackgroundColor = this.config.playerControlsBackgroundColor;
     const playerControlsColor = this.config.playerControlsColor;
-    const playerHeaderTitle1Color = this.config.playerHeaderTitle1Color;
+    const playerControlsIconSize = this.config.playerControlsIconSize || PLAYER_CONTROLS_ICON_SIZE_DEFAULT;
+    let playerControlsIconColor = this.config.playerControlsIconColor;
+    const playerControlsIconToggleColor = this.config.playerControlsIconToggleColor;
+    let playerHeaderBackgroundColor = this.config.playerHeaderBackgroundColor;
+    let playerHeaderTitle1Color = this.config.playerHeaderTitle1Color;
     const playerHeaderTitle1FontSize = this.config.playerHeaderTitle1FontSize;
-    const playerHeaderTitle2Color = this.config.playerHeaderTitle2Color;
+    let playerHeaderTitle2Color = this.config.playerHeaderTitle2Color;
     const playerHeaderTitle2FontSize = this.config.playerHeaderTitle2FontSize;
-    const playerHeaderTitle3Color = this.config.playerHeaderTitle3Color;
+    let playerHeaderTitle3Color = this.config.playerHeaderTitle3Color;
     const playerHeaderTitle3FontSize = this.config.playerHeaderTitle3FontSize;
     const playerMinimizedTitleColor = this.config.playerMinimizedTitleColor;
     const playerMinimizedTitleFontSize = this.config.playerMinimizedTitleFontSize;
@@ -368,12 +368,26 @@ export class Player extends AlertUpdatesBase {
     const playerProgressLabelColor = this.config.playerProgressLabelColor;
     const playerProgressLabelPaddingLR = this.config.playerProgressLabelPaddingLR;
     const playerVolumeSliderColor = this.config.playerVolumeSliderColor;
-    const playerVolumeLabelColor = this.config.playerVolumeLabelColor;
+    let playerVolumeLabelColor = this.config.playerVolumeLabelColor;
+
+    // if brand logo image is in use, then default the header and controls area
+    // background to transparent, and all labels to the primary text color (since the 
+    // brand logo image is transparent).
+    // this will cause labels and controls to render on a white (logo) background.
+    if (isBackgroundImageBrandLogo) {
+      playerControlsBackgroundColor = playerControlsBackgroundColor || `transparent`;
+      playerControlsIconColor = playerControlsIconColor || 'var(--primary-text-color, PLAYER_CONTROLS_BACKGROUND_COLOR_DEFAULT)'
+      playerHeaderBackgroundColor = playerHeaderBackgroundColor || `transparent`;
+      playerHeaderTitle1Color = playerHeaderTitle1Color || 'var(--primary-text-color, PLAYER_CONTROLS_BACKGROUND_COLOR_DEFAULT)'
+      playerHeaderTitle2Color = playerHeaderTitle2Color || 'var(--primary-text-color, PLAYER_CONTROLS_BACKGROUND_COLOR_DEFAULT)'
+      playerHeaderTitle3Color = playerHeaderTitle3Color || 'var(--primary-text-color, PLAYER_CONTROLS_BACKGROUND_COLOR_DEFAULT)'
+      playerVolumeLabelColor = playerVolumeLabelColor || 'var(--primary-text-color, PLAYER_CONTROLS_BACKGROUND_COLOR_DEFAULT)'
+    }
 
     // build style info object.
     this.store.card.playerImage = backgroundImageUrl;
-    styleInfo['--spc-player-header-bg-color'] = `${headerBackgroundColor}`;
-    styleInfo['--spc-player-controls-bg-color'] = `${controlsBackgroundColor} `;
+    if (playerControlsBackgroundColor)
+      styleInfo['--spc-player-controls-bg-color'] = `${playerControlsBackgroundColor} `;
     if (playerControlsColor)
       styleInfo['--spc-player-controls-color'] = `${playerControlsColor}`;
     if (playerControlsIconToggleColor)
@@ -383,6 +397,8 @@ export class Player extends AlertUpdatesBase {
     if (playerControlsIconSize)
       styleInfo['--spc-player-controls-icon-size'] = `${playerControlsIconSize}`;
     styleInfo['--spc-player-controls-icon-button-size'] = `var(--spc-player-controls-icon-size, ${PLAYER_CONTROLS_ICON_SIZE_DEFAULT}) + 0.75rem`;
+    if (playerHeaderBackgroundColor)
+      styleInfo['--spc-player-header-bg-color'] = `${playerHeaderBackgroundColor}`;
     if (playerHeaderTitle1Color)
       styleInfo['--spc-player-header-title1-color'] = `${playerHeaderTitle1Color}`;
     if (playerHeaderTitle1FontSize)

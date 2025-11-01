@@ -157,7 +157,7 @@ static get styles() {
         text-shadow: 0 0 2px var(--spc-player-palette-vibrant);
         color: var(--spc-player-header-title1-color, #ffffff);
         white-space: nowrap;
-        mix-blend-mode: screen;
+        mix-blend-mode: normal;
         min-height: 0.5rem;
         padding: 0.2rem;
       }
@@ -170,7 +170,7 @@ static get styles() {
         font-weight: 400;
         text-shadow: 0 0 2px var(--spc-player-palette-vibrant);
         color: var(--spc-player-header-title2-color, #ffffff);
-        mix-blend-mode: screen;
+        mix-blend-mode: normal;
         padding: 0.1rem;
       }
 
@@ -182,9 +182,25 @@ static get styles() {
         font-weight: 400;
         text-shadow: 0 0 2px var(--spc-player-palette-vibrant);
         color: var(--spc-player-header-title3-color, #ffffff);
-        mix-blend-mode: screen;
+        mix-blend-mode: normal;
         padding: 0.1rem;
       }
+
+      ///* when the user prefers dark theme mode */
+      //@media (prefers-color-scheme: dark) {
+
+      //  .header-title {
+      //    color: var(--spc-player-header-title1-color, #ffffff);
+      //  }
+
+      //  .header-artist-track {
+      //    color: var(--spc-player-header-title2-color, #ffffff);
+      //  }
+
+      //  .header-artist-album {
+      //    color: var(--spc-player-header-title3-color, #ffffff);
+      //  }
+      //}
     `
     ];
   }

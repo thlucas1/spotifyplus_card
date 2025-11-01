@@ -76,7 +76,7 @@ export class PlayerBodyIdle extends PlayerBodyBase {
           text-shadow: 0 0 2px;
           color: var(--spc-player-minimized-title-color, #ffffff);
           white-space: nowrap;
-          mix-blend-mode: screen;
+          mix-blend-mode: normal;
           min-height: 0.5rem;
           padding-left: 0.5rem;
         }

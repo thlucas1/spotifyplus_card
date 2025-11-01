@@ -425,7 +425,7 @@ class Volume extends AlertUpdatesBase {
         justify-content: center;
         display: inline-flex;
         align-items: center;
-        mix-blend-mode: screen;
+        mix-blend-mode: normal;
         overflow: hidden;
         color: var(--spc-player-controls-icon-color, #ffffff);
         width: 100%;

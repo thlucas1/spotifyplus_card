@@ -7,6 +7,14 @@ Change are listed in reverse chronological order (newest to oldest).
 <span class="changelog">
 
 
+###### [ 1.0.67 ] - 2025/11/01
+  
+  * Reposted changes as a new version, as I forgot to check in the source with GIT.
+
+###### [ 1.0.66 ] - 2025/10/31
+  
+  * Fixed a bug that was causing controls and labels to be hidden in the same color background when the brand logo image is displayed in the player.  This can happen when the player is powered down, or when playing content where no cover art image is available.
+
 ###### [ 1.0.65 ] - 2025/10/30
 
   * Fixed possible vibrant CORS errors being generated for server images.
