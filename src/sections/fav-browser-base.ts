@@ -11,6 +11,7 @@ import { styleMap, StyleInfo } from 'lit-html/directives/style-map.js';
 import { HomeAssistant } from '../types/home-assistant-frontend/home-assistant';
 import {
   mdiArrowLeft,
+  mdiFormatColumns,
   mdiRefresh,
 } from '@mdi/js';
 
@@ -50,6 +51,7 @@ export class FavBrowserBase extends AlertUpdatesBase {
   @state() protected filterCriteria?: string;
   @state() protected isFilterCriteriaReadOnly?: boolean | null;
   @state() protected isFilterCriteriaVisible?: boolean | null;
+  @state() protected favBrowserItemsPerRow?: number;
 
   // html form element objects.
   @query("#mediaBrowserContentElement", true) protected mediaBrowserContentElement!: HTMLDivElement;
@@ -94,6 +96,7 @@ export class FavBrowserBase extends AlertUpdatesBase {
   protected filterCriteriaHtml;
   protected filterCriteriaReadOnlyHtml;
   protected refreshMediaListHtml;
+  protected formatMediaListHtml;
   protected btnHideActionsHtml;
 
   // bound event listeners for event handlers that need access to "this" object.
@@ -175,7 +178,7 @@ export class FavBrowserBase extends AlertUpdatesBase {
       >${this.filterCriteria}</span>
       `;
 
-    // define control to render - search icon.
+    // define control to render - refresh icon.
     this.refreshMediaListHtml = html`
       <ha-icon-button
         slot="refresh-button"
@@ -184,6 +187,29 @@ export class FavBrowserBase extends AlertUpdatesBase {
         .path=${mdiRefresh}
         @click=${this.onFilterActionsClick}
       ></ha-icon-button>
+      `;
+
+    // define dropdown menu - list row format.
+    // TODO - temporarily disabled until I find a way to auto-hide control after selection!
+    this.formatMediaListHtml = html`
+      <ha-button-menu y="0" x="-180" style="display:none">
+        <ha-icon-button
+          slot="trigger"
+          label="Format Media List"
+          .path=${mdiFormatColumns}
+        ></ha-icon-button>
+        <div style="width:220px; padding:10px; border:1px solid var(--ha-card-border-color,var(--divider-color,#e0e0e0))">
+          <ha-slider
+            hint="Tiles per row (1-12)"
+            min="1"
+            max="12"
+            step="1"
+            .value=${this.favBrowserItemsPerRow}
+            @change=${this.onFormatMediaListChanged}
+          >
+          </ha-slider>
+        </div>
+      </ha-button-menu>
       `;
 
     // define control to render - back icon.
@@ -605,6 +631,33 @@ export class FavBrowserBase extends AlertUpdatesBase {
       }, 50);
     }
 
+  }
+
+
+  /**
+   * List row format changed event handler.
+   * 
+   * @ev Event arguments.
+   */
+  private onFormatMediaListChanged(ev): void {
+
+    //ev.stopPropagation();
+    const value = Number(ev.target.value);
+
+    if (value != null) {
+
+      // apply changes.
+      this.favBrowserItemsPerRow = value;
+
+      // no need to update the media list, as it's just a format change
+      // of the existing data; just need to re-render the control.
+
+      if (debuglog.enabled) {
+        debuglog("onFormatMediaListChanged - changed favBrowserItemsPerRow, value = %s",
+          JSON.stringify(this.favBrowserItemsPerRow),
+        );
+      }
+    }
   }
 
 

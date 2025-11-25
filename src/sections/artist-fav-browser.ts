@@ -12,6 +12,9 @@ import { MediaPlayer } from '../model/media-player';
 import { formatTitleInfo } from '../utils/media-browser-utils';
 import { getHomeAssistantErrorMessage, getUtcNowTimestamp } from '../utils/utils';
 import { IArtist } from '../types/spotifyplus/artist';
+import {
+  EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW,
+} from '../constants';
 
 
 @customElement("spc-artist-fav-browser")
@@ -58,6 +61,11 @@ export class ArtistFavBrowser extends FavBrowserBase {
     // set auto-shuffle based on configuration option.
     this.shuffleOnPlay = this.config.artistFavBrowserShuffleOnPlay || false;
 
+    // load default # of items per row to display.
+    if (!this.favBrowserItemsPerRow) {
+      this.favBrowserItemsPerRow = this.config.artistFavBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
+    }
+
     // render html.
     return html`
       <div class="media-browser-section" style=${this.styleMediaBrowser()}>
@@ -65,7 +73,7 @@ export class ArtistFavBrowser extends FavBrowserBase {
         ${subtitle ? html`<div class="media-browser-section-subtitle">${subtitle}</div>` : html``}
         <div class="media-browser-controls">
           ${!(this.isActionsVisible || false) ? html`` : html`${this.btnHideActionsHtml}`}
-          ${this.filterCriteriaHtml}${this.refreshMediaListHtml}
+          ${this.filterCriteriaHtml}${this.formatMediaListHtml}${this.refreshMediaListHtml}
         </div>
         <div id="mediaBrowserContentElement" class="media-browser-content">
           ${this.alertError ? html`<ha-alert alert-type="error" dismissable @alert-dismissed-clicked=${this.alertErrorClear}>${this.alertError}</ha-alert>` : ""}
@@ -73,11 +81,12 @@ export class ArtistFavBrowser extends FavBrowserBase {
           ${(() => {
             // if actions are not visbile, then render the media list.
             if (!this.isActionsVisible) {
-              if (this.config.artistFavBrowserItemsPerRow === 1) {
+              if (this.favBrowserItemsPerRow === 1) {
                 return (
                   html`<spc-media-browser-list 
                         class="media-browser-list"
                         .items=${filteredItems}
+                        .itemsPerRow=${this.favBrowserItemsPerRow}
                         .store=${this.store}
                         @item-selected=${this.onItemSelected}
                         @item-selected-with-hold=${this.onItemSelectedWithHold}
@@ -88,6 +97,7 @@ export class ArtistFavBrowser extends FavBrowserBase {
                   html`<spc-media-browser-icons 
                         class="media-browser-list"
                         .items=${filteredItems}
+                        .itemsPerRow=${this.favBrowserItemsPerRow}
                         .store=${this.store}
                         @item-selected=${this.onItemSelected}
                         @item-selected-with-hold=${this.onItemSelectedWithHold}

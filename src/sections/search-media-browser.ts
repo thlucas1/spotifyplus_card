@@ -38,6 +38,9 @@ import { storageService } from '../decorators/storage';
 import { SearchMediaTypes } from '../types/search-media-types';
 import { SearchMediaEventArgs } from '../events/search-media';
 import { ITrack } from '../types/spotifyplus/track';
+import {
+  EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW,
+} from '../constants';
 
 /** Keys used to access cached storage items. */
 const CACHE_KEY_SEARCH_MEDIA_TYPE = "_searchmediatype";
@@ -91,53 +94,53 @@ export class SearchBrowser extends FavBrowserBase {
     // get items per row based on configuration settings.
     // if not using search settings, then use individual media type settings.
     const searchType = this.searchMediaType;
-    let itemsPerRow = this.config.searchMediaBrowserItemsPerRow || 4;
+    this.favBrowserItemsPerRow = this.config.searchMediaBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
     if (!(this.config.searchMediaBrowserUseDisplaySettings || false)) {
       // general searches:
       if (searchType == SearchMediaTypes.ALBUMS) {
-        itemsPerRow = this.config.albumFavBrowserItemsPerRow || 4;
+        this.favBrowserItemsPerRow = this.config.albumFavBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
       } else if (searchType == SearchMediaTypes.ARTISTS) {
-        itemsPerRow = this.config.artistFavBrowserItemsPerRow || 4;
+        this.favBrowserItemsPerRow = this.config.artistFavBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
       } else if (searchType == SearchMediaTypes.AUDIOBOOKS) {
-        itemsPerRow = this.config.audiobookFavBrowserItemsPerRow || 4;
+        this.favBrowserItemsPerRow = this.config.audiobookFavBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
       } else if (searchType == SearchMediaTypes.EPISODES) {
-        itemsPerRow = this.config.episodeFavBrowserItemsPerRow || 4;
+        this.favBrowserItemsPerRow = this.config.episodeFavBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
       } else if (searchType == SearchMediaTypes.PLAYLISTS) {
-        itemsPerRow = this.config.playlistFavBrowserItemsPerRow || 4;
+        this.favBrowserItemsPerRow = this.config.playlistFavBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
       } else if (searchType == SearchMediaTypes.SHOWS) {
-        itemsPerRow = this.config.showFavBrowserItemsPerRow || 4;
+        this.favBrowserItemsPerRow = this.config.showFavBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
       } else if (searchType == SearchMediaTypes.TRACKS) {
-        itemsPerRow = this.config.trackFavBrowserItemsPerRow || 4;
+        this.favBrowserItemsPerRow = this.config.trackFavBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
         // album-specific searches:
       } else if (searchType == SearchMediaTypes.ALBUM_TRACKS) {
-        itemsPerRow = this.config.trackFavBrowserItemsPerRow || 4;
+        this.favBrowserItemsPerRow = this.config.trackFavBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
         this.isFilterCriteriaReadOnly = true;
         // artists-specific searches:
       } else if (searchType == SearchMediaTypes.ARTIST_ALBUMS) {
-        itemsPerRow = this.config.albumFavBrowserItemsPerRow || 4;
+        this.favBrowserItemsPerRow = this.config.albumFavBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
         this.isFilterCriteriaReadOnly = true;
       } else if (searchType == SearchMediaTypes.ARTIST_ALBUMS_APPEARSON) {
-        itemsPerRow = this.config.albumFavBrowserItemsPerRow || 4;
+        this.favBrowserItemsPerRow = this.config.albumFavBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
         this.isFilterCriteriaReadOnly = true;
       } else if (searchType == SearchMediaTypes.ARTIST_ALBUMS_COMPILATION) {
-        itemsPerRow = this.config.albumFavBrowserItemsPerRow || 4;
+        this.favBrowserItemsPerRow = this.config.albumFavBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
         this.isFilterCriteriaReadOnly = true;
       } else if (searchType == SearchMediaTypes.ARTIST_ALBUMS_SINGLE) {
-        itemsPerRow = this.config.albumFavBrowserItemsPerRow || 4;
+        this.favBrowserItemsPerRow = this.config.albumFavBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
         this.isFilterCriteriaReadOnly = true;
       } else if (searchType == SearchMediaTypes.ARTIST_RELATED_ARTISTS) {
-        itemsPerRow = this.config.artistFavBrowserItemsPerRow || 4;
+        this.favBrowserItemsPerRow = this.config.artistFavBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
         this.isFilterCriteriaReadOnly = true;
       } else if (searchType == SearchMediaTypes.ARTIST_TOP_TRACKS) {
-        itemsPerRow = this.config.trackFavBrowserItemsPerRow || 4;
+        this.favBrowserItemsPerRow = this.config.trackFavBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
         this.isFilterCriteriaReadOnly = true;
         // audiobook-specific searches:
       } else if (searchType == SearchMediaTypes.AUDIOBOOK_EPISODES) {
-        itemsPerRow = this.config.episodeFavBrowserItemsPerRow || 4;
+        this.favBrowserItemsPerRow = this.config.episodeFavBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
         this.isFilterCriteriaReadOnly = true;
         // show-specific searches:
       } else if (searchType == SearchMediaTypes.SHOW_EPISODES) {
-        itemsPerRow = this.config.episodeFavBrowserItemsPerRow || 4;
+        this.favBrowserItemsPerRow = this.config.episodeFavBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
         this.isFilterCriteriaReadOnly = true;
       }
     }
@@ -262,10 +265,11 @@ export class SearchBrowser extends FavBrowserBase {
           ${(() => {
             // if actions are not visbile, then render the media list.
             if (!this.isActionsVisible) {
-              if (itemsPerRow === 1) {
+              if (this.favBrowserItemsPerRow === 1) {
                 return (
                   html`<spc-media-browser-list class="media-browser-list"
                         .items=${this.mediaList}
+                        .itemsPerRow=${this.favBrowserItemsPerRow}
                         .store=${this.store}
                         .searchMediaType=${this.searchMediaType}
                         @item-selected=${this.onItemSelected}
@@ -276,6 +280,7 @@ export class SearchBrowser extends FavBrowserBase {
                 return (
                   html`<spc-media-browser-icons class="media-browser-list"
                         .items=${this.mediaList}
+                        .itemsPerRow=${this.favBrowserItemsPerRow}
                         .store=${this.store}
                         .searchMediaType=${this.searchMediaType}
                         @item-selected=${this.onItemSelected}

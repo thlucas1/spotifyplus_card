@@ -12,6 +12,9 @@ import { MediaPlayer } from '../model/media-player';
 import { formatTitleInfo } from '../utils/media-browser-utils';
 import { getHomeAssistantErrorMessage, getUtcNowTimestamp } from '../utils/utils';
 import { IAudiobookSimplified } from '../types/spotifyplus/audiobook-simplified';
+import {
+  EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW,
+} from '../constants';
 
 
 @customElement("spc-audiobook-fav-browser")
@@ -55,6 +58,11 @@ export class AudiobookFavBrowser extends FavBrowserBase {
     const title = formatTitleInfo(this.config.audiobookFavBrowserTitle, this.config, this.player, this.mediaListLastUpdatedOn, this.mediaList, filteredItems);
     const subtitle = formatTitleInfo(this.config.audiobookFavBrowserSubTitle, this.config, this.player, this.mediaListLastUpdatedOn, this.mediaList, filteredItems);
 
+    // load default # of items per row to display.
+    if (!this.favBrowserItemsPerRow) {
+      this.favBrowserItemsPerRow = this.config.audiobookFavBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
+    }
+
     // render html.
     return html`
       <div class="media-browser-section" style=${this.styleMediaBrowser()}>
@@ -62,7 +70,7 @@ export class AudiobookFavBrowser extends FavBrowserBase {
         ${subtitle ? html`<div class="media-browser-section-subtitle">${subtitle}</div>` : html``}
         <div class="media-browser-controls">
           ${!(this.isActionsVisible || false) ? html`` : html`${this.btnHideActionsHtml}`}
-          ${this.filterCriteriaHtml}${this.refreshMediaListHtml}
+          ${this.filterCriteriaHtml}${this.formatMediaListHtml}${this.refreshMediaListHtml}
         </div>
         <div id="mediaBrowserContentElement" class="media-browser-content">
           ${this.alertError ? html`<ha-alert alert-type="error" dismissable @alert-dismissed-clicked=${this.alertErrorClear}>${this.alertError}</ha-alert>` : ""}
@@ -70,11 +78,12 @@ export class AudiobookFavBrowser extends FavBrowserBase {
           ${(() => {
             // if actions are not visbile, then render the media list.
             if (!this.isActionsVisible) {
-              if (this.config.audiobookFavBrowserItemsPerRow === 1) {
+              if (this.favBrowserItemsPerRow === 1) {
                 return (
                   html`<spc-media-browser-list 
                         class="media-browser-list"
                         .items=${filteredItems}
+                        .itemsPerRow=${this.favBrowserItemsPerRow}
                         .store=${this.store}
                         @item-selected=${this.onItemSelected}
                         @item-selected-with-hold=${this.onItemSelectedWithHold}
@@ -85,6 +94,7 @@ export class AudiobookFavBrowser extends FavBrowserBase {
                   html`<spc-media-browser-icons 
                         class="media-browser-list"
                         .items=${filteredItems}
+                        .itemsPerRow=${this.favBrowserItemsPerRow}
                         .store=${this.store}
                         @item-selected=${this.onItemSelected}
                         @item-selected-with-hold=${this.onItemSelectedWithHold}

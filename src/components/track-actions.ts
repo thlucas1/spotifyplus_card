@@ -633,7 +633,8 @@ class TrackActions extends FavActionsBase {
       } else if (action == Actions.AlbumPlayTrackFavorites) {
 
         // have to hide the progress indicator manually since it does not call updateActions.
-        await this.spotifyPlusService.PlayerMediaPlayTrackFavorites(this.player, null, true, null, false, 999, null, this.mediaItem.album.uri);
+        const shuffle = this.store.config.albumFavBrowserShuffleOnPlay;
+        await this.spotifyPlusService.PlayerMediaPlayTrackFavorites(this.player, null, shuffle, null, false, 999, null, this.mediaItem.album.uri);
         this.progressHide();
 
         // show player section.
@@ -652,7 +653,8 @@ class TrackActions extends FavActionsBase {
       } else if (action == Actions.ArtistPlayTrackFavorites) {
 
         // have to hide the progress indicator manually since it does not call updateActions.
-        await this.spotifyPlusService.PlayerMediaPlayTrackFavorites(this.player, null, true, null, false, 999, this.mediaItem.artists[0].uri, null);
+        const shuffle = this.store.config.artistFavBrowserShuffleOnPlay;
+        await this.spotifyPlusService.PlayerMediaPlayTrackFavorites(this.player, null, shuffle, null, false, 999, this.mediaItem.artists[0].uri, null);
         this.progressHide();
 
         // show player section.
@@ -690,7 +692,8 @@ class TrackActions extends FavActionsBase {
       } else if (action == Actions.TrackPlayTrackFavorites) {
 
         // have to hide the progress indicator manually since it does not call updateActions.
-        await this.spotifyPlusService.PlayerMediaPlayTrackFavorites(this.player, null, true, null, false, this.store.config.trackFavBrowserItemsLimit || 200);
+        const shuffle = this.store.config.trackFavBrowserShuffleOnPlay
+        await this.spotifyPlusService.PlayerMediaPlayTrackFavorites(this.player, null, shuffle, null, false, this.store.config.trackFavBrowserItemsLimit || 200);
         this.progressHide();
 
         // show player section.

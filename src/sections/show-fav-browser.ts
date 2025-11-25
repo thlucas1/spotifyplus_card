@@ -13,6 +13,9 @@ import { formatTitleInfo } from '../utils/media-browser-utils';
 import { getHomeAssistantErrorMessage, getUtcNowTimestamp } from '../utils/utils';
 import { GetShows } from '../types/spotifyplus/show-page-saved';
 import { IShowSimplified } from '../types/spotifyplus/show-simplified';
+import {
+  EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW,
+} from '../constants';
 
 
 @customElement("spc-show-fav-browser")
@@ -56,6 +59,11 @@ export class ShowFavBrowser extends FavBrowserBase {
     const title = formatTitleInfo(this.config.showFavBrowserTitle, this.config, this.player, this.mediaListLastUpdatedOn, this.mediaList, filteredItems);
     const subtitle = formatTitleInfo(this.config.showFavBrowserSubTitle, this.config, this.player, this.mediaListLastUpdatedOn, this.mediaList, filteredItems);
 
+    // load default # of items per row to display.
+    if (!this.favBrowserItemsPerRow) {
+      this.favBrowserItemsPerRow = this.config.showFavBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
+    }
+
     // render html.
     return html`
       <div class="media-browser-section" style=${this.styleMediaBrowser()}>
@@ -63,7 +71,7 @@ export class ShowFavBrowser extends FavBrowserBase {
         ${subtitle ? html`<div class="media-browser-section-subtitle">${subtitle}</div>` : html``}
         <div class="media-browser-controls">
           ${!(this.isActionsVisible || false) ? html`` : html`${this.btnHideActionsHtml}`}
-          ${this.filterCriteriaHtml}${this.refreshMediaListHtml}
+          ${this.filterCriteriaHtml}${this.formatMediaListHtml}${this.refreshMediaListHtml}
         </div>
         <div id="mediaBrowserContentElement" class="media-browser-content">
           ${this.alertError ? html`<ha-alert alert-type="error" dismissable @alert-dismissed-clicked=${this.alertErrorClear}>${this.alertError}</ha-alert>` : ""}
@@ -71,11 +79,12 @@ export class ShowFavBrowser extends FavBrowserBase {
           ${(() => {
             // if actions are not visbile, then render the media list.
             if (!this.isActionsVisible) {
-              if (this.config.showFavBrowserItemsPerRow === 1) {
+              if (this.favBrowserItemsPerRow === 1) {
                 return (
                   html`<spc-media-browser-list 
                         class="media-browser-list"
                         .items=${filteredItems}
+                        .itemsPerRow=${this.favBrowserItemsPerRow}
                         .store=${this.store}
                         @item-selected=${this.onItemSelected}
                         @item-selected-with-hold=${this.onItemSelectedWithHold}
@@ -86,6 +95,7 @@ export class ShowFavBrowser extends FavBrowserBase {
                   html`<spc-media-browser-icons class="media-browser-list"
                         class="media-browser-list"
                         .items=${filteredItems}
+                        .itemsPerRow=${this.favBrowserItemsPerRow}
                         .store=${this.store}
                         @item-selected=${this.onItemSelected}
                         @item-selected-with-hold=${this.onItemSelectedWithHold}

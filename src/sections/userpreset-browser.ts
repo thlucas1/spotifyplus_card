@@ -8,9 +8,6 @@ import { html, TemplateResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
 
 // our imports.
-import {
-  ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED,
-} from '../constants';
 import '../components/media-browser-list';
 import '../components/media-browser-icons';
 import '../components/userpreset-actions';
@@ -22,6 +19,10 @@ import { getHomeAssistantErrorMessage, getUtcNowTimestamp } from '../utils/utils
 import { IUserPreset } from '../types/spotifyplus/user-preset';
 import { CategoryDisplayEvent } from '../events/category-display';
 import { FilterSectionMediaEvent } from '../events/filter-section-media';
+import {
+  ALERT_ERROR_SPOTIFY_PREMIUM_REQUIRED,
+  EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW,
+} from '../constants';
 
 
 @customElement("spc-userpreset-browser")
@@ -65,6 +66,11 @@ export class UserPresetBrowser extends FavBrowserBase {
     const title = formatTitleInfo(this.config.userPresetBrowserTitle, this.config, this.player, this.mediaListLastUpdatedOn, this.mediaList, filteredItems);
     const subtitle = formatTitleInfo(this.config.userPresetBrowserSubTitle, this.config, this.player, this.mediaListLastUpdatedOn, this.mediaList, filteredItems);
 
+    // load default # of items per row to display.
+    if (!this.favBrowserItemsPerRow) {
+      this.favBrowserItemsPerRow = this.config.userPresetBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
+    }
+
     // render html.
     return html`
       <div class="media-browser-section" style=${this.styleMediaBrowser()}>
@@ -72,7 +78,7 @@ export class UserPresetBrowser extends FavBrowserBase {
         ${subtitle ? html`<div class="media-browser-section-subtitle">${subtitle}</div>` : html``}
         <div class="media-browser-controls">
           ${!(this.isActionsVisible || false) ? html`` : html`${this.btnHideActionsHtml}`}
-          ${this.filterCriteriaHtml}${this.refreshMediaListHtml}
+          ${this.filterCriteriaHtml}${this.formatMediaListHtml}${this.refreshMediaListHtml}
         </div>
         <div id="mediaBrowserContentElement" class="media-browser-content">
           ${this.alertError ? html`<ha-alert alert-type="error" dismissable @alert-dismissed-clicked=${this.alertErrorClear}>${this.alertError}</ha-alert>` : ""}
@@ -80,11 +86,12 @@ export class UserPresetBrowser extends FavBrowserBase {
           ${(() => {
             // if actions are not visbile, then render the media list.
             if (!this.isActionsVisible) {
-              if (this.config.userPresetBrowserItemsPerRow === 1) {
+              if (this.favBrowserItemsPerRow === 1) {
                 return (
                   html`<spc-media-browser-list 
                         class="media-browser-list"
                         .items=${filteredItems}
+                        .itemsPerRow=${this.favBrowserItemsPerRow}
                         .store=${this.store}
                         @item-selected=${this.onItemSelected}
                         @item-selected-with-hold=${this.onItemSelectedWithHold}
@@ -95,6 +102,7 @@ export class UserPresetBrowser extends FavBrowserBase {
                   html`<spc-media-browser-icons 
                         class="media-browser-list"
                         .items=${filteredItems}
+                        .itemsPerRow=${this.favBrowserItemsPerRow}
                         .store=${this.store}
                         @item-selected=${this.onItemSelected}
                         @item-selected-with-hold=${this.onItemSelectedWithHold}

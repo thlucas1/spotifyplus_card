@@ -421,7 +421,8 @@ class ArtistActions extends FavActionsBase {
       } else if (action == Actions.ArtistPlayTrackFavorites) {
 
         // have to hide the progress indicator manually since it does not call updateActions.
-        await this.spotifyPlusService.PlayerMediaPlayTrackFavorites(this.player, null, true, null, false, 999, this.mediaItem.uri, null);
+        const shuffle = this.store.config.artistFavBrowserShuffleOnPlay;
+        await this.spotifyPlusService.PlayerMediaPlayTrackFavorites(this.player, null, shuffle, null, false, 999, this.mediaItem.uri, null);
         this.progressHide();
 
         // show player section.

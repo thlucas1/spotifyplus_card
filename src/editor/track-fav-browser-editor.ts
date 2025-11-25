@@ -61,6 +61,12 @@ const CONFIG_SETTINGS_SCHEMA = [
     required: false,
     selector: { boolean: {} },
   },
+  {
+    name: 'trackFavBrowserShuffleOnPlay',
+    label: 'Enable shuffle prior to starting play of favorites',
+    required: false,
+    selector: { boolean: {} },
+  },
 ];
 
 

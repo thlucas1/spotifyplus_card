@@ -10,7 +10,6 @@ import { styleMap, StyleInfo } from 'lit-html/directives/style-map.js';
 
 // our imports.
 import {
-  EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW,
   ITEM_SELECTED,
   ITEM_SELECTED_WITH_HOLD,
   PLAYER_CONTROLS_ICON_TOGGLE_COLOR_DEFAULT
@@ -18,7 +17,7 @@ import {
 import { Store } from '../model/store';
 import { CardConfig } from '../types/card-config';
 import { Section } from '../types/section';
-import { closestElement, customEvent, formatStringProperCase, isTouchDevice } from '../utils/utils';
+import { closestElement, customEvent, isTouchDevice } from '../utils/utils';
 import { getContentItemImageUrl, hasMediaItemImages } from '../utils/media-browser-utils';
 import { SearchMediaTypes } from '../types/search-media-types';
 import { IAlbumSimplified } from '../types/spotifyplus/album-simplified';
@@ -26,7 +25,7 @@ import { IArtist } from '../types/spotifyplus/artist';
 import { IAudiobookSimplified, GetAudiobookAuthors } from '../types/spotifyplus/audiobook-simplified';
 import { ICategory } from '../types/spotifyplus/category';
 import { IEpisode } from '../types/spotifyplus/episode';
-import { IMediaBrowserInfo, IMediaBrowserItem } from '../types/media-browser-item';
+import { IMediaBrowserInfo } from '../types/media-browser-item';
 import { IPlaylistSimplified } from '../types/spotifyplus/playlist-simplified';
 import { IShowSimplified } from '../types/spotifyplus/show-simplified';
 import { ISpotifyConnectDevice } from '../types/spotifyplus/spotify-connect-device';
@@ -42,6 +41,7 @@ export class MediaBrowserBase extends LitElement {
   // public state properties.
   @property({ attribute: false }) protected store!: Store;
   @property({ attribute: false }) protected items!: any[];
+  @property({ attribute: false }) protected itemsPerRow!: number;
   @property({ attribute: false }) protected searchMediaType!: any;
 
   protected config!: CardConfig;
@@ -53,9 +53,17 @@ export class MediaBrowserBase extends LitElement {
   protected hideSubTitle!: boolean;
   protected isTouchDevice!: boolean;
   protected itemsHaveImages!: boolean;
-  protected itemsPerRow!: number;
   protected mediaItemType!: any;
   protected listItemClass!: string;
+
+  protected nowPlayingBars = html`
+      <div class="bars" slot="meta">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+      </div>
+      `;
 
 
   /**
@@ -87,7 +95,6 @@ export class MediaBrowserBase extends LitElement {
     // set title / source visibility based on selected section.
     this.hideTitle = true;
     this.hideSubTitle = true;
-    this.itemsPerRow = 4;
     this.listItemClass = 'button';
 
     // do ANY of the items have images?  returns true if so, otherwise false.
@@ -137,49 +144,38 @@ export class MediaBrowserBase extends LitElement {
 
     // set item control properties from configuration settings.
     if (this.mediaItemType == Section.ALBUM_FAVORITES) {
-      this.itemsPerRow = this.config.albumFavBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
       this.hideTitle = this.config.albumFavBrowserItemsHideTitle || false;
       this.hideSubTitle = this.config.albumFavBrowserItemsHideSubTitle || false;
     } else if (this.mediaItemType == Section.ARTIST_FAVORITES) {
-      this.itemsPerRow = this.config.artistFavBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
       this.hideTitle = this.config.artistFavBrowserItemsHideTitle || false;
       this.hideSubTitle = this.config.artistFavBrowserItemsHideSubTitle || false;
     } else if (this.mediaItemType == Section.AUDIOBOOK_FAVORITES) {
-      this.itemsPerRow = this.config.audiobookFavBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
       this.hideTitle = this.config.audiobookFavBrowserItemsHideTitle || false;
       this.hideSubTitle = this.config.audiobookFavBrowserItemsHideSubTitle || false;
     } else if (this.mediaItemType == Section.CATEGORYS) {
-      this.itemsPerRow = this.config.categoryBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
       this.hideTitle = this.config.categoryBrowserItemsHideTitle || false;
       this.hideSubTitle = this.config.categoryBrowserItemsHideSubTitle || false;
     } else if (this.mediaItemType == Section.DEVICES) {
-      this.itemsPerRow = this.config.deviceBrowserItemsPerRow || 1;
       this.hideTitle = this.config.deviceBrowserItemsHideTitle || false;
       this.hideSubTitle = this.config.deviceBrowserItemsHideSubTitle || false;
       // for devices, make the source icons half the size of regular list buttons.
       this.listItemClass += ' button-device';
     } else if (this.mediaItemType == Section.EPISODE_FAVORITES) {
-      this.itemsPerRow = this.config.episodeFavBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
       this.hideTitle = this.config.episodeFavBrowserItemsHideTitle || false;
       this.hideSubTitle = this.config.episodeFavBrowserItemsHideSubTitle || false;
     } else if (this.mediaItemType == Section.PLAYLIST_FAVORITES) {
-      this.itemsPerRow = this.config.playlistFavBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
       this.hideTitle = this.config.playlistFavBrowserItemsHideTitle || false;
       this.hideSubTitle = this.config.playlistFavBrowserItemsHideSubTitle || false;
     } else if (this.mediaItemType == Section.RECENTS) {
-      this.itemsPerRow = this.config.recentBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
       this.hideTitle = this.config.recentBrowserItemsHideTitle || false;
       this.hideSubTitle = this.config.recentBrowserItemsHideSubTitle || false;
     } else if (this.mediaItemType == Section.SHOW_FAVORITES) {
-      this.itemsPerRow = this.config.showFavBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
       this.hideTitle = this.config.showFavBrowserItemsHideTitle || false;
       this.hideSubTitle = this.config.showFavBrowserItemsHideSubTitle || false;
     } else if (this.mediaItemType == Section.TRACK_FAVORITES) {
-      this.itemsPerRow = this.config.trackFavBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
       this.hideTitle = this.config.trackFavBrowserItemsHideTitle || false;
       this.hideSubTitle = this.config.trackFavBrowserItemsHideSubTitle || false;
     } else if (this.mediaItemType == Section.USERPRESETS) {
-      this.itemsPerRow = this.config.userPresetBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
       this.hideTitle = this.config.userPresetBrowserItemsHideTitle || false;
       this.hideSubTitle = this.config.userPresetBrowserItemsHideSubTitle || false;
     } else {
@@ -191,7 +187,6 @@ export class MediaBrowserBase extends LitElement {
     if (this.section == Section.SEARCH_MEDIA) {
 
       if (this.config.searchMediaBrowserUseDisplaySettings || false) {
-        this.itemsPerRow = this.config.searchMediaBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
         this.hideTitle = this.config.searchMediaBrowserItemsHideTitle || false;
         this.hideSubTitle = this.config.searchMediaBrowserItemsHideSubTitle || false;
       }
@@ -545,6 +540,7 @@ export class MediaBrowserBase extends LitElement {
 
       // modify subtitle value based on selected section type.
       if (this.mediaItemType == Section.ALBUM_FAVORITES) {
+
         const itemInfo = (item as IAlbumSimplified);
         if ((itemInfo.artists) && (itemInfo.artists.length > 0)) {
           if (this.searchMediaType == SearchMediaTypes.ARTIST_ALBUMS) {
@@ -553,16 +549,39 @@ export class MediaBrowserBase extends LitElement {
             mbi_info.subtitle = itemInfo.artists[0]?.name || (itemInfo.total_tracks || 0 + " tracks") || item.type;
           }
         }
+
+        // set is_active flag based on if item is currently playing.
+        if (itemInfo.name == this.store.player.attributes.media_album_name) {
+          mbi_info.is_active = true;
+        }
+
       } else if (this.mediaItemType == Section.ARTIST_FAVORITES) {
+
         const itemInfo = (item as IArtist);
         mbi_info.subtitle = ((itemInfo?.followers?.total || 0) + " followers") || item.type;
+
+        // set is_active flag based on if item is currently playing.
+        if (itemInfo.uri == this.store.player.attributes.sp_artist_uri) {
+          mbi_info.is_active = true;
+        }
+
       } else if (this.mediaItemType == Section.AUDIOBOOK_FAVORITES) {
+
         const itemInfo = (item as IAudiobookSimplified);
         mbi_info.subtitle = GetAudiobookAuthors(itemInfo, ", ") || item.type;
+
+        // set is_active flag based on if item is currently playing.
+        if (itemInfo.uri == this.store.player.attributes.sp_context_uri) {
+          mbi_info.is_active = true;
+        }
+
       } else if (this.mediaItemType == Section.CATEGORYS) {
+
         const itemInfo = (item as ICategory);
         mbi_info.subtitle = itemInfo.type;
+
       } else if (this.mediaItemType == Section.DEVICES) {
+
         // for device item, the object uses Camel-case names, so we have to use "Name" instead of "name".
         // we will also show the device brand and model names as the subtitle.
         // we will also indicate which device is active.
@@ -582,32 +601,68 @@ export class MediaBrowserBase extends LitElement {
         } else {
           mbi_info.is_active = false;
         }
+
       } else if (this.mediaItemType == Section.EPISODE_FAVORITES) {
+
         // spotify search episode returns an IEpisodeSimplified, so show property will be null.
         // for search results, use release date for subtitle.
         // for favorite results, use the show name for subtitle.
         const itemInfo = (item as IEpisode);
         mbi_info.subtitle = itemInfo.show?.name || itemInfo.release_date || "";
+
+        // set is_active flag based on if item is currently playing.
+        if (itemInfo.uri == this.store.player.attributes.media_content_id) {
+          mbi_info.is_active = true;
+        }
+
       } else if (this.mediaItemType == Section.PLAYLIST_FAVORITES) {
+
         const itemInfo = (item as IPlaylistSimplified);
         mbi_info.subtitle = (itemInfo.tracks?.total || 0) + " tracks";
+
+        // set is_active flag based on if item is currently playing.
+        if (itemInfo.uri == this.store.player.attributes.sp_playlist_uri) {
+          mbi_info.is_active = true;
+        }
+
       } else if (this.mediaItemType == Section.RECENTS) {
+
         // nothing to do here - already set.
+
       } else if (this.mediaItemType == Section.SHOW_FAVORITES) {
+
         const itemInfo = (item as IShowSimplified);
         mbi_info.subtitle = (itemInfo.total_episodes || 0) + " episodes";
+
+        // set is_active flag based on if item is currently playing.
+        if (itemInfo.uri == this.store.player.attributes.sp_context_uri) {
+          mbi_info.is_active = true;
+        }
+
       } else if (this.mediaItemType == Section.TRACK_FAVORITES) {
+
         const itemInfo = (item as ITrackSimplified);
         if ((itemInfo.artists) && (itemInfo.artists.length > 0)) {
           mbi_info.subtitle = itemInfo.artists[0].name || item.type;
         }
+
+        // set is_active flag based on if item is currently playing.
+        if (itemInfo.uri == this.store.player.attributes.media_content_id) {
+          mbi_info.is_active = true;
+        }
+
       } else if (this.mediaItemType == Section.USERPRESETS) {
+
         const itemInfo = (item as IUserPreset);
         mbi_info.subtitle = itemInfo.subtitle || item.uri;
+
       } else if (this.mediaItemType == Section.PLAYER) {
+
         // this condition can be ignored, as the player does not contain a media-browser.
+
       } else {
         console.log("%cmedia-browser-utils - unknown mediaItemType = %s; mbi_info not set!", "color:red", JSON.stringify(this.mediaItemType));
+
       }
 
       //console.log("%c buildMediaBrowserItems - media browser item:\n%s",
@@ -624,27 +679,6 @@ export class MediaBrowserBase extends LitElement {
         mbi_item: mbi_info
       };
     });
-  }
-
-
-  protected renderMediaBrowserItem(
-    item: IMediaBrowserItem,
-    showTitle: boolean = true,
-    showSubTitle: boolean = true,
-  ) {
-
-    let clsActive = ''
-    if (item.mbi_item.is_active) {
-      clsActive = ' title-active';
-    }
-
-    return html`
-      <div class="thumbnail"></div>
-      <div class="title${clsActive}" ?hidden=${!showTitle}>
-        ${item.mbi_item.title}
-        <div class="subtitle" ?hidden=${!showSubTitle}>${formatStringProperCase(item.mbi_item.subtitle || '')}</div>
-      </div>
-    `;
   }
 
 }

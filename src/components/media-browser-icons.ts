@@ -4,7 +4,8 @@ import { css, html, TemplateResult } from 'lit';
 // our imports.
 import { ITEM_SELECTED } from '../constants';
 import { MediaBrowserBase } from './media-browser-base';
-import { customEvent } from '../utils/utils';
+import { IMediaBrowserItem } from '../types/media-browser-item';
+import { customEvent, formatStringProperCase } from '../utils/utils';
 
 
 export class MediaBrowserIcons extends MediaBrowserBase {
@@ -68,6 +69,34 @@ export class MediaBrowserIcons extends MediaBrowserBase {
 
 
   /**
+   * Render the media item.
+  */
+  protected renderMediaBrowserItem(
+    item: IMediaBrowserItem,
+    showTitle: boolean = true,
+    showSubTitle: boolean = true,
+  ) {
+
+    let clsActive = ''
+    let divNowPlayingBars = html``
+    if (item.mbi_item.is_active) {
+      clsActive = ' title-active';
+      divNowPlayingBars = this.nowPlayingBars
+    }
+
+    return html`
+      <div class="thumbnail">
+        ${divNowPlayingBars}
+      </div>
+      <div class="title${clsActive}" ?hidden=${!showTitle}>
+        ${item.mbi_item.title}
+        <div class="subtitle" ?hidden=${!showSubTitle}>${formatStringProperCase(item.mbi_item.subtitle || '')}</div>
+      </div>
+    `;
+  }
+
+
+  /**
    * Style definitions used by this card section.
    * 
    * --control-button-padding: 0px;   // image with rounded corners
@@ -124,6 +153,57 @@ export class MediaBrowserIcons extends MediaBrowserBase {
           width: 100%;
           padding-bottom: 0.25rem;
         }
+
+        /* *********************************************************** */
+        /* the remaining styles are used for the sound animation icon. */
+        /* *********************************************************** */
+        .bars {
+          position: absolute;
+          width: 20px;
+          height: 10px;
+          margin-top: 20px;
+          margin-left: 10px;
+
+          /*height: 30px;*/
+          /*left: 10%;*/
+          /*margin: 0 0 0 0;*/
+          /*position: absolute;*/
+          /*top: -4%;*/
+          /*width: 40px;*/
+        }
+
+        .bar {
+          background: var(--dark-primary-color);
+          bottom: 1px;
+          height: 3px;
+          position: absolute;
+          width: 3px;      
+          animation: sound 0ms -800ms linear infinite alternate;
+          display: block;
+        }
+
+        @keyframes sound {
+          0% {
+            opacity: .35;
+            height: 3px; 
+          }
+          100% {
+            opacity: 1;       
+            height: 1rem;        
+          }
+        }
+
+        .bar:nth-child(1)  { left: 1px; animation-duration: 474ms; }
+        .bar:nth-child(2)  { left: 5px; animation-duration: 433ms; }
+        .bar:nth-child(3)  { left: 9px; animation-duration: 407ms; }
+        .bar:nth-child(4)  { left: 13px; animation-duration: 458ms; }
+        /*.bar:nth-child(5)  { left: 17px; animation-duration: 400ms; }*/
+        /*.bar:nth-child(6)  { left: 21px; animation-duration: 427ms; }*/
+        /*.bar:nth-child(7)  { left: 25px; animation-duration: 441ms; }*/
+        /*.bar:nth-child(8)  { left: 29px; animation-duration: 419ms; }*/
+        /*.bar:nth-child(9)  { left: 33px; animation-duration: 487ms; }*/
+        /*.bar:nth-child(10) { left: 37px; animation-duration: 442ms; }*/
+
       `,
     ];
   }

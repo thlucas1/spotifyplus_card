@@ -8,8 +8,8 @@ import {
   ITEM_SELECTED
 } from '../constants';
 import { MediaBrowserBase } from './media-browser-base';
-import { Section } from '../types/section';
-import { customEvent } from '../utils/utils';
+import { IMediaBrowserItem } from '../types/media-browser-item';
+import { customEvent, formatStringProperCase } from '../utils/utils';
 
 
 export class MediaBrowserList extends MediaBrowserBase {
@@ -34,16 +34,6 @@ export class MediaBrowserList extends MediaBrowserBase {
     // invoke base class method.
     super.render();
 
-    // define control to render - search criteria.
-    const nowPlayingBars = html`
-      <div class="bars" slot="meta">
-        <div class="bar"></div>
-        <div class="bar"></div>
-        <div class="bar"></div>
-        <div class="bar"></div>
-      </div>
-      `;
-
     // render html.
     return html`
       <mwc-list multi class="list" style=${this.styleMediaBrowser()}">
@@ -61,8 +51,8 @@ export class MediaBrowserList extends MediaBrowserBase {
                   >
                     <div class="row">${this.renderMediaBrowserItem(item, !item.mbi_item.image_url || !this.hideTitle, !this.hideSubTitle)}</div>
                     ${when(
-                      item.mbi_item.is_active && this.store.player.isPlaying() && this.section == Section.DEVICES,
-                      () => html`${nowPlayingBars}`,
+                      item.mbi_item.is_active && this.store.player.isPlaying(),
+                      () => html`${this.nowPlayingBars}`,
                     )}
                   </mwc-list-item>
                 `);
@@ -77,8 +67,8 @@ export class MediaBrowserList extends MediaBrowserBase {
                   >
                     <div class="row">${this.renderMediaBrowserItem(item, !item.mbi_item.image_url || !this.hideTitle, !this.hideSubTitle)}</div>
                     ${when(
-                      item.mbi_item.is_active && this.store.player.isPlaying() && this.section == Section.DEVICES,
-                      () => html`${nowPlayingBars}`,
+                      item.mbi_item.is_active && this.store.player.isPlaying(),
+                      () => html`${this.nowPlayingBars}`,
                     )}
                   </mwc-list-item>
                 `);
@@ -87,6 +77,30 @@ export class MediaBrowserList extends MediaBrowserBase {
           `;
         })}
       </mwc-list>
+    `;
+  }
+
+
+  /**
+   * Render the media item.
+  */
+  protected renderMediaBrowserItem(
+    item: IMediaBrowserItem,
+    showTitle: boolean = true,
+    showSubTitle: boolean = true,
+  ) {
+
+    let clsActive = ''
+    if (item.mbi_item.is_active) {
+      clsActive = ' title-active';
+    }
+
+    return html`
+      <div class="thumbnail"></div>
+      <div class="title${clsActive}" ?hidden=${!showTitle}>
+        ${item.mbi_item.title}
+        <div class="subtitle" ?hidden=${!showSubTitle}>${formatStringProperCase(item.mbi_item.subtitle || '')}</div>
+      </div>
     `;
   }
 

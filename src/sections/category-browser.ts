@@ -20,6 +20,9 @@ import { getHomeAssistantErrorMessage, getUtcNowTimestamp } from '../utils/utils
 import { getIdFromSpotifyUri } from '../services/spotifyplus-service';
 import { ICategory } from '../types/spotifyplus/category';
 import { IPlaylistSimplified } from '../types/spotifyplus/playlist-simplified';
+import {
+  EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW,
+} from '../constants';
 
 
 @customElement("spc-category-browser")
@@ -92,6 +95,11 @@ export class CategoryBrowser extends FavBrowserBase {
       subtitle = formatTitleInfo(this.config.categoryBrowserSubTitle, this.config, this.player, this.mediaListLastUpdatedOn, this.mediaList, filteredItems);
     }
 
+    // load default # of items per row to display.
+    if (!this.favBrowserItemsPerRow) {
+      this.favBrowserItemsPerRow = this.config.categoryBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
+    }
+
     // render html.
     return html`
       <div class="media-browser-section" style=${this.styleMediaBrowser()}>
@@ -99,7 +107,7 @@ export class CategoryBrowser extends FavBrowserBase {
         ${subtitle ? html`<div class="media-browser-section-subtitle">${subtitle}</div>` : html``}
         <div class="media-browser-controls">
           ${(this.isActionsVisible || this.isCategoryVisible || false) ?html`${this.btnHideActionsHtml}` : html``}
-          ${this.filterCriteriaHtml}${this.refreshMediaListHtml}
+          ${this.filterCriteriaHtml}${this.formatMediaListHtml}${this.refreshMediaListHtml}
         </div>
         <div id="mediaBrowserContentElement" class="media-browser-content">
           ${this.alertError ? html`<ha-alert alert-type="error" dismissable @alert-dismissed-clicked=${this.alertErrorClear}>${this.alertError}</ha-alert>` : ""}
@@ -110,11 +118,12 @@ export class CategoryBrowser extends FavBrowserBase {
               return html`<spc-playlist-actions class="media-browser-actions" .store=${this.store} .mediaItem=${this.mediaItem}></spc-playlist-actions>`;
             } else if (this.isCategoryVisible) {
               // if category is visible, then render the playlists for the category.
-              if ((this.config.categoryBrowserItemsPerRow || 4) === 1) {
+              if (this.favBrowserItemsPerRow === 1) {
                 return (
                   html`<spc-media-browser-list 
                         class="media-browser-list"
                         .items=${filteredItemsCategory}
+                        .itemsPerRow=${this.favBrowserItemsPerRow}
                         .store=${this.store}
                         @item-selected=${this.onItemSelected}
                         @item-selected-with-hold=${this.onItemSelectedWithHold}
@@ -125,6 +134,7 @@ export class CategoryBrowser extends FavBrowserBase {
                   html`<spc-media-browser-icons 
                         class="media-browser-list"
                         .items=${filteredItemsCategory}
+                        .itemsPerRow=${this.favBrowserItemsPerRow}
                         .store=${this.store}
                         @item-selected=${this.onItemSelected}
                         @item-selected-with-hold=${this.onItemSelectedWithHold}
@@ -133,11 +143,12 @@ export class CategoryBrowser extends FavBrowserBase {
               }
             } else {
               // if category is not visbile, then render the category list.
-              if ((this.config.categoryBrowserItemsPerRow || 4) === 1) {
+              if (this.favBrowserItemsPerRow === 1) {
                 return (
                   html`<spc-media-browser-list 
                         class="media-browser-list"
                         .items=${filteredItems}
+                        .itemsPerRow=${this.favBrowserItemsPerRow}
                         .store=${this.store}
                         @item-selected=${this.onItemSelected}
                         @item-selected-with-hold=${this.onItemSelectedWithHold}
@@ -148,6 +159,7 @@ export class CategoryBrowser extends FavBrowserBase {
                   html`<spc-media-browser-icons 
                         class="media-browser-list"
                         .items=${filteredItems}
+                        .itemsPerRow=${this.favBrowserItemsPerRow}
                         .store=${this.store}
                         @item-selected=${this.onItemSelected}
                         @item-selected-with-hold=${this.onItemSelectedWithHold}

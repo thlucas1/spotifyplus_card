@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.68 ] - 2025/11/24
+  
+  * Added visual indicator to media browser items that indicates the currently playing item.
+  * Added card configuration option `trackFavBrowserShuffleOnPlay`; True to enable shuffle prior to starting play of track favorites; otherwise, False to start the context with the current shuffle mode.  
 
 ###### [ 1.0.67 ] - 2025/11/01
   

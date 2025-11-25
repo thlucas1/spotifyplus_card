@@ -639,7 +639,8 @@ export class PlayerBodyTrack extends PlayerBodyBase {
       } else if (action == Actions.AlbumPlayTrackFavorites) {
 
         // have to hide the progress indicator manually since it does not call updateActions.
-        await this.spotifyPlusService.PlayerMediaPlayTrackFavorites(this.player, null, true, null, false, 999, null, this.track?.album.uri);
+        const shuffle = this.store.config.albumFavBrowserShuffleOnPlay;
+        await this.spotifyPlusService.PlayerMediaPlayTrackFavorites(this.player, null, shuffle, null, false, 999, null, this.track?.album.uri);
         this.progressHide();
 
         // show player section.
@@ -667,7 +668,8 @@ export class PlayerBodyTrack extends PlayerBodyBase {
       } else if (action == Actions.ArtistPlayTrackFavorites) {
 
         // have to hide the progress indicator manually since it does not call updateActions.
-        await this.spotifyPlusService.PlayerMediaPlayTrackFavorites(this.player, null, true, null, false, 999, this.track?.artists[0].uri, null);
+        const shuffle = this.store.config.artistFavBrowserShuffleOnPlay;
+        await this.spotifyPlusService.PlayerMediaPlayTrackFavorites(this.player, null, shuffle, null, false, 999, this.track?.artists[0].uri, null);
         this.progressHide();
 
         // show player section.

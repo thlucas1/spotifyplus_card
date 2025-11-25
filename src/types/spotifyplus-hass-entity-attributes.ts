@@ -10,6 +10,11 @@ import { HassEntityAttributesMediaPlayer } from './hass-entity-attributes-media-
 export declare type SpotifyPlusHassEntityAttributes = HassEntityAttributesMediaPlayer & {
 
   /**
+   * Spotify uri for the currently playing artist (e.g. "spotify:artist:3MAQykZ3MwPcviv5eIVqgb"). 
+   */
+  sp_artist_uri?: string;
+
+  /**
    * Spotify uri for the currently playing context (e.g. "spotify:album:5ovMagVMhha9qq0OYDzXFm"). 
    */
   sp_context_uri?: string;
@@ -74,6 +79,11 @@ export declare type SpotifyPlusHassEntityAttributes = HassEntityAttributesMediaP
    * True if the track / episode has explicit content; otherwise, false.
    */
   sp_track_is_explicit?: boolean;
+
+  /**
+   * Track origin uri being played, if the current context is a track (e.g. "spotify:track:5yIBlwkGBxySQjpBsgKh0X").
+   */
+  sp_track_uri_origin?: string;
 
   /**
    * Country code for the active Spotify user account (e.g. "US").

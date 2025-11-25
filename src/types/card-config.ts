@@ -837,6 +837,14 @@ export interface CardConfig extends LovelaceCardConfig {
   trackFavBrowserItemsSortTitle?: boolean;
 
   /**
+   * True to enable shuffle prior to starting play of track favorites;
+   * Otherwise, False to start the context with the current shuffle mode.  
+   * Default is false.
+   */
+  trackFavBrowserShuffleOnPlay?: boolean;
+
+
+  /**
    * Title displayed at the top of the Preset media browser section form.
    * Omit this parameter to hide the title display area.
    * This value supports Title Formatter Options.
