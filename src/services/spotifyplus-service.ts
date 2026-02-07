@@ -745,6 +745,12 @@ export class SpotifyPlusService {
 
     try {
 
+      // if market not supplied, then use user profile country code value.
+      // market data is returned if a market filter is not supplied, which can
+      // lead to memory issues due to the amount of market-specific data returned!
+      if (market == null)
+        market = player.attributes.sp_user_country;
+
       // create service data (with required parameters).
       const serviceData: { [key: string]: any } = {
         entity_id: player.id,

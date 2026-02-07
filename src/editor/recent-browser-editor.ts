@@ -44,6 +44,12 @@ const CONFIG_SETTINGS_SCHEMA = [
     required: false,
     selector: { boolean: {} },
   },
+  {
+    name: 'recentBrowserItemsRefreshOnEntry',
+    label: 'Enable refresh of items on initial section display',
+    required: false,
+    selector: { boolean: {} },
+  },
 ];
 
 

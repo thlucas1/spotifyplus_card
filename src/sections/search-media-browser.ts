@@ -170,76 +170,78 @@ export class SearchBrowser extends FavBrowserBase {
 
     // define control to render - search media type.
     const searchMediaTypeHtml = html`
-      <ha-md-button-menu id="searchMediaType" slot="selection-bar" positioning="popover" style="padding-right: 0.5rem;">
-        <ha-assist-chip id="searchMediaTypeTitle" slot="trigger" .label=${this.searchMediaTypeTitle || SEARCH_FOR_PREFIX + " ..."}>
+      <ha-dropdown slot="actionItems" id="searchMediaType" style="padding-right: 0.5rem;">
+        <ha-assist-chip id="searchMediaTypeTitle"
+          slot="trigger"
+          .label=${this.searchMediaTypeTitle || SEARCH_FOR_PREFIX + " ..."}>
           <ha-svg-icon slot="trailing-icon" .path=${mdiMenuDown}></ha-svg-icon>
         </ha-assist-chip>
-        <ha-md-menu-item .value=${SearchMediaTypes.ALBUMS} @click=${this.onSearchMediaTypeChanged} hide=${this.hideSearchType(SearchMediaTypes.ALBUMS)}>
-          <ha-svg-icon slot="start" .path=${mdiAlbum}></ha-svg-icon>
-          <div slot="headline">${SearchMediaTypes.ALBUMS}</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item .value=${SearchMediaTypes.ARTISTS} @click=${this.onSearchMediaTypeChanged} hide=${this.hideSearchType(SearchMediaTypes.ARTISTS)}>
-          <ha-svg-icon slot="start" .path=${mdiAccountMusic}></ha-svg-icon>
-          <div slot="headline">${SearchMediaTypes.ARTISTS}</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item .value=${SearchMediaTypes.AUDIOBOOKS} @click=${this.onSearchMediaTypeChanged} hide=${this.hideSearchType(SearchMediaTypes.AUDIOBOOKS)}>
-          <ha-svg-icon slot="start" .path=${mdiBookOpenVariant}></ha-svg-icon>
-          <div slot="headline">${SearchMediaTypes.AUDIOBOOKS}</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item .value=${SearchMediaTypes.EPISODES} @click=${this.onSearchMediaTypeChanged} hide=${this.hideSearchType(SearchMediaTypes.EPISODES)}>
-          <ha-svg-icon slot="start" .path=${mdiMicrophone}></ha-svg-icon>
-          <div slot="headline">${SearchMediaTypes.EPISODES}</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item .value=${SearchMediaTypes.PLAYLISTS} @click=${this.onSearchMediaTypeChanged} hide=${this.hideSearchType(SearchMediaTypes.PLAYLISTS)}>
-          <ha-svg-icon slot="start" .path=${mdiPlaylistPlay}></ha-svg-icon>
-          <div slot="headline">${SearchMediaTypes.PLAYLISTS}</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item .value=${SearchMediaTypes.SHOWS} @click=${this.onSearchMediaTypeChanged} hide=${this.hideSearchType(SearchMediaTypes.SHOWS)}>
-          <ha-svg-icon slot="start" .path=${mdiPodcast}></ha-svg-icon>
-          <div slot="headline">${SearchMediaTypes.SHOWS}</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item .value=${SearchMediaTypes.TRACKS} @click=${this.onSearchMediaTypeChanged} hide=${this.hideSearchType(SearchMediaTypes.TRACKS)}>
-          <ha-svg-icon slot="start" .path=${mdiMusic}></ha-svg-icon>
-          <div slot="headline">${SearchMediaTypes.TRACKS}</div>
-        </ha-md-menu-item>
-        <ha-md-divider role="separator" tabindex="-1" hide=${!isSearchArgsUri}></ha-md-divider>
-        <ha-md-menu-item .value=${SearchMediaTypes.ALBUM_TRACKS} @click=${this.onSearchMediaTypeChanged} hide=${(!isSearchArgsUriAlbum)}>
-          <ha-svg-icon slot="start" .path=${mdiMusic}></ha-svg-icon>
-          <div slot="headline">${SearchMediaTypes.ALBUM_TRACKS}</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item .value=${SearchMediaTypes.ARTIST_TOP_TRACKS} @click=${this.onSearchMediaTypeChanged} hide=${(!isSearchArgsUriArtist)}>
-          <ha-svg-icon slot="start" .path=${mdiMusic}></ha-svg-icon>
-          <div slot="headline">${SearchMediaTypes.ARTIST_TOP_TRACKS}</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item .value=${SearchMediaTypes.ARTIST_ALBUMS} @click=${this.onSearchMediaTypeChanged} hide=${(!isSearchArgsUriArtist)}>
-          <ha-svg-icon slot="start" .path=${mdiAlbum}></ha-svg-icon>
-          <div slot="headline">${SearchMediaTypes.ARTIST_ALBUMS}</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item .value=${SearchMediaTypes.ARTIST_ALBUMS_COMPILATION} @click=${this.onSearchMediaTypeChanged} hide=${(!isSearchArgsUriArtist)}>
-          <ha-svg-icon slot="start" .path=${mdiAlbum}></ha-svg-icon>
-          <div slot="headline">${SearchMediaTypes.ARTIST_ALBUMS_COMPILATION}</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item .value=${SearchMediaTypes.ARTIST_ALBUMS_SINGLE} @click=${this.onSearchMediaTypeChanged} hide=${(!isSearchArgsUriArtist)}>
-          <ha-svg-icon slot="start" .path=${mdiAlbum}></ha-svg-icon>
-          <div slot="headline">${SearchMediaTypes.ARTIST_ALBUMS_SINGLE}</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item .value=${SearchMediaTypes.ARTIST_ALBUMS_APPEARSON} @click=${this.onSearchMediaTypeChanged} hide=${(!isSearchArgsUriArtist)}>
-          <ha-svg-icon slot="start" .path=${mdiAlbum}></ha-svg-icon>
-          <div slot="headline">${SearchMediaTypes.ARTIST_ALBUMS_APPEARSON}</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item .value=${SearchMediaTypes.ARTIST_RELATED_ARTISTS} @click=${this.onSearchMediaTypeChanged} hide=${(!isSearchArgsUriArtist)}>
-          <ha-svg-icon slot="start" .path=${mdiAccountMusic}></ha-svg-icon>
-          <div slot="headline">${SearchMediaTypes.ARTIST_RELATED_ARTISTS}</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item .value=${SearchMediaTypes.AUDIOBOOK_EPISODES} @click=${this.onSearchMediaTypeChanged} hide=${(!isSearchArgsUriAudiobook)}>
-          <ha-svg-icon slot="start" .path=${mdiMicrophone}></ha-svg-icon>
-          <div slot="headline">${SearchMediaTypes.AUDIOBOOK_EPISODES}</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item .value=${SearchMediaTypes.SHOW_EPISODES} @click=${this.onSearchMediaTypeChanged} hide=${(!isSearchArgsUriShow)}>
-          <ha-svg-icon slot="start" .path=${mdiMicrophone}></ha-svg-icon>
-          <div slot="headline">${SearchMediaTypes.SHOW_EPISODES}</div>
-        </ha-md-menu-item>
-      </ha-md-button-menu>
+        <ha-dropdown-item .value=${SearchMediaTypes.ALBUMS} @click=${this.onSearchMediaTypeChanged} hide=${this.hideSearchType(SearchMediaTypes.ALBUMS)}>
+          <ha-svg-icon slot="icon" .path=${mdiAlbum}></ha-svg-icon>
+          ${SearchMediaTypes.ALBUMS}
+        </ha-dropdown-item>
+        <ha-dropdown-item .value=${SearchMediaTypes.ARTISTS} @click=${this.onSearchMediaTypeChanged} hide=${this.hideSearchType(SearchMediaTypes.ARTISTS)}>
+          <ha-svg-icon slot="icon" .path=${mdiAccountMusic}></ha-svg-icon>
+          ${SearchMediaTypes.ARTISTS}
+        </ha-dropdown-item>
+        <ha-dropdown-item .value=${SearchMediaTypes.AUDIOBOOKS} @click=${this.onSearchMediaTypeChanged} hide=${this.hideSearchType(SearchMediaTypes.AUDIOBOOKS)}>
+          <ha-svg-icon slot="icon" .path=${mdiBookOpenVariant}></ha-svg-icon>
+          ${SearchMediaTypes.AUDIOBOOKS}
+        </ha-dropdown-item>
+        <ha-dropdown-item .value=${SearchMediaTypes.EPISODES} @click=${this.onSearchMediaTypeChanged} hide=${this.hideSearchType(SearchMediaTypes.EPISODES)}>
+          <ha-svg-icon slot="icon" .path=${mdiMicrophone}></ha-svg-icon>
+          ${SearchMediaTypes.EPISODES}
+        </ha-dropdown-item>
+        <ha-dropdown-item .value=${SearchMediaTypes.PLAYLISTS} @click=${this.onSearchMediaTypeChanged} hide=${this.hideSearchType(SearchMediaTypes.PLAYLISTS)}>
+          <ha-svg-icon slot="icon" .path=${mdiPlaylistPlay}></ha-svg-icon>
+          ${SearchMediaTypes.PLAYLISTS}
+        </ha-dropdown-item>
+        <ha-dropdown-item .value=${SearchMediaTypes.SHOWS} @click=${this.onSearchMediaTypeChanged} hide=${this.hideSearchType(SearchMediaTypes.SHOWS)}>
+          <ha-svg-icon slot="icon" .path=${mdiPodcast}></ha-svg-icon>
+          ${SearchMediaTypes.SHOWS}
+        </ha-dropdown-item>
+        <ha-dropdown-item .value=${SearchMediaTypes.TRACKS} @click=${this.onSearchMediaTypeChanged} hide=${this.hideSearchType(SearchMediaTypes.TRACKS)}>
+          <ha-svg-icon slot="icon" .path=${mdiMusic}></ha-svg-icon>
+          ${SearchMediaTypes.TRACKS}
+        </ha-dropdown-item>
+        <wa-divider hide=${!isSearchArgsUri}></wa-divider>
+        <ha-dropdown-item .value=${SearchMediaTypes.ALBUM_TRACKS} @click=${this.onSearchMediaTypeChanged} hide=${(!isSearchArgsUriAlbum)}>
+          <ha-svg-icon slot="icon" .path=${mdiMusic}></ha-svg-icon>
+          ${SearchMediaTypes.ALBUM_TRACKS}
+        </ha-dropdown-item>
+        <ha-dropdown-item .value=${SearchMediaTypes.ARTIST_TOP_TRACKS} @click=${this.onSearchMediaTypeChanged} hide=${(!isSearchArgsUriArtist)}>
+          <ha-svg-icon slot="icon" .path=${mdiMusic}></ha-svg-icon>
+          ${SearchMediaTypes.ARTIST_TOP_TRACKS}
+        </ha-dropdown-item>
+        <ha-dropdown-item .value=${SearchMediaTypes.ARTIST_ALBUMS} @click=${this.onSearchMediaTypeChanged} hide=${(!isSearchArgsUriArtist)}>
+          <ha-svg-icon slot="icon" .path=${mdiAlbum}></ha-svg-icon>
+          ${SearchMediaTypes.ARTIST_ALBUMS}
+        </ha-dropdown-item>
+        <ha-dropdown-item .value=${SearchMediaTypes.ARTIST_ALBUMS_COMPILATION} @click=${this.onSearchMediaTypeChanged} hide=${(!isSearchArgsUriArtist)}>
+          <ha-svg-icon slot="icon" .path=${mdiAlbum}></ha-svg-icon>
+          ${SearchMediaTypes.ARTIST_ALBUMS_COMPILATION}
+        </ha-dropdown-item>
+        <ha-dropdown-item .value=${SearchMediaTypes.ARTIST_ALBUMS_SINGLE} @click=${this.onSearchMediaTypeChanged} hide=${(!isSearchArgsUriArtist)}>
+          <ha-svg-icon slot="icon" .path=${mdiAlbum}></ha-svg-icon>
+          ${SearchMediaTypes.ARTIST_ALBUMS_SINGLE}
+        </ha-dropdown-item>
+        <ha-dropdown-item .value=${SearchMediaTypes.ARTIST_ALBUMS_APPEARSON} @click=${this.onSearchMediaTypeChanged} hide=${(!isSearchArgsUriArtist)}>
+          <ha-svg-icon slot="icon" .path=${mdiAlbum}></ha-svg-icon>
+          ${SearchMediaTypes.ARTIST_ALBUMS_APPEARSON}
+        </ha-dropdown-item>
+        <ha-dropdown-item .value=${SearchMediaTypes.ARTIST_RELATED_ARTISTS} @click=${this.onSearchMediaTypeChanged} hide=${(!isSearchArgsUriArtist)}>
+          <ha-svg-icon slot="icon" .path=${mdiAccountMusic}></ha-svg-icon>
+          ${SearchMediaTypes.ARTIST_RELATED_ARTISTS}
+        </ha-dropdown-item>
+        <ha-dropdown-item .value=${SearchMediaTypes.AUDIOBOOK_EPISODES} @click=${this.onSearchMediaTypeChanged} hide=${(!isSearchArgsUriAudiobook)}>
+          <ha-svg-icon slot="icon" .path=${mdiMicrophone}></ha-svg-icon>
+          ${SearchMediaTypes.AUDIOBOOK_EPISODES}
+        </ha-dropdown-item>
+        <ha-dropdown-item .value=${SearchMediaTypes.SHOW_EPISODES} @click=${this.onSearchMediaTypeChanged} hide=${(!isSearchArgsUriShow)}>
+          <ha-svg-icon slot="icon" .path=${mdiMicrophone}></ha-svg-icon>
+          ${SearchMediaTypes.SHOW_EPISODES}
+        </ha-dropdown-item>
+      </ha-dropdown>
       `;
 
     // set scroll position (if needed).
@@ -347,7 +349,7 @@ export class SearchBrowser extends FavBrowserBase {
         height: 100%;
       }
 
-      /* <ha-md-button-menu> related styles */
+      /* <ha-dropdown> related styles */
       ha-assist-chip {
         --ha-assist-chip-container-shape: 10px;  /* 0px=square corner, 10px=rounded corner */
         --ha-assist-chip-container-color: var(--card-background-color);

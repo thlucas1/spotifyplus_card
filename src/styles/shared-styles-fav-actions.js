@@ -28,13 +28,13 @@ export const sharedStylesFavActions = css`
     color: white;
   }
 
-  /* style actions 3 dots ("...") <ha-md-button-menu> dropdown menu */
+  /* style actions 3 dots ("...") <ha-dropdown> dropdown menu */
   .actions-dropdown-menu {
     white-space: nowrap;
     display: inline-flex;
     flex-direction: row;
     justify-content: left;
-    vertical-align: text-top;
+    vertical-align: middle;
     --ha-select-height: 2.5rem;           /* ha dropdown control height */
     --mdc-menu-item-height: 2.5rem;       /* mdc dropdown list item height */
     --mdc-icon-button-size: 2.5rem;       /* mdc icon button size */
@@ -43,8 +43,8 @@ export const sharedStylesFavActions = css`
     --md-menu-item-one-line-container-height: 2.0rem;  /* menu item height */
   }
 
-  /* style actions 3 dots ("...") <ha-md-button-menu><ha-assist-chip> dropdown menu */
-  .actions-dropdown-menu > ha-md-button-menu > ha-assist-chip {
+  /* style actions 3 dots ("...") <ha-dropdown><ha-assist-chip> dropdown menu */
+  .actions-dropdown-menu > ha-dropdown > ha-assist-chip {
     /*--ha-assist-chip-container-color: var(--card-background-color);*/ /* transparent is default. */
     --ha-assist-chip-container-shape: 10px;     /* 0px=square corner, 10px=rounded corner */
     --md-assist-chip-trailing-space: 0px;       /* no label, so no trailing space */
@@ -98,7 +98,7 @@ export const sharedStylesFavActions = css`
   }
 
   *[hide="false"] {
-    display: block !important;
+    display: flex !important;
   }
 
   *[hide] {

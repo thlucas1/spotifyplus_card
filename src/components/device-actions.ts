@@ -70,19 +70,21 @@ class DeviceActions extends FavActionsBase {
 
     // define dropdown menu actions - artist.
     const actionsDeviceHtml = html`
-      <ha-md-button-menu slot="selection-bar" positioning="popover">
-        <ha-assist-chip slot="trigger">
-          <ha-svg-icon slot="icon" .path=${mdiDotsHorizontal}></ha-svg-icon>
-        </ha-assist-chip>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.DeviceConnect)}>
-          <ha-svg-icon slot="start" .path=${mdiLanConnect}></ha-svg-icon>
-          <div slot="headline">Connect / Login to this device</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.DeviceDisconnect)}>
-          <ha-svg-icon slot="start" .path=${mdiLanDisconnect}></ha-svg-icon>
-          <div slot="headline">Disconnect / Logout from this device</div>
-        </ha-md-menu-item>
-      </ha-md-button-menu>
+      <ha-dropdown slot="actionItems">
+        <ha-icon-button
+          slot="trigger"
+          .label="Device Actions"
+          .path=${mdiDotsHorizontal}
+        ></ha-icon-button>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.DeviceConnect)}>
+          <ha-svg-icon slot="icon" .path=${mdiLanConnect}></ha-svg-icon>
+          Connect / Login to this device
+        </ha-dropdown-item>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.DeviceDisconnect)}>
+          <ha-svg-icon slot="icon" .path=${mdiLanDisconnect}></ha-svg-icon>
+          Disconnect / Logout from this device
+        </ha-dropdown-item>
+      </ha-dropdown>
       `;
 
     // render html.

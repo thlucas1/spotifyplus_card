@@ -117,36 +117,38 @@ class PlaylistActions extends FavActionsBase {
 
     // define dropdown menu actions - playlist.
     const actionsPlaylistHtml = html`
-      <ha-md-button-menu slot="selection-bar" positioning="popover">
-        <ha-assist-chip slot="trigger">
-          <ha-svg-icon slot="icon" .path=${mdiDotsHorizontal}></ha-svg-icon>
-        </ha-assist-chip>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.PlaylistRecoverWebUI)}>
-          <ha-svg-icon slot="start" .path=${mdiBackupRestore}></ha-svg-icon>
-          <div slot="headline">Recover Playlist via Spotify Web UI</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.PlaylistDelete)}>
-          <ha-svg-icon slot="start" .path=${mdiTrashCanOutline}></ha-svg-icon>
-          <div slot="headline">Delete (unfollow) Playlist</div>
-        </ha-md-menu-item>
-        <ha-md-divider role="separator" tabindex="-1"></ha-md-divider>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.PlaylistUserPresetAdd)}>
-          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
-          <div slot="headline">Add Playlist to User Presets</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.PlaylistCopyPresetToClipboard)}>
-          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
-          <div slot="headline">Copy Playlist Preset Info to Clipboard</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.PlaylistCopyPresetJsonToClipboard)}>
-          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
-          <div slot="headline">Copy Playlist Preset JSON to Clipboard</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.PlaylistCopyUriToClipboard)}>
-          <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
-          <div slot="headline">Copy Playlist URI to Clipboard</div>
-        </ha-md-menu-item>
-      </ha-md-button-menu>
+      <ha-dropdown slot="actionItems">
+        <ha-icon-button
+          slot="trigger"
+          .label="Playlist Actions"
+          .path=${mdiDotsHorizontal}
+        ></ha-icon-button>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.PlaylistRecoverWebUI)}>
+          <ha-svg-icon slot="icon" .path=${mdiBackupRestore}></ha-svg-icon>
+          Recover Playlist via Spotify Web UI
+        </ha-dropdown-item>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.PlaylistDelete)}>
+          <ha-svg-icon slot="icon" .path=${mdiTrashCanOutline}></ha-svg-icon>
+          Delete (unfollow) Playlist
+        </ha-dropdown-item>
+        <wa-divider></wa-divider>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.PlaylistUserPresetAdd)}>
+          <ha-svg-icon slot="icon" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          Add Playlist to User Presets
+        </ha-dropdown-item>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.PlaylistCopyPresetToClipboard)}>
+          <ha-svg-icon slot="icon" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          Copy Playlist Preset Info to Clipboard
+        </ha-dropdown-item>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.PlaylistCopyPresetJsonToClipboard)}>
+          <ha-svg-icon slot="icon" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          Copy Playlist Preset JSON to Clipboard
+        </ha-dropdown-item>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.PlaylistCopyUriToClipboard)}>
+          <ha-svg-icon slot="icon" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
+          Copy Playlist URI to Clipboard
+        </ha-dropdown-item>
+      </ha-dropdown>
       `;
 
     // render html.
@@ -155,7 +157,7 @@ class PlaylistActions extends FavActionsBase {
         ${this.alertError ? html`<ha-alert alert-type="error" dismissable @alert-dismissed-clicked=${this.alertErrorClear}>${this.alertError}</ha-alert>` : ""}
         ${this.alertInfo ? html`<ha-alert alert-type="info" dismissable @alert-dismissed-clicked=${this.alertInfoClear}>${this.alertInfo}</ha-alert>` : ""}
         <div class="media-info-content">
-          <div class="img" style="background:url(${this.mediaItem.image_url});"></div>
+          <div class="img copy2cb" style="background:url(${this.mediaItem.image_url});" @click=${() => copyTextToClipboard(this.mediaItem.image_url || '')}></div>
           <div class="media-info-details">
 
             <div class="media-info-text-ms-c">

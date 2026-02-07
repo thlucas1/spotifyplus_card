@@ -146,57 +146,61 @@ export class PlayerBodyShow extends PlayerBodyBase {
 
     // define dropdown menu actions - show.
     const actionsShowHtml = html`
-      <ha-md-button-menu slot="selection-bar" positioning="popover">
-        <ha-assist-chip slot="trigger">
-          <ha-svg-icon slot="icon" .path=${mdiDotsHorizontal}></ha-svg-icon>
-        </ha-assist-chip>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ShowSearchEpisodes)} hide=${this.hideSearchType(SearchMediaTypes.EPISODES)}>
-          <ha-svg-icon slot="start" .path=${mdiMicrophone}></ha-svg-icon>
-          <div slot="headline">Search for Show Episodes</div>
-        </ha-md-menu-item>
-        <ha-md-divider role="separator" tabindex="-1"></ha-md-divider>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ShowUserPresetAdd)}>
-          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
-          <div slot="headline">Add Show to User Presets</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ShowCopyPresetToClipboard)}>
-          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
-          <div slot="headline">Copy Show Preset Info to Clipboard</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ShowCopyPresetJsonToClipboard)}>
-          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
-          <div slot="headline">Copy Show Preset JSON to Clipboard</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ShowCopyUriToClipboard)}>
-          <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
-          <div slot="headline">Copy Show URI to Clipboard</div>
-        </ha-md-menu-item>
-      </ha-md-button-menu>
+      <ha-dropdown slot="actionItems">
+        <ha-icon-button
+          slot="trigger"
+          .label="Show Actions"
+          .path=${mdiDotsHorizontal}
+        ></ha-icon-button>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.ShowSearchEpisodes)} hide=${this.hideSearchType(SearchMediaTypes.EPISODES)}>
+          <ha-svg-icon slot="icon" .path=${mdiMicrophone}></ha-svg-icon>
+          Search for Show Episodes
+        </ha-dropdown-item>
+        <wa-divider></wa-divider>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.ShowUserPresetAdd)}>
+          <ha-svg-icon slot="icon" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          Add Show to User Presets
+        </ha-dropdown-item>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.ShowCopyPresetToClipboard)}>
+          <ha-svg-icon slot="icon" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          Copy Show Preset Info to Clipboard
+        </ha-dropdown-item>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.ShowCopyPresetJsonToClipboard)}>
+          <ha-svg-icon slot="icon" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          Copy Show Preset JSON to Clipboard
+        </ha-dropdown-item>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.ShowCopyUriToClipboard)}>
+          <ha-svg-icon slot="icon" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
+          Copy Show URI to Clipboard
+        </ha-dropdown-item>
+      </ha-dropdown>
       `;
 
     // define dropdown menu actions - episode.
     const actionsEpisodeHtml = html`
-      <ha-md-button-menu slot="selection-bar" positioning="popover">
-        <ha-assist-chip slot="trigger">
-          <ha-svg-icon slot="icon" .path=${mdiDotsHorizontal}></ha-svg-icon>
-        </ha-assist-chip>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.EpisodeUserPresetAdd)}>
-          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
-          <div slot="headline">Add Episode to User Presets</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.EpisodeCopyPresetToClipboard)}>
-          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
-          <div slot="headline">Copy Episode Preset Info to Clipboard</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.EpisodeCopyPresetJsonToClipboard)}>
-          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
-          <div slot="headline">Copy Episode Preset JSON to Clipboard</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.EpisodeCopyUriToClipboard)}>
-          <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
-          <div slot="headline">Copy Episode URI to Clipboard</div>
-        </ha-md-menu-item>
-      </ha-md-button-menu>
+      <ha-dropdown slot="actionItems">
+        <ha-icon-button
+          slot="trigger"
+          .label="Episode Actions"
+          .path=${mdiDotsHorizontal}
+        ></ha-icon-button>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.EpisodeUserPresetAdd)}>
+          <ha-svg-icon slot="icon" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          Add Episode to User Presets
+        </ha-dropdown-item>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.EpisodeCopyPresetToClipboard)}>
+          <ha-svg-icon slot="icon" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          Copy Episode Preset Info to Clipboard
+        </ha-dropdown-item>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.EpisodeCopyPresetJsonToClipboard)}>
+          <ha-svg-icon slot="icon" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          Copy Episode Preset JSON to Clipboard
+        </ha-dropdown-item>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.EpisodeCopyUriToClipboard)}>
+          <ha-svg-icon slot="icon" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
+          Copy Episode URI to Clipboard
+        </ha-dropdown-item>
+      </ha-dropdown>
       `;
 
     const actionEpisodeSummary = html`
@@ -241,9 +245,14 @@ export class PlayerBodyShow extends PlayerBodyBase {
               ></ha-icon-button>
             </div>
             <div class="grid-action-info-hdr-s">Show URI</div>
-            <div class="grid-action-info-text-s colspan-r2-c2 copy2cb" @click=${copyToClipboard}>${this.episode?.show.uri}</div>
+            <div class="grid-action-info-text-s colspan-c2-end copy2cb" @click=${copyToClipboard}>${this.episode?.show.uri}</div>
+            <div class="grid-action-info-hdr-s">Art URL</div>
+            <div class="grid-action-info-text-s colspan-c2-end copy2cb" @click=${copyToClipboard}>${this.episode?.show.image_url}</div>
             <div class="grid-action-info-hdr-s">Episode URI</div>
-            <div class="grid-action-info-text-s colspan-r3-c2 copy2cb" @click=${copyToClipboard}>${this.episode?.uri}</div>
+            <div class="grid-action-info-text-s colspan-c2-end copy2cb" @click=${copyToClipboard}>${this.episode?.uri}</div>
+            <div class="grid-action-info-hdr-s">Art URL</div>
+            <div class="grid-action-info-text-s colspan-c2-end copy2cb" @click=${copyToClipboard}>${this.episode?.image_url}</div>
+
           </div>
           <div style="padding-top: 10px;">
             <div class="media-info-text-s" .innerHTML="${unescapeHtml(this.episode?.html_description || "")}"></div>
@@ -289,16 +298,9 @@ export class PlayerBodyShow extends PlayerBodyBase {
         justify-content: left;
       }
 
-      .colspan-r2-c2 {
-        grid-row: 2 / 2;    /* grid row 2 */
+      .colspan-c2-end {
         grid-column: 2 / 9; /* grid columns 2 thru 8 */
       }
-
-      .colspan-r3-c2 {
-        grid-row: 3 / 3;    /* grid row 3 */
-        grid-column: 2 / 9; /* grid columns 2 thru 8 */
-      }
-
     `
     ];
   }

@@ -4,7 +4,7 @@ import { DEBUG_APP_NAME } from '../constants';
 const debuglog = Debug(DEBUG_APP_NAME + ":track-fav-browser");
 
 // lovelace card imports.
-import { html, TemplateResult } from 'lit';
+import { html, PropertyValues, TemplateResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
 
 // our imports.
@@ -124,6 +124,27 @@ export class TrackFavBrowser extends FavBrowserBase {
         </div>
       </div>
     `;
+  }
+
+
+  /**
+   * Called when the element has rendered for the first time. Called once in the
+   * lifetime of an element. Useful for one-time setup work that requires access to
+   * the DOM.
+   */
+  protected firstUpdated(changedProperties: PropertyValues): void {
+
+    // ensure we are NOT editing the card configuration!
+    // this is because the `firstUpdated` method will fire every time the configuration changes!
+    // if we already updated the media list, then don't do it again.
+    if (!this.isCardInEditPreview) {
+
+      // set auto-refresh media list flag prior to calling base-class method.
+      this.isMediaListRefreshedOnSectionEntry = this.config.trackFavBrowserItemsRefreshOnEntry || false;
+    }
+
+    // invoke base class method.
+    super.firstUpdated(changedProperties);
   }
 
 

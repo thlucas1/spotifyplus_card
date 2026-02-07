@@ -204,147 +204,153 @@ export class PlayerBodyTrack extends PlayerBodyBase {
 
     // define dropdown menu actions - track.
     const actionsTrackHtml = html`
-      <ha-md-button-menu slot="selection-bar" positioning="popover">
-        <ha-assist-chip slot="trigger">
-          <ha-svg-icon slot="icon" .path=${mdiDotsHorizontal}></ha-svg-icon>
-        </ha-assist-chip>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.TrackSearchPlaylists)} hide=${this.hideSearchType(SearchMediaTypes.PLAYLISTS)}>
-          <ha-svg-icon slot="start" .path=${mdiPlaylistPlay}></ha-svg-icon>
-          <div slot="headline">Search Playlists for Track</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.TrackSearchRadio)} hide=${this.hideSearchType(SearchMediaTypes.PLAYLISTS)}>
-          <ha-svg-icon slot="start" .path=${mdiRadio}></ha-svg-icon>
-          <div slot="headline">Search for Track Radio</div>
-        </ha-md-menu-item>
-        <ha-md-divider role="separator" tabindex="-1"></ha-md-divider>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.TrackUserPresetAdd)}>
-          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
-          <div slot="headline">Add Track to User Presets</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.TrackCopyPresetToClipboard)}>
-          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
-          <div slot="headline">Copy Track Preset Info to Clipboard</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.TrackCopyPresetJsonToClipboard)}>
-          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
-          <div slot="headline">Copy Track Preset JSON to Clipboard</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.TrackCopyUriToClipboard)}>
-          <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
-          <div slot="headline">Copy Track URI to Clipboard</div>
-        </ha-md-menu-item>
-      </ha-md-button-menu>
+      <ha-dropdown slot="actionItems">
+        <ha-icon-button
+          slot="trigger"
+          .label="Track Actions"
+          .path=${mdiDotsHorizontal}
+        ></ha-icon-button>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.TrackSearchPlaylists)} hide=${this.hideSearchType(SearchMediaTypes.PLAYLISTS)}>
+          <ha-svg-icon slot="icon" .path=${mdiPlaylistPlay}></ha-svg-icon>
+          Search Playlists for Track
+        </ha-dropdown-item>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.TrackSearchRadio)} hide=${this.hideSearchType(SearchMediaTypes.PLAYLISTS)}>
+          <ha-svg-icon slot="icon" .path=${mdiRadio}></ha-svg-icon>
+          Search for Track Radio
+        </ha-dropdown-item>
+        <wa-divider></wa-divider>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.TrackUserPresetAdd)}>
+          <ha-svg-icon slot="icon" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          Add Track to User Presets
+        </ha-dropdown-item>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.TrackCopyPresetToClipboard)}>
+          <ha-svg-icon slot="icon" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          Copy Track Preset Info to Clipboard
+        </ha-dropdown-item>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.TrackCopyPresetJsonToClipboard)}>
+          <ha-svg-icon slot="icon" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          Copy Track Preset JSON to Clipboard
+        </ha-dropdown-item>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.TrackCopyUriToClipboard)}>
+          <ha-svg-icon slot="icon" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
+          Copy Track URI to Clipboard
+        </ha-dropdown-item>
+      </ha-dropdown>
       `;
 
     // define dropdown menu actions - album.
     const actionsAlbumHtml = html`
-      <ha-md-button-menu slot="selection-bar" positioning="popover">
-        <ha-assist-chip slot="trigger">
-          <ha-svg-icon slot="icon" .path=${mdiDotsHorizontal}></ha-svg-icon>
-        </ha-assist-chip>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.AlbumPlay)}>
-          <ha-svg-icon slot="start" .path=${mdiPlay}></ha-svg-icon>
-          <div slot="headline">Play Album</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.AlbumPlayTrackFavorites)}>
-          <ha-svg-icon slot="start" .path=${mdiPlaylistPlay}></ha-svg-icon>
-          <div slot="headline">Play Favorite Tracks from this Album</div>
-        </ha-md-menu-item>
-        <ha-md-divider role="separator" tabindex="-1"></ha-md-divider>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.AlbumShowTracks)} hide=${this.hideSearchType(SearchMediaTypes.TRACKS)}>
-          <ha-svg-icon slot="start" .path=${mdiMusic}></ha-svg-icon>
-          <div slot="headline">Show Album Tracks</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.AlbumSearchRadio)} hide=${this.hideSearchType(SearchMediaTypes.PLAYLISTS)}>
-          <ha-svg-icon slot="start" .path=${mdiRadio}></ha-svg-icon>
-          <div slot="headline">Search for Album Radio</div>
-        </ha-md-menu-item>
-        <ha-md-divider role="separator" tabindex="-1"></ha-md-divider>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.AlbumUserPresetAdd)}>
-          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
-          <div slot="headline">Add Album to User Presets</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.AlbumCopyPresetToClipboard)}>
-          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
-          <div slot="headline">Copy Album Preset Info to Clipboard</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.AlbumCopyPresetJsonToClipboard)}>
-          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
-          <div slot="headline">Copy Album Preset JSON to Clipboard</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.AlbumCopyUriToClipboard)}>
-          <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
-          <div slot="headline">Copy Album URI to Clipboard</div>
-        </ha-md-menu-item>
-      </ha-md-button-menu>
+      <ha-dropdown slot="actionItems">
+        <ha-icon-button
+          slot="trigger"
+          .label="Album Actions"
+          .path=${mdiDotsHorizontal}
+        ></ha-icon-button>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.AlbumPlay)}>
+          <ha-svg-icon slot="icon" .path=${mdiPlay}></ha-svg-icon>
+          Play Album
+        </ha-dropdown-item>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.AlbumPlayTrackFavorites)}>
+          <ha-svg-icon slot="icon" .path=${mdiPlaylistPlay}></ha-svg-icon>
+          Play Favorite Tracks from this Album
+        </ha-dropdown-item>
+        <wa-divider></wa-divider>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.AlbumShowTracks)} hide=${this.hideSearchType(SearchMediaTypes.TRACKS)}>
+          <ha-svg-icon slot="icon" .path=${mdiMusic}></ha-svg-icon>
+          Show Album Tracks
+        </ha-dropdown-item>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.AlbumSearchRadio)} hide=${this.hideSearchType(SearchMediaTypes.PLAYLISTS)}>
+          <ha-svg-icon slot="icon" .path=${mdiRadio}></ha-svg-icon>
+          Search for Album Radio
+        </ha-dropdown-item>
+        <wa-divider></wa-divider>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.AlbumUserPresetAdd)}>
+          <ha-svg-icon slot="icon" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          Add Album to User Presets
+        </ha-dropdown-item>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.AlbumCopyPresetToClipboard)}>
+          <ha-svg-icon slot="icon" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          Copy Album Preset Info to Clipboard
+        </ha-dropdown-item>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.AlbumCopyPresetJsonToClipboard)}>
+          <ha-svg-icon slot="icon" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          Copy Album Preset JSON to Clipboard
+        </ha-dropdown-item>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.AlbumCopyUriToClipboard)}>
+          <ha-svg-icon slot="icon" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
+          Copy Album URI to Clipboard
+        </ha-dropdown-item>
+      </ha-dropdown>
       `;
 
     // define dropdown menu actions - artist.
     const actionsArtistHtml = html`
-      <ha-md-button-menu slot="selection-bar" positioning="popover">
-        <ha-assist-chip slot="trigger">
-          <ha-svg-icon slot="icon" .path=${mdiDotsHorizontal}></ha-svg-icon>
-        </ha-assist-chip>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistPlayTrackFavorites)}>
-          <ha-svg-icon slot="start" .path=${mdiPlaylistPlay}></ha-svg-icon>
-          <div slot="headline">Play Favorite Tracks from this Artist</div>
-        </ha-md-menu-item>
-        <ha-md-divider role="separator" tabindex="-1"></ha-md-divider>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistSearchPlaylists)} hide=${this.hideSearchType(SearchMediaTypes.PLAYLISTS)}>
-          <ha-svg-icon slot="start" .path=${mdiPlaylistPlay}></ha-svg-icon>
-          <div slot="headline">Search Playlists for Artist</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistSearchTracks)} hide=${this.hideSearchType(SearchMediaTypes.TRACKS)}>
-          <ha-svg-icon slot="start" .path=${mdiMusic}></ha-svg-icon>
-          <div slot="headline">Search Tracks for Artist</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistSearchRadio)} hide=${this.hideSearchType(SearchMediaTypes.PLAYLISTS)}>
-          <ha-svg-icon slot="start" .path=${mdiRadio}></ha-svg-icon>
-          <div slot="headline">Search for Artist Radio</div>
-        </ha-md-menu-item>
-        <ha-md-divider role="separator" tabindex="-1"></ha-md-divider>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistShowTopTracks)} hide=${this.hideSearchType(SearchMediaTypes.TRACKS)}>
-          <ha-svg-icon slot="start" .path=${mdiMusic}></ha-svg-icon>
-          <div slot="headline">Show Artist Top Tracks</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistShowAlbums)} hide=${this.hideSearchType(SearchMediaTypes.ALBUMS)}>
-          <ha-svg-icon slot="start" .path=${mdiAlbum}></ha-svg-icon>
-          <div slot="headline">Show Artist Albums</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistShowAlbumsCompilation)} hide=${this.hideSearchType(SearchMediaTypes.ALBUMS)}>
-          <ha-svg-icon slot="start" .path=${mdiAlbum}></ha-svg-icon>
-          <div slot="headline">Show Artist Albums Compilations</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistShowAlbumsSingle)} hide=${this.hideSearchType(SearchMediaTypes.ALBUMS)}>
-          <ha-svg-icon slot="start" .path=${mdiAlbum}></ha-svg-icon>
-          <div slot="headline">Show Artist Albums Singles</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistShowAlbumsAppearsOn)} hide=${this.hideSearchType(SearchMediaTypes.ALBUMS)}>
-          <ha-svg-icon slot="start" .path=${mdiAlbum}></ha-svg-icon>
-          <div slot="headline">Show Artist Albums AppearsOn</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistShowRelatedArtists)} hide=${this.hideSearchType(SearchMediaTypes.ARTISTS)}>
-          <ha-svg-icon slot="start" .path=${mdiAccountMusic}></ha-svg-icon>
-          <div slot="headline">Show Related Artists</div>
-        </ha-md-menu-item>
-        <ha-md-divider role="separator" tabindex="-1"></ha-md-divider>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistUserPresetAdd)}>
-          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
-          <div slot="headline">Add Artist to User Presets</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistCopyPresetToClipboard)}>
-          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
-          <div slot="headline">Copy Artist Preset Info to Clipboard</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistCopyPresetJsonToClipboard)}>
-          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
-          <div slot="headline">Copy Artist Preset JSON to Clipboard</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ArtistCopyUriToClipboard)}>
-          <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
-          <div slot="headline">Copy Artist URI to Clipboard</div>
-        </ha-md-menu-item>
-      </ha-md-button-menu>
+      <ha-dropdown slot="actionItems">
+        <ha-icon-button
+          slot="trigger"
+          .label="Artist Actions"
+          .path=${mdiDotsHorizontal}
+        ></ha-icon-button>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.ArtistPlayTrackFavorites)}>
+          <ha-svg-icon slot="icon" .path=${mdiPlaylistPlay}></ha-svg-icon>
+          Play Favorite Tracks from this Artist
+        </ha-dropdown-item>
+        <wa-divider></wa-divider>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.ArtistSearchPlaylists)} hide=${this.hideSearchType(SearchMediaTypes.PLAYLISTS)}>
+          <ha-svg-icon slot="icon" .path=${mdiPlaylistPlay}></ha-svg-icon>
+          Search Playlists for Artist
+        </ha-dropdown-item>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.ArtistSearchTracks)} hide=${this.hideSearchType(SearchMediaTypes.TRACKS)}>
+          <ha-svg-icon slot="icon" .path=${mdiMusic}></ha-svg-icon>
+          Search Tracks for Artist
+        </ha-dropdown-item>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.ArtistSearchRadio)} hide=${this.hideSearchType(SearchMediaTypes.PLAYLISTS)}>
+          <ha-svg-icon slot="icon" .path=${mdiRadio}></ha-svg-icon>
+          Search for Artist Radio
+        </ha-dropdown-item>
+        <wa-divider></wa-divider>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.ArtistShowTopTracks)} hide=${this.hideSearchType(SearchMediaTypes.TRACKS)}>
+          <ha-svg-icon slot="icon" .path=${mdiMusic}></ha-svg-icon>
+          Show Artist Top Tracks
+        </ha-dropdown-item>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.ArtistShowAlbums)} hide=${this.hideSearchType(SearchMediaTypes.ALBUMS)}>
+          <ha-svg-icon slot="icon" .path=${mdiAlbum}></ha-svg-icon>
+          Show Artist Albums
+        </ha-dropdown-item>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.ArtistShowAlbumsCompilation)} hide=${this.hideSearchType(SearchMediaTypes.ALBUMS)}>
+          <ha-svg-icon slot="icon" .path=${mdiAlbum}></ha-svg-icon>
+          Show Artist Albums Compilations
+        </ha-dropdown-item>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.ArtistShowAlbumsSingle)} hide=${this.hideSearchType(SearchMediaTypes.ALBUMS)}>
+          <ha-svg-icon slot="icon" .path=${mdiAlbum}></ha-svg-icon>
+          Show Artist Albums Singles
+        </ha-dropdown-item>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.ArtistShowAlbumsAppearsOn)} hide=${this.hideSearchType(SearchMediaTypes.ALBUMS)}>
+          <ha-svg-icon slot="icon" .path=${mdiAlbum}></ha-svg-icon>
+          Show Artist Albums AppearsOn
+        </ha-dropdown-item>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.ArtistShowRelatedArtists)} hide=${this.hideSearchType(SearchMediaTypes.ARTISTS)}>
+          <ha-svg-icon slot="icon" .path=${mdiAccountMusic}></ha-svg-icon>
+          Show Related Artists
+        </ha-dropdown-item>
+        <wa-divider></wa-divider>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.ArtistUserPresetAdd)}>
+          <ha-svg-icon slot="icon" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          Add Artist to User Presets
+        </ha-dropdown-item>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.ArtistCopyPresetToClipboard)}>
+          <ha-svg-icon slot="icon" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          Copy Artist Preset Info to Clipboard
+        </ha-dropdown-item>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.ArtistCopyPresetJsonToClipboard)}>
+          <ha-svg-icon slot="icon" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          Copy Artist Preset JSON to Clipboard
+        </ha-dropdown-item>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.ArtistCopyUriToClipboard)}>
+          <ha-svg-icon slot="icon" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
+          Copy Artist URI to Clipboard
+        </ha-dropdown-item>
+      </ha-dropdown>
       `;
 
     const actionTrackSummary = html`
@@ -413,12 +419,15 @@ export class PlayerBodyTrack extends PlayerBodyBase {
             </div>
 
             <div class="grid-action-info-hdr-s">URI</div>
-            <div class="grid-action-info-text-s colspan-r3-c2 copy2cb" @click=${copyToClipboard}>${this.track?.uri}</div>
+            <div class="grid-action-info-text-s colspan-c2-end copy2cb" @click=${copyToClipboard}>${this.track?.uri}</div>
 
             ${this.track?.is_linked_from ? html`
               <div class="grid-action-info-hdr-s">Origin URI</div>
-              <div class="grid-action-info-text-s colspan-r4-c2 copy2cb" @click=${copyToClipboard}>${this.track?.uri_origin}</div>
+              <div class="grid-action-info-text-s colspan-c2-end copy2cb" @click=${copyToClipboard}>${this.track?.uri_origin}</div>
             ` : ""}
+
+            <div class="grid-action-info-hdr-s">Art URL</div>
+            <div class="grid-action-info-text-s colspan-c2-end copy2cb" @click=${copyToClipboard}>${this.track?.image_url}</div>
 
           </div>
         </div>
@@ -458,13 +467,7 @@ export class PlayerBodyTrack extends PlayerBodyBase {
         justify-content: left;
       }
 
-      .colspan-r3-c2 {
-        grid-row: 3 / 3;    /* grid row 3 */
-        grid-column: 2 / 9; /* grid columns 2 thru 8 */
-      }
-
-      .colspan-r4-c2 {
-        grid-row: 4 / 4;    /* grid row 4 */
+      .colspan-c2-end {
         grid-column: 2 / 9; /* grid columns 2 thru 8 */
       }
     `

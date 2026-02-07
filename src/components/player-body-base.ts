@@ -79,7 +79,7 @@ export class PlayerBodyBase extends AlertUpdatesBase {
     // invoke base class method.
     super.firstUpdated(changedProperties);
 
-    // ensure "<search-input-outlined>" and "<ha-md-button-menu>" HA customElements are
+    // ensure "<search-input-outlined>" and "<ha-dropdown>" HA customElements are
     // loaded so that the controls are rendered properly.
     (async () => await loadHaFormLazyControls())();
 

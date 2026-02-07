@@ -68,7 +68,7 @@ export class DeviceBrowser extends FavBrowserBase {
 
     // load default # of items per row to display.
     if (!this.favBrowserItemsPerRow) {
-      this.favBrowserItemsPerRow = this.config.deviceFavBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
+      this.favBrowserItemsPerRow = this.config.deviceBrowserItemsPerRow || EDITOR_DEFAULT_BROWSER_ITEMS_PER_ROW;
     }
 
     // render html.
@@ -127,26 +127,17 @@ export class DeviceBrowser extends FavBrowserBase {
    */
   protected firstUpdated(changedProperties: PropertyValues): void {
 
-    // ** IMPORTANT **
-    // if editing the card in the configuration editor ...
-    // this method will fire every time the configuration changes!  for example, the
-    // method will execute for every keystroke if you are typing something into a 
-    // configuration editor field!
+    // ensure we are NOT editing the card configuration!
+    // this is because the `firstUpdated` method will fire every time the configuration changes!
+    // if we already updated the media list, then don't do it again.
+    if (!this.isCardInEditPreview) {
+
+      // set auto-refresh media list flag prior to calling base-class method (always refresh devices).
+      this.isMediaListRefreshedOnSectionEntry = true;
+    }
 
     // invoke base class method.
     super.firstUpdated(changedProperties);
-
-    // determine if card configuration is being edited.
-    if (!this.isCardInEditPreview) {
-
-      if (debuglog.enabled) {
-        debuglog("firstUpdated - updating mediaList on form entry");
-      }
-
-      // auto-refresh device list every time we display the section (if not in edit mode).
-      this.updateMediaList(this.player);
-    }
-
   }
 
 

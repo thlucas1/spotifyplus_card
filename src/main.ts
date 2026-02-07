@@ -2,6 +2,9 @@
 import { CARD_VERSION } from './constants';
 import './card';
 
+/* import HA WebAwesome bundle */
+import '@home-assistant/webawesome/dist/webawesome.js';
+
 // Good source of help documentation on HA custom cards:
 // https://gist.github.com/thomasloven/1de8c62d691e754f95b023105fe4b74b
 

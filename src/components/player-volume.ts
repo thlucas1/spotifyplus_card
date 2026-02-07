@@ -1,5 +1,6 @@
 // lovelace card imports.
 import { css, html, TemplateResult, nothing, unsafeCSS } from 'lit';
+import { styleMap, StyleInfo } from 'lit-html/directives/style-map.js';
 import { property } from 'lit/decorators.js';
 import {
   mdiPower,
@@ -102,7 +103,7 @@ class Volume extends AlertUpdatesBase {
           <ha-icon-button .path=${mdiVolumePlus} @click=${() => this.onClickAction(VOLUME_UP)} hide=${this.hideFeature(VOLUME_STEP)} label="Increase"></ha-icon-button>
           ` : html``}
         <ha-icon-button .path=${mdiPower} @click=${() => this.onClickAction(TURN_ON)}  hide=${this.hideFeature(TURN_ON)}  label="Turn On"  style=${this.styleIcon(colorPower)}></ha-icon-button>
-        <ha-icon-button .path=${mdiPower} @click=${() => this.onClickAction(TURN_OFF)} hide=${this.hideFeature(TURN_OFF)} label="Turn Off"></ha-icon-button>
+        <ha-icon-button .path=${mdiPower} @click=${() => this.onClickAction(TURN_OFF)} hide=${this.hideFeature(TURN_OFF)} label="Turn Off" style=${this.styleIcon()}></ha-icon-button>
       </div>
     `;
   }
@@ -340,14 +341,23 @@ class Volume extends AlertUpdatesBase {
    * 
    * @param isToggled True if the icon is in a toggle state; otherwise false if icon is in a non-toggled state.
    */
-  private styleIcon(isToggled: boolean | undefined): string | undefined {
+  private styleIcon(isToggled: boolean | undefined | null = null) {
+
+    // build style info object.
+    const styleInfo: StyleInfo = <StyleInfo>{};
+
+    const playerControlsIconMargin = this.config.playerControlsIconMargin;
+    if (playerControlsIconMargin) {
+      styleInfo['margin'] = `${playerControlsIconMargin}`;
+    }
 
     // if button is toggled, then use the icon toggle color; 
     // otherwise, default to regular icon color.
     if (isToggled) {
-      return `color: var(--spc-player-controls-icon-toggle-color, ${PLAYER_CONTROLS_ICON_TOGGLE_COLOR_DEFAULT})`;
+      styleInfo['color'] = `var(--spc-player-controls-icon-toggle-color, ${PLAYER_CONTROLS_ICON_TOGGLE_COLOR_DEFAULT})`;
     }
-    return undefined;
+
+    return styleMap(styleInfo);
   }
 
 

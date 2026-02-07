@@ -483,7 +483,7 @@ export class MediaBrowserBase extends LitElement {
   /**
    * Style definition used to style a media browser item background image.
    */
-  protected styleMediaBrowserItemBackgroundImage(thumbnail: string, index: number) {
+  protected styleMediaBrowserItemBackgroundImage(thumbnail: string | undefined, index: number) {
 
     let bgSize = '100%';
     if (this.section == Section.DEVICES) {
@@ -492,7 +492,7 @@ export class MediaBrowserBase extends LitElement {
 
     // if thumbnail contains an svg icon, then use a mask; otherwise, use a background-image.
     // this allows the user to theme the svg icon color.
-    if (thumbnail.includes("svg+xml")) {
+    if (thumbnail?.includes("svg+xml")) {
       return html`
       <style>
         .button:nth-of-type(${index + 1}) .thumbnail {

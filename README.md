@@ -65,11 +65,19 @@ Here's a quick overview on what the card can look like.  The card is highly cust
 
 ## HACS Installation Instructions (recommended)
 
-- On your Home Assistant sidebar menu, go to HACS > Frontend
+Use the following link to open (and add) the custom repository in HACS:  
+
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=thlucas1&repository=spotifyplus_card&category=Plugin)
+
+If the above does not work for you, then use the following steps to add the custom repository manually.
+- On your Home Assistant sidebar menu, go to HACS > FrontendIf the above does not work for you, then use the following steps to add the custom repository manually.
 - Click on the 3-dot overflow menu in the upper right, and select `custom repositories` item.
 - Copy / paste `https://github.com/thlucas1/spotifyplus_card` in the Repository textbox and select `Dashboard` for the category entry.
 - Click on `Add` to add the custom repository.
 - You can then click on the `SpotifyPlus Card` repository entry (you may need to filter your list first to find the new entry).
+
+Note at this point you have only added the repository to the HACS Repository List.  Now it's time to actually download the contents of the repository itself.  You should now be displaying the repository details, which will also display a `Download` button (lower right corner) that can be used to download the repository contents.  
+
 - Click on `download` to start the download. It will install the card to your `/config/www/community/spotifyplus_card` directory.
 - Go back on your dashboard and click on the icon at the right top corner then on Edit dashboard.
 - You can now click on Add card in the bottom right corner and search for "Custom: SpotifyPlus Card".

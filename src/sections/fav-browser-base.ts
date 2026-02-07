@@ -269,6 +269,26 @@ export class FavBrowserBase extends AlertUpdatesBase {
       /* extra styles not defined in sharedStylesFavBrowser would go here. */
 
       /* you can also copy this method into any inheriting class to apply fav-browser specific styles. */
+
+
+      search-input-outlined {
+        color: orange;
+        font-size: 16px;
+      }
+
+      search-input-outlined::part(input) {
+        color: orange;
+        font-size: 20px;
+      }
+
+      search-input-outlined::part(input)::placeholder {
+        color: orange;
+        font-size: 24px;
+      }
+
+      search-input-outlined ha-svg-icon {
+        color: var(--secondary-text-color);
+      }
       `
     ];
   }
@@ -331,15 +351,16 @@ export class FavBrowserBase extends AlertUpdatesBase {
     // invoke base class method.
     super.firstUpdated(changedProperties);
 
-    //if (debuglog.enabled) {
-    //  debuglog("%cfirstUpdated - changedProperties keys for mediaType %s:\n- %s",
-    //    "color: yellow;",
-    //    JSON.stringify(this.mediaType),
-    //    JSON.stringify(Array.from(changedProperties.keys())),
-    //  );
-    //}
+    if (debuglog.enabled) {
+      debuglog("%cfirstUpdated (base) - isMediaListRefreshedOnSectionEntry = %s\n- changedProperties keys for mediaType %s:\n- %s",
+        "color: yellow;",
+        JSON.stringify(this.isMediaListRefreshedOnSectionEntry),
+        JSON.stringify(this.mediaType),
+        JSON.stringify(Array.from(changedProperties.keys())),
+      );
+    }
 
-    // ensure "<search-input-outlined>" and "<ha-md-button-menu>" HA customElements are
+    // ensure "<search-input-outlined>" and "<ha-dropdown>" HA customElements are
     // loaded so that the controls are rendered properly.
     (async () => await loadHaFormLazyControls())();
 
@@ -349,7 +370,7 @@ export class FavBrowserBase extends AlertUpdatesBase {
     this.cacheKeyBase = DOMAIN_SPOTIFYPLUS + "_" + (this.player.attributes.sp_user_id || "nospuserid") + "_"
 
     // are we refreshing the media list on section entry?
-    if (this.isMediaListRefreshedOnSectionEntry) {
+    if (this.isMediaListRefreshedOnSectionEntry == true) {
 
       // ensure we are NOT editing the card configuration!
       // this is because the `firstUpdated` method will fire every time the configuration changes!

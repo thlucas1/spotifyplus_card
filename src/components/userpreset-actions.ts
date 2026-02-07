@@ -1,6 +1,7 @@
 // lovelace card imports.
 import { css, html, TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
+import copyTextToClipboard from 'copy-text-to-clipboard';
 import {
   mdiDotsHorizontal,
   mdiTrashCan,
@@ -56,14 +57,16 @@ class UserPresetActions extends FavActionsBase {
 
     // define dropdown menu actions - userpreset.
     const actionsUserPresetHtml = html`
-      <ha-md-button-menu slot="selection-bar" positioning="popover">
-        <ha-assist-chip slot="trigger">
-          <ha-svg-icon slot="icon" .path=${mdiDotsHorizontal}></ha-svg-icon>
-        </ha-assist-chip>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.UserPresetRemove)}>
-          <ha-svg-icon slot="start" .path=${mdiTrashCan}></ha-svg-icon>
-          <div slot="headline">Remove User Preset Item</div>
-        </ha-md-menu-item>
+      <ha-dropdown slot="actionItems">
+        <ha-icon-button
+          slot="trigger"
+          .label="UserPreset Actions"
+          .path=${mdiDotsHorizontal}
+        ></ha-icon-button>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.UserPresetRemove)}>
+          <ha-svg-icon slot="icon" .path=${mdiTrashCan}></ha-svg-icon>
+          Remove User Preset Item
+        </ha-dropdown-item>
       </ha-md-button-menu>
       `;
 
@@ -73,7 +76,7 @@ class UserPresetActions extends FavActionsBase {
         ${this.alertError ? html`<ha-alert alert-type="error" dismissable @alert-dismissed-clicked=${this.alertErrorClear}>${this.alertError}</ha-alert>` : ""}
         ${this.alertInfo ? html`<ha-alert alert-type="info" dismissable @alert-dismissed-clicked=${this.alertInfoClear}>${this.alertInfo}</ha-alert>` : ""}
         <div class="media-info-content">
-          <div class="img" style="background:url(${this.mediaItem.image_url});"></div>
+          <div class="img copy2cb" style="background:url(${this.mediaItem.image_url});" @click=${() => copyTextToClipboard(this.mediaItem.image_url || '')}></div>
           <div class="media-info-details">
             <div class="grid userpreset-info-grid">
               <div class="grid-action-info-hdr-s">Name</div>

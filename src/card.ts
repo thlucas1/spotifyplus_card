@@ -41,7 +41,8 @@ import {
   BRAND_LOGO_IMAGE_BASE64,
   BRAND_LOGO_IMAGE_SIZE,
   FOOTER_ICON_SIZE_DEFAULT,
-  PLAYER_CONTROLS_ICON_TOGGLE_COLOR_DEFAULT
+  PLAYER_CONTROLS_ICON_TOGGLE_COLOR_DEFAULT,
+  CARD_CONTENT_MARGIN_DEFAULT
 } from './constants';
 import {
   getConfigAreaForSection,
@@ -330,7 +331,7 @@ export class Card extends AlertUpdatesBase {
       }
 
       .spc-card-content-section {
-        margin: 0.0rem;
+        margin: var(--spc-card-content-margin, ${unsafeCSS(CARD_CONTENT_MARGIN_DEFAULT)});
         flex-grow: 1;
         flex-shrink: 0;
         height: 1vh;
@@ -561,7 +562,7 @@ export class Card extends AlertUpdatesBase {
       );
     }
 
-    // ensure "<search-input-outlined>" and "<ha-md-button-menu>" HA customElements are
+    // ensure "<search-input-outlined>" and "<ha-dropdown>" HA customElements are
     // loaded so that the controls are rendered properly.
     //(async () => await loadHaFormLazyControls())();
 
@@ -1182,10 +1183,13 @@ export class Card extends AlertUpdatesBase {
     let editTabHeight = '0px';
     let editBottomToolbarHeight = '0px';
     const cardWaitProgressSliderColor = this.config.cardWaitProgressSliderColor;
+    const cardContentMargin = this.config.cardContentMargin;
 
     // set css variables that affect multiple sections of the card.
     if (cardWaitProgressSliderColor)
       styleInfo['--spc-card-wait-progress-slider-color'] = `${cardWaitProgressSliderColor}`;
+    if (cardContentMargin)
+      styleInfo['--spc-card-content-margin'] = `${cardContentMargin}`;
 
     // if config entity not set, then display the brand logo neatly in the card.
     if ((this.playerId || "") == "") {

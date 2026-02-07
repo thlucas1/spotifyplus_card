@@ -6,6 +6,24 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.69 ] - 2026/02/07
+
+  * Added theme variable `--spc-card-content-margin` and `cardContentSectionMargin` card configuration option; Card content section margin value (default is `0.0rem`).
+  * Added cover artwork url value to audiobook, show, and track information displays so that it can be easily copied to the clipboard by clicking the value.
+  * Added copy covert artwork url to clipboard functionality for all search result types.  Just click the cover artwork image in the item details, and the url will be placed on the clipboard to be pasted in other applications.
+  * Fixed `recentBrowserItemsPerRow` setting that was causing it to always use 4 items per row.
+  * Fixed `deviceBrowserItemsPerRow` setting that was causing it to always use 4 items per row.
+  * Added card configuration option `albumFavBrowserItemsRefreshOnEntry`; True to enable refresh of Album Favorites media browser items on initial section display; otherwise, False to use cached data (faster rendering).  
+  * Added card configuration option `artistFavBrowserItemsRefreshOnEntry`; True to enable refresh of Artist Favorites media browser items on initial section display; otherwise, False to use cached data (faster rendering).  
+  * Added card configuration option `audiobookFavBrowserItemsRefreshOnEntry`; True to enable refresh of Audiobook Favorites media browser items on initial section display; otherwise, False to use cached data (faster rendering).  
+  * Added card configuration option `episodeFavBrowserItemsRefreshOnEntry`; True to enable refresh of Episode Favorites media browser items on initial section display; otherwise, False to use cached data (faster rendering).  
+  * Added card configuration option `playlistFavBrowserItemsRefreshOnEntry`; True to enable refresh of Playlist Favorites media browser items on initial section display; otherwise, False to use cached data (faster rendering).  
+  * Added card configuration option `recentBrowserItemsRefreshOnEntry`; True to enable refresh of Recently Played media browser items on initial section display; otherwise, False to use cached data (faster rendering).  
+  * Added card configuration option `showFavBrowserItemsRefreshOnEntry`; True to enable refresh of Show Favorites media browser items on initial section display; otherwise, False to use cached data (faster rendering).  
+  * Added card configuration option `trackFavBrowserItemsRefreshOnEntry`; True to enable refresh of Track Favorites media browser items on initial section display; otherwise, False to use cached data (faster rendering).  
+  * updated all `ha-md-button-menu` references to use the `ha-dropdown` component, as HA 2026.02.0 dropped support for the `ha-md-button-menu` component.  This was causing action menu items to always appear visible below a dropdown list icon, instead of being hidden until the dropdown was clicked.
+  * updated npm dependency: `"home-assistant-js-websocket": "^9.6.0"`.
+
 ###### [ 1.0.68 ] - 2025/11/24
   
   * Added visual indicator to media browser items that indicates the currently playing item.

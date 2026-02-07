@@ -65,8 +65,14 @@ export interface CardConfig extends LovelaceCardConfig {
   height?: string | number;
 
   /**
+   * Card content section margin value.
+   * Default is 0.0rem.
+   */
+  cardContentMargin?: string;
+
+  /**
    * True to disable touch events and force mouse events for media browser items;
-   * othersie, False to enable touch events if they are detected.
+   * otherwise, False to enable touch events if they are detected.
    * Default is false.
    */
   touchSupportDisabled?: boolean;
@@ -109,6 +115,14 @@ export interface CardConfig extends LovelaceCardConfig {
    * Default is 200.
    */
   albumFavBrowserItemsLimit?: number;
+
+  /**
+   * True to enable refresh of Album Favorites media browser items when the 
+   * section is initially displayed;
+   * otherwise, False to display cached media browser items.
+   * Default is false.
+   */
+  albumFavBrowserItemsRefreshOnEntry?: boolean;
 
   /**
    * True to sort displayed Album Favorites media browser item titles by name;
@@ -164,6 +178,14 @@ export interface CardConfig extends LovelaceCardConfig {
   artistFavBrowserItemsLimit?: number;
 
   /**
+   * True to enable refresh of Artist Favorites media browser items when the 
+   * section is initially displayed;
+   * otherwise, False to display cached media browser items.
+   * Default is false.
+   */
+  artistFavBrowserItemsRefreshOnEntry?: boolean;
+
+  /**
    * True to sort displayed Artist Favorites media browser item titles by name;
    * Otherwise, False to display in the order returned from the Spotify Web API. 
    * Default is false.
@@ -215,6 +237,14 @@ export interface CardConfig extends LovelaceCardConfig {
    * Default is 200.
    */
   audiobookFavBrowserItemsLimit?: number;
+
+  /**
+   * True to enable refresh of Audiobook Favorites media browser items when the 
+   * section is initially displayed;
+   * otherwise, False to display cached media browser items.
+   * Default is false.
+   */
+  audiobookFavBrowserItemsRefreshOnEntry?: boolean;
 
   /**
    * True to sort displayed Audiobook Favorites media browser item titles by name;
@@ -363,6 +393,14 @@ export interface CardConfig extends LovelaceCardConfig {
   episodeFavBrowserItemsLimit?: number;
 
   /**
+   * True to enable refresh of Episode Favorites media browser items when the 
+   * section is initially displayed;
+   * otherwise, False to display cached media browser items.
+   * Default is false.
+   */
+  episodeFavBrowserItemsRefreshOnEntry?: boolean;
+
+  /**
    * True to sort displayed Episode Favorites media browser item titles by name;
    * Otherwise, False to display in the order returned from the Spotify Web API. 
    * Default is false.
@@ -507,8 +545,14 @@ export interface CardConfig extends LovelaceCardConfig {
   playerControlsIconToggleColor?: string;
 
   /**
+   * Margin of the icons in the Player controls area.
+   * Default is '0px'.
+   */
+  playerControlsIconMargin?: string;
+
+  /**
    * True to minimize player card height when player state goes to idle (or off) AND card height is not set to `fill`;
-   * othersie, False to use specified card `height` value.
+   * otherwise, False to use specified card `height` value.
    * Default is false.
    */
   playerMinimizeOnIdle?: boolean;
@@ -629,6 +673,14 @@ export interface CardConfig extends LovelaceCardConfig {
   playlistFavBrowserItemsLimit?: number;
 
   /**
+   * True to enable refresh of Playlist Favorites media browser items when the 
+   * section is initially displayed;
+   * otherwise, False to display cached media browser items.
+   * Default is false.
+   */
+  playlistFavBrowserItemsRefreshOnEntry?: boolean;
+
+  /**
    * True to sort displayed Playlist Favorites media browser item titles by name;
    * Otherwise, False to display in the order returned from the Spotify Web API. 
    * Default is false.
@@ -674,6 +726,14 @@ export interface CardConfig extends LovelaceCardConfig {
    * Default is false.
    */
   recentBrowserItemsHideSubTitle?: boolean;
+
+  /**
+   * True to enable refresh of Recently Played media browser items when the 
+   * section is initially displayed;
+   * otherwise, False to display cached media browser items.
+   * Default is false.
+   */
+  recentBrowserItemsRefreshOnEntry?: boolean;
 
   /**
    * Title displayed at the top of the Search media browser section form.
@@ -784,6 +844,14 @@ export interface CardConfig extends LovelaceCardConfig {
   showFavBrowserItemsLimit?: number;
 
   /**
+   * True to enable refresh of Show Favorites media browser items when the 
+   * section is initially displayed;
+   * otherwise, False to display cached media browser items.
+   * Default is false.
+   */
+  showFavBrowserItemsRefreshOnEntry?: boolean;
+
+  /**
    * True to sort displayed Show Favorites media browser item titles by name;
    * Otherwise, False to display in the order returned from the Spotify Web API. 
    * Default is false.
@@ -828,6 +896,14 @@ export interface CardConfig extends LovelaceCardConfig {
    * Default is 200.
    */
   trackFavBrowserItemsLimit?: number;
+
+  /**
+   * True to enable refresh of Track Favorites media browser items when the 
+   * section is initially displayed;
+   * otherwise, False to display cached media browser items.
+   * Default is false.
+   */
+  trackFavBrowserItemsRefreshOnEntry?: boolean;
 
   /**
    * True to sort displayed Track Favorites media browser item titles by name;

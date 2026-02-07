@@ -148,57 +148,61 @@ export class PlayerBodyAudiobook extends PlayerBodyBase {
 
     // define dropdown menu actions - audiobook.
     const actionsAudiobookHtml = html`
-      <ha-md-button-menu slot="selection-bar" positioning="popover">
-        <ha-assist-chip slot="trigger">
-          <ha-svg-icon slot="icon" .path=${mdiDotsHorizontal}></ha-svg-icon>
-        </ha-assist-chip>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.AudiobookSearchAuthor)} hide=${this.hideSearchType(SearchMediaTypes.AUDIOBOOKS)}>
-          <ha-svg-icon slot="start" .path=${mdiAccountDetailsOutline}></ha-svg-icon>
-          <div slot="headline">Other Audiobooks by same Author</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.AudiobookSearchNarrator)} hide=${this.hideSearchType(SearchMediaTypes.AUDIOBOOKS)}>
-          <ha-svg-icon slot="start" .path=${mdiAccountDetailsOutline}></ha-svg-icon>
-          <div slot="headline">Other Audiobooks by same Narrator</div>
-        </ha-md-menu-item>
-        <ha-md-divider role="separator" tabindex="-1"></ha-md-divider>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.AudiobookUserPresetAdd)}>
-          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
-          <div slot="headline">Add Audiobook to User Presets</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.AudiobookCopyPresetToClipboard)}>
-          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
-          <div slot="headline">Copy Audiobook Preset Info to Clipboard</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.AudiobookCopyPresetJsonToClipboard)}>
-          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
-          <div slot="headline">Copy Audiobook Preset JSON to Clipboard</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.AudiobookCopyUriToClipboard)}>
-          <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
-          <div slot="headline">Copy Audiobook URI to Clipboard</div>
-        </ha-md-menu-item>
-      </ha-md-button-menu>
+      <ha-dropdown slot="actionItems">
+        <ha-icon-button
+          slot="trigger"
+          .label="Audiobook Actions"
+          .path=${mdiDotsHorizontal}
+        ></ha-icon-button>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.AudiobookSearchAuthor)} hide=${this.hideSearchType(SearchMediaTypes.AUDIOBOOKS)}>
+          <ha-svg-icon slot="icon" .path=${mdiAccountDetailsOutline}></ha-svg-icon>
+          Other Audiobooks by same Author
+        </ha-dropdown-item>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.AudiobookSearchNarrator)} hide=${this.hideSearchType(SearchMediaTypes.AUDIOBOOKS)}>
+          <ha-svg-icon slot="icon" .path=${mdiAccountDetailsOutline}></ha-svg-icon>
+          Other Audiobooks by same Narrator
+        </ha-dropdown-item>
+        <wa-divider></wa-divider>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.AudiobookUserPresetAdd)}>
+          <ha-svg-icon slot="icon" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          Add Audiobook to User Presets
+        </ha-dropdown-item>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.AudiobookCopyPresetToClipboard)}>
+          <ha-svg-icon slot="icon" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          Copy Audiobook Preset Info to Clipboard
+        </ha-dropdown-item>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.AudiobookCopyPresetJsonToClipboard)}>
+          <ha-svg-icon slot="icon" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          Copy Audiobook Preset JSON to Clipboard
+        </ha-dropdown-item>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.AudiobookCopyUriToClipboard)}>
+          <ha-svg-icon slot="icon" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
+          Copy Audiobook URI to Clipboard
+        </ha-dropdown-item>
+      </ha-dropdown>
       `;
 
     // define dropdown menu actions - audiobook.
     const actionsChapterHtml = html`
-      <ha-md-button-menu slot="selection-bar" positioning="popover">
-        <ha-assist-chip slot="trigger">
-          <ha-svg-icon slot="icon" .path=${mdiDotsHorizontal}></ha-svg-icon>
-        </ha-assist-chip>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ChapterCopyPresetToClipboard)}>
-          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
-          <div slot="headline">Copy Chapter Preset Info to Clipboard</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ChapterCopyPresetJsonToClipboard)}>
-          <ha-svg-icon slot="start" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
-          <div slot="headline">Copy Chapter Preset JSON to Clipboard</div>
-        </ha-md-menu-item>
-        <ha-md-menu-item @click=${() => this.onClickAction(Actions.ChapterCopyUriToClipboard)}>
-          <ha-svg-icon slot="start" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
-          <div slot="headline">Copy Chapter URI to Clipboard</div>
-        </ha-md-menu-item>
-      </ha-md-button-menu>
+      <ha-dropdown slot="actionItems">
+        <ha-icon-button
+          slot="trigger"
+          .label="Chapter Actions"
+          .path=${mdiDotsHorizontal}
+        ></ha-icon-button>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.ChapterCopyPresetToClipboard)}>
+          <ha-svg-icon slot="icon" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          Copy Chapter Preset Info to Clipboard
+        </ha-dropdown-item>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.ChapterCopyPresetJsonToClipboard)}>
+          <ha-svg-icon slot="icon" .path=${mdiBookmarkMusicOutline}></ha-svg-icon>
+          Copy Chapter Preset JSON to Clipboard
+        </ha-dropdown-item>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.ChapterCopyUriToClipboard)}>
+          <ha-svg-icon slot="icon" .path=${mdiClipboardPlusOutline}></ha-svg-icon>
+          Copy Chapter URI to Clipboard
+        </ha-dropdown-item>
+      </ha-dropdown>
       `;
 
     const actionEpisodeSummary = html`
@@ -248,19 +252,22 @@ export class PlayerBodyAudiobook extends PlayerBodyBase {
             <div class="grid-action-info-text-s">${this.chapter?.audiobook.edition || "unknown"}</div>
             <div class="grid-action-info-text-s">&nbsp;</div>
             <div class="grid-action-info-hdr-s">Publisher</div>
-            <div class="grid-action-info-text-s colspan-r2-c5">${this.chapter?.audiobook.publisher || "unknown"}</div>
+            <div class="grid-action-info-text-s colspan-c5-end">${this.chapter?.audiobook.publisher || "unknown"}</div>
+
+            <div class="grid-action-info-hdr-s">Art URL</div>
+            <div class="grid-action-info-text-s colspan-c2-end copy2cb" @click=${copyToClipboard}>${this.chapter?.audiobook.image_url}</div>
 
             <div class="grid-action-info-hdr-s">Authors</div>
-            <div class="grid-action-info-text-s colspan-r3-c2">${GetAudiobookAuthors(this.chapter?.audiobook, "; ")}</div>
+            <div class="grid-action-info-text-s colspan-c2-end">${GetAudiobookAuthors(this.chapter?.audiobook, "; ")}</div>
 
             <div class="grid-action-info-hdr-s">Narrators</div>
-            <div class="grid-action-info-text-s colspan-r4-c2">${GetAudiobookNarrators(this.chapter?.audiobook, "; ")}</div>
+            <div class="grid-action-info-text-s colspan-c2-end">${GetAudiobookNarrators(this.chapter?.audiobook, "; ")}</div>
 
             <div class="grid-action-info-hdr-s">Audiobook URI</div>
-            <div class="grid-action-info-text-s colspan-r5-c2 copy2cb" @click=${copyToClipboard}>${this.chapter?.audiobook.uri}</div>
+            <div class="grid-action-info-text-s colspan-c2-end copy2cb" @click=${copyToClipboard}>${this.chapter?.audiobook.uri}</div>
 
             <div class="grid-action-info-hdr-s">Episode URI</div>
-            <div class="grid-action-info-text-s colspan-r6-c2 copy2cb" @click=${copyToClipboard}>${this.chapter?.uri}</div>
+            <div class="grid-action-info-text-s colspan-c2-end copy2cb" @click=${copyToClipboard}>${this.chapter?.uri}</div>
 
           </div>
 
@@ -305,31 +312,13 @@ export class PlayerBodyAudiobook extends PlayerBodyBase {
         justify-content: left;
       }
 
-      .colspan-r2-c5 {
-        grid-row: 2 / 2;    /* grid row 2 */
+      .colspan-c2-end {
+        grid-column: 2 / 9; /* grid columns 2 thru 8 */
+      }
+
+      .colspan-c5-end {
         grid-column: 5 / 9; /* grid columns 5 thru 8 */
       }
-
-      .colspan-r3-c2 {
-        grid-row: 3 / 3;    /* grid row 3 */
-        grid-column: 2 / 9; /* grid columns 2 thru 8 */
-      }
-
-      .colspan-r4-c2 {
-        grid-row: 4 / 4;    /* grid row 4 */
-        grid-column: 2 / 9; /* grid columns 2 thru 8 */
-      }
-
-      .colspan-r5-c2 {
-        grid-row: 5 / 5;    /* grid row 5 */
-        grid-column: 2 / 9; /* grid columns 2 thru 8 */
-      }
-
-      .colspan-r6-c2 {
-        grid-row: 6 / 6;    /* grid row 6 */
-        grid-column: 2 / 9; /* grid columns 2 thru 8 */
-      }
-
     `
     ];
   }
