@@ -134,8 +134,7 @@ class PlayerControls extends AlertUpdatesBase {
   static get styles() {
     return css`
       .player-controls-container {
-        margin-left: 0.75rem;
-        margin-right: 0.75rem;
+        max-width: var(--spc-player-controls-max-width, 40rem);
         text-align: center;
         overflow: hidden auto;
         box-sizing: border-box;
@@ -143,9 +142,7 @@ class PlayerControls extends AlertUpdatesBase {
       }
 
       .player-volume-container {
-        margin-left: 0.75rem;
-        margin-right: 0.75rem;
-        max-width: 40rem;
+        max-width: var(--spc-player-controls-max-width, 40rem);
         text-align: center;
         overflow: hidden auto;
         box-sizing: border-box;
@@ -155,13 +152,13 @@ class PlayerControls extends AlertUpdatesBase {
       .icons {
         display: inline-flex;
         align-items: center;
-        justify-content: center;
+        justify-content: var(--spc-player-controls-icon-justify-content, center);
         overflow: hidden;
         color: var(--spc-player-controls-icon-color, #ffffff);
         --mdc-icon-button-size: var(--spc-player-controls-icon-button-size, 2.75rem);
         --mdc-icon-size: var(--spc-player-controls-icon-size, ${unsafeCSS(PLAYER_CONTROLS_ICON_SIZE_DEFAULT)});
         mix-blend-mode: normal;
-        width: 100%
+        width: 100%;
       }
 
       .iconsPower {
@@ -172,7 +169,7 @@ class PlayerControls extends AlertUpdatesBase {
         color: var(--spc-player-controls-icon-color, #ffffff);
         --mdc-icon-button-size: var(--spc-player-controls-icon-button-size, 2.75rem);
         --mdc-icon-size: var(--spc-player-controls-icon-size, ${unsafeCSS(PLAYER_CONTROLS_ICON_SIZE_DEFAULT)});
-        width: 100%
+        width: 100%;
       }
 
       .iconsVolume {

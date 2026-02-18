@@ -393,7 +393,7 @@ class Volume extends AlertUpdatesBase {
       }
 
       .volume-level {
-        font-size: x-small;
+        font-size: var(--spc-player-volume-label-font-size, x-small);
         display: flex;
       }
 
@@ -405,8 +405,6 @@ class Volume extends AlertUpdatesBase {
 
       .volume-level-pct {
         text-align: right;
-        font-weight: normal;
-        font-size: 10px;
         color: var(--spc-player-volume-slider-color, var(--spc-player-controls-color, var(--dark-primary-color, ${unsafeCSS(PLAYER_CONTROLS_ICON_TOGGLE_COLOR_DEFAULT)})));
       }
 

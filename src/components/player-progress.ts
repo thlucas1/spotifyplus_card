@@ -195,7 +195,7 @@ class Progress extends AlertUpdatesBase {
     return css`
       .progress {
         width: 100%;
-        font-size: x-small;
+        font-size: var(--spc-player-progress-label-font-size, x-small);
         display: flex;
         color: var(--spc-player-progress-label-color, var(--spc-player-controls-color, #ffffff));
         padding-bottom: 0.2rem;

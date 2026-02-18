@@ -6,6 +6,13 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.70 ] - 2026/02/18
+
+  * Added theme variable `--spc-player-controls-max-width` and `playerControlsMaxWidth` card configuration option; Max width value of player control areas (progress, transport deck, and volume details).
+  * Added theme variable `--spc-player-controls-icon-justify-content` and `playerControlsIconJustifyContent` card configuration option; Justify content value of icons in the Player control areas (default is 'center').  Examples: left, center, right, space-around, space-between, space-evenly, etc.
+  * Added theme variable `--spc-player-progress-label-font-size` and `playerProgressLabelFontSize` card configuration option; Font size of the player progressbar labels (default `x-small`).
+  * Added theme variable `--spc-player-volume-label-font-size` and `playerVolumeLabelFontSize` card configuration option; Font size of the player volume labels (default `x-small`).
+
 ###### [ 1.0.69 ] - 2026/02/07
 
   * Added theme variable `--spc-card-content-margin` and `cardContentSectionMargin` card configuration option; Card content section margin value (default is `0.0rem`).

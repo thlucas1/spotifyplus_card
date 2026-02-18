@@ -136,15 +136,12 @@ static get styles() {
     css`
 
       .player-header-container {
-        margin-top: 0rem;
-        padding: 0.5rem;
-        padding-top: 0rem;
-        padding-bottom: 0rem;
-        max-width: 40rem;
+        max-width: var(--spc-player-controls-max-width, 40rem);
         text-align: center;
         background-position: center;
         background-repeat: no-repeat;
         background-size: contain;
+        box-sizing: border-box;
         /*border: 1px solid red;  /*  FOR TESTING CONTROL LAYOUT CHANGES */
       }
 

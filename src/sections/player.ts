@@ -141,9 +141,10 @@ export class Player extends AlertUpdatesBase {
       .player-section-header {
         /* border: 1px solid red;      /* FOR TESTING CONTROL LAYOUT CHANGES */
         grid-area: header;
+        padding: 0.25rem 0.5rem 0rem 0.5rem;
+        box-sizing: border-box;
         background: linear-gradient(180deg, var(--spc-player-header-bg-color, ${unsafeCSS(PLAYER_CONTROLS_BACKGROUND_COLOR_DEFAULT)}) 30%, transparent 100%);
         background-repeat: no-repeat;
-        padding: 0.2rem;
       }
 
       .player-section-body {
@@ -182,6 +183,8 @@ export class Player extends AlertUpdatesBase {
         /* border: 1px solid blue;     /* FOR TESTING CONTROL LAYOUT CHANGES */
         grid-area: controls;
         overflow-y: auto;
+        padding: 0rem 0.5rem 0.25rem 0.5rem;
+        box-sizing: border-box;
         background: linear-gradient(0deg, var(--spc-player-controls-bg-color, ${unsafeCSS(PLAYER_CONTROLS_BACKGROUND_COLOR_DEFAULT)}) 30%, transparent 100%);
         background-repeat: no-repeat;
       }
@@ -245,6 +248,16 @@ export class Player extends AlertUpdatesBase {
       styleInfo['--spc-player-background-size'] = `${this.config.playerBackgroundImageSize}`;
     } else if (this.config.width == 'fill') {
       styleInfo['--spc-player-background-size-default'] = 'contain';
+    }
+
+    // set various player control icon specifications.
+    const playerControlsMaxWidth = this.config.playerControlsMaxWidth;
+    if (playerControlsMaxWidth) {
+      styleInfo['--spc-player-controls-max-width'] = `${playerControlsMaxWidth}`;
+    }
+    const playerControlsIconJustifyContent = this.config.playerControlsIconJustifyContent;
+    if (playerControlsIconJustifyContent) {
+      styleInfo['--spc-player-controls-icon-justify-content'] = `${playerControlsIconJustifyContent}`;
     }
 
     // set player background image to display.
@@ -366,9 +379,11 @@ export class Player extends AlertUpdatesBase {
     const playerMinimizedTitleFontSize = this.config.playerMinimizedTitleFontSize;
     const playerProgressSliderColor = this.config.playerProgressSliderColor;
     const playerProgressLabelColor = this.config.playerProgressLabelColor;
+    const playerProgressLabelFontSize = this.config.playerProgressLabelFontSize;
     const playerProgressLabelPaddingLR = this.config.playerProgressLabelPaddingLR;
     const playerVolumeSliderColor = this.config.playerVolumeSliderColor;
     let playerVolumeLabelColor = this.config.playerVolumeLabelColor;
+    const playerVolumeLabelFontSize = this.config.playerVolumeLabelFontSize;
 
     // if brand logo image is in use, then default the header and controls area
     // background to transparent, and all labels to the primary text color (since the 
@@ -417,12 +432,16 @@ export class Player extends AlertUpdatesBase {
       styleInfo['--spc-player-minimized-title-font-size'] = `${playerMinimizedTitleFontSize}`;
     if (playerProgressLabelColor)
       styleInfo['--spc-player-progress-label-color'] = `${playerProgressLabelColor}`;
+    if (playerProgressLabelFontSize)
+      styleInfo['--spc-player-progress-label-font-size'] = `${playerProgressLabelFontSize}`;
     if (playerProgressLabelPaddingLR)
       styleInfo['--spc-player-progress-label-padding-lr'] = `${playerProgressLabelPaddingLR}`;
     if (playerProgressSliderColor)
       styleInfo['--spc-player-progress-slider-color'] = `${playerProgressSliderColor}`;
     if (playerVolumeLabelColor)
       styleInfo['--spc-player-volume-label-color'] = `${playerVolumeLabelColor}`;
+    if (playerVolumeLabelFontSize)
+      styleInfo['--spc-player-volume-label-font-size'] = `${playerVolumeLabelFontSize}`;
     if (playerVolumeSliderColor)
       styleInfo['--spc-player-volume-slider-color'] = `${playerVolumeSliderColor}`;
 
@@ -470,6 +489,7 @@ export class Player extends AlertUpdatesBase {
     if (this.config.playerMinimizeOnIdle && this.store.player.isPoweredOffOrIdle()) {
       if (this.config.height != 'fill') {
         styleInfo['justify-items'] = `flex-start`;
+        styleInfo['padding-left'] = `0px`;
       }
     }
 

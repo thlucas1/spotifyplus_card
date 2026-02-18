@@ -551,6 +551,19 @@ export interface CardConfig extends LovelaceCardConfig {
   playerControlsIconMargin?: string;
 
   /**
+   * Justify content value of icons in the Player control areas.
+   * Default is 'center'.
+   * Examples: left, center, right, space-around, space-between, space-evenly, etc.
+   */
+  playerControlsIconJustifyContent?: string;
+
+  /**
+   * Max width value of player control areas (progress, transport deck, and volume details).
+   * Default is '40rem'.
+   */
+  playerControlsMaxWidth?: string;
+
+  /**
    * True to minimize player card height when player state goes to idle (or off) AND card height is not set to `fill`;
    * otherwise, False to use specified card `height` value.
    * Default is false.
@@ -562,6 +575,12 @@ export interface CardConfig extends LovelaceCardConfig {
    * Default is '#ffffff'.
    */
   playerProgressLabelColor?: string;
+
+  /**
+   * Font size of the player progressbar labels.
+   * Default is 'x-small'.
+   */
+  playerProgressLabelFontSize?: string;
 
   /**
    * Horizontal padding value for the player progress text labels.
@@ -626,6 +645,12 @@ export interface CardConfig extends LovelaceCardConfig {
    * Default is '#ffffff'.
    */
   playerVolumeLabelColor?: string;
+
+  /**
+   * Font size of the player volume labels.
+   * Default is 'x-small'.
+   */
+  playerVolumeLabelFontSize?: string;
 
   /**
    * Color of the player volume slider bar.
