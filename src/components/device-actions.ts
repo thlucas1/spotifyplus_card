@@ -18,6 +18,7 @@ import { Section } from '../types/section';
 import { MediaPlayer } from '../model/media-player';
 import { copyToClipboard, getHomeAssistantErrorMessage } from '../utils/utils';
 import { ISpotifyConnectDevice } from '../types/spotifyplus/spotify-connect-device';
+import { IMediaBrowserItem } from '../types/media-browser-item';
 
 /**
  * Device actions.
@@ -93,7 +94,7 @@ class DeviceActions extends FavActionsBase {
         ${this.alertError ? html`<ha-alert alert-type="error" dismissable @alert-dismissed-clicked=${this.alertErrorClear}>${this.alertError}</ha-alert>` : ""}
         ${this.alertInfo ? html`<ha-alert alert-type="info" dismissable @alert-dismissed-clicked=${this.alertInfoClear}>${this.alertInfo}</ha-alert>` : ""}
         <div class="media-info-content">
-          <div class="img" style=${this.styleMediaBrowserItemImage(this.deviceInfo?.image_url)}></div>
+          <div class="img" style=${this.styleMediaBrowserItemImage((this.mediaItem as unknown as IMediaBrowserItem).mbi_item.image_url)}></div>
           <div class="media-info-details">
             <div class="media-info-text-ms-c">
               ${this.deviceInfo?.Name}
@@ -206,7 +207,7 @@ class DeviceActions extends FavActionsBase {
 
       /* reduce image size for device */
       .media-info-content .img {
-        background-size: cover !important;
+        background-size: contain !important;
         background-repeat: no-repeat !important;
         background-position: center !important;
         mask-repeat: no-repeat !important;

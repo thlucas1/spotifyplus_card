@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.71 ] - 2026/02/21
+
+  * Use custom image (if specified) when displaying device action details.
+
 ###### [ 1.0.70 ] - 2026/02/18
 
   * Added theme variable `--spc-player-controls-max-width` and `playerControlsMaxWidth` card configuration option; Max width value of player control areas (progress, transport deck, and volume details).
