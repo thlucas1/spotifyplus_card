@@ -271,8 +271,8 @@ class PlaylistActions extends FavActionsBase {
 
       /* style ha-icon-button controls in tracks grid: icon size, title text */
       .tracks-grid > ha-icon-button[slot="icon-button"] {
-        --mdc-icon-button-size: 24px;
-        --mdc-icon-size: 20px;
+        --ha-icon-button-size: 24px;
+        --ha-icon-size: 20px;
         vertical-align: top;
         padding: 0px;
       }

@@ -138,8 +138,8 @@ export class PlayerBodyQueue extends PlayerBodyBase {
 
         /* style ha-icon-button controls in grid: icon size, title text */
         .queue-info-grid > ha-icon-button[slot="icon-button"] {
-          --mdc-icon-button-size: 24px;
-          --mdc-icon-size: 20px;
+          --ha-icon-button-size: 24px;
+          --ha-icon-size: 20px;
           vertical-align: top;
           padding: 0px;
         }

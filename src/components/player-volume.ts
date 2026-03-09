@@ -12,6 +12,7 @@ import {
 
 // our imports.
 import {
+  PLAYER_CONTROLS_ICON_BUTTON_SIZE_DEFAULT,
   PLAYER_CONTROLS_ICON_SIZE_DEFAULT,
   PLAYER_CONTROLS_ICON_TOGGLE_COLOR_DEFAULT
 } from '../constants';
@@ -368,15 +369,17 @@ class Volume extends AlertUpdatesBase {
     return css`
       ha-control-slider {
         --control-slider-color: var(--spc-player-volume-slider-color, var(--spc-player-controls-color, var(--dark-primary-color, ${unsafeCSS(PLAYER_CONTROLS_ICON_TOGGLE_COLOR_DEFAULT)})));
-        --control-slider-thickness: 1rem;
+        --control-slider-thickness: var(--spc-player-volume-slider-thickness, 1rem);
         border: 1px solid rgba(255, 255, 255, 0.10);
+        border-radius: var(--control-slider-border-radius);
         box-sizing: border-box;
       }
 
       ha-control-slider[disabled] {
         --control-slider-color: var(--disabled-text-color);
-        --control-slider-thickness: 1rem;
+        --control-slider-thickness: var(--spc-player-volume-slider-thickness, 1rem);
         border: 1px solid rgba(255, 255, 255, 0.10);
+        border-radius: var(--control-slider-border-radius);
         box-sizing: border-box;
       }
 
@@ -415,8 +418,8 @@ class Volume extends AlertUpdatesBase {
       }
 
       *[slim] * {
-        --control-slider-thickness: 10px;
-        --mdc-icon-button-size: 30px;
+        --control-slider-thickness: var(--spc-player-volume-slider-thickness, 10px);
+        --ha-icon-button-size: 30px;
         --mdc-icon-size: 20px;
       }
 
@@ -437,7 +440,7 @@ class Volume extends AlertUpdatesBase {
         overflow: hidden;
         color: var(--spc-player-controls-icon-color, #ffffff);
         width: 100%;
-        --mdc-icon-button-size: var(--spc-player-controls-icon-button-size, 2.75rem);
+        --ha-icon-button-size: var(--spc-player-controls-icon-button-size, ${unsafeCSS(PLAYER_CONTROLS_ICON_BUTTON_SIZE_DEFAULT)});
         --mdc-icon-size: var(--spc-player-controls-icon-size, ${unsafeCSS(PLAYER_CONTROLS_ICON_SIZE_DEFAULT)});
       }
 

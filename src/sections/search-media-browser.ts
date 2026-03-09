@@ -336,7 +336,7 @@ export class SearchBrowser extends FavBrowserBase {
         align-items: left;
         --ha-select-height: 2.5rem;           /* ha dropdown control height */
         --mdc-menu-item-height: 2.5rem;       /* mdc dropdown list item height */
-        --mdc-icon-button-size: 2.5rem;       /* mdc icon button size */
+        --ha-icon-button-size: 2.5rem;       /* mdc icon button size */
         --md-menu-item-top-space: 0.5rem;     /* top spacing between items */
         --md-menu-item-bottom-space: 0.5rem;  /* bottom spacing between items */
         --md-menu-item-one-line-container-height: 2.0rem;  /* menu item height */

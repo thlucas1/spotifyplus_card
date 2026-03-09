@@ -80,7 +80,7 @@ export const sharedStylesMediaInfo = css`
   }
 
   ha-icon-button[slot="media-info-icon-link-s"] {
-    --mdc-icon-button-size: 14px;
+    --ha-icon-button-size: 14px;
     --mdc-icon-size: 14px;
     padding-left: 2px;
     padding-right: 2px;

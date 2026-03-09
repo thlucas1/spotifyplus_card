@@ -40,7 +40,6 @@ import './editor/editor';
 import {
   BRAND_LOGO_IMAGE_BASE64,
   BRAND_LOGO_IMAGE_SIZE,
-  FOOTER_ICON_SIZE_DEFAULT,
   PLAYER_CONTROLS_ICON_TOGGLE_COLOR_DEFAULT,
   CARD_CONTENT_MARGIN_DEFAULT
 } from './constants';
@@ -355,7 +354,7 @@ export class Card extends AlertUpdatesBase {
         justify-content: space-around;
         flex-wrap: wrap;
         width: 100%;
-        --mdc-icon-button-size: var(--spc-footer-icon-button-size, 2.5rem);
+        --ha-icon-button-size: var(--spc-footer-icon-button-size, 2.5rem);
         --mdc-icon-size: var(--spc-footer-icon-size, 1.75rem);
         --mdc-ripple-top: 0px;
         --mdc-ripple-left: 0px;
@@ -1378,7 +1377,7 @@ export class Card extends AlertUpdatesBase {
       styleInfo['--spc-footer-icon-color-selected'] = `${footerIconColorSelected}`;
     if (footerIconSize) {
       styleInfo['--spc-footer-icon-size'] = `${footerIconSize}`;
-      styleInfo['--spc-footer-icon-button-size'] = `var(--spc-footer-icon-size, ${FOOTER_ICON_SIZE_DEFAULT}) + 0.75rem`;
+      styleInfo['--spc-footer-icon-button-size'] = `var(--spc-footer-icon-size, ${footerIconSize})`;
     }
     if (footerBackgroundImage)
       styleInfo['--spc-footer-background-image'] = `${footerBackgroundImage}`;

@@ -17,8 +17,7 @@ import '../components/player-volume';
 import {
   BRAND_LOGO_IMAGE_BASE64,
   BRAND_LOGO_IMAGE_SIZE,
-  PLAYER_CONTROLS_BACKGROUND_COLOR_DEFAULT,
-  PLAYER_CONTROLS_ICON_SIZE_DEFAULT
+  PLAYER_CONTROLS_BACKGROUND_COLOR_DEFAULT
 } from '../constants';
 import { CardConfig } from '../types/card-config';
 import { MediaPlayer } from '../model/media-player';
@@ -365,7 +364,7 @@ export class Player extends AlertUpdatesBase {
     // set player controls and volume controls icon size.
     let playerControlsBackgroundColor = this.config.playerControlsBackgroundColor;
     const playerControlsColor = this.config.playerControlsColor;
-    const playerControlsIconSize = this.config.playerControlsIconSize || PLAYER_CONTROLS_ICON_SIZE_DEFAULT;
+    const playerControlsIconSize = this.config.playerControlsIconSize;
     let playerControlsIconColor = this.config.playerControlsIconColor;
     const playerControlsIconToggleColor = this.config.playerControlsIconToggleColor;
     let playerHeaderBackgroundColor = this.config.playerHeaderBackgroundColor;
@@ -382,6 +381,7 @@ export class Player extends AlertUpdatesBase {
     const playerProgressLabelFontSize = this.config.playerProgressLabelFontSize;
     const playerProgressLabelPaddingLR = this.config.playerProgressLabelPaddingLR;
     const playerVolumeSliderColor = this.config.playerVolumeSliderColor;
+    const playerVolumeSliderThickness = this.config.playerVolumeSliderThickness;
     let playerVolumeLabelColor = this.config.playerVolumeLabelColor;
     const playerVolumeLabelFontSize = this.config.playerVolumeLabelFontSize;
 
@@ -409,9 +409,10 @@ export class Player extends AlertUpdatesBase {
       styleInfo['--spc-player-controls-icon-toggle-color'] = `${playerControlsIconToggleColor}`;
     if (playerControlsIconColor)
       styleInfo['--spc-player-controls-icon-color'] = `${playerControlsIconColor}`;
-    if (playerControlsIconSize)
+    if (playerControlsIconSize) {
       styleInfo['--spc-player-controls-icon-size'] = `${playerControlsIconSize}`;
-    styleInfo['--spc-player-controls-icon-button-size'] = `var(--spc-player-controls-icon-size, ${PLAYER_CONTROLS_ICON_SIZE_DEFAULT}) + 0.75rem`;
+      styleInfo['--spc-player-controls-icon-button-size'] = `var(--spc-player-controls-icon-size, ${playerControlsIconSize})`;
+    }
     if (playerHeaderBackgroundColor)
       styleInfo['--spc-player-header-bg-color'] = `${playerHeaderBackgroundColor}`;
     if (playerHeaderTitle1Color)
@@ -444,6 +445,8 @@ export class Player extends AlertUpdatesBase {
       styleInfo['--spc-player-volume-label-font-size'] = `${playerVolumeLabelFontSize}`;
     if (playerVolumeSliderColor)
       styleInfo['--spc-player-volume-slider-color'] = `${playerVolumeSliderColor}`;
+    if (playerVolumeSliderThickness)
+      styleInfo['--spc-player-volume-slider-thickness'] = `${playerVolumeSliderThickness}`;
 
     return styleMap(styleInfo);
 

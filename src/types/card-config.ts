@@ -659,6 +659,12 @@ export interface CardConfig extends LovelaceCardConfig {
   playerVolumeSliderColor?: string;
 
   /**
+   * Thickness of the player volume slider bar.
+   * Default is '1rem'.
+   */
+  playerVolumeSliderThickness?: string;
+
+  /**
    * Title displayed at the top of the Playlist Favorites media browser section form.
    * Omit this parameter to hide the title display area.
    * This value supports Title Formatter Options.

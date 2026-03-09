@@ -169,6 +169,11 @@ static get styles() {
         color: var(--spc-player-header-title2-color, #ffffff);
         mix-blend-mode: normal;
         padding: 0.1rem;
+        /* the following is used to correctly align the favorite indicator to the right of the track. */
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
       }
 
       .header-artist-album {

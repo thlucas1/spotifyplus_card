@@ -37,7 +37,7 @@ export const sharedStylesFavActions = css`
     vertical-align: middle;
     --ha-select-height: 2.5rem;           /* ha dropdown control height */
     --mdc-menu-item-height: 2.5rem;       /* mdc dropdown list item height */
-    --mdc-icon-button-size: 2.5rem;       /* mdc icon button size */
+    --ha-icon-button-size: 2.5rem;       /* mdc icon button size */
     --md-menu-item-top-space: 0.5rem;     /* top spacing between items */
     --md-menu-item-bottom-space: 0.5rem;  /* bottom spacing between items */
     --md-menu-item-one-line-container-height: 2.0rem;  /* menu item height */
@@ -53,33 +53,37 @@ export const sharedStylesFavActions = css`
 
   /* style ha-icon-button controls in header actions: icon size, title text */
   ha-icon-button[slot="icon-button"] {
-    --mdc-icon-button-size: 30px;
-    --mdc-icon-size: 24px;
+    --ha-button-height: 30px;
+    --ha-icon-button-size: 30px;
+    --ha-icon-size: 24px;
     vertical-align: middle;
-    padding: 2px;
+    padding: 0px 2px 0px 2px;
   }
 
   ha-icon-button[slot="icon-button-selected"] {
-    --mdc-icon-button-size: 30px;
-    --mdc-icon-size: 24px;
+    --ha-button-height: 30px;
+    --ha-icon-button-size: 30px;
+    --ha-icon-size: 24px;
     vertical-align: middle;
-    padding: 2px;
+    padding: 0px 2px 0px 2px;
     color: red;
   }
 
   /* style ha-icon-button controls in header actions: icon size, title text */
   ha-icon-button[slot="icon-button-small"] {
-    --mdc-icon-button-size: 20px;
-    --mdc-icon-size: 20px;
+    --ha-button-height: 20px;
+    --ha-icon-button-size: 20px;
+    --ha-icon-size: 20px;
     vertical-align: middle;
-    padding: 2px;
+    padding: 0px 2px 0px 2px;
   }
 
   ha-icon-button[slot="icon-button-small-selected"] {
-    --mdc-icon-button-size: 20px;
-    --mdc-icon-size: 20px;
+    --ha-button-height: 20px;
+    --ha-icon-button-size: 20px;
+    --ha-icon-size: 20px;
     vertical-align: middle;
-    padding: 2px;
+    padding: 0px 2px 0px 2px;
     color: red;
   }
 
@@ -120,5 +124,6 @@ export const sharedStylesFavActions = css`
 
   .display-inline {
     display: inline;
+    padding-left: 6px;
   }
 `;
