@@ -561,7 +561,7 @@ export class Card extends AlertUpdatesBase {
       );
     }
 
-    // ensure "<search-input-outlined>" and "<ha-dropdown>" HA customElements are
+    // ensure "<ha-input-search>" and "<ha-dropdown>" HA customElements are
     // loaded so that the controls are rendered properly.
     //(async () => await loadHaFormLazyControls())();
 

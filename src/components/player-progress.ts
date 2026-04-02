@@ -39,7 +39,7 @@ class Progress extends AlertUpdatesBase {
     // set common references from application common storage area.
     this.player = this.store.player;
 
-    // get media duration, and check if it progressing.
+    // get media duration, and check if it's progressing.
     this.mediaDuration = this.player?.attributes.media_duration || 0;
     const hasProgress = this.mediaDuration > 0;
 
@@ -170,7 +170,19 @@ class Progress extends AlertUpdatesBase {
 
     // calculate progress.
     if (playing) {
-      this.playingProgress = position + (Date.now() - new Date(updatedAt).getTime()) / 1000.0;
+      const progressValue = position + Math.floor((Date.now() - new Date(updatedAt).getTime()) / 1000);
+      //console.log("%ctrackProgress - position=%s, progress=%s",
+      //  "color:yellow",
+      //  JSON.stringify(position),
+      //  JSON.stringify(progressValue),
+      //);
+      //if ((progressValue < position) && (progressValue > 1)) {
+      //  progressValue = position;
+      //  console.log("%ctrackProgress - progress < position; setting progressValue = position!",
+      //    "color:red",
+      //  );
+      //}
+      this.playingProgress = progressValue;
     } else {
       this.playingProgress = position;
     }

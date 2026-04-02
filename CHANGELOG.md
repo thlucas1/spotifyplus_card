@@ -6,6 +6,14 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.74 ] - 2026/04/02
+
+  * Updated controls that were no longer displaying properly due to HA 2026.04.0 changes.  HA devs replaced the `search-input-outlined` material design component with the `ha-input-search` component due to web-awesome changes.
+
+###### [ 1.0.73 ] - 2026/03/15
+
+  * Corrected a bug in the progress indicator that was causing remaining time to be a negative value.
+
 ###### [ 1.0.72 ] - 2026/03/08
 
   * Updated various icon controls that were no longer displaying properly due to HA 2026.03.0 changes.  HA devs updated ha-icon-button to use `ha-button` component instead of `mwc-icon-button` material design component.

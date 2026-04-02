@@ -520,7 +520,7 @@ export function isTouchDevice(): boolean {
 /**
  * Determines if the following lazily-loaded controls are defined to customElements, and
  * forces a page load to load the controls if not.  Controls checked for are:
- * - <search-input-outlined>
+ * - <ha-input-search>
  * - <ha-dropdown>
  * - <ha-alert>
  * 
@@ -534,7 +534,7 @@ export function isTouchDevice(): boolean {
 export const loadHaFormLazyControls = async () => {
 
   // if specified customElements already exist then we are done.
-  if (customElements.get("search-input-outlined") && customElements.get("ha-dropdown") && customElements.get("ha-alert")) {
+  if (customElements.get("ha-input-search") && customElements.get("ha-dropdown") && customElements.get("ha-alert")) {
     return;
   }
 
