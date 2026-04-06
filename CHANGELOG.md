@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.75 ] - 2026/04/05
+
+  * Changed autofocus property of `ha-input-search` component from `true` to `false`.  This was causing a keyboard prompt to popup automatically when a section was focused that supports filtering.
+
 ###### [ 1.0.74 ] - 2026/04/02
 
   * Updated controls that were no longer displaying properly due to HA 2026.04.0 changes.  HA devs replaced the `search-input-outlined` material design component with the `ha-input-search` component due to web-awesome changes.

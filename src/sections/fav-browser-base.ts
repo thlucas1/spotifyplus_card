@@ -164,7 +164,7 @@ export class FavBrowserBase extends AlertUpdatesBase {
         appearance="outlined"
         .hass=${this.hass}
         .value=${this.filterCriteria || ""}
-        .autofocus=${true}
+        .autofocus=${false}
         .placeholder=${this.filterCriteriaPlaceholder || "search by name"}
         @input=${this.onFilterCriteriaChange}
         @keypress=${this.onFilterCriteriaKeyPress}
