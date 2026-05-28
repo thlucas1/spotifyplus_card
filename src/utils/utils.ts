@@ -172,7 +172,7 @@ export function getSectionForConfigArea(configArea: ConfigArea) {
   } else if (configArea == ConfigArea.AUDIOBOOK_FAVORITES) {
     section = Section.AUDIOBOOK_FAVORITES;
   } else if (configArea == ConfigArea.CATEGORY_BROWSER) {
-    section = Section.CATEGORYS;
+    section = Section.CATEGORIES;
   } else if (configArea == ConfigArea.DEVICE_BROWSER) {
     section = Section.DEVICES;
   } else if (configArea == ConfigArea.EPISODE_FAVORITES) {
@@ -214,7 +214,7 @@ export function getConfigAreaForSection(section: Section) {
     configArea = ConfigArea.ARTIST_FAVORITES;
   } else if (section == Section.AUDIOBOOK_FAVORITES) {
     configArea = ConfigArea.AUDIOBOOK_FAVORITES;
-  } else if (section == Section.CATEGORYS) {
+  } else if (section == Section.CATEGORIES) {
     configArea = ConfigArea.CATEGORY_BROWSER;
   } else if (section == Section.DEVICES) {
     configArea = ConfigArea.DEVICE_BROWSER;

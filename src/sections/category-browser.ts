@@ -54,7 +54,7 @@ export class CategoryBrowser extends FavBrowserBase {
   constructor() {
 
     // invoke base class method.
-    super(Section.CATEGORYS);
+    super(Section.CATEGORIES);
     this.filterCriteriaPlaceholder = "filter by category name";
 
   }
@@ -343,7 +343,7 @@ export class CategoryBrowser extends FavBrowserBase {
       if (this.isCategoryVisible) {
 
         // create promise - get playlists for category.
-        const promiseGetCategorysList = new Promise((resolve, reject) => {
+        const promiseGetCategoriesList = new Promise((resolve, reject) => {
 
           // set service parameters.
           const country = null;
@@ -376,12 +376,12 @@ export class CategoryBrowser extends FavBrowserBase {
             })
         });
 
-        promiseRequests.push(promiseGetCategorysList);
+        promiseRequests.push(promiseGetCategoriesList);
 
       } else {
 
-        // create promise - get browse categorys list.
-        const promiseGetCategorysList = new Promise((resolve, reject) => {
+        // create promise - get browse categories list.
+        const promiseGetCategoriesList = new Promise((resolve, reject) => {
 
           // set service parameters.
           const country = null;
@@ -389,7 +389,7 @@ export class CategoryBrowser extends FavBrowserBase {
           const refresh = true;
 
           // call the service to retrieve the media list.
-          this.spotifyPlusService.GetBrowseCategorysList(player, country, locale, refresh)
+          this.spotifyPlusService.GetBrowseCategoriesList(player, country, locale, refresh)
             .then(result => {
 
               // load media list results.
@@ -414,7 +414,7 @@ export class CategoryBrowser extends FavBrowserBase {
             })
         });
 
-        promiseRequests.push(promiseGetCategorysList);
+        promiseRequests.push(promiseGetCategoriesList);
 
       }
 

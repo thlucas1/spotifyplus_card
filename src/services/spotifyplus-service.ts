@@ -1516,7 +1516,7 @@ export class SpotifyPlusService {
    * @param trimResults True to trim certain fields of the output results that are not required and to conserve memory; otherwise, False to return all fields that were returned in by the Spotify Web API.
    * @returns A ICategoryPage object.
   */
-  public async GetBrowseCategorysList(
+  public async GetBrowseCategoriesList(
     player: MediaPlayer,
     country: string | undefined | null = null,
     locale: string | undefined | null = null,
@@ -1542,7 +1542,7 @@ export class SpotifyPlusService {
       // create service request.
       const serviceRequest: ServiceCallRequest = {
         domain: DOMAIN_SPOTIFYPLUS,
-        service: 'get_browse_categorys_list',
+        service: 'get_browse_categories_list',
         serviceData: serviceData
       };
 

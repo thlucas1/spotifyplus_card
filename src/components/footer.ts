@@ -69,9 +69,9 @@ export class Footer extends LitElement {
       <ha-icon-button
         .path=${mdiDramaMasks}
         label='Categories'
-        @click=${() => this.onSectionClick(Section.CATEGORYS)}
-        selected=${this.getSectionSelected(Section.CATEGORYS)}
-        hide=${this.getSectionEnabled(Section.CATEGORYS)}
+        @click=${() => this.onSectionClick(Section.CATEGORIES)}
+        selected=${this.getSectionSelected(Section.CATEGORIES)}
+        hide=${this.getSectionEnabled(Section.CATEGORIES)}
       ></ha-icon-button>
       <ha-icon-button
         .path=${mdiPlaylistPlay}

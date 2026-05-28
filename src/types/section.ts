@@ -5,7 +5,7 @@ export enum Section {
   ALBUM_FAVORITES = 'albumfavorites',
   ARTIST_FAVORITES = 'artistfavorites',
   AUDIOBOOK_FAVORITES = 'audiobookfavorites',
-  CATEGORYS = 'categorys',
+  CATEGORIES = 'categories',
   DEVICES = 'devices',
   EPISODE_FAVORITES = 'episodefavorites',
   PLAYER = 'player',

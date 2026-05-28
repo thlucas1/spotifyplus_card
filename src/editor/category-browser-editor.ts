@@ -74,7 +74,7 @@ class CategoryBrowserEditor extends BaseEditor {
       </div>
       <spc-editor-form class="spc-editor-form"
         .schema=${CONFIG_SETTINGS_SCHEMA}
-        .section=${Section.CATEGORYS}
+        .section=${Section.CATEGORIES}
         .store=${this.store}
         .config=${this.config}
         .hass=${this.hass}

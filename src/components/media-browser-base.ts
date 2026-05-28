@@ -152,7 +152,7 @@ export class MediaBrowserBase extends LitElement {
     } else if (this.mediaItemType == Section.AUDIOBOOK_FAVORITES) {
       this.hideTitle = this.config.audiobookFavBrowserItemsHideTitle || false;
       this.hideSubTitle = this.config.audiobookFavBrowserItemsHideSubTitle || false;
-    } else if (this.mediaItemType == Section.CATEGORYS) {
+    } else if (this.mediaItemType == Section.CATEGORIES) {
       this.hideTitle = this.config.categoryBrowserItemsHideTitle || false;
       this.hideSubTitle = this.config.categoryBrowserItemsHideSubTitle || false;
     } else if (this.mediaItemType == Section.DEVICES) {
@@ -575,7 +575,7 @@ export class MediaBrowserBase extends LitElement {
           mbi_info.is_active = true;
         }
 
-      } else if (this.mediaItemType == Section.CATEGORYS) {
+      } else if (this.mediaItemType == Section.CATEGORIES) {
 
         const itemInfo = (item as ICategory);
         mbi_info.subtitle = itemInfo.type;

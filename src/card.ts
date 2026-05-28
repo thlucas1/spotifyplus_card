@@ -23,7 +23,7 @@ import { Palette } from '@vibrant/color';
 import './sections/album-fav-browser';          // SECTION.ALBUM_FAVORITES
 import './sections/artist-fav-browser';         // SECTION.ARTIST_FAVORITES
 import './sections/audiobook-fav-browser';      // SECTION.AUDIOBOOK_FAVORITES
-import './sections/category-browser';           // SECTION.CATEGORYS
+import './sections/category-browser';           // SECTION.CATEGORIES
 import './sections/device-browser';             // SECTION.DEVICES
 import './sections/episode-fav-browser';        // SECTION.EPISODE_FAVORITES
 import './sections/player';                     // SECTION.PLAYER
@@ -229,7 +229,7 @@ export class Card extends AlertUpdatesBase {
                 [Section.ALBUM_FAVORITES, () => html`<spc-album-fav-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected} id="elmAlbumFavBrowserForm"></spc-album-fav-browser>`],
                 [Section.ARTIST_FAVORITES, () => html`<spc-artist-fav-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected} id="elmArtistFavBrowserForm"></spc-artist-fav-browser>`],
                 [Section.AUDIOBOOK_FAVORITES, () => html`<spc-audiobook-fav-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected} id="elmAudiobookFavBrowserForm"></spc-audiobook-fav-browser>`],
-                [Section.CATEGORYS, () => html`<spc-category-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected} id="elmCategoryBrowserForm"></spc-category-browser>`],
+                [Section.CATEGORIES, () => html`<spc-category-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected} id="elmCategoryBrowserForm"></spc-category-browser>`],
                 [Section.DEVICES, () => html`<spc-device-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected} id="elmDeviceBrowserForm"></spc-device-browser>`],
                 [Section.EPISODE_FAVORITES, () => html`<spc-episode-fav-browser .store=${this.store} @item-selected=${this.onMediaListItemSelected} id="elmEpisodeFavBrowserForm"></spc-episode-fav-browser>`],
                 [Section.PLAYER, () => html`<spc-player id="spcPlayer" .store=${this.store}></spc-player>`],
@@ -584,8 +584,8 @@ export class Card extends AlertUpdatesBase {
         sectionNew = Section.USERPRESETS;
       } else if (sectionsConfigured.includes(Section.RECENTS)) {
         sectionNew = Section.RECENTS;
-      } else if (sectionsConfigured.includes(Section.CATEGORYS)) {
-        sectionNew = Section.CATEGORYS;
+      } else if (sectionsConfigured.includes(Section.CATEGORIES)) {
+        sectionNew = Section.CATEGORIES;
       } else if (sectionsConfigured.includes(Section.PLAYLIST_FAVORITES)) {
         sectionNew = Section.PLAYLIST_FAVORITES;
       } else if (sectionsConfigured.includes(Section.ALBUM_FAVORITES)) {
@@ -898,10 +898,10 @@ export class Card extends AlertUpdatesBase {
     const evArgs = (ev as CustomEvent).detail as CategoryDisplayEventArgs;
 
     // is section activated?  if so, then select it.
-    if (this.config.sections?.includes(Section.CATEGORYS)) {
+    if (this.config.sections?.includes(Section.CATEGORIES)) {
 
       // show the category section.
-      this.section = Section.CATEGORYS;
+      this.section = Section.CATEGORIES;
       this.store.section = this.section;
 
       // wait just a bit before displaying the category.
@@ -1077,7 +1077,7 @@ export class Card extends AlertUpdatesBase {
       audiobookFavBrowserItemsHideSubTitle: false,
       audiobookFavBrowserItemsSortTitle: true,
 
-      categoryBrowserTitle: "Categorys for {player.sp_user_display_name} ({medialist.filteritemcount} items)",
+      categoryBrowserTitle: "Categories for {player.sp_user_display_name} ({medialist.filteritemcount} items)",
       categoryBrowserSubTitle: "click a tile item to view the content; click-hold for actions",
       categoryBrowserItemsPerRow: 4,
       categoryBrowserItemsHideTitle: false,
