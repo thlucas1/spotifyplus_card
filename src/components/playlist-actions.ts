@@ -9,7 +9,9 @@ import {
   mdiDotsHorizontal,
   mdiHeart,
   mdiHeartOutline,
+  mdiPlaylistMinus,
   mdiPlaylistPlay,
+  mdiPlaylistPlus,
   mdiTrashCanOutline,
 } from '@mdi/js';
 
@@ -43,6 +45,8 @@ enum Actions {
   PlaylistFavoriteAdd = "PlaylistFavoriteAdd",
   PlaylistFavoriteRemove = "PlaylistFavoriteRemove",
   PlaylistFavoriteUpdate = "PlaylistFavoriteUpdate",
+  PlaylistItemsAddNowPlaying = "PlaylistItemsAddNowPlaying",
+  PlaylistItemsRemoveNowPlaying = "PlaylistItemsRemoveNowPlaying",
   PlaylistItemsUpdate = "PlaylistItemsUpdate",
   PlaylistRecoverWebUI = "PlaylistRecoverWebUI",
   PlaylistUserPresetAdd = "PlaylistUserPresetAdd",
@@ -126,6 +130,14 @@ class PlaylistActions extends FavActionsBase {
         <ha-dropdown-item @click=${() => this.onClickAction(Actions.PlaylistRecoverWebUI)}>
           <ha-svg-icon slot="icon" .path=${mdiBackupRestore}></ha-svg-icon>
           Recover Playlist via Spotify Web UI
+        </ha-dropdown-item>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.PlaylistItemsAddNowPlaying)}>
+          <ha-svg-icon slot="icon" .path=${mdiPlaylistPlus}></ha-svg-icon>
+          Add Now Playing Item to Playlist
+        </ha-dropdown-item>
+        <ha-dropdown-item @click=${() => this.onClickAction(Actions.PlaylistItemsRemoveNowPlaying)}>
+          <ha-svg-icon slot="icon" .path=${mdiPlaylistMinus}></ha-svg-icon>
+          Remove Now Playing Item from Playlist
         </ha-dropdown-item>
         <ha-dropdown-item @click=${() => this.onClickAction(Actions.PlaylistDelete)}>
           <ha-svg-icon slot="icon" .path=${mdiTrashCanOutline}></ha-svg-icon>
@@ -346,6 +358,16 @@ class PlaylistActions extends FavActionsBase {
 
         await this.spotifyPlusService.UnfollowPlaylist(this.player, this.mediaItem.id);
         this.updateActions(this.player, [Actions.PlaylistFavoriteUpdate]);
+
+      } else if (action == Actions.PlaylistItemsAddNowPlaying) {
+
+        await this.spotifyPlusService.PlaylistItemsAdd(this.player, this.mediaItem.id, null, null);
+        this.updateActions(this.player, [Actions.PlaylistItemsUpdate]);
+
+      } else if (action == Actions.PlaylistItemsRemoveNowPlaying) {
+
+        await this.spotifyPlusService.PlaylistItemsRemove(this.player, this.mediaItem.id, null, null);
+        this.updateActions(this.player, [Actions.PlaylistItemsUpdate]);
 
       } else {
 

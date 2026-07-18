@@ -6,6 +6,12 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.76 ] - 2026/07/18
+
+  * Handle special ":collection" type url's when determining whether to use play context / tracks.
+  * Added playlist action: Add Now Playing Item to Playlist.
+  * Added playlist action: Remove Now Playing Item from Playlist.
+
 ###### [ 1.0.75 ] - 2026/04/05
 
   * Changed autofocus property of `ha-input-search` component from `true` to `false`.  This was causing a keyboard prompt to popup automatically when a section was focused that supports filtering.

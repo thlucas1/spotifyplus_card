@@ -3396,6 +3396,100 @@ export class SpotifyPlusService {
 
 
   /**
+   * Add one or more items to a user's playlist.  Items are added in the order they are listed in the `uris` argument.
+   * 
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
+   * @param playlist_id The Spotify ID of the playlist (e.g. `3cEYpjA9oz9GiPac4AsH4n`).
+   * @param uris A comma-separated list of Spotify URIs to add; can be track or episode URIs (e.g. spotify:track:4iV5W9uYEdYUVa79Axb7Rh).  A maximum of 100 items can be specified in one request.  If nothing is specified, then the track (or episode) uri currently playing is used.
+   * @param position The position to insert the items, a zero-based index.  For example, to insert the items in the first position use a value of 0; to insert the items in the third position use a value of 2.  Omit the parameter to append the items to the end of the playlist.
+   * @returns A snapshot ID for the updated playlist.
+  */
+  public async PlaylistItemsAdd(
+    player: MediaPlayer,
+    playlist_id: string | undefined | null = null,
+    uris: string | undefined | null = null,
+    position: number | null = null,
+  ): Promise<string> {
+
+    try {
+
+      // create service data (with required parameters).
+      const serviceData: { [key: string]: any } = {
+        entity_id: player.id,
+      };
+
+      // update service data parameters (with optional parameters).
+      serviceData['playlist_id'] = playlist_id;
+      if (uris != null)
+        serviceData['uris'] = uris;
+      if (position != null)
+        serviceData['position'] = position;
+
+      // create service request.
+      const serviceRequest: ServiceCallRequest = {
+        domain: DOMAIN_SPOTIFYPLUS,
+        service: 'playlist_items_add',
+        serviceData: serviceData
+      };
+
+      // call the service, and return the response.
+      const response = await this.CallServiceWithResponse(serviceRequest);
+      return response["result"];
+
+    }
+    finally {
+    }
+  }
+
+
+  /**
+   * Remove one or more items from a user's playlist.
+   * 
+   * @param player SpotifyPlus MediaPlayer instance that will process the request.
+   * @param playlist_id The Spotify ID of the playlist (e.g. `3cEYpjA9oz9GiPac4AsH4n`).
+   * @param uris A comma-separated list of Spotify URIs to remove; can be track or episode URIs (e.g. spotify:track:4iV5W9uYEdYUVa79Axb7Rh).  A maximum of 100 items can be specified in one request.  If nothing is specified, then the track (or episode) uri currently playing is used.
+   * @param snapshot_id The playlist's snapshot ID against which you want to make the changes (e.g. `MzgsMWVkNDY3MTQ5YjVjYWE0MzAyNjkyZWMyOThjNjE3YWMwOTY0ZmJjYg==`).  The API will validate that the specified items exist and make the changes, even if more recent changes have been made to the playlist.  If omitted, the current playlist is updated.
+   * @returns A snapshot ID for the updated playlist.
+  */
+  public async PlaylistItemsRemove(
+    player: MediaPlayer,
+    playlist_id: string | undefined | null = null,
+    uris: string | undefined | null = null,
+    snapshot_id: string | undefined | null = null,
+  ): Promise<string> {
+
+    try {
+
+      // create service data (with required parameters).
+      const serviceData: { [key: string]: any } = {
+        entity_id: player.id,
+      };
+
+      // update service data parameters (with optional parameters).
+      serviceData['playlist_id'] = playlist_id;
+      if (uris != null)
+        serviceData['uris'] = uris;
+      if (snapshot_id != null)
+        serviceData['snapshot_id'] = snapshot_id;
+
+      // create service request.
+      const serviceRequest: ServiceCallRequest = {
+        domain: DOMAIN_SPOTIFYPLUS,
+        service: 'playlist_items_remove',
+        serviceData: serviceData
+      };
+
+      // call the service, and return the response.
+      const response = await this.CallServiceWithResponse(serviceRequest);
+      return response["result"];
+
+    }
+    finally {
+    }
+  }
+
+
+  /**
    * Remove one or more albums from the current user's 'Your Library'.
    * 
    * @param player SpotifyPlus MediaPlayer instance that will process the request.
@@ -4924,15 +5018,27 @@ export class SpotifyPlusService {
         );
       }
 
+      // get shuffle setting.
+      let shuffle: boolean | null = null;
+      if (mediaItem.shuffle !== undefined) {
+        shuffle = (mediaItem.shuffle === true);
+      }
+
+      // determine how to play the media item based on the uri type.
       if (['album', 'artist', 'playlist', 'show', 'audiobook', 'podcast'].indexOf(uriType) > -1) {
 
         // play context.
-        await this.PlayerMediaPlayContext(player, mediaItem.uri || '');
+        await this.PlayerMediaPlayContext(player, mediaItem.uri || '', null, null, null, null, null, shuffle);
+
+      } else if (mediaItem.uri.indexOf(':collection') > -1) {
+
+        // play context for special collection uri types.
+        await this.PlayerMediaPlayContext(player, mediaItem.uri || '', null, null, null, null, null, shuffle);
 
       } else if (['track', 'episode', 'chapter'].indexOf(uriType) > -1) {
 
         // play track / episode / chapter.
-        await this.PlayerMediaPlayTracks(player, mediaItem.uri || '');
+        await this.PlayerMediaPlayTracks(player, mediaItem.uri || '', null, null, null, shuffle);
 
       } else {
 
